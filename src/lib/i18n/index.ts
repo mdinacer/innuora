@@ -11,6 +11,7 @@ export type AppLocales = "en" | "ar" | "fr";
 export const APP_NAMESPACES = {
   NS_COMMON: "common",
   NS_PAGES: "pages",
+  NS_LEGAL: "legal",
   NS_SESSIONS: "sessions",
 } as const;
 

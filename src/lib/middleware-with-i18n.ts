@@ -34,12 +34,12 @@ export async function updateSession(request: NextRequest) {
 
     // Handle protected routes
     if (request.nextUrl.pathname.startsWith("/protected") && (!user || error)) {
-      const signInUrl = new URL("/sign-in", request.url);
+      const signInUrl = new URL("auth/sign-in", request.url);
       // Preserve the locale in the redirect
       if (response instanceof NextResponse && response.headers.get("x-pathname")) {
         const locale = response.headers.get("x-pathname")?.split("/")[1];
         if (locale && i18nConfig.locales.includes(locale)) {
-          signInUrl.pathname = `/${locale}/sign-in`;
+          signInUrl.pathname = `/${locale}/auth/sign-in`;
         }
       }
       return NextResponse.redirect(signInUrl);
