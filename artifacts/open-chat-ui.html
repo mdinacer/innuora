@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirael - Your AI Emotional Mirror</title>
+    <style>
+        :root {
+            /* Light Mode (Default) */
+            --bg-primary: #F5F3F0;
+            --bg-card: #FFFFFF;
+            --bg-accent: #FF6B5A;
+            --bg-secondary: #2C2C2E;
+            --bg-overlay: rgba(44, 44, 46, 0.9);
+            --bg-input: #F8F8F8;
+            --bg-suggestion: #F0F0F0;
+            
+            --text-primary: #2C2C2E;
+            --text-secondary: #8E8E93;
+            --text-accent: #FFFFFF;
+            --text-on-accent: #FFFFFF;
+            
+            --border-light: #E5E5E7;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-floating: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1C1C1E;
+            --bg-card: #2C2C2E;
+            --bg-accent: #FF6B5A;
+            --bg-secondary: #3A3A3C;
+            --bg-overlay: rgba(58, 58, 60, 0.95);
+            --bg-input: #3A3A3C;
+            --bg-suggestion: #48484A;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --text-accent: #FFFFFF;
+            --text-on-accent: #FFFFFF;
+            
+            --border-light: #48484A;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --shadow-floating: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            height: 100vh;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chat-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            max-width: 440px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 24px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            height: calc(100vh - 40px);
+            box-shadow: var(--shadow-floating);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .decorative-shapes {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 0 24px 0 0;
+            z-index: 1;
+        }
+
+        .shape-1 {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 120px;
+            height: 120px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .shape-2 {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            opacity: 0.15;
+        }
+
+        .chat-header {
+            padding: 24px 24px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-accent);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-on-accent);
+        }
+
+        .header-info h1 {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-info p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-toggle {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-input);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border-light);
+            transform: scale(1.05);
+        }
+
+        .menu-button {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-input);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background: var(--border-light);
+        }
+
+        .menu-dots {
+            width: 4px;
+            height: 4px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .menu-dots::before,
+        .menu-dots::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+        }
+
+        .menu-dots::before {
+            top: -8px;
+        }
+
+        .menu-dots::after {
+            top: 8px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 24px 24px;
+            scroll-behavior: smooth;
+        }
+
+        .message-group {
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: slideInUp 0.6s ease forwards;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.ai .message-avatar {
+            background: var(--bg-accent);
+            color: var(--text-on-accent);
+        }
+
+        .message.user .message-avatar {
+            background: var(--bg-secondary);
+            color: var(--text-accent);
+        }
+
+        .message-bubble {
+            max-width: 280px;
+            padding: 16px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 400;
+            position: relative;
+        }
+
+        .message.ai .message-bubble {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border-radius: 20px 20px 20px 6px;
+        }
+
+        .message.user .message-bubble {
+            background: var(--bg-accent);
+            color: var(--text-on-accent);
+            border-radius: 20px 20px 6px 20px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: slideInUp 0.4s ease forwards;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-bubble {
+            background: var(--bg-input);
+            padding: 16px 20px;
+            border-radius: 20px 20px 20px 6px;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typing-bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing-bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        .chat-input-area {
+            padding: 0 24px 24px;
+            background: var(--bg-card);
+        }
+
+        .suggestions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .suggestions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .suggestion-chip {
+            background: var(--bg-suggestion);
+            color: var(--text-secondary);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--bg-accent);
+            color: var(--text-on-accent);
+            transform: translateY(-2px);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            background: var(--bg-input);
+            border-radius: 24px;
+            padding: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .input-container:focus-within {
+            background: var(--border-light);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: inherit;
+            resize: none;
+            min-height: 24px;
+            max-height: 100px;
+            line-height: 1.5;
+        }
+
+        .chat-input:focus {
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-accent);
+            border: none;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 107, 90, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .send-icon {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-on-accent);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                margin: 0;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .decorative-shapes {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="decorative-shapes">
+            <div class="shape-1"></div>
+            <div class="shape-2"></div>
+        </div>
+
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="ai-avatar">M</div>
+                <div class="header-info">
+                    <h1>Mirael</h1>
+                    <p>Your emotional mirror</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 3V1M12 23V21M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                </button>
+                <button class="menu-button">
+                    <div class="menu-dots"></div>
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message-group" style="animation-delay: 0.2s">
+                <div class="message ai">
+                    <div class="message-avatar">M</div>
+                    <div class="message-bubble">
+                        Hello! I'm Mirael, your AI emotional mirror. I'm here to help you slow down, reflect, and gain clarity on what you're truly feeling.
+                    </div>
+                </div>
+                <div class="message-time">2:34 PM</div>
+            </div>
+
+            <div class="message-group" style="animation-delay: 0.4s">
+                <div class="message ai">
+                    <div class="message-avatar">M</div>
+                    <div class="message-bubble">
+                        How are you feeling right now? Take a moment to notice what's present for you.
+                    </div>
+                </div>
+                <div class="message-time">2:34 PM</div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="message-avatar">M</div>
+                <div class="typing-bubble">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="suggestions" id="suggestions">
+                <button class="suggestion-chip" onclick="selectSuggestion('I feel overwhelmed today')">Feeling overwhelmed</button>
+                <button class="suggestion-chip" onclick="selectSuggestion('I\'m struggling with self-doubt')">Self-doubt</button>
+                <button class="suggestion-chip" onclick="selectSuggestion('I can\'t shake this feeling of burnout')">Burnout feelings</button>
+            </div>
+
+            <div class="input-container">
+                <textarea 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Share what's on your mind..."
+                    rows="1"
+                ></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()" disabled>
+                    <svg class="send-icon" viewBox="0 0 24 24">
+                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const suggestions = document.getElementById('suggestions');
+
+        const miraeResponses = [
+            "I hear that you're feeling overwhelmed. That's a heavy feeling to carry. What's contributing most to that sense of being overwhelmed right now?",
+            "It sounds like there's a lot on your plate. Sometimes when we feel this way, we're carrying more than just our own expectations. What voices are you hearing in your head about how you 'should' be handling things?",
+            "Self-doubt can be so persistent, can't it? It has a way of making us question everything we know about ourselves. When did you first notice this doubt creeping in?",
+            "Burnout often happens when we've been running on empty for too long. Your body and mind are trying to tell you something important. What would it feel like to truly rest?",
+            "I'm noticing you're being quite hard on yourself. If your best friend came to you feeling exactly how you do right now, what would you say to them?",
+            "That perfectionist voice can be so demanding. It's like having a critic that's never satisfied. What would happen if you gave yourself permission to be imperfect today?",
+            "It sounds like you're carrying a lot of invisible labor - the kind that others don't see but weighs heavily on you. That's exhausting. What would it feel like to set some of that down?",
+            "Sometimes our emotions are trying to protect us from something. What do you think this feeling might be trying to tell you?"
+        ];
+
+        // Theme functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('mirael-theme', newTheme);
+        }
+
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('mirael-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            sendButton.disabled = !this.value.trim();
+        });
+
+        // Send message on Enter (but not Shift+Enter)
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function selectSuggestion(text) {
+            chatInput.value = text;
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+            sendButton.disabled = false;
+            suggestions.style.display = 'none';
+            chatInput.focus();
+        }
+
+        function addMessage(content, isUser = false) {
+            const messageGroup = document.createElement('div');
+            messageGroup.className = 'message-group';
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+
+            messageGroup.innerHTML = `
+                <div class="message ${isUser ? 'user' : 'ai'}">
+                    <div class="message-avatar">${isUser ? 'U' : 'M'}</div>
+                    <div class="message-bubble">
+                        ${content}
+                    </div>
+                </div>
+                <div class="message-time">${timeString}</div>
+            `;
+
+            chatMessages.insertBefore(messageGroup, typingIndicator);
+            scrollToBottom();
+        }
+
+        function showTyping() {
+            typingIndicator.classList.add('active');
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            typingIndicator.classList.remove('active');
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 100);
+        }
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, true);
+            
+            // Clear input
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            sendButton.disabled = true;
+
+            // Hide suggestions after first message
+            suggestions.style.display = 'none';
+
+            // Show typing indicator
+            showTyping();
+
+            // Simulate AI response delay
+            setTimeout(() => {
+                hideTyping();
+                
+                // Select a response based on keywords or random
+                let response = miraeResponses[Math.floor(Math.random() * miraeResponses.length)];
+                
+                // Simple keyword matching for more relevant responses
+                const lowerMessage = message.toLowerCase();
+                if (lowerMessage.includes('overwhelmed') || lowerMessage.includes('too much')) {
+                    response = miraeResponses[0];
+                } else if (lowerMessage.includes('doubt') || lowerMessage.includes('unsure')) {
+                    response = miraeResponses[2];
+                } else if (lowerMessage.includes('burnout') || lowerMessage.includes('exhausted')) {
+                    response = miraeResponses[3];
+                } else if (lowerMessage.includes('perfect') || lowerMessage.includes('mistake')) {
+                    response = miraeResponses[5];
+                }
+                
+                addMessage(response);
+            }, 1500 + Math.random() * 1000);
+        }
+
+        // Initialize
+        loadTheme();
+        scrollToBottom();
+        chatInput.focus();
+    </script>
+</body>
+</html>

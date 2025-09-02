@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirael - Message Types Showcase</title>
+    <style>
+        :root {
+            /* Light Mode (Default) */
+            --bg-primary: #F5F3F0;
+            --bg-card: #FFFFFF;
+            --bg-accent: #FF6B5A;
+            --bg-secondary: #2C2C2E;
+            --bg-overlay: rgba(44, 44, 46, 0.9);
+            --bg-input: #F8F8F8;
+            --bg-suggestion: #F0F0F0;
+            
+            --text-primary: #2C2C2E;
+            --text-secondary: #8E8E93;
+            --text-accent: #FFFFFF;
+            --text-on-accent: #FFFFFF;
+            
+            --border-light: #E5E5E7;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-floating: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1C1C1E;
+            --bg-card: #2C2C2E;
+            --bg-accent: #FF6B5A;
+            --bg-secondary: #3A3A3C;
+            --bg-overlay: rgba(58, 58, 60, 0.95);
+            --bg-input: #3A3A3C;
+            --bg-suggestion: #48484A;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --text-accent: #FFFFFF;
+            --text-on-accent: #FFFFFF;
+            
+            --border-light: #48484A;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --shadow-floating: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 32px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .showcase-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .showcase-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .showcase-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.8px;
+        }
+
+        .showcase-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .phone-mockup {
+            width: 480px;
+            background: var(--bg-card);
+            border-radius: 40px;
+            box-shadow: var(--shadow-floating);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #1C1C1E;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 44px;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .battery-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* App Header */
+        .app-header {
+            background: var(--bg-card);
+            padding: 16px 24px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-decoration {
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 160px;
+            height: 160px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            opacity: 0.08;
+        }
+
+        .header-decoration::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 80px;
+            height: 80px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .app-branding h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.8px;
+        }
+
+        .app-branding p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Content Area with consistent spacing */
+        .content-area {
+            padding: 0 24px 32px;
+            background: var(--bg-card);
+        }
+
+        /* Establish clear visual hierarchy */
+        .message-section {
+            margin-bottom: 48px;
+        }
+
+        .message-section.primary {
+            margin-bottom: 56px;
+        }
+
+        .message-section.secondary {
+            margin-bottom: 40px;
+        }
+
+        /* Section Headers with better hierarchy */
+        .section-header {
+            margin-bottom: 20px;
+            padding: 0 8px;
+        }
+
+        .section-header h2 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--bg-accent);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .section-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        /* Refined Message Cards with better spacing */
+        .message-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.2s ease;
+        }
+
+        /* Hero/Paragraphs Message - Primary hierarchy */
+        .hero-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 8px;
+        }
+
+        .hero-decoration {
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            opacity: 0.06;
+        }
+
+        .hero-decoration::after {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .hero-paragraphs {
+            margin: 16px 0 24px;
+        }
+
+        .hero-paragraphs p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+
+        .hero-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--bg-accent);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .hero-action:hover {
+            opacity: 0.8;
+        }
+
+        /* Message card variants with clear semantic meaning */
+        .message-card.ai-response {
+            background: var(--bg-secondary);
+            color: var(--text-accent);
+            border: none;
+            box-shadow: var(--shadow-card);
+        }
+
+        .message-card.user-input {
+            background: var(--bg-accent);
+            color: var(--text-on-accent);
+            border: none;
+            box-shadow: var(--shadow-card);
+        }
+
+        .message-card.interactive {
+            border: 2px solid var(--border-light);
+            background: var(--bg-card);
+        }
+
+        .message-card.completion {
+            background: var(--bg-accent);
+            color: var(--text-on-accent);
+            border: none;
+            box-shadow: var(--shadow-floating);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--bg-accent);
+            line-height: 0.9;
+            letter-spacing: -1.5px;
+        }
+
+        .message-card.ai-response .card-number,
+        .message-card.user-input .card-number,
+        .message-card.completion .card-number {
+            color: var(--text-accent);
+        }
+
+        .card-meta {
+            text-align: right;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .message-card.ai-response .card-meta,
+        .message-card.user-input .card-meta,
+        .message-card.completion .card-meta {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.2px;
+        }
+
+        .message-card.ai-response .card-title,
+        .message-card.user-input .card-title,
+        .message-card.completion .card-title {
+            color: var(--text-accent);
+        }
+
+        .card-content {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .message-card.ai-response .card-content,
+        .message-card.user-input .card-content,
+        .message-card.completion .card-content {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Simplified Options Component */
+        .option-list {
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-family: inherit;
+            font-size: 15px;
+        }
+
+        .option-item:hover {
+            border-color: var(--bg-accent);
+            background: var(--bg-card);
+        }
+
+        .option-item.selected {
+            border-color: var(--bg-accent);
+            background: var(--bg-card);
+            color: var(--bg-accent);
+            box-shadow: 0 0 0 1px var(--bg-accent);
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .option-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .option-item.selected .option-description {
+            color: rgba(255, 107, 90, 0.7);
+        }
+
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .option-item:hover .option-checkbox {
+            border-color: var(--bg-accent);
+        }
+
+        .option-item.selected .option-checkbox {
+            border-color: var(--bg-accent);
+            background: var(--bg-accent);
+        }
+
+        .option-checkbox svg {
+            width: 12px;
+            height: 12px;
+            fill: white;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .option-item.selected .option-checkbox svg {
+            opacity: 1;
+        }
+
+        /* Simplified Show More */
+        .show-more-container {
+            text-align: center;
+            margin: 12px 0 16px;
+        }
+
+        .show-more-btn {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .show-more-btn:hover {
+            border-color: var(--bg-accent);
+            color: var(--bg-accent);
+        }
+
+        .show-more-btn svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .show-more-btn.expanded svg {
+            transform: rotate(180deg);
+        }
+
+        /* Hidden options with simpler animation */
+        .option-item.hidden {
+            display: none;
+        }
+
+        .option-item.showing {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Input Fields */
+        .input-field {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 15px;
+            color: var(--text-primary);
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 8px;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--bg-accent);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .action-btn.primary {
+            background: var(--bg-accent);
+            color: var(--text-on-accent);
+        }
+
+        .action-btn.primary:hover {
+            background: #ff5a4a;
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--bg-accent);
+            border: 1px solid var(--bg-accent);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 107, 90, 0.1);
+        }
+
+        .message-card.ai-response .action-btn.secondary {
+            color: var(--text-accent);
+            border-color: var(--text-accent);
+        }
+
+        .message-card.ai-response .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .card-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--bg-accent);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .card-action:hover {
+            opacity: 0.8;
+        }
+
+        .message-card.ai-response .card-action,
+        .message-card.user-input .card-action,
+        .message-card.completion .card-action {
+            color: var(--text-accent);
+        }
+
+        /* Reflection States */
+        .reflection-loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* System message styling */
+        .system-card {
+            background: var(--bg-input);
+            border: 1px dashed var(--border-light);
+            opacity: 0.8;
+        }
+
+        .system-example {
+            margin: 16px 0;
+            padding: 12px;
+            background: rgba(255, 107, 90, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--bg-accent);
+        }
+
+        .system-example-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .system-example-code {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'SF Mono', Consolas, monospace;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="color: var(--text-secondary);">
+            <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+    </button>
+
+    <div class="showcase-container">
+        <div class="showcase-header">
+            <h1>Mirael Message Types</h1>
+            <p>Refined flow system components with clear hierarchy</p>
+        </div>
+
+        <div class="phone-mockup">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="battery-indicator">
+                    <span>100%</span>
+                    <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor">
+                        <rect x="1" y="2" width="18" height="8" rx="2" fill="none" stroke="currentColor"/>
+                        <rect x="2" y="3" width="16" height="6" rx="1" fill="currentColor"/>
+                        <rect x="20" y="4" width="2" height="4" rx="1" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- App Header -->
+            <div class="app-header">
+                <div class="header-decoration"></div>
+                <div class="header-content">
+                    <div class="app-branding">
+                        <h1>Mirael</h1>
+                        <p>Your emotional mirror</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                
+                <!-- PRIMARY: PARAGRAPHS - Opening/Welcome Messages -->
+                <div class="message-section primary">
+                    <div class="section-header">
+                        <h2>Paragraphs</h2>
+                        <p>Welcome messages and rich content introductions</p>
+                    </div>
+                    <div class="hero-card">
+                        <div class="hero-decoration"></div>
+                        <div class="hero-content">
+                            <h2 class="hero-title">Welcome To Your Emotional Journey</h2>
+                            <p class="hero-subtitle">I'm here to help you slow down, reflect, and gain clarity.</p>
+                            <div class="hero-paragraphs">
+                                <p>This is a safe space for emotional exploration and healing.</p>
+                                <p>Take your time and be honest with yourself as we work together.</p>
+                            </div>
+                            <button class="hero-action">
+                                <span>Begin reflection</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRIMARY: USER_INPUT - User Expression -->
+                <div class="message-section primary">
+                    <div class="section-header">
+                        <h2>User Message</h2>
+                        <p>User's emotional expressions and reflections</p>
+                    </div>
+                    <div class="message-card user-input">
+                        <div class="card-header">
+                            <div class="card-number">02</div>
+                            <div class="card-meta">You</div>
+                        </div>
+                        <h3 class="card-title">Your Reflection</h3>
+                        <p class="card-content">I've been feeling overwhelmed lately with work and personal responsibilities. It feels like I'm constantly behind and can never catch up.</p>
+                    </div>
+                </div>
+
+                <!-- PRIMARY: TEXT - AI Response -->
+                <div class="message-section primary">
+                    <div class="section-header">
+                        <h2>Text Response</h2>
+                        <p>AI's empathetic responses and insights</p>
+                    </div>
+                    <div class="message-card ai-response">
+                        <div class="card-header">
+                            <div class="card-number">03</div>
+                            <div class="card-meta">Mirael</div>
+                        </div>
+                        <h3 class="card-title">Emotional Insight</h3>
+                        <p class="card-content">I hear that you're feeling overwhelmed. That's a heavy feeling to carry. What's contributing most to that sense of being overwhelmed right now?</p>
+                        <button class="card-action">
+                            <span>Continue reflecting</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECONDARY: OPTIONS - User Choice -->
+                <div class="message-section secondary">
+                    <div class="section-header">
+                        <h2>Options</h2>
+                        <p>Multi-select choices with progressive disclosure</p>
+                    </div>
+                    <div class="message-card interactive">
+                        <div class="card-header">
+                            <div class="card-number">04</div>
+                            <div class="card-meta">Select Multiple</div>
+                        </div>
+                        <h3 class="card-title">What aspects of feeling overwhelmed resonate most?</h3>
+                        <div class="option-list">
+                            <div class="options-container">
+                                <button class="option-item" data-visible="true">
+                                    <div class="option-header">
+                                        <div class="option-content">
+                                            <div class="option-label">Too many responsibilities</div>
+                                            <div class="option-description">Juggling work, family, and personal obligations</div>
+                                        </div>
+                                        <div class="option-checkbox">
+                                            <svg viewBox="0 0 12 12">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-item selected" data-visible="true">
+                                    <div class="option-header">
+                                        <div class="option-content">
+                                            <div class="option-label">Emotional overload</div>
+                                            <div class="option-description">Feeling too much all at once</div>
+                                        </div>
+                                        <div class="option-checkbox">
+                                            <svg viewBox="0 0 12 12">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-item" data-visible="true">
+                                    <div class="option-header">
+                                        <div class="option-content">
+                                            <div class="option-label">Decision fatigue</div>
+                                            <div class="option-description">Exhausted from making choices</div>
+                                        </div>
+                                        <div class="option-checkbox">
+                                            <svg viewBox="0 0 12 12">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-item selected" data-visible="true">
+                                    <div class="option-header">
+                                        <div class="option-content">
+                                            <div class="option-label">Time pressure</div>
+                                            <div class="option-description">Never enough hours in the day</div>
+                                        </div>
+                                        <div class="option-checkbox">
+                                            <svg viewBox="0 0 12 12">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <!-- Hidden options -->
+                                <button class="option-item hidden" data-visible="false">
+                                    <div class="option-header">
+                                        <div class="option-content">
+                                            <div class="option-label">Social expectations</div>
+                                            <div class="option-description">Pressure to meet others' expectations</div>
+                                        </div>
+                                        <div class="option-checkbox">
+                                            <svg viewBox="0 0 12 12">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-item hidden" data-visible="false">
+                                    <div class="option-header">
+                                        <div class="option-content">
+                                            <div class="option-label">Financial stress</div>
+                                            <div class="option-description">Worries about money and security</div>
+                                        </div>
+                                        <div class="option-checkbox">
+                                            <svg viewBox="0 0 12 12">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                            
+                            <div class="show-more-container">
+                                <button class="show-more-btn" onclick="toggleMoreOptions()">
+                                    <span>Show 2 more</span>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6,9 12,15 18,9"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="action-btn primary">Continue (2 selected)</button>
+                    </div>
+                </div>
+
+                <!-- SECONDARY: USER_INPUT - Text Input -->
+                <div class="message-section secondary">
+                    <div class="section-header">
+                        <h2>User Input</h2>
+                        <p>Text input with character limits and validation</p>
+                    </div>
+                    <div class="message-card interactive">
+                        <div class="card-header">
+                            <div class="card-number">05</div>
+                            <div class="card-meta">Input Required</div>
+                        </div>
+                        <h3 class="card-title">How would you describe your current emotional state?</h3>
+                        <div>
+                            <textarea class="input-field" placeholder="I feel..." maxlength="300">I've been feeling like I'm drowning in responsibilities lately. Everything feels urgent.</textarea>
+                            <div class="char-counter">98/300</div>
+                            <div class="input-hint">Be as specific or general as feels right for you.</div>
+                            <button class="action-btn primary">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECONDARY: ACTION - Decision Points -->
+                <div class="message-section secondary">
+                    <div class="section-header">
+                        <h2>Action</h2>
+                        <p>Decision points with primary and secondary choices</p>
+                    </div>
+                    <div class="message-card ai-response">
+                        <div class="card-header">
+                            <div class="card-number">06</div>
+                            <div class="card-meta">Choose Action</div>
+                        </div>
+                        <h3 class="card-title">Decision Point</h3>
+                        <p class="card-content">Sometimes we need to pause and reflect, other times we need to take action. What feels right for you in this moment?</p>
+                        <div class="action-buttons">
+                            <button class="action-btn primary">Take time to reflect</button>
+                            <button class="action-btn secondary">Focus on taking action</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECONDARY: REFLECTION - Processing States -->
+                <div class="message-section secondary">
+                    <div class="section-header">
+                        <h2>Reflection</h2>
+                        <p>AI processing states - completed and loading</p>
+                    </div>
+                    <div class="message-card ai-response">
+                        <div class="card-header">
+                            <div class="card-number">07</div>
+                            <div class="card-meta">Reflection</div>
+                        </div>
+                        <h3 class="card-title">Processing Complete</h3>
+                        <p class="card-content">I sense deep wisdom in your words. You're showing remarkable self-awareness in recognizing these patterns. What would it feel like to be more gentle with yourself?</p>
+                        <button class="card-action">
+                            <span>Continue reflecting</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="message-section secondary">
+                    <div class="message-card ai-response">
+                        <div class="card-header">
+                            <div class="card-number">08</div>
+                            <div class="card-meta">Reflection</div>
+                        </div>
+                        <h3 class="card-title">Processing State</h3>
+                        <div class="reflection-loading">
+                            <div class="loading-spinner"></div>
+                            <span>Processing your reflection...</span>
+                        </div>
+                        <button class="card-action">
+                            <span>Continue reflecting</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRIMARY: FLOW_END - Session Completion -->
+                <div class="message-section primary">
+                    <div class="section-header">
+                        <h2>Flow End</h2>
+                        <p>Session completion with final actions</p>
+                    </div>
+                    <div class="message-card completion">
+                        <div class="card-header">
+                            <div class="card-number">09</div>
+                            <div class="card-meta">Complete</div>
+                        </div>
+                        <h3 class="card-title">Session Complete</h3>
+                        <p class="card-content">You've done meaningful work today exploring your emotions and gaining new insights. Healing is a journey, and you've taken important steps forward.</p>
+                        <div class="action-buttons">
+                            <button class="action-btn primary" style="background: white; color: #FF6B5A;">Start new session</button>
+                            <button class="action-btn secondary">Review session notes</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TERTIARY: SYSTEM - Background Actions -->
+                <div class="message-section">
+                    <div class="section-header">
+                        <h2>System</h2>
+                        <p>Background system actions (no UI rendered)</p>
+                    </div>
+                    <div class="message-card system-card">
+                        <div class="card-header">
+                            <div class="card-number" style="color: var(--text-secondary);">--</div>
+                            <div class="card-meta">System</div>
+                        </div>
+                        <h3 class="card-title">Background Actions</h3>
+                        <p class="card-content">System messages execute background actions without rendering UI elements:</p>
+                        <div class="system-example">
+                            <div class="system-example-title">Example actions:</div>
+                            <div class="system-example-code">
+                                • log: "User completed onboarding"<br>
+                                • delay: 1000ms<br>
+                                • callback: updateProfile<br>
+                                • reset_input_values<br>
+                                • wipe_messages
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('mirael-theme', newTheme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('mirael-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        function toggleMoreOptions() {
+            const hiddenOptions = document.querySelectorAll('.option-item[data-visible="false"]');
+            const showMoreBtn = document.querySelector('.show-more-btn');
+            const btnText = showMoreBtn.querySelector('span');
+            
+            const isExpanded = showMoreBtn.classList.contains('expanded');
+            
+            if (isExpanded) {
+                // Hide options
+                hiddenOptions.forEach(option => {
+                    option.classList.remove('showing');
+                    option.classList.add('hidden');
+                });
+                btnText.textContent = 'Show 2 more';
+                showMoreBtn.classList.remove('expanded');
+            } else {
+                // Show options
+                hiddenOptions.forEach((option, index) => {
+                    setTimeout(() => {
+                        option.classList.remove('hidden');
+                        option.classList.add('showing');
+                    }, index * 50);
+                });
+                btnText.textContent = 'Show fewer';
+                showMoreBtn.classList.add('expanded');
+            }
+        }
+
+        // Simulate option selection
+        document.querySelectorAll('.option-item').forEach(option => {
+            option.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                
+                // Update counter
+                const selectedCount = document.querySelectorAll('.option-item.selected').length;
+                const continueBtn = document.querySelector('.action-btn.primary');
+                if (continueBtn && continueBtn.textContent.includes('selected')) {
+                    continueBtn.textContent = `Continue (${selectedCount} selected)`;
+                    continueBtn.disabled = selectedCount === 0;
+                }
+            });
+        });
+
+        // Initialize
+        loadTheme();
+    </script>
+</body>
+</html>

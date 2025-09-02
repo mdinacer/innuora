@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirael - Your AI Emotional Mirror</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: #F2EDE6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #FFFFFF;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #1C1C1E;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 44px;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .battery-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* App Header */
+        .app-header {
+            background: #FFFFFF;
+            padding: 8px 24px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-decoration {
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 160px;
+            height: 160px;
+            background: #E85A4F;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .header-decoration::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 80px;
+            height: 80px;
+            background: #E85A4F;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 24px;
+        }
+
+        .app-branding h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1C1C1E;
+            margin-bottom: 4px;
+            letter-spacing: -0.8px;
+        }
+
+        .app-branding p {
+            font-size: 16px;
+            color: #8E8E93;
+            font-weight: 500;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            background: #F2F2F7;
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #E5E5EA;
+            transform: scale(1.05);
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            padding: 0 24px 24px;
+            overflow-y: auto;
+            background: #FFFFFF;
+            height: 0; /* Force flexbox to constrain height */
+        }
+
+        /* Welcome Card - Large Hero Style */
+        .hero-card {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+            border-radius: 24px;
+            padding: 32px 28px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #F0F0F0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero-decoration {
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: #E85A4F;
+            border-radius: 50%;
+            opacity: 0.08;
+        }
+
+        .hero-decoration::after {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            width: 40px;
+            height: 40px;
+            background: #E85A4F;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1C1C1E;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: #8E8E93;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .hero-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #E85A4F;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* Message Cards - Reference Style */
+        .message-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #F0F0F0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            animation: cardAppear 0.5s ease forwards;
+        }
+
+        .message-card.dark {
+            background: #2C2C2E;
+            color: #FFFFFF;
+            border: none;
+        }
+
+        .message-card.accent {
+            background: #E85A4F;
+            color: #FFFFFF;
+            border: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .card-number {
+            font-size: 64px;
+            font-weight: 800;
+            color: #E85A4F;
+            line-height: 0.8;
+            letter-spacing: -2px;
+        }
+
+        .message-card.dark .card-number {
+            color: #FFFFFF;
+        }
+
+        .message-card.accent .card-number {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card-meta {
+            text-align: right;
+            font-size: 12px;
+            color: #8E8E93;
+        }
+
+        .message-card.dark .card-meta {
+            color: #A1A1A6;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1C1C1E;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .message-card.dark .card-title {
+            color: #FFFFFF;
+        }
+
+        .message-card.accent .card-title {
+            color: #FFFFFF;
+        }
+
+        .card-content {
+            font-size: 15px;
+            color: #636366;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .message-card.dark .card-content {
+            color: #A1A1A6;
+        }
+
+        .message-card.accent .card-content {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card-action {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #E85A4F;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .message-card.dark .card-action {
+            color: #FFFFFF;
+        }
+
+        .message-card.accent .card-action {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Input Area */
+        .input-section {
+            padding: 20px 24px 34px;
+            background: #FFFFFF;
+            border-top: 1px solid #F0F0F0;
+        }
+
+        .quick-responses {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .quick-response {
+            background: #F2F2F7;
+            color: #1C1C1E;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .quick-response:hover {
+            background: #E85A4F;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .message-input {
+            flex: 1;
+            background: #F2F2F7;
+            border: none;
+            border-radius: 22px;
+            padding: 14px 18px;
+            font-size: 16px;
+            color: #1C1C1E;
+            font-family: inherit;
+            resize: none;
+            min-height: 20px;
+            max-height: 80px;
+            line-height: 1.4;
+        }
+
+        .message-input:focus {
+            outline: none;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 2px #E85A4F;
+        }
+
+        .message-input::placeholder {
+            color: #8E8E93;
+        }
+
+        .send-button {
+            width: 44px;
+            height: 44px;
+            background: #E85A4F;
+            border: none;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .send-button:hover:not(:disabled) {
+            background: #d14d42;
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .send-button svg {
+            width: 20px;
+            height: 20px;
+            fill: #FFFFFF;
+        }
+
+        /* Typing Indicator */
+        .typing-card {
+            background: #F8F9FA;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #F0F0F0;
+            display: none;
+        }
+
+        .typing-card.active {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: cardAppear 0.3s ease forwards;
+        }
+
+        .typing-avatar {
+            width: 32px;
+            height: 32px;
+            background: #E85A4F;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #8E8E93;
+            border-radius: 50%;
+            animation: typingPulse 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typingPulse {
+            0%, 60%, 100% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+            30% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .content-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-area::-webkit-scrollbar-thumb {
+            background: #E5E5EA;
+            border-radius: 2px;
+        }
+
+        .content-area::-webkit-scrollbar-thumb:hover {
+            background: #D1D1D6;
+        }
+
+        .quick-responses::-webkit-scrollbar {
+            display: none;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #1C1C1E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+        }
+
+        [data-theme="dark"] .phone-mockup {
+            background: #1C1C1E;
+        }
+
+        [data-theme="dark"] .status-bar,
+        [data-theme="dark"] .app-header,
+        [data-theme="dark"] .content-area,
+        [data-theme="dark"] .input-section {
+            background: #1C1C1E;
+        }
+
+        [data-theme="dark"] .app-branding h1 {
+            color: #FFFFFF;
+        }
+
+        [data-theme="dark"] .hero-card,
+        [data-theme="dark"] .message-card:not(.dark):not(.accent) {
+            background: #2C2C2E;
+            border-color: #38383A;
+        }
+
+        [data-theme="dark"] .card-title {
+            color: #FFFFFF;
+        }
+
+        [data-theme="dark"] .message-input {
+            background: #2C2C2E;
+            color: #FFFFFF;
+        }
+
+        [data-theme="dark"] .quick-response {
+            background: #2C2C2E;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="battery-indicator">
+                <span>100%</span>
+                <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor">
+                    <rect x="1" y="2" width="18" height="8" rx="2" fill="none" stroke="currentColor"/>
+                    <rect x="2" y="3" width="16" height="6" rx="1" fill="currentColor"/>
+                    <rect x="20" y="4" width="2" height="4" rx="1" fill="currentColor"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- App Header -->
+        <div class="app-header">
+            <div class="header-decoration"></div>
+            <div class="header-content">
+                <div class="app-branding">
+                    <h1>Mirael</h1>
+                    <p>Your emotional mirror</p>
+                </div>
+                <div class="header-controls">
+                    <button class="control-btn" onclick="toggleTheme()">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="1"/>
+                            <circle cx="12" cy="12" r="1"/>
+                            <circle cx="12" cy="19" r="1"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <!-- Hero Welcome Card -->
+            <div class="hero-card">
+                <div class="hero-decoration"></div>
+                <div class="hero-content">
+                    <h2 class="hero-title">Welcome To Your Emotional Journey</h2>
+                    <p class="hero-subtitle">I'm here to help you slow down, reflect, and gain clarity on what you're truly feeling.</p>
+                    <div class="hero-action">
+                        <span>Begin reflection</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Card 01 -->
+            <div class="message-card" style="animation-delay: 0.2s">
+                <div class="card-header">
+                    <div class="card-number">01</div>
+                    <div class="card-meta">Just now</div>
+                </div>
+                <h3 class="card-title">How Are You Feeling?</h3>
+                <p class="card-content">Take a moment to notice what's present for you right now. There's no right or wrong answer—just what's true for you in this moment.</p>
+                <div class="card-action">
+                    <span>Share your feelings</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-card" id="typingCard">
+                <div class="typing-avatar">M</div>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="quick-responses" id="quickResponses">
+                <button class="quick-response" onclick="selectResponse('I feel overwhelmed today')">Feeling overwhelmed</button>
+                <button class="quick-response" onclick="selectResponse('I\'m struggling with self-doubt')">Self-doubt</button>
+                <button class="quick-response" onclick="selectResponse('I can\'t shake this burnout feeling')">Burnout</button>
+                <button class="quick-response" onclick="selectResponse('I\'m being too hard on myself')">Self-criticism</button>
+            </div>
+            
+            <div class="input-container">
+                <textarea 
+                    class="message-input" 
+                    id="messageInput" 
+                    placeholder="Share what's on your mind..."
+                    rows="1"
+                ></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()" disabled>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const contentArea = document.getElementById('contentArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingCard = document.getElementById('typingCard');
+        const quickResponses = document.getElementById('quickResponses');
+
+        let cardNumber = 1;
+
+        const responses = [
+            "I hear that you're feeling overwhelmed. That's a heavy feeling to carry. What's contributing most to that sense of being overwhelmed right now?",
+            "Self-doubt can be so persistent, can't it? It has a way of making us question everything we know about ourselves. When did you first notice this doubt creeping in?",
+            "Burnout often happens when we've been running on empty for too long. Your body and mind are trying to tell you something important. What would it feel like to truly rest?",
+            "That inner critic can be so harsh. If your best friend came to you feeling exactly how you do right now, what would you say to them?",
+            "Sometimes our emotions are trying to protect us from something. What do you think this feeling might be trying to tell you?"
+        ];
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('mirael-theme', newTheme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('mirael-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+            sendButton.disabled = !this.value.trim();
+        });
+
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function selectResponse(text) {
+            messageInput.value = text;
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 80) + 'px';
+            sendButton.disabled = false;
+            quickResponses.style.display = 'none';
+            messageInput.focus();
+        }
+
+        function addUserMessage(content) {
+            cardNumber++;
+            const userCard = document.createElement('div');
+            userCard.className = 'message-card accent';
+            
+            userCard.innerHTML = `
+                <div class="card-header">
+                    <div class="card-number">${cardNumber.toString().padStart(2, '0')}</div>
+                    <div class="card-meta">Now</div>
+                </div>
+                <h3 class="card-title">Your Reflection</h3>
+                <p class="card-content">${content}</p>
+            `;
+
+            contentArea.insertBefore(userCard, typingCard);
+            scrollToBottom();
+        }
+
+        function addAIMessage(content) {
+            cardNumber++;
+            const aiCard = document.createElement('div');
+            aiCard.className = 'message-card dark';
+            
+            aiCard.innerHTML = `
+                <div class="card-header">
+                    <div class="card-number">${cardNumber.toString().padStart(2, '0')}</div>
+                    <div class="card-meta">Mirael</div>
+                </div>
+                <h3 class="card-title">Emotional Insight</h3>
+                <p class="card-content">${content}</p>
+                <div class="card-action">
+                    <span>Continue reflecting</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            `;
+
+            contentArea.insertBefore(aiCard, typingCard);
+            scrollToBottom();
+        }
+
+        function showTyping() {
+            typingCard.classList.add('active');
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            typingCard.classList.remove('active');
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                contentArea.scrollTo({
+                    top: contentArea.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 150);
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addUserMessage(message);
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            sendButton.disabled = true;
+            quickResponses.style.display = 'none';
+
+            showTyping();
+
+            setTimeout(() => {
+                hideTyping();
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                addAIMessage(response);
+            }, 2000);
+        }
+
+        // Initialize
+        loadTheme();
+        scrollToBottom();
+        messageInput.focus();
+    </script>
+</body>
+</html>
