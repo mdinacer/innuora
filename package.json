@@ -9,7 +9,8 @@
     "lint": "eslint \"src/**/*.+(ts|tsx)\"",
     "lint:fix": "eslint \"src/**/*.+(ts|tsx)\" --fix",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "postinstall": "pnpx prisma generate --no-engine"
   },
   "dependencies": {
     "@prisma/client": "^6.15.0",
