@@ -1,14 +1,366 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Prisma schema with proper FK cascading, postgres mapping, and reordering
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"] // first one is for cross-platform, second one for docker, last one for serverless environment. safe to include all
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// =========================
+// Core Entities
+// =========================
+
+model User {
+  // Identifiers
+  id     String @id @default(cuid()) @map("id")
+  authId String @unique @map("auth_id")
+
+  // Business fields
+  role           UserRole?          @default(user)
+  pointsBalance  Int                @default(0) @map("points_balance")
+  pointsConsumed Int                @default(0) @map("points_consumed")
+  status         UserAccountStatus? @default(active)
+  isOnboarded    Boolean            @default(false)
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  auditLogs           AuditLog[]
+  config              UserConfig?
+  feedbacks           Feedback[]
+  madeAdjustments     AdminAdjustment[]   @relation("AdjustmentsMade")
+  payments            Payment[]
+  pointsTransactions  PointsTransaction[]
+  profile             Profile?
+  receivedAdjustments AdminAdjustment[]   @relation("AdjustmentsReceived")
+  sessions            Session[]
+  subscription        Subscription?
+  userFeatureFlags    UserFeatureFlag[]
+
+  @@map("users")
+}
+
+model Profile {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  displayName           String?                  @map("display_name")
+  ageGroup              AgeGroup?                @map("age_group")
+  identityConnection    IdentityConnectionLevel? @map("identity_connection")
+  copingMechanism       CopingMechanism?         @map("coping_mechanism")
+  socialPressureSources SocialPressureSource[]   @default([]) @map("social_pressure_sources")
+  emotionalConcerns     EmotionalConcern[]       @default([]) @map("emotional_concerns")
+  emotionalAspirations  EmotionalAspirations[]   @default([]) @map("emotional_aspirations")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model Subscription {
+  // Identifiers
+  id String @id @default(uuid())
+
+  // Foreign keys
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  plan   SubscriptionPlan?   @default(free)
+  status SubscriptionStatus? @default(active)
+
+  // Timestamps
+  startedAt DateTime  @default(now()) @map("started_at")
+  expiresAt DateTime? @map("expires_at")
+
+  @@map("subscriptions")
+}
+
+model UserConfig {
+  // Identifiers
+  id String @id @default(uuid())
+
+  // Foreign keys
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  autoSave Boolean    @default(false) @map("auto_save")
+  theme    ThemeMode? @default(system)
+  locale   String?    @default("en")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_configs")
+}
+
+// =========================
+// Activity & Audit
+// =========================
+
+model AuditLog {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  action   String
+  metadata Json?
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Session {
+  // Identifiers
+  id String @id @default(uuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Encrypted artifacts
+  summary  Bytes? @map("summary")
+  analysis Bytes? @map("analysis") // Last three analyses
+
+  // Crypto metadata
+  keyId  String? @map("key_id")
+  encAlg String? @map("enc_alg")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sessions")
+}
+
+model PointsTransaction {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  type   PointsTransactionType? @default(credit)
+  amount Int
+  reason String?
+  meta   Json?
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("points_transactions")
+}
+
+model Feedback {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  message String
+  rating  Int?
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("feedbacks")
+}
+
+model UserFeatureFlag {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  flag    String
+  enabled Boolean @default(false)
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, flag])
+  @@map("user_feature_flags")
+}
+
+// =========================
+// Admin & Payments
+// =========================
+
+model Payment {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  provider    String
+  providerRef String        @map("provider_ref")
+  amountCents Int           @map("amount_cents")
+  currency    String        @default("usd")
+  status      PaymentStatus @default(pending)
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+model AdminAdjustment {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId String @map("user_id")
+  user   User   @relation("AdjustmentsReceived", fields: [userId], references: [id], onDelete: Cascade)
+
+  adminId String @map("admin_id")
+  admin   User   @relation("AdjustmentsMade", fields: [adminId], references: [id], onDelete: Cascade)
+
+  // Business fields
+  amount Int
+  reason String?
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("admin_adjustments")
+}
+
+// =========================
+// Enums
+// =========================
+
+enum PointsTransactionType {
+  credit
+  debit
+}
+
+enum UserRole {
+  admin
+  user
+  tester
+}
+
+enum SubscriptionPlan {
+  free
+  pro
+  enterprise
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  past_due
+}
+
+enum AgeGroup {
+  Age18_24
+  Age25_34
+  Age35_44
+  Age45_54
+  Age55Plus
+}
+
+enum IdentityConnectionLevel {
+  authentic
+  conflicted
+  disconnected
+  lost
+}
+
+enum CopingMechanism {
+  shutdown
+  self_critical
+  overwhelmed
+  push_through
+}
+
+enum SocialPressureSource {
+  family
+  friends
+  work_or_school
+  romantic
+  cultural_or_religious
+  self
+}
+
+enum EmotionalConcern {
+  anxiety
+  self_worth
+  overthinking
+  loneliness
+  burnout
+  mood_swings
+  identity_crisis
+  other
+}
+
+enum EmotionalAspirations {
+  clarity
+  calm
+  confidence
+  self_compassion
+  connection
+  direction
+  not_sure
+}
+
+enum ThemeMode {
+  light
+  dark
+  system
+}
+
+enum UserAccountStatus {
+  active
+  inactive
+  deleted
+  locked
+  banned
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
 }
