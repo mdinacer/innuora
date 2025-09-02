@@ -96,19 +96,19 @@ export default async function EmailValidationResendRoute() {
         <div className="text-center mt-6 space-y-3">
           <p className="text-sm text-mir-text-secondary">
             Still having trouble?
-            <Link href="mailto:support@mirael.app" className="text-mir-bgbg-mir-bg-accent hover:underline">
+            <Link href="mailto:support@mirael.app" className="text-mir-bg-accent hover:underline">
               Contact support
             </Link>
           </p>
           <p className="text-sm text-mir-text-secondary">
             Want to try a different email?
-            <Link href="#" className="text-mir-bgbg-mir-bg-accent hover:underline">
+            <Link href="#" className="text-mir-bg-accent hover:underline">
               Create new account
             </Link>
           </p>
           <p className="text-sm text-mir-text-secondary">
             Already verified?
-            <Link href="#" className="text-mir-bgbg-mir-bg-accent hover:underline">
+            <Link href="#" className="text-mir-bg-accent hover:underline">
               Sign in
             </Link>
           </p>
