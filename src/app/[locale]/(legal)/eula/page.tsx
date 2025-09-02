@@ -1,12 +1,7 @@
-import PoliciesFooter from "@/components/policies/policies.footer";
-import PoliciesHeader from "@/components/policies/policies.header";
-
+export const dynamic = "force-static";
 export default function EULARoute() {
   return (
     <main className="relative font-sans min-h-screen pt-20 w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
-      {/* <!-- Header --> */}
-      <PoliciesHeader />
-
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
@@ -193,9 +188,6 @@ export default function EULARoute() {
           </div>
         </section>
       </div>
-
-      {/* <!-- Footer --> */}
-      <PoliciesFooter currentPage="terms" />
     </main>
   );
 }

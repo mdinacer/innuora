@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function SignInRoute() {
   return (
-    <main className="relative flex items-center justify-center px-6 py-12">
+    <main className="relative flex flex-1 items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
         {/* <!-- Welcome Header --> */}
         <div className="text-center mb-8">
