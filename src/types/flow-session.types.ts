@@ -88,7 +88,7 @@ export interface ReflectionContent {
   includeOnboardingData?: boolean;
   includeMirSummary?: boolean;
   includeChatSummary?: boolean;
-  prompt: (inputValues: Record<string, unknown>) => string;
+  // prompt: (inputValues: Record<string, unknown>) => string;
 }
 
 export interface ActionContent {
@@ -156,7 +156,7 @@ export type FlowStep = BaseStep &
 
 export interface SessionFlow {
   id: string;
-  type: SessionType;
+  //type: SessionType;
   title: string;
   subtitle: string;
   steps: FlowStep[];
