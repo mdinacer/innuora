@@ -1,10 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Resend Verification Email — Mirael</title>
-    <meta name="description" content="Request a new verification email for your Mirael account if you haven't received one or if your link has expired." />
+    <meta
+      name="description"
+      content="Request a new verification email for your Mirael account if you haven't received one or if your link has expired."
+    />
     <meta property="og:title" content="Resend Verification Email — Mirael" />
     <meta property="og:description" content="Get a new verification email to activate your Mirael account." />
     <meta property="og:type" content="website" />
@@ -13,24 +16,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class',
+        darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
               sans: [
-                'Inter',
-                'ui-sans-serif',
-                'system-ui',
-                'Segoe UI',
-                'Roboto',
-                'Apple Color Emoji',
-                'Segoe UI Emoji',
+                "Inter",
+                "ui-sans-serif",
+                "system-ui",
+                "Segoe UI",
+                "Roboto",
+                "Apple Color Emoji",
+                "Segoe UI Emoji",
               ],
             },
             boxShadow: {
-              card: '0 4px 20px rgba(0,0,0,0.08)',
-              floating: '0 8px 30px rgba(0,0,0,0.12)',
-              subtle: '0 2px 8px rgba(0,0,0,0.04)',
+              card: "0 4px 20px rgba(0,0,0,0.08)",
+              floating: "0 8px 30px rgba(0,0,0,0.12)",
+              subtle: "0 2px 8px rgba(0,0,0,0.04)",
             },
           },
         },
@@ -40,38 +43,43 @@
     <!-- Design tokens via CSS variables for light/dark; used with Tailwind arbitrary values -->
     <style>
       :root {
-        --bg-primary: #F5F3F0;
-        --bg-card: #FFFFFF;
-        --bg-accent: #FF6B5A;
-        --bg-secondary: #2C2C2E;
-        --bg-input: #F8F8F8;
-        --bg-soft: #FFF8F7;
-        --bg-gradient: linear-gradient(135deg, #FF6B5A 0%, #FF8A7A 100%);
+        --bg-primary: #f5f3f0;
+        --bg-card: #ffffff;
+        --bg-accent: #ff6b5a;
+        --bg-secondary: #2c2c2e;
+        --bg-input: #f8f8f8;
+        --bg-soft: #fff8f7;
+        --bg-gradient: linear-gradient(135deg, #ff6b5a 0%, #ff8a7a 100%);
 
-        --text-primary: #2C2C2E;
-        --text-secondary: #8E8E93;
-        --text-on-accent: #FFFFFF;
+        --text-primary: #2c2c2e;
+        --text-secondary: #8e8e93;
+        --text-on-accent: #ffffff;
 
-        --border-light: #E5E5E7;
+        --border-light: #e5e5e7;
       }
       .dark {
-        --bg-primary: #1C1C1E;
-        --bg-card: #2C2C2E;
-        --bg-accent: #FF6B5A;
-        --bg-secondary: #3A3A3C;
-        --bg-input: #3A3A3C;
-        --bg-soft: #2A2525;
+        --bg-primary: #1c1c1e;
+        --bg-card: #2c2c2e;
+        --bg-accent: #ff6b5a;
+        --bg-secondary: #3a3a3c;
+        --bg-input: #3a3a3c;
+        --bg-soft: #2a2525;
 
-        --text-primary: #FFFFFF;
-        --text-secondary: #8E8E93;
-        --text-on-accent: #FFFFFF;
+        --text-primary: #ffffff;
+        --text-secondary: #8e8e93;
+        --text-on-accent: #ffffff;
 
-        --border-light: #48484A;
+        --border-light: #48484a;
       }
 
       @keyframes pulse-gentle {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
       }
       .pulse-gentle {
         animation: pulse-gentle 2s ease-in-out infinite;
@@ -83,8 +91,20 @@
     <header class="border-b border-[var(--border-light)]">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="#" class="font-extrabold text-xl tracking-tight">Mirael</a>
-        <button id="themeToggle" class="w-10 h-10 rounded-full border border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-center transition hover:scale-105" aria-label="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-secondary)]">
+        <button
+          id="themeToggle"
+          class="w-10 h-10 rounded-full border border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-center transition hover:scale-105"
+          aria-label="Toggle theme"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            class="text-[var(--text-secondary)]"
+          >
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -100,10 +120,11 @@
     <!-- Resend Request State -->
     <main id="requestState" class="flex-1 flex items-center justify-center px-6 py-12">
       <div class="w-full max-w-md">
-        
         <!-- Email Icon -->
         <div class="mb-8 text-center">
-          <div class="w-20 h-20 mx-auto rounded-full bg-[var(--bg-soft)] border border-[rgba(255,107,90,0.25)] flex items-center justify-center pulse-gentle">
+          <div
+            class="w-20 h-20 mx-auto rounded-full bg-[var(--bg-soft)] border border-[rgba(255,107,90,0.25)] flex items-center justify-center pulse-gentle"
+          >
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--bg-accent)" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
@@ -114,7 +135,9 @@
 
         <!-- Header -->
         <div class="text-center mb-8">
-          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-3">Resend verification email</h1>
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-3">
+            Resend verification email
+          </h1>
           <p class="text-[var(--text-secondary)]">Enter your email address to receive a new verification link</p>
         </div>
 
@@ -140,25 +163,37 @@
         <!-- Resend Form -->
         <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-8 shadow-card">
           <form id="resendForm" class="space-y-6">
-            
             <!-- Email Field -->
             <div>
               <label for="email" class="block text-sm font-medium mb-2">Email address</label>
-              <input 
-                type="email" 
-                id="email" 
+              <input
+                type="email"
+                id="email"
                 name="email"
-                required 
+                required
                 placeholder="you@example.com"
                 class="w-full rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-[var(--text-primary)] placeholder-[var(--text-secondary)] outline-none transition focus:border-[var(--bg-accent)] focus:ring-2 focus:ring-[var(--bg-accent)] focus:ring-opacity-20"
               />
-              <p class="text-xs text-[var(--text-secondary)] mt-1">This should be the same email you used when signing up</p>
+              <p class="text-xs text-[var(--text-secondary)] mt-1">
+                This should be the same email you used when signing up
+              </p>
             </div>
 
             <!-- Rate Limiting Notice -->
-            <div id="rateLimitNotice" class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[rgba(255,107,90,0.15)] hidde">
+            <div
+              id="rateLimitNotice"
+              class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[rgba(255,107,90,0.15)] hidde"
+            >
               <div class="flex items-start gap-3">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bg-accent)" stroke-width="2" class="mt-0.5 flex-shrink-0">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--bg-accent)"
+                  stroke-width="2"
+                  class="mt-0.5 flex-shrink-0"
+                >
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="12" y1="8" x2="12" y2="12"></line>
                   <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -166,15 +201,16 @@
                 <div>
                   <p class="text-sm font-medium text-[var(--text-primary)]">Rate limit reached</p>
                   <p class="text-xs text-[var(--text-secondary)] mt-1">
-                    You can request a new verification email in <span id="cooldownTime" class="font-semibold">60</span> seconds
+                    You can request a new verification email in
+                    <span id="cooldownTime" class="font-semibold">60</span> seconds
                   </p>
                 </div>
               </div>
             </div>
 
             <!-- Submit Button -->
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               id="resendBtn"
               class="w-full rounded-2xl bg-[var(--bg-accent)] px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--bg-accent)] focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
@@ -187,36 +223,35 @@
                 Send verification email
               </span>
             </button>
-
           </form>
         </div>
 
         <!-- Alternative Actions -->
         <div class="text-center mt-6 space-y-3">
           <p class="text-sm text-[var(--text-secondary)]">
-            Still having trouble? 
+            Still having trouble?
             <a href="mailto:support@mirael.app" class="text-[var(--bg-accent)] hover:underline">Contact support</a>
           </p>
           <p class="text-sm text-[var(--text-secondary)]">
-            Want to try a different email? 
+            Want to try a different email?
             <a href="#" class="text-[var(--bg-accent)] hover:underline">Create new account</a>
           </p>
           <p class="text-sm text-[var(--text-secondary)]">
-            Already verified? 
+            Already verified?
             <a href="#" class="text-[var(--bg-accent)] hover:underline">Sign in</a>
           </p>
         </div>
-
       </div>
     </main>
 
     <!-- Email Sent State -->
     <main id="sentState" class="flex-1 flex items-center justify-center px-6 py-12 hidden">
       <div class="w-full max-w-lg text-center">
-        
         <!-- Success Icon -->
         <div class="mb-8">
-          <div class="w-20 h-20 mx-auto rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
+          <div
+            class="w-20 h-20 mx-auto rounded-full bg-green-50 border border-green-200 flex items-center justify-center"
+          >
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
@@ -225,7 +260,9 @@
 
         <!-- Success Message -->
         <div class="mb-8">
-          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">Verification email sent!</h1>
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">
+            Verification email sent!
+          </h1>
           <p class="text-lg text-[var(--text-secondary)] mb-2">We've sent a new verification link to:</p>
           <p class="text-[var(--bg-accent)] font-semibold text-lg" id="sentEmail">your.email@example.com</p>
         </div>
@@ -235,21 +272,35 @@
           <h2 class="text-xl font-semibold mb-4">Next Steps</h2>
           <div class="space-y-4 text-left">
             <div class="flex items-start gap-3">
-              <div class="w-6 h-6 rounded-full bg-[var(--bg-accent)] text-white flex items-center justify-center text-sm font-semibold mt-0.5">1</div>
+              <div
+                class="w-6 h-6 rounded-full bg-[var(--bg-accent)] text-white flex items-center justify-center text-sm font-semibold mt-0.5"
+              >
+                1
+              </div>
               <div>
                 <p class="font-medium">Check your inbox</p>
-                <p class="text-sm text-[var(--text-secondary)]">Look for the new email from Mirael (it may take a few minutes)</p>
+                <p class="text-sm text-[var(--text-secondary)]">
+                  Look for the new email from Mirael (it may take a few minutes)
+                </p>
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <div class="w-6 h-6 rounded-full bg-[var(--bg-accent)] text-white flex items-center justify-center text-sm font-semibold mt-0.5">2</div>
+              <div
+                class="w-6 h-6 rounded-full bg-[var(--bg-accent)] text-white flex items-center justify-center text-sm font-semibold mt-0.5"
+              >
+                2
+              </div>
               <div>
                 <p class="font-medium">Click the verification link</p>
                 <p class="text-sm text-[var(--text-secondary)]">This will activate your account and sign you in</p>
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <div class="w-6 h-6 rounded-full bg-[var(--bg-accent)] text-white flex items-center justify-center text-sm font-semibold mt-0.5">3</div>
+              <div
+                class="w-6 h-6 rounded-full bg-[var(--bg-accent)] text-white flex items-center justify-center text-sm font-semibold mt-0.5"
+              >
+                3
+              </div>
               <div>
                 <p class="font-medium">Start your journey</p>
                 <p class="text-sm text-[var(--text-secondary)]">Begin exploring emotional reflection with Mirael</p>
@@ -261,7 +312,7 @@
         <!-- Additional Help -->
         <div class="space-y-4">
           <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <button 
+            <button
               id="sendAnotherBtn"
               class="inline-flex justify-center items-center gap-2 rounded-2xl bg-[var(--bg-accent)] px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               disabled
@@ -272,42 +323,43 @@
               </svg>
               Send another email
             </button>
-            <a 
-              href="mailto:support@mirael.app" 
+            <a
+              href="mailto:support@mirael.app"
               class="inline-flex justify-center items-center gap-2 rounded-2xl border border-[var(--border-light)] px-6 py-3 font-semibold text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition"
             >
               Contact support
             </a>
           </div>
-          
+
           <div id="cooldownDisplay" class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[rgba(255,107,90,0.15)]">
             <p class="text-sm text-[var(--text-secondary)]">
-              You can send another email in <span id="cooldownCounter" class="font-semibold text-[var(--text-primary)]">60</span> seconds
+              You can send another email in
+              <span id="cooldownCounter" class="font-semibold text-[var(--text-primary)]">60</span> seconds
             </p>
           </div>
 
           <p class="text-sm text-[var(--text-secondary)]">
-            <strong>Still not receiving emails?</strong> Make sure to check your spam folder and add support@mirael.app to your contacts.
+            <strong>Still not receiving emails?</strong> Make sure to check your spam folder and add support@mirael.app
+            to your contacts.
           </p>
         </div>
-
       </div>
     </main>
 
     <script>
       // Theme persistence
       const root = document.documentElement;
-      const saved = localStorage.getItem('mirael-theme');
-      if (saved === 'dark') root.classList.add('dark');
+      const saved = localStorage.getItem("mirael-theme");
+      if (saved === "dark") root.classList.add("dark");
 
-      document.getElementById('themeToggle')?.addEventListener('click', () => {
-        const isDark = root.classList.toggle('dark');
-        localStorage.setItem('mirael-theme', isDark ? 'dark' : 'light');
+      document.getElementById("themeToggle")?.addEventListener("click", () => {
+        const isDark = root.classList.toggle("dark");
+        localStorage.setItem("mirael-theme", isDark ? "dark" : "light");
       });
 
       // State management
-      const requestState = document.getElementById('requestState');
-      const sentState = document.getElementById('sentState');
+      const requestState = document.getElementById("requestState");
+      const sentState = document.getElementById("sentState");
 
       // Rate limiting management
       let cooldownActive = false;
@@ -316,17 +368,17 @@
 
       // Get email from URL params or localStorage
       const urlParams = new URLSearchParams(window.location.search);
-      const prefilledEmail = urlParams.get('email') || localStorage.getItem('signup-email') || '';
+      const prefilledEmail = urlParams.get("email") || localStorage.getItem("signup-email") || "";
       if (prefilledEmail) {
-        document.getElementById('email').value = prefilledEmail;
+        document.getElementById("email").value = prefilledEmail;
       }
 
       // Check for recent resend attempts
-      const lastResendTime = localStorage.getItem('lastVerificationResend');
+      const lastResendTime = localStorage.getItem("lastVerificationResend");
       if (lastResendTime) {
         const timeSinceLastResend = Date.now() - parseInt(lastResendTime);
         const remainingCooldown = Math.max(0, 60000 - timeSinceLastResend); // 60 second cooldown
-        
+
         if (remainingCooldown > 0) {
           startCooldown(Math.ceil(remainingCooldown / 1000));
         }
@@ -335,54 +387,54 @@
       function startCooldown(seconds) {
         cooldownActive = true;
         cooldownTime = seconds;
-        
-        const resendBtn = document.getElementById('resendBtn');
-        const rateLimitNotice = document.getElementById('rateLimitNotice');
-        const cooldownTimeEl = document.getElementById('cooldownTime');
-        
+
+        const resendBtn = document.getElementById("resendBtn");
+        const rateLimitNotice = document.getElementById("rateLimitNotice");
+        const cooldownTimeEl = document.getElementById("cooldownTime");
+
         resendBtn.disabled = true;
-        rateLimitNotice.classList.remove('hidden');
-        
+        rateLimitNotice.classList.remove("hidden");
+
         countdownInterval = setInterval(() => {
           cooldownTime--;
           cooldownTimeEl.textContent = cooldownTime;
-          
+
           if (cooldownTime <= 0) {
             clearInterval(countdownInterval);
             cooldownActive = false;
             resendBtn.disabled = false;
-            rateLimitNotice.classList.add('hidden');
+            rateLimitNotice.classList.add("hidden");
           }
         }, 1000);
       }
 
       function startSentPageCooldown() {
-        const sendAnotherBtn = document.getElementById('sendAnotherBtn');
-        const cooldownCounter = document.getElementById('cooldownCounter');
+        const sendAnotherBtn = document.getElementById("sendAnotherBtn");
+        const cooldownCounter = document.getElementById("cooldownCounter");
         let sentCooldown = 60;
-        
+
         const sentCountdownInterval = setInterval(() => {
           sentCooldown--;
           cooldownCounter.textContent = sentCooldown;
-          
+
           if (sentCooldown <= 0) {
             clearInterval(sentCountdownInterval);
             sendAnotherBtn.disabled = false;
-            document.getElementById('cooldownDisplay').classList.add('hidden');
+            document.getElementById("cooldownDisplay").classList.add("hidden");
           }
         }, 1000);
       }
 
       // Resend form submission
-      document.getElementById('resendForm')?.addEventListener('submit', (e) => {
+      document.getElementById("resendForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
-        
+
         if (cooldownActive) return;
-        
-        const email = document.getElementById('email').value;
-        const btn = document.getElementById('resendBtn');
+
+        const email = document.getElementById("email").value;
+        const btn = document.getElementById("resendBtn");
         const originalHTML = btn.innerHTML;
-        
+
         btn.innerHTML = `
           <span class="flex items-center justify-center gap-2">
             <svg width="16" height="16" class="animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -392,20 +444,20 @@
           </span>
         `;
         btn.disabled = true;
-        
+
         // Simulate API call
         setTimeout(() => {
           // Store timestamp for rate limiting
-          localStorage.setItem('lastVerificationResend', Date.now().toString());
-          
+          localStorage.setItem("lastVerificationResend", Date.now().toString());
+
           // Switch to sent state
-          document.getElementById('sentEmail').textContent = email;
-          requestState.classList.add('hidden');
-          sentState.classList.remove('hidden');
-          
+          document.getElementById("sentEmail").textContent = email;
+          requestState.classList.add("hidden");
+          sentState.classList.remove("hidden");
+
           // Start cooldown for sending another
           startSentPageCooldown();
-          
+
           // Reset button for if user goes back
           btn.innerHTML = originalHTML;
           btn.disabled = false;
@@ -413,10 +465,10 @@
       });
 
       // Send another email functionality
-      document.getElementById('sendAnotherBtn')?.addEventListener('click', () => {
-        const btn = document.getElementById('sendAnotherBtn');
+      document.getElementById("sendAnotherBtn")?.addEventListener("click", () => {
+        const btn = document.getElementById("sendAnotherBtn");
         const originalHTML = btn.innerHTML;
-        
+
         btn.innerHTML = `
           <span class="flex items-center justify-center gap-2">
             <svg width="16" height="16" class="animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -426,7 +478,7 @@
           </span>
         `;
         btn.disabled = true;
-        
+
         setTimeout(() => {
           btn.innerHTML = `
             <span class="flex items-center justify-center gap-2">
@@ -436,26 +488,26 @@
               Email sent!
             </span>
           `;
-          
+
           // Store new timestamp
-          localStorage.setItem('lastVerificationResend', Date.now().toString());
-          
+          localStorage.setItem("lastVerificationResend", Date.now().toString());
+
           // Reset after showing success
           setTimeout(() => {
             btn.innerHTML = originalHTML;
             btn.disabled = true; // Keep disabled until next cooldown
-            document.getElementById('cooldownDisplay').classList.remove('hidden');
-            document.getElementById('cooldownCounter').textContent = '60';
+            document.getElementById("cooldownDisplay").classList.remove("hidden");
+            document.getElementById("cooldownCounter").textContent = "60";
             startSentPageCooldown();
           }, 2000);
         }, 1500);
       });
 
       // Email validation
-      document.getElementById('email')?.addEventListener('input', (e) => {
+      document.getElementById("email")?.addEventListener("input", (e) => {
         const email = e.target.value;
-        const btn = document.getElementById('resendBtn');
-        
+        const btn = document.getElementById("resendBtn");
+
         // Simple email validation
         const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         btn.disabled = cooldownActive || !isValidEmail;

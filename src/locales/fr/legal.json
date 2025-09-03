@@ -1,74 +1,66 @@
 {
-    "privacy": {
-        "title": "Politique de Confidentialité",
-        "lastUpdated": "Dernière mise à jour : septembre 2025",
-        "intro": {
-            "title": "Votre confidentialité, notre engagement",
-            "message": "Mirael est conçu comme un espace privé et réflexif. Nous ne collectons que ce qui est strictement nécessaire au fonctionnement du service, et nous ne vendons jamais vos données.",
-            "note": "Mirael n’établit pas une relation thérapeutique. Si vous êtes en situation de crise ou à risque, veuillez chercher immédiatement un soutien professionnel."
-        },
-        "principles": {
-            "title": "Principes Clés",
-            "items": [
-                "Collecte minimale de données – nous conservons uniquement ce qui est nécessaire pour votre compte et l’historique de vos réflexions.",
-                "Aucune publicité ni vente de données – vos informations ne sont jamais partagées à des fins marketing.",
-                "Transparence – nous expliquons clairement comment et pourquoi vos données sont utilisées.",
-                "Sécurité avant tout – les réflexions émotionnelles sont traitées avec une sensibilité renforcée."
-            ]
-        },
-        "dataWeCollect": {
-            "title": "Ce que nous collectons",
-            "table": {
-                "headers": [
-                    "Catégorie",
-                    "Finalité",
-                    "Durée de conservation"
-                ],
-                "rows": [
-                    [
-                        "Données du compte (email, langue)",
-                        "Permettre la connexion et définir votre langue",
-                        "Conservées jusqu’à la suppression de votre compte"
-                    ],
-                    [
-                        "Données de session (réponses IA temporaires)",
-                        "Fournir des réflexions IA",
-                        "Éphémères – non stockées"
-                    ],
-                    [
-                        "Notes de réflexion (si vous les enregistrez)",
-                        "Vous permettre de revisiter vos insights passés",
-                        "Conservées jusqu’à leur suppression par vous"
-                    ],
-                    [
-                        "Journaux techniques (IP, informations sur l’appareil)",
-                        "Sécurité et suivi des performances",
-                        "Court terme, suppression automatique"
-                    ]
-                ]
-            }
-        },
-        "howWeUse": {
-            "title": "Comment nous utilisons vos données",
-            "paragraphs": [
-                "Mirael traite vos saisies en temps réel via des modèles GPT. Les réponses sont générées sans conserver l’historique des conversations, sauf si vous choisissez d’enregistrer vos réflexions.",
-                "Nous utilisons des prestataires d’hébergement, de stockage et d’analytique uniquement pour faire fonctionner le service. Ces prestataires agissent en tant que sous-traitants et ne peuvent pas utiliser vos données à leurs propres fins."
-            ]
-        },
-        "yourRights": {
-            "title": "Vos droits",
-            "paragraphs": [
-                "Vous pouvez demander l’accès, la correction, la suppression ou l’export de vos données à tout moment. Contactez-nous à privacy@mirael.life.",
-                "Si vous êtes situé dans l’UE/EEE ou au Royaume-Uni, vous bénéficiez des droits prévus par le RGPD. Les résidents de Californie disposent également de droits en vertu du CCPA."
-            ]
-        },
-        "children": {
-            "title": "Enfants",
-            "note": "Mirael ne s’adresse pas aux personnes de moins de 18 ans. Nous ne collectons pas sciemment de données personnelles concernant des mineurs."
-        },
-        "contact": {
-            "title": "Contactez-nous",
-            "message": "Si vous avez des questions concernant cette politique, écrivez-nous à"
-        }
+  "privacy": {
+    "title": "Politique de Confidentialité",
+    "lastUpdated": "Dernière mise à jour : septembre 2025",
+    "intro": {
+      "title": "Votre confidentialité, notre engagement",
+      "message": "Mirael est conçu comme un espace privé et réflexif. Nous ne collectons que ce qui est strictement nécessaire au fonctionnement du service, et nous ne vendons jamais vos données.",
+      "note": "Mirael n’établit pas une relation thérapeutique. Si vous êtes en situation de crise ou à risque, veuillez chercher immédiatement un soutien professionnel."
+    },
+    "principles": {
+      "title": "Principes Clés",
+      "items": [
+        "Collecte minimale de données – nous conservons uniquement ce qui est nécessaire pour votre compte et l’historique de vos réflexions.",
+        "Aucune publicité ni vente de données – vos informations ne sont jamais partagées à des fins marketing.",
+        "Transparence – nous expliquons clairement comment et pourquoi vos données sont utilisées.",
+        "Sécurité avant tout – les réflexions émotionnelles sont traitées avec une sensibilité renforcée."
+      ]
+    },
+    "dataWeCollect": {
+      "title": "Ce que nous collectons",
+      "table": {
+        "headers": ["Catégorie", "Finalité", "Durée de conservation"],
+        "rows": [
+          [
+            "Données du compte (email, langue)",
+            "Permettre la connexion et définir votre langue",
+            "Conservées jusqu’à la suppression de votre compte"
+          ],
+          ["Données de session (réponses IA temporaires)", "Fournir des réflexions IA", "Éphémères – non stockées"],
+          [
+            "Notes de réflexion (si vous les enregistrez)",
+            "Vous permettre de revisiter vos insights passés",
+            "Conservées jusqu’à leur suppression par vous"
+          ],
+          [
+            "Journaux techniques (IP, informations sur l’appareil)",
+            "Sécurité et suivi des performances",
+            "Court terme, suppression automatique"
+          ]
+        ]
+      }
+    },
+    "howWeUse": {
+      "title": "Comment nous utilisons vos données",
+      "paragraphs": [
+        "Mirael traite vos saisies en temps réel via des modèles GPT. Les réponses sont générées sans conserver l’historique des conversations, sauf si vous choisissez d’enregistrer vos réflexions.",
+        "Nous utilisons des prestataires d’hébergement, de stockage et d’analytique uniquement pour faire fonctionner le service. Ces prestataires agissent en tant que sous-traitants et ne peuvent pas utiliser vos données à leurs propres fins."
+      ]
+    },
+    "yourRights": {
+      "title": "Vos droits",
+      "paragraphs": [
+        "Vous pouvez demander l’accès, la correction, la suppression ou l’export de vos données à tout moment. Contactez-nous à privacy@mirael.life.",
+        "Si vous êtes situé dans l’UE/EEE ou au Royaume-Uni, vous bénéficiez des droits prévus par le RGPD. Les résidents de Californie disposent également de droits en vertu du CCPA."
+      ]
+    },
+    "children": {
+      "title": "Enfants",
+      "note": "Mirael ne s’adresse pas aux personnes de moins de 18 ans. Nous ne collectons pas sciemment de données personnelles concernant des mineurs."
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "message": "Si vous avez des questions concernant cette politique, écrivez-nous à"
     }
+  }
 }

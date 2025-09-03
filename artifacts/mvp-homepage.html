@@ -1,36 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mirael — Early Access</title>
-    <meta name="description" content="Mirael is an AI mirror for your inner world — reflective conversations, pattern insight, and a private space to slow down and find clarity." />
+    <meta
+      name="description"
+      content="Mirael is an AI mirror for your inner world — reflective conversations, pattern insight, and a private space to slow down and find clarity."
+    />
     <meta property="og:title" content="Mirael — A mirror for your inner world" />
-    <meta property="og:description" content="Reflective AI conversations that help you notice patterns and find clarity. Not therapy. Early access." />
+    <meta
+      property="og:description"
+      content="Reflective AI conversations that help you notice patterns and find clarity. Not therapy. Early access."
+    />
     <meta property="og:type" content="website" />
 
     <!-- Tailwind Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class',
+        darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
               sans: [
-                'Inter',
-                'ui-sans-serif',
-                'system-ui',
-                'Segoe UI',
-                'Roboto',
-                'Apple Color Emoji',
-                'Segoe UI Emoji',
+                "Inter",
+                "ui-sans-serif",
+                "system-ui",
+                "Segoe UI",
+                "Roboto",
+                "Apple Color Emoji",
+                "Segoe UI Emoji",
               ],
             },
             boxShadow: {
-              card: '0 4px 20px rgba(0,0,0,0.08)',
-              floating: '0 8px 30px rgba(0,0,0,0.12)',
-              subtle: '0 2px 8px rgba(0,0,0,0.04)',
+              card: "0 4px 20px rgba(0,0,0,0.08)",
+              floating: "0 8px 30px rgba(0,0,0,0.12)",
+              subtle: "0 2px 8px rgba(0,0,0,0.04)",
             },
           },
         },
@@ -40,33 +46,33 @@
     <!-- Design tokens via CSS variables for light/dark; used with Tailwind arbitrary values -->
     <style>
       :root {
-        --bg-primary: #F5F3F0;
-        --bg-card: #FFFFFF;
-        --bg-accent: #FF6B5A;
-        --bg-secondary: #2C2C2E;
-        --bg-input: #F8F8F8;
-        --bg-soft: #FFF8F7;
-        --bg-gradient: linear-gradient(135deg, #FF6B5A 0%, #FF8A7A 100%);
+        --bg-primary: #f5f3f0;
+        --bg-card: #ffffff;
+        --bg-accent: #ff6b5a;
+        --bg-secondary: #2c2c2e;
+        --bg-input: #f8f8f8;
+        --bg-soft: #fff8f7;
+        --bg-gradient: linear-gradient(135deg, #ff6b5a 0%, #ff8a7a 100%);
 
-        --text-primary: #2C2C2E;
-        --text-secondary: #8E8E93;
-        --text-on-accent: #FFFFFF;
+        --text-primary: #2c2c2e;
+        --text-secondary: #8e8e93;
+        --text-on-accent: #ffffff;
 
-        --border-light: #E5E5E7;
+        --border-light: #e5e5e7;
       }
       .dark {
-        --bg-primary: #1C1C1E;
-        --bg-card: #2C2C2E;
-        --bg-accent: #FF6B5A;
-        --bg-secondary: #3A3A3C;
-        --bg-input: #3A3A3C;
-        --bg-soft: #2A2525;
+        --bg-primary: #1c1c1e;
+        --bg-card: #2c2c2e;
+        --bg-accent: #ff6b5a;
+        --bg-secondary: #3a3a3c;
+        --bg-input: #3a3a3c;
+        --bg-soft: #2a2525;
 
-        --text-primary: #FFFFFF;
-        --text-secondary: #8E8E93;
-        --text-on-accent: #FFFFFF;
+        --text-primary: #ffffff;
+        --text-secondary: #8e8e93;
+        --text-on-accent: #ffffff;
 
-        --border-light: #48484A;
+        --border-light: #48484a;
       }
     </style>
   </head>
@@ -76,8 +82,20 @@
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="#" class="font-extrabold text-xl tracking-tight">Mirael</a>
         <div class="flex items-center gap-3">
-          <button id="themeToggle" class="w-10 h-10 rounded-full border border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-center transition hover:scale-105" aria-label="Toggle theme">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-secondary)]">
+          <button
+            id="themeToggle"
+            class="w-10 h-10 rounded-full border border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-center transition hover:scale-105"
+            aria-label="Toggle theme"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="text-[var(--text-secondary)]"
+            >
               <circle cx="12" cy="12" r="5"></circle>
               <line x1="12" y1="1" x2="12" y2="3"></line>
               <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -87,41 +105,76 @@
               <line x1="21" y1="12" x2="23" y2="12"></line>
             </svg>
           </button>
-          <a href="#early-access" class="inline-flex items-center gap-2 rounded-2xl border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition">Request access</a>
+          <a
+            href="#early-access"
+            class="inline-flex items-center gap-2 rounded-2xl border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition"
+            >Request access</a
+          >
         </div>
       </div>
     </header>
 
     <!-- Hero -->
     <section class="max-w-5xl mx-auto px-6 py-16 text-center">
-      <div class="inline-flex items-center gap-2 mb-4 rounded-full border border-[rgba(255,107,90,0.25)] bg-[var(--bg-soft)] px-3 py-1 text-[13px] font-semibold text-[var(--bg-accent)]">Early Access</div>
-      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">A mirror for your inner world</h1>
-      <p class="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8">Mirael helps you slow down, notice patterns, and find clarity when life feels overwhelming — through reflective, emotionally attuned conversations.</p>
-      <div class="flex flex-col sm:flex-row justify-center gap-3 mb-5">
-        <a href="#early-access" class="inline-flex justify-center rounded-2xl bg-[var(--bg-accent)] px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition">Join early access</a>
-        <a href="#demo" class="inline-flex justify-center rounded-2xl border border-[var(--border-light)] bg-transparent px-6 py-3 font-semibold text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition">See a conversation</a>
+      <div
+        class="inline-flex items-center gap-2 mb-4 rounded-full border border-[rgba(255,107,90,0.25)] bg-[var(--bg-soft)] px-3 py-1 text-[13px] font-semibold text-[var(--bg-accent)]"
+      >
+        Early Access
       </div>
-      <p class="text-sm text-[var(--text-secondary)] max-w-xl mx-auto"><em>Mirael is not therapy or a crisis service. If you’re in immediate danger, contact local emergency services.</em></p>
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">
+        A mirror for your inner world
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8">
+        Mirael helps you slow down, notice patterns, and find clarity when life feels overwhelming — through reflective,
+        emotionally attuned conversations.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-3 mb-5">
+        <a
+          href="#early-access"
+          class="inline-flex justify-center rounded-2xl bg-[var(--bg-accent)] px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
+          >Join early access</a
+        >
+        <a
+          href="#demo"
+          class="inline-flex justify-center rounded-2xl border border-[var(--border-light)] bg-transparent px-6 py-3 font-semibold text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition"
+          >See a conversation</a
+        >
+      </div>
+      <p class="text-sm text-[var(--text-secondary)] max-w-xl mx-auto">
+        <em
+          >Mirael is not therapy or a crisis service. If you’re in immediate danger, contact local emergency
+          services.</em
+        >
+      </p>
     </section>
 
     <!-- How it helps -->
     <section class="max-w-6xl mx-auto px-6 py-16">
       <div class="text-center mb-10">
         <h2 class="text-3xl md:text-4xl font-bold mb-3">How Mirael helps</h2>
-        <p class="text-[17px] text-[var(--text-secondary)] max-w-3xl mx-auto">Designed as a gentle mirror, Mirael helps you explore feelings, recognize patterns, and reflect in a private space you control.</p>
+        <p class="text-[17px] text-[var(--text-secondary)] max-w-3xl mx-auto">
+          Designed as a gentle mirror, Mirael helps you explore feelings, recognize patterns, and reflect in a private
+          space you control.
+        </p>
       </div>
       <div class="grid gap-6 md:grid-cols-3">
         <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
           <h3 class="text-xl font-semibold mb-2">Reflective Conversations</h3>
-          <p class="text-[var(--text-secondary)]">Mirael mirrors back your emotions, helping you name and understand what you’re really experiencing.</p>
+          <p class="text-[var(--text-secondary)]">
+            Mirael mirrors back your emotions, helping you name and understand what you’re really experiencing.
+          </p>
         </div>
         <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
           <h3 class="text-xl font-semibold mb-2">Spotting Patterns</h3>
-          <p class="text-[var(--text-secondary)]">Over time, Mirael highlights recurring themes in your thinking so you can see connections you might miss.</p>
+          <p class="text-[var(--text-secondary)]">
+            Over time, Mirael highlights recurring themes in your thinking so you can see connections you might miss.
+          </p>
         </div>
         <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
           <h3 class="text-xl font-semibold mb-2">Private by Default</h3>
-          <p class="text-[var(--text-secondary)]">Your reflections are yours alone. Conversations are private and under your control.</p>
+          <p class="text-[var(--text-secondary)]">
+            Your reflections are yours alone. Conversations are private and under your control.
+          </p>
         </div>
       </div>
     </section>
@@ -130,32 +183,60 @@
     <section id="demo" class="max-w-4xl mx-auto px-6 py-16">
       <div class="text-center mb-10">
         <h2 class="text-3xl md:text-4xl font-bold mb-3">A glimpse of Mirael</h2>
-        <p class="text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">Here’s how Mirael mirrors back emotions with clarity and care:</p>
+        <p class="text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
+          Here’s how Mirael mirrors back emotions with clarity and care:
+        </p>
       </div>
       <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-card space-y-4">
         <div class="flex justify-end">
-          <div class="max-w-[80%] rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-sm">I feel stuck and weighed down by everything.</div>
+          <div
+            class="max-w-[80%] rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-sm"
+          >
+            I feel stuck and weighed down by everything.
+          </div>
         </div>
         <div class="flex justify-start">
-          <div class="max-w-[80%] rounded-2xl bg-[var(--bg-accent)] px-4 py-3 text-sm text-white">It sounds like there’s a heaviness you’re carrying. What part of that weight feels most present right now?</div>
+          <div class="max-w-[80%] rounded-2xl bg-[var(--bg-accent)] px-4 py-3 text-sm text-white">
+            It sounds like there’s a heaviness you’re carrying. What part of that weight feels most present right now?
+          </div>
         </div>
         <div class="flex justify-end">
-          <div class="max-w-[80%] rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-sm">Mostly pressure at work. I can’t seem to shut it off at night.</div>
+          <div
+            class="max-w-[80%] rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-sm"
+          >
+            Mostly pressure at work. I can’t seem to shut it off at night.
+          </div>
         </div>
         <div class="flex justify-start">
-          <div class="max-w-[80%] rounded-2xl bg-[var(--bg-accent)] px-4 py-3 text-sm text-white">So even after work ends, the pressure follows you. That must be exhausting. How do you usually cope when that pressure shows up?</div>
+          <div class="max-w-[80%] rounded-2xl bg-[var(--bg-accent)] px-4 py-3 text-sm text-white">
+            So even after work ends, the pressure follows you. That must be exhausting. How do you usually cope when
+            that pressure shows up?
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Early Access CTA -->
     <section id="early-access" class="px-6 py-16">
-      <div class="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white" style="background: var(--bg-gradient);">
+      <div class="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white" style="background: var(--bg-gradient)">
         <h2 class="text-3xl md:text-4xl font-bold mb-3">Shape Mirael with us</h2>
-        <p class="text-base md:text-lg opacity-90 max-w-2xl mx-auto mb-8">We’re inviting a small group of early testers to try Mirael, share feedback, and help us shape this new kind of emotional AI tool.</p>
+        <p class="text-base md:text-lg opacity-90 max-w-2xl mx-auto mb-8">
+          We’re inviting a small group of early testers to try Mirael, share feedback, and help us shape this new kind
+          of emotional AI tool.
+        </p>
         <form id="waitlistForm" class="mx-auto flex max-w-xl flex-col gap-3 sm:flex-row">
-          <input type="email" required placeholder="you@example.com" class="flex-1 rounded-2xl px-4 py-3 text-[var(--text-primary)] placeholder-[var(--text-secondary)] ring-0 border-0 outline-none" />
-          <button type="submit" class="rounded-2xl bg-white px-6 py-3 font-semibold text-[var(--bg-accent)] transition hover:translate-y-[-1px]">Request access</button>
+          <input
+            type="email"
+            required
+            placeholder="you@example.com"
+            class="flex-1 rounded-2xl px-4 py-3 text-[var(--text-primary)] placeholder-[var(--text-secondary)] ring-0 border-0 outline-none"
+          />
+          <button
+            type="submit"
+            class="rounded-2xl bg-white px-6 py-3 font-semibold text-[var(--bg-accent)] transition hover:translate-y-[-1px]"
+          >
+            Request access
+          </button>
         </form>
       </div>
     </section>
@@ -166,19 +247,30 @@
       <div class="space-y-4">
         <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4 open:shadow-subtle">
           <summary class="cursor-pointer select-none list-none font-semibold">Is this therapy?</summary>
-          <p class="mt-2 text-[var(--text-secondary)]">No. Mirael is a reflective tool for daily emotional check-ins. It is not therapy or a replacement for professional help.</p>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            No. Mirael is a reflective tool for daily emotional check-ins. It is not therapy or a replacement for
+            professional help.
+          </p>
         </details>
         <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
           <summary class="cursor-pointer select-none list-none font-semibold">How does the AI work?</summary>
-          <p class="mt-2 text-[var(--text-secondary)]">Mirael uses conversational patterns and reflective prompts designed to mirror emotions and surface patterns. The system is evolving with user feedback.</p>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            Mirael uses conversational patterns and reflective prompts designed to mirror emotions and surface patterns.
+            The system is evolving with user feedback.
+          </p>
         </details>
         <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
           <summary class="cursor-pointer select-none list-none font-semibold">Is my data private?</summary>
-          <p class="mt-2 text-[var(--text-secondary)]">Conversations are private by design. We aim for minimal data retention and user control. In production, you will be able to export and delete your data.</p>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            Conversations are private by design. We aim for minimal data retention and user control. In production, you
+            will be able to export and delete your data.
+          </p>
         </details>
         <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
           <summary class="cursor-pointer select-none list-none font-semibold">When will it be ready?</summary>
-          <p class="mt-2 text-[var(--text-secondary)]">We are in early testing. Joining the waitlist helps us invite a small cohort as features stabilize.</p>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            We are in early testing. Joining the waitlist helps us invite a small cohort as features stabilize.
+          </p>
         </details>
       </div>
     </section>
@@ -186,7 +278,10 @@
     <!-- Footer -->
     <footer class="border-t border-[var(--border-light)]">
       <div class="max-w-6xl mx-auto px-6 py-10 text-center text-sm text-[var(--text-secondary)]">
-        <p class="mb-3"><strong>Important:</strong> Mirael is not a mental health or crisis service. If you are in crisis, contact local emergency services.</p>
+        <p class="mb-3">
+          <strong>Important:</strong> Mirael is not a mental health or crisis service. If you are in crisis, contact
+          local emergency services.
+        </p>
         <div class="flex justify-center gap-6 flex-wrap mb-3">
           <a href="#" class="hover:text-[var(--text-primary)]">Privacy</a>
           <a href="#" class="hover:text-[var(--text-primary)]">Terms</a>
@@ -200,21 +295,21 @@
     <script>
       // Theme persistence using Tailwind's dark class
       const root = document.documentElement;
-      const saved = localStorage.getItem('mirael-theme');
-      if (saved === 'dark') root.classList.add('dark');
+      const saved = localStorage.getItem("mirael-theme");
+      if (saved === "dark") root.classList.add("dark");
 
-      document.getElementById('themeToggle')?.addEventListener('click', () => {
-        const isDark = root.classList.toggle('dark');
-        localStorage.setItem('mirael-theme', isDark ? 'dark' : 'light');
+      document.getElementById("themeToggle")?.addEventListener("click", () => {
+        const isDark = root.classList.toggle("dark");
+        localStorage.setItem("mirael-theme", isDark ? "dark" : "light");
       });
 
       // Simple waitlist UX (placeholder)
-      document.getElementById('waitlistForm')?.addEventListener('submit', (e) => {
+      document.getElementById("waitlistForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
-        const btn = e.target.querySelector('button');
+        const btn = e.target.querySelector("button");
         const original = btn.textContent;
-        btn.textContent = 'Added to waitlist!';
-        btn.classList.add('translate-y-[-1px]');
+        btn.textContent = "Added to waitlist!";
+        btn.classList.add("translate-y-[-1px]");
         setTimeout(() => {
           btn.textContent = original;
           e.target.reset();
