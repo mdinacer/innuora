@@ -1,6 +1,16 @@
 import { MailIcon } from "lucide-react";
 
-export default function VerificationEmailSentRoute() {
+import { findCurrentUser } from "@/app/actions/auth-actions";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function VerificationEmailSentRoute() {
+  const user = await findCurrentUser();
+
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getSession();
+
+  console.log(data);
+
   return (
     <main className="relative flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-lg text-center">
@@ -12,13 +22,15 @@ export default function VerificationEmailSentRoute() {
         </div>
 
         {/* <!-- Main Message --> */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">Check your email</h1>
-          <p className="text-lg text-mir-text-secondary mb-2">We've sent a verification link to:</p>
-          <p className="text-mir-bg-accent font-semibold text-lg" id="userEmail">
-            your.email@example.com
-          </p>
-        </div>
+        {user?.email && (
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">Check your email</h1>
+            <p className="text-lg text-mir-text-secondary mb-2">We've sent a verification link to:</p>
+            <p className="text-mir-bg-accent font-semibold text-lg" id="userEmail">
+              {user?.email}
+            </p>
+          </div>
+        )}
 
         {/* <!-- Instructions Card --> */}
         <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card mb-6">

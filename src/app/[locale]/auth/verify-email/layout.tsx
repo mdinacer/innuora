@@ -2,23 +2,18 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
-import { findOrCreateUser } from "@/app/actions/user-actions";
+import Header from "@/components/layout/header";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const authUser = await findCurrentUser();
+  const user = await findCurrentUser();
 
-  if (!authUser) {
+  if (user?.email_confirmed_at || user?.confirmed_at) {
     redirect("/auth/sign-in");
   }
-
-  const { isOnboarded } = await findOrCreateUser(authUser.id);
-
-  if (!isOnboarded) {
-    redirect("/onboarding");
-  }
   return (
-    <>
+    <div className="min-h-screen w-screen flex flex-col bg-mir-bg-primary text-mir-text-primary">
+      <Header />
       <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-    </>
+    </div>
   );
 }
