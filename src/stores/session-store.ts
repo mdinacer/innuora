@@ -40,7 +40,7 @@ interface SessionStoresState extends PersistedStoreBaseProps {
     inputValues: Record<string, any> | ((prev: Record<string, any>) => Record<string, any>)
   ) => void;
 
-  setCurrentStepId: (sessionId: string, stepId: string | ((prev: string | null) => string | null)) => void;
+  setCurrentStepId: (sessionId: string, stepId: string | null) => void;
 
   markStarted: (sessionId: string) => void;
   markEnded: (sessionId: string) => void;
@@ -120,7 +120,7 @@ export const useSessionStore = create<SessionStoresState>()(
         setCurrentStepId: (sessionId, stepId) =>
           get().updateSession(sessionId, (prev) => ({
             ...prev,
-            currentStepId: typeof stepId === "function" ? stepId(prev.currentStepId) : stepId,
+            currentStepId: stepId,
           })),
 
         markStarted: (sessionId) =>

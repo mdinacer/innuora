@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { SessionFlowState, useSessionStore } from "@/stores/session-store";
 import { AdvanceMode, SessionFlow, StepType } from "@/types/flow-session.types";
+import { useSessionState } from "./use-session-state";
 
 export interface FlowEngineOptions {
   resumeStepId?: string;
@@ -19,8 +19,7 @@ export function useSessionFlowEngine(sessionFlow: SessionFlow, options: FlowEngi
   const timeoutRef = useRef<number | null>(null);
 
   // Get session state
-  const session = useSessionStore((state) => state.sessions[sessionFlow.id]) as SessionFlowState | undefined;
-  const updateSession = useSessionStore((state) => state.updateSession);
+  const { session, updateSession, setInputValues } = useSessionState({ sessionId: sessionFlow.id });
 
   const currentStepId = session?.currentStepId || null;
   const [isTransitioning, setTransitioning] = useState(false);
@@ -29,14 +28,6 @@ export function useSessionFlowEngine(sessionFlow: SessionFlow, options: FlowEngi
   const stepsMap = useMemo(
     () => Object.fromEntries(sessionFlow.steps.map((step) => [step.id, step])),
     [sessionFlow.steps]
-  );
-
-  // Single update function
-  const update = useCallback(
-    (updates: any) => {
-      updateSession(sessionFlow.id, updates);
-    },
-    [sessionFlow.id, updateSession]
   );
 
   // Clear timeouts helper
@@ -67,13 +58,13 @@ export function useSessionFlowEngine(sessionFlow: SessionFlow, options: FlowEngi
       }
 
       // Update current step
-      update({
+      updateSession({
         currentStepId: stepId,
         isFlowEnded: step.type === StepType.FLOW_END,
       });
       setTransitioning(false);
     },
-    [stepsMap, clearTimer, update, stepTransitionDelay, onError]
+    [stepsMap, clearTimer, stepTransitionDelay, updateSession, onError]
   );
 
   // Auto-advance scheduler
@@ -90,9 +81,9 @@ export function useSessionFlowEngine(sessionFlow: SessionFlow, options: FlowEngi
   // Public API
   const startFlow = useCallback(() => {
     const startStepId = resumeStepId || sessionFlow.initialStepId;
-    update({ isFlowStarted: true });
+    updateSession({ isFlowStarted: true });
     navigateToStep(startStepId);
-  }, [resumeStepId, sessionFlow.initialStepId, update, navigateToStep]);
+  }, [resumeStepId, sessionFlow.initialStepId, updateSession, navigateToStep]);
 
   const moveToNext = useCallback(() => {
     if (!currentStepId) return;
@@ -125,10 +116,11 @@ export function useSessionFlowEngine(sessionFlow: SessionFlow, options: FlowEngi
       if (autoStart) {
         navigateToStep(sessionFlow.initialStepId);
       } else {
-        update({ isFlowStarted: false, currentStepId: null });
+        updateSession({ isFlowStarted: false, currentStepId: null });
       }
+      setInputValues({});
     },
-    [clearTimer, navigateToStep, sessionFlow.initialStepId, update]
+    [clearTimer, navigateToStep, sessionFlow.initialStepId, setInputValues, updateSession]
   );
 
   // Auto-advance effect - SINGLE EFFECT

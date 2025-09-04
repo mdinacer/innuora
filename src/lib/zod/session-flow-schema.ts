@@ -127,9 +127,11 @@ export const SystemActionSchema = z.discriminatedUnion("type", [
 
 export const SystemContentSchema = z
   .object({
+    title: z.string().optional(),
+    message: z.string().optional(),
     actions: z.array(SystemActionSchema),
   })
-  .passthrough(); // Allow additional properties with [key: string]: any
+  .loose(); // Allow additional properties with [key: string]: any
 
 // =======================
 // FLOW STEP SCHEMAS

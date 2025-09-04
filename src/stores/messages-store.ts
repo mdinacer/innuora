@@ -37,12 +37,19 @@ export const useSessionMessagesStore = create<MessagesStoreState>()(
         // Session-level
         createSession: (sessionId) =>
           set(
-            (state) => ({
-              sessionMessages: {
-                ...state.sessionMessages,
-                [sessionId]: state.sessionMessages[sessionId] ?? [],
-              },
-            }),
+            (state) => {
+              if (state.sessionMessages[sessionId]) {
+                // Already exists → no-op
+                return state;
+              }
+
+              return {
+                sessionMessages: {
+                  ...state.sessionMessages,
+                  [sessionId]: [],
+                },
+              };
+            },
             false,
             "createSession"
           ),
