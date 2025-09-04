@@ -3,9 +3,6 @@
 @import "tailwindcss-safe-area";
 @plugin 'tailwind-scrollbar';
 
-@layer utilities {
-}
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -13,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-arabic: var(--font-zain);
+  --font-arabic-body: var(--font-tajawal);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

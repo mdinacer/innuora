@@ -52,5 +52,136 @@
         "link": "Sign in"
       }
     }
+  },
+  "homepage": {
+    "hero": {
+      "badge": "Early Access",
+      "title": "A mirror for your inner world",
+      "subtitle": "Mirael helps you pause, notice patterns, and find clarity when life feels heavy. It works through reflective, emotionally attuned conversations.",
+      "cta": {
+        "join": "Join Early Access",
+        "demo": "See a Conversation"
+      },
+      "disclaimer": "Mirael is not therapy or a crisis service. If you’re in immediate danger, contact local emergency services."
+    },
+    "howItHelps": {
+      "title": "How Mirael Helps",
+      "subtitle": "Mirael is a gentle mirror that helps you explore feelings, recognize patterns, and reflect in a private space you control.",
+      "features": [
+        {
+          "title": "Reflective Conversations",
+          "subtitle": "Mirael reflects your emotions back to you, helping you name and understand what you are truly experiencing."
+        },
+        {
+          "title": "Spotting Patterns",
+          "subtitle": "Over time, Mirael highlights recurring themes in your thinking so you can notice connections you might have overlooked."
+        },
+        {
+          "title": "Private by Default",
+          "subtitle": "Your reflections belong to you alone. Every conversation is private and under your control."
+        }
+      ]
+    },
+    "demo": {
+      "title": "A Glimpse of Mirael",
+      "subtitle": "See how Mirael reflects emotions with clarity and care.",
+      "conversation": [
+        {
+          "role": "user",
+          "text": "I feel stuck and weighed down by everything."
+        },
+        {
+          "role": "mirael",
+          "text": "It sounds heavy. What feels like the hardest part to carry right now?"
+        },
+        {
+          "role": "user",
+          "text": "Mostly pressure at work. I can’t seem to shut it off at night."
+        },
+        {
+          "role": "mirael",
+          "text": "So the pressure follows you even after work ends. That sounds exhausting. When it shows up at night, what do you notice in yourself?"
+        },
+        {
+          "role": "user",
+          "text": "My mind keeps racing. I replay conversations and worry I should have done more."
+        },
+        {
+          "role": "mirael",
+          "text": "It seems like you hold yourself to very high standards. Where do you feel that pressure most strongly right now? In your body or in your thoughts?"
+        },
+        {
+          "role": "user",
+          "text": "Mostly in my chest. Like a tightness I can’t release."
+        },
+        {
+          "role": "mirael",
+          "text": "That tightness tells me your body is carrying the stress as much as your mind. What happens if you pause and give that feeling a moment of attention?"
+        },
+        {
+          "role": "user",
+          "text": "It feels uncomfortable, like I want to avoid it."
+        },
+        {
+          "role": "mirael",
+          "text": "Avoiding makes sense when something feels overwhelming. But noticing it gently can be the first step to easing its grip. Would you like to try that together?"
+        }
+      ]
+    },
+    "earlyAccess": {
+      "title": "Shape Mirael with Us",
+      "subtitle": "We are inviting a small group of early participants to try Mirael, share feedback, and help shape this new kind of emotional AI experience.",
+      "form": {
+        "placeholder": "you@example.com",
+        "button": "Request Access"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        {
+          "question": "What is Mirael?",
+          "answer": "Mirael is an emotional mirror. It helps you slow down, reflect, and see your inner world with more clarity through short, emotionally attuned conversations."
+        },
+        {
+          "question": "How is Mirael different from therapy?",
+          "answer": "Mirael is not therapy and cannot replace professional care. It is a daily reflective companion designed to support awareness, not to diagnose or treat mental health conditions."
+        },
+        {
+          "question": "How does Mirael actually work?",
+          "answer": "Mirael uses carefully designed prompts and conversational patterns to reflect emotions back to you. It highlights hidden pressures, recurring thoughts, and unspoken rules so you can better understand yourself."
+        },
+        {
+          "question": "Is my data private?",
+          "answer": "Yes. Your reflections belong to you. Conversations are private by design, and you will have the ability to export or delete your data."
+        },
+        {
+          "question": "Who is Mirael for?",
+          "answer": "Mirael is built for people who carry a lot, often appear strong on the outside, but feel emotionally drained inside. It offers them a safe space to reflect, recognize patterns, and reclaim clarity."
+        },
+        {
+          "question": "Can Mirael help in a crisis?",
+          "answer": "No. Mirael is not a crisis service. If you are in immediate danger or facing a mental health emergency, please contact local emergency services or a professional hotline."
+        },
+        {
+          "question": "How much does it cost?",
+          "answer": "During early access, Mirael is free to use. Pricing will be introduced later as we grow with feedback from early users."
+        },
+        {
+          "question": "Why should I join early access?",
+          "answer": "Early access lets you shape Mirael with us. Your feedback will directly influence how the experience evolves, and you will be among the first to benefit from new features."
+        }
+      ]
+    },
+    "footer": {
+      "disclaimer": "Important: Mirael is not a mental health or crisis service. If you are in crisis, please contact local emergency services.",
+      "links": {
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "contact": "Contact",
+        "help": "Help"
+      },
+      "copyright": "© 2025 Mirael. Early Access."
+    }
   }
 }

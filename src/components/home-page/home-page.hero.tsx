@@ -1,4 +1,4 @@
-const HomePageHero = () => {
+export default function HomePageHero() {
   return (
     <section className="max-w-5xl mx-auto px-6 py-16 text-center">
       <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] font-semibold text-mir-bg-accent">
@@ -32,6 +32,4 @@ const HomePageHero = () => {
       </p>
     </section>
   );
-};
-
-export default HomePageHero;
+}

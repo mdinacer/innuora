@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+
+import { geistMono, geistSans, tajawal, zain } from "@/lib/fonts";
 
 import "../globals.css";
 
@@ -8,24 +9,14 @@ import { dir } from "i18next";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
-import { METADATA } from "@/constants/metadata";
-import { VIEWPORT } from "@/constants/viewport-config";
+import { METADATA } from "@/lib/constants/metadata";
+import { VIEWPORT } from "@/lib/constants/viewport-config";
 import initTranslations, { i18nNamespaces } from "@/lib/i18n";
 import i18nConfig from "@/lib/i18n/config";
 
 export function generateStaticParams() {
   return i18nConfig.locales.map((locale) => ({ locale }));
 }
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = METADATA;
 export const viewport: Viewport = VIEWPORT;
@@ -45,7 +36,9 @@ export default async function RootLayout({
   const { resources } = await initTranslations(locale, i18nNamespaces);
   return (
     <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth bg-mir-bg-primary`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-mir-bg-primary`}
+      >
         <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}
