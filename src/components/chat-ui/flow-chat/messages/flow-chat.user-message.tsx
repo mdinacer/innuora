@@ -8,7 +8,17 @@ interface Props {
 }
 
 const FlowChatUserMessage: React.FC<Props> = ({ message }) => {
-  return <p className={cn("card-content", "text-base rtl:text-lg")}>{message.content}</p>;
+  return Array.isArray(message.content) ? (
+    <ul className=" list-disc list-inside">
+      {message.content.map((item, index) => (
+        <li key={index} className={"text-base rtl:text-lg list-item"}>
+          {item}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className={cn("card-content", "text-base rtl:text-lg")}>{message.content}</p>
+  );
 };
 
 export default FlowChatUserMessage;

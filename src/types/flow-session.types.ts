@@ -88,7 +88,7 @@ export interface ReflectionContent {
   includeOnboardingData?: boolean;
   includeMirSummary?: boolean;
   includeChatSummary?: boolean;
-  prompt: (inputValues: Record<string, unknown>) => string;
+  // prompt: (inputValues: Record<string, unknown>) => string;
 }
 
 export interface ActionContent {
@@ -116,16 +116,16 @@ export interface BranchContent {
 // =======================
 
 export type SystemAction =
-  | { type: "reset_flow"; resetMessages?: boolean; resetInputs?: boolean; toStepId?: string }
-  | { type: "log"; message: string }
-  | { type: "delay"; ms: number }
-  | { type: "callback"; name: string; args?: Record<string, any> }
-  | { type: "wipe_messages" }
-  | { type: "reset_input_values" };
+  | { type: "reset_flow" } // Reset flow (currentStepId)
+  | { type: "wipe_messages" } // Wipe messages to empty array
+  | { type: "reset_values" } // Reset input values
+  | { type: "reset_session" } // Reset Flow, Messages, and Input Values
+  | { type: "callback"; name: string; args?: Record<string, any> }; // Execute external callback
 
 export interface SystemContent {
+  title?: string;
+  message?: string;
   actions: SystemAction[];
-  [key: string]: any;
 }
 
 // =======================
@@ -156,10 +156,15 @@ export type FlowStep = BaseStep &
 
 export interface SessionFlow {
   id: string;
-  type: SessionType;
+  //type: SessionType;
   title: string;
   subtitle: string;
   steps: FlowStep[];
   initialStepId: string;
   defaultAutoAdvanceDelay?: number;
 }
+
+export type StepOfType<T extends StepType> = Extract<FlowStep, { type: T }>;
+// Helper to get steps/messages of specific type
+export type UserInputStep = StepOfType<typeof StepType.USER_INPUT | typeof StepType.OPTIONS>;
+export type AutoAdvancingStep = Extract<FlowStep, { advanceMode: typeof AdvanceMode.AUTO }>;

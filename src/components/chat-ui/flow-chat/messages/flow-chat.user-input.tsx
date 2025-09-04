@@ -9,18 +9,18 @@ import FlowChatMessageHeader from "../flow-chat.message-header";
 
 interface Props {
   message: MessageOfType<"user_input">;
-  onUserInput: (input: string) => void;
+  onUserInput: (key: string, value: string) => void;
 }
 
 const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
   const [inputValue, setInputValue] = useState<string>("");
 
-  const { label, placeholder, hint, charLimit = 255 } = message.content;
+  const { label, placeholder, hint, charLimit = 255, key } = message.content;
 
   const handleUserInput = useCallback(() => {
-    onUserInput(inputValue);
+    onUserInput(key, inputValue);
     setInputValue("");
-  }, [inputValue, onUserInput]);
+  }, [inputValue, key, onUserInput]);
 
   const handleOnKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

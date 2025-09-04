@@ -156,18 +156,15 @@ export const mockChatMessages: ChatMessage[] = [
   },
 
   // SYSTEM message - internal processing
-  {
-    id: "msg-012",
-    type: MessageType.SYSTEM,
-    content: {
-      actions: [
-        { type: "log", message: "User chose specific scenario focus" },
-        { type: "callback", name: "updateUserPath", args: { choice: "scenario_focus" } },
-      ],
-    },
-    flowStepId: "system-routing",
-    timestamp: Date.now() - 95000,
-  },
+  // {
+  //   id: "msg-012",
+  //   type: MessageType.SYSTEM,
+  //   content: {
+  //     actions: [{ type: "callback" }, { type: "reset_session" }],
+  //   },
+  //   flowStepId: "system-routing",
+  //   timestamp: Date.now() - 95000,
+  // },
 
   // TEXT message - follow-up based on choice
   {

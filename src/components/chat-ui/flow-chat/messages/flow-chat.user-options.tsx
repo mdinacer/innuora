@@ -74,22 +74,22 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
 
 interface Props {
   message: MessageOfType<"options">;
-  onUserSelect: (selection: UserOption | UserOption[]) => void;
+  onUserSelect: (key: string, selection: UserOption | UserOption[]) => void;
 }
 
 const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
   const [isCollapsed, setCollapsed] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<UserOption[]>([]);
-  const { mode, label, hint, maxSelected, options } = message.content;
+  const { mode, label, hint, maxSelected, options, key } = message.content;
   const modeText = mode === "single" ? "Select One" : "Select Multiple";
 
   const handleUserSelect = useCallback(() => {
     if (mode === "single") {
-      onUserSelect(selectedOptions[0]);
+      onUserSelect(key, selectedOptions[0]);
     } else {
-      onUserSelect(selectedOptions);
+      onUserSelect(key, selectedOptions);
     }
-  }, [mode, onUserSelect, selectedOptions]);
+  }, [key, mode, onUserSelect, selectedOptions]);
 
   const handleOptionSelect = useCallback(
     (option: UserOption) => {

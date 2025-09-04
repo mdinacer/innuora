@@ -12,13 +12,7 @@ interface OpenChanUIProps {
 }
 
 const SessionFlowChat: React.FC<OpenChanUIProps> = ({ messages, isLoading = false }) => {
-  return (
-    <Container
-      messages={messages}
-      isLoading={isLoading}
-      renderItem={(message, index) => <FlowChatMessageRenderer key={index} message={message} />}
-    />
-  );
+  return <Container messages={messages} isLoading={isLoading} renderItem={(message, index) => null} />;
 };
 
 export default SessionFlowChat;

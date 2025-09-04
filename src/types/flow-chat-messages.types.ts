@@ -4,7 +4,6 @@
 
 import {
   ActionContent,
-  AdvanceMode,
   FlowEndContent,
   FlowStep,
   OptionsContent,
@@ -61,12 +60,9 @@ export type ChatMessage = BaseChatMessage &
 export type ContentFor<T extends StepType | MessageType> = Extract<FlowStep | ChatMessage, { type: T }>["content"];
 
 // Helper to get steps/messages of specific type
-export type StepOfType<T extends StepType> = Extract<FlowStep, { type: T }>;
 export type MessageOfType<T extends MessageType> = Extract<ChatMessage, { type: T }>;
 
 // Grouping types
-export type UserInputStep = StepOfType<typeof StepType.USER_INPUT | typeof StepType.OPTIONS>;
-export type AutoAdvancingStep = Extract<FlowStep, { advanceMode: typeof AdvanceMode.AUTO }>;
 export type InteractiveMessage = MessageOfType<typeof MessageType.USER_INPUT | typeof MessageType.OPTIONS>;
 export type FlowStepMessage = Exclude<ChatMessage, { type: typeof MessageType.USER_MESSAGE }>;
 export type UserGeneratedMessage = MessageOfType<typeof MessageType.USER_MESSAGE | typeof MessageType.REFLECTION>;

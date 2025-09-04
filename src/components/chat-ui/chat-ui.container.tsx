@@ -62,7 +62,7 @@ const ChatUIContainer = <T,>({
   return (
     <div
       className={cn(
-        "max-[480px]:m-0 max-[480px]:h-screen max-[480px]:rounded-none",
+        "max-[480px]:m-0 max-[480px]:h-screen max-[480px]:rounded-none w-full",
         "relative flex flex-col max-w-xl mx-auto h-[calc(100vh-40px)]",
         "mt-5 mb-5",
         "rounded-3xl",
@@ -74,9 +74,9 @@ const ChatUIContainer = <T,>({
       )}
     >
       <DecorativeOrbs />
-      <Header className=" absolute top-0 inset-x-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150" />
+      <Header className=" absolute top-0 inset-x-0 bg-gradient-to-b from-mir-bg-card    to-transparent backdrop-blur-lg backdrop-saturate-150" />
       <MessagesContainer ref={messagesContainerRef} className="pt-[120px] pb-[100px] flex flex-col">
-        {messages.length !== 0 && <FlowChatHeroCard />}
+        {messages.length === 0 && <FlowChatHeroCard />}
         {messages.map(renderItem)}
         <Indicator isVisible={isLoading} />
       </MessagesContainer>
