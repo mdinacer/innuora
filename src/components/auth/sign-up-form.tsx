@@ -6,19 +6,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getI18n, useTranslation } from "react-i18next";
 
-import { signIn, signOut, signUp } from "@/app/actions/auth-actions";
+import { signOut, signUp } from "@/app/actions/auth-actions";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
+import { SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
 import CheckboxField from "../input/checkbox-field";
 
 interface Props {
   className?: string;
 }
 
-const SignUpForm: React.FC<Props> = ({ className }) => {
+const SignUpForm: React.FC<Props> = ({}) => {
   const { t } = useTranslation("pages", { keyPrefix: "auth.sign-up" });
   const [formError, setFormError] = useState<string | null>(null);
 

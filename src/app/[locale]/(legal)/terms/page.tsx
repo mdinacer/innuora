@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import initTranslations from "@/lib/i18n";
 
 export default async function TermsOfUseRoute({ params }: { params: Promise<{ locale: string }> }) {
