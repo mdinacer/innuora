@@ -13,7 +13,7 @@ import useFlowStepController from "@/lib/sessions/use-flow-step-controller";
 import useSessionOrchestrator from "@/lib/sessions/use-session-orchestrator";
 import { cn } from "@/lib/utils";
 import { userProfileSchema } from "@/lib/zod/user-profile-schema";
-import { useUserDataStore } from "@/stores/use-user-data-store";
+import { useUserDataStore } from "@/stores/user-data.store";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
 import { SessionFlow } from "@/types/flow-session.types";
 

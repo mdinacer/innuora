@@ -1,55 +1,25 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React from "react";
 
 import { Container } from "@/components/chat-ui";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-
-type BaseMessage = {
-  role: "assistant" | "user";
-  content: string;
-};
+import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChanUIProps {
-  messages: BaseMessage[];
-  onAddMessage: (message: BaseMessage) => void;
-  onUserMessageSent: (message: string) => Promise<string>;
+  isLoading?: boolean;
+  messages: OpenChatMessage[];
+  onAddMessage: (message: OpenChatMessage) => void;
+  onUserMessageSent: (message: string) => Promise<void>;
 }
 
-const OpenChat: React.FC<OpenChanUIProps> = ({ messages, onAddMessage, onUserMessageSent }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleUserInput = useCallback(
-    async (value: string) => {
-      const userMessage: BaseMessage = {
-        role: "user",
-        content: value,
-      };
-
-      onAddMessage(userMessage);
-      setIsLoading(true);
-
-      const response = await onUserMessageSent(value);
-
-      const assistantMessage: BaseMessage = {
-        role: "assistant",
-        content: response,
-      };
-
-      if (response) {
-        onAddMessage(assistantMessage);
-      }
-
-      setIsLoading(false);
-    },
-    [onAddMessage, onUserMessageSent]
-  );
+const OpenChat: React.FC<OpenChanUIProps> = ({ messages, isLoading = false, onUserMessageSent }) => {
   return (
     <Container
-      onUserInput={handleUserInput}
+      onUserInput={onUserMessageSent}
       messages={messages}
       isLoading={isLoading}
-      renderItem={(message, index) => <MessageBubble key={index} {...message} />}
+      renderItem={(message, index) => <MessageBubble key={index} message={message} />}
     />
   );
 };

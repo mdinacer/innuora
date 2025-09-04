@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { flowStepToChatMessage } from "@/lib/chat/flow/step-to-chat-message";
 import useChatEngine from "@/lib/chat/use-chat";
 import { useSessionState } from "@/lib/sessions/use-session-state";
-import { useSessionStore } from "@/stores/session-store";
+import { useSessionStore } from "@/stores/session.store";
 import {
   FlowStep,
   SessionFlow,

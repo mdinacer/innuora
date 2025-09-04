@@ -1,6 +1,3 @@
-import { redirect } from "next/navigation";
-
-import { findCurrentUser } from "@/app/actions/auth-actions";
 import HomePageDemo from "@/components/home-page/home-page.demo";
 import HomePageEarlyAccess from "@/components/home-page/home-page.early-access";
 import HomePageFAQ from "@/components/home-page/home-page.faq";

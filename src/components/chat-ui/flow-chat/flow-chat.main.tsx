@@ -4,7 +4,6 @@ import React from "react";
 
 import { Container } from "@/components/chat-ui";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
-import FlowChatMessageRenderer from "./flow-chat.message-renderer";
 
 interface OpenChanUIProps {
   messages: ChatMessage[];
