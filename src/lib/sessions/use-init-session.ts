@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import { useSessionMessagesStore } from "@/stores/messages-store";
-import { useSessionStore } from "@/stores/session-store";
+import { useSessionMessagesStore } from "@/stores/messages.store";
+import { useSessionStore } from "@/stores/session.store";
 
 export function useInitSessionStores({ sessionId, autoCreate = false }: { sessionId: string; autoCreate?: boolean }) {
   const hasSessionHydrated = useSessionStore((state) => state.hasHydrated);

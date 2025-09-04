@@ -3,7 +3,7 @@
 import { User as AppUser, Prisma, ThemeMode } from "@prisma/client";
 import { User as AuthUser } from "@supabase/supabase-js";
 
-import { UserCreationError, UserDeletionError, UserNotFoundError, UserUpdateError } from "@/errors/user-errors";
+import { UserCreationError, UserDeletionError, UserNotFoundError, UserUpdateError } from "@/errors/user.errors";
 import { prisma } from "@/lib/prisma";
 import { UserWithRelations } from "@/types/user.types";
 import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";

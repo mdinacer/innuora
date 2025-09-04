@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { useSessionMessagesStore } from "@/stores/messages-store";
+import { useSessionMessagesStore } from "@/stores/messages.store";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
 
 export default function useChatEngine({ sessionId }: { sessionId: string }) {

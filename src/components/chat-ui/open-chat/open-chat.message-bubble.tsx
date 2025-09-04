@@ -1,15 +1,30 @@
+"use client";
+
 import React from "react";
+import { format } from "date-fns";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
+import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
-  role: "assistant" | "user";
-  content: string;
+  message: OpenChatMessage;
   className?: string;
 }
 
-const OpenChatMessageBubble: React.FC<Props> = ({ role, content, className }) => {
+const STYLES_MAP = {
+  user: "bg-mir-bg-accent text-white rounded-[20px] rounded-tr-[6px]",
+  assistant: "bg-mir-bg-input rounded-[20px] rounded-tl-[6px]",
+  system: "bg-mir-bg-input rounded-[20px] rounded-tl-[6px]",
+};
+
+const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
+  const { role, content } = message;
   const isUser = role === "user";
+
+  const formattedDate = format(new Date(message.timestamp), "HH:mm");
+  const messageStyle = STYLES_MAP[role];
   return (
     <div
       className={cn(
@@ -29,15 +44,28 @@ const OpenChatMessageBubble: React.FC<Props> = ({ role, content, className }) =>
           {isUser ? "U" : "M"}
         </div>
         <div
-          className={cn("message-bubble", "max-w-[75%] py-4 px-5 rounded-3xl leading-[1.5] relative", {
-            "bg-mir-bg-accent text-white rounded-[20px] rounded-tr-[6px]": isUser,
-            "bg-mir-bg-input rounded-[20px] rounded-tl-[6px]": !isUser,
-          })}
+          className={cn(
+            "message-bubble",
+            "max-w-[75%] py-4 px-5 rounded-3xl leading-[1.5] relative",
+            "[&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-4 ",
+            messageStyle
+          )}
         >
-          {content}
+          {isUser ? (
+            content
+          ) : (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
+            >
+              {content}
+            </ReactMarkdown>
+          )}
         </div>
       </div>
-      <div className={cn("message-time", " text-xs text-mir-text-secondary mt-2 text-center font-medium")}>2:34 PM</div>
+      <div className={cn("message-time", " text-xs text-mir-text-secondary mt-2 text-center font-medium")}>
+        {formattedDate}
+      </div>
     </div>
   );
 };

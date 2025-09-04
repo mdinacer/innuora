@@ -41,8 +41,9 @@ interface OpenChatContainerProps<T> extends React.HTMLAttributes<HTMLDivElement>
   className?: string;
   messages: T[];
   isLoading?: boolean;
+
   renderItem: (message: T, index: number) => React.ReactNode;
-  onUserInput?: (value: string) => void;
+  onUserInput?: (value: string) => Promise<void>;
 }
 
 const ChatUIContainer = <T,>({

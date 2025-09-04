@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
-import { AuthenticationError, AuthorizationError } from "@/errors/auth-errors";
+import { AuthenticationError, AuthorizationError } from "@/errors/auth.errors";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
 

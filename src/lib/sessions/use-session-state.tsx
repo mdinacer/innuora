@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 
-import { SessionFlowState, useSessionStore } from "@/stores/session-store";
+import { SessionFlowState, useSessionStore } from "@/stores/session.store";
 
 export function useSessionState({ sessionId, autoCreate = false }: { sessionId: string; autoCreate?: boolean }) {
   const session = useSessionStore((state) => state.sessions[sessionId]);
