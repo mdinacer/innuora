@@ -8,13 +8,18 @@ import HomePageFooter from "@/components/home-page/home-page.footer";
 import HomePageHeader from "@/components/home-page/home-page.header";
 import HomePageHero from "@/components/home-page/home-page.hero";
 import HomePageHowItHelps from "@/components/home-page/home-page.how-it-helps";
+import { findOrCreateUser } from "../actions/user-actions";
 
 export default async function Home() {
   const authUser = await findCurrentUser();
 
   if (authUser) {
-    redirect("/sessions/");
+    const { profile } = await findOrCreateUser(authUser.id);
+    console.log(profile);
+
+    //redirect("/sessions/");
   }
+
   return (
     <main className="relative font-sans min-h-screen w-screen scroll-smooth overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Header --> */}
