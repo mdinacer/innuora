@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpx prisma generate &&next build",
     "start": "next start",
     "lint": "eslint \"src/**/*.+(ts|tsx)\"",
     "lint:fix": "eslint \"src/**/*.+(ts|tsx)\" --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "format:fix": "prettier --write --ignore-path .prettierignore .",
-    "postinstall": "pnpx prisma generate --no-engine"
+    "postinstall": "pnpx prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
