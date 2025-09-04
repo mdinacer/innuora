@@ -9,7 +9,7 @@ interface Props {
 }
 
 const FlowChatSystemAction: React.FC<Props> = ({ message }) => {
-  const {} = message.content;
+  const { title, message: actionMessage } = message.content;
   return (
     <>
       <FlowChatMessageHeader
@@ -17,12 +17,13 @@ const FlowChatSystemAction: React.FC<Props> = ({ message }) => {
         secondaryContent="System"
         primaryContent={<ActivityIcon className="size-6 shrink-0" />}
       />
+      {message.id}
       <h3 className={"text-2xl font-bold text-mir-text-primary mb-2 leading-[1.3] -tracking-[0.3px]"}>
-        Processing State
+        {title || "Processing State"}
       </h3>
       <div className="flex items-center gap-3 text-white/70">
         <div className="loading-spinner size-4 border-2 border-white/30 border-t-white/80 rounded-full animate-spin repeat-infinite"></div>
-        <span>Processing your reflection...</span>
+        <span>{actionMessage || "Processing your reflection..."}</span>
       </div>
     </>
   );

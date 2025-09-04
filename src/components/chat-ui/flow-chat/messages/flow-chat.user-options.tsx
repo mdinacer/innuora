@@ -149,7 +149,7 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
         })}
       </div>
       {options.length > 4 && (
-        <div className="show-more-container text-center mt-3 mb-4">
+        <div className="show-more-container text-center mt-3 mb-4 animate-pulse">
           <button
             className={cn(
               "show-more-btn",

@@ -5,7 +5,6 @@ import { FlowStep, SessionFlow, StepType } from "@/types/flow-session.types";
 import { createUserMessage } from "../chat/flow/step-to-chat-message";
 import useChatEngine from "../chat/use-chat";
 import { UserOption } from "../zod/session-flow-schema";
-import useFlowStepController from "./use-flow-step-controller";
 import { useInitSessionStores } from "./use-init-session";
 import { useSessionFlowEngine } from "./use-session-flow";
 import { useSessionState } from "./use-session-state";
@@ -19,16 +18,16 @@ interface SessionOrchestratorProps {
   sessionFlow: SessionFlow;
   initStores?: boolean;
   autoStart?: boolean;
-  options?: SessionOrchestratorOptions;
+  //options?: SessionOrchestratorOptions;
   onStepChange?: (step: FlowStep, previousStep: FlowStep | null) => void;
 }
 
 export default function useSessionOrchestrator({
   sessionFlow,
   autoStart = true,
-  options,
+  //options,
   initStores = false,
-  onStepChange,
+  //onStepChange,
 }: SessionOrchestratorProps) {
   const { id: sessionId } = sessionFlow;
   useInitSessionStores({ sessionId, autoCreate: initStores });
@@ -45,16 +44,11 @@ export default function useSessionOrchestrator({
 
   const isReady = useMemo(() => hasSessionHydrated && hasMessagesHydrated, [hasSessionHydrated, hasMessagesHydrated]);
 
-  useFlowStepController({
-    options,
-    sessionFlow,
-    onStepChange,
-  });
-
   const resetSession = useCallback(() => {
-    resetFlow(autoStart);
+    resetFlow();
     clearMessages();
-  }, [autoStart, clearMessages, resetFlow]);
+    setInputValues({});
+  }, [clearMessages, resetFlow, setInputValues]);
 
   const handleUserInput = useCallback(
     (key: string, value: string, meta: { id: string; label: string }) => {

@@ -9,16 +9,42 @@ export function isObject(value: unknown): value is Record<string, any> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+// export function mergeStepProps<T extends FlowStep>(step: T, stepProps: Partial<T>): T {
+//   const mergedStep: T = {
+//     ...step,
+//     ...stepProps,
+//     content: {
+//       ...(isObject(step.content) ? step.content : {}),
+//       ...(isObject(stepProps.content) ? stepProps.content : {}),
+//     },
+//   };
+//   return mergedStep;
+// }
+
+function deepMerge(target: any, source: any): any {
+  if (!isObject(target)) return source || {};
+  if (!isObject(source)) return target;
+
+  const result = { ...target };
+
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      const sourceValue = source[key];
+      const targetValue = result[key];
+
+      if (isObject(sourceValue) && isObject(targetValue)) {
+        result[key] = deepMerge(targetValue, sourceValue);
+      } else if (sourceValue !== undefined) {
+        result[key] = sourceValue;
+      }
+    }
+  }
+
+  return result;
+}
+
 export function mergeStepProps<T extends FlowStep>(step: T, stepProps: Partial<T>): T {
-  const mergedStep: T = {
-    ...step,
-    ...stepProps,
-    content: {
-      ...(isObject(step.content) ? step.content : {}),
-      ...(isObject(stepProps.content) ? stepProps.content : {}),
-    },
-  };
-  return mergedStep;
+  return deepMerge(step, stepProps) as T;
 }
 
 export async function loadSessionFlow(sessionId: SessionId, locale: AppLocales = "en"): Promise<SessionFlow> {

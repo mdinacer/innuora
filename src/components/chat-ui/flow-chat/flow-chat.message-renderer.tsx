@@ -21,12 +21,14 @@ import { ChatMessage, MessageType } from "@/types/flow-chat-messages.types";
 interface Props {
   className?: string;
   message: ChatMessage;
+  isCurrentStep?: boolean;
   actions: {
     moveToNextStep: () => void;
     moveToStep: (stepId: string) => void;
     onUserInput: (key: string, value: string, meta: { id: string; label: string }) => void;
     onUserSelect: (key: string, selection: UserOption | UserOption[], meta: { id: string; label: string }) => void;
   };
+  onFlowEnd: (actionType: "primary" | "secondary") => void;
 }
 
 // Utility function to get message-specific styling
@@ -56,6 +58,8 @@ const UnknownMessageFallback: React.FC<{ messageType: string }> = ({ messageType
 const FlowChatMessageRenderer: React.FC<Props> = ({
   message,
   className,
+  isCurrentStep = false,
+  onFlowEnd,
   actions: { moveToNextStep, moveToStep, onUserInput, onUserSelect },
 }) => {
   const { type } = message;
@@ -90,7 +94,7 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
       case MessageType.USER_MESSAGE:
         return <FlowUserMessage message={message} />;
       case MessageType.PARAGRAPHS:
-        return <FlowParagraphs message={message} onMoveToNextStep={moveToNextStep} />;
+        return <FlowParagraphs isDisabled={!isCurrentStep} message={message} onMoveToNextStep={moveToNextStep} />;
       case MessageType.USER_INPUT:
         return <FlowUserInput message={message} onUserInput={handleUserInput} />;
       case MessageType.OPTIONS:
@@ -98,6 +102,7 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
       case MessageType.ACTION:
         return (
           <FlowAction
+            isDisabled={!isCurrentStep}
             message={message}
             onUserAction={(action, nextStepId) => {
               moveToStep(nextStepId);
@@ -109,38 +114,44 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
       case MessageType.SYSTEM:
         return <FlowSystemAction message={message} />;
       case MessageType.FLOW_END:
-        return <FlowEnd message={message} onAction={() => {}} />;
+        return <FlowEnd isDisabled={!isCurrentStep} message={message} onAction={onFlowEnd} />;
       default:
         return <UnknownMessageFallback messageType={type} />;
     }
-  }, [handleUserInput, handleUserOptionSelect, message, moveToNextStep, moveToStep, type]);
+  }, [handleUserInput, handleUserOptionSelect, isCurrentStep, message, moveToNextStep, moveToStep, onFlowEnd, type]);
 
   const messageStyling = useMemo(() => getMessageStyling(type), [type]);
 
   return (
-    <FlowChatMessageBubble className={cn("z-10", isUser ? "self-end" : "self-start w-full", className, messageStyling)}>
+    <FlowChatMessageBubble
+      className={cn("z-10 ", isUser ? "self-end" : "self-start w-full", className, messageStyling)}
+    >
+      <p>{isCurrentStep ? "Current" : "Previous"}</p>
       {messageContent}
     </FlowChatMessageBubble>
   );
 };
 
 export default React.memo(FlowChatMessageRenderer, (prev, next) => {
-  // Primary check: if message reference is the same, skip other checks
-  if (prev.message === next.message) {
-    return true;
-  }
-
-  // Deep comparison for message content if references differ
-  const messageChanged =
+  // Check if message changed (deep comparison of relevant fields)
+  if (
     prev.message.id !== next.message.id ||
     prev.message.type !== next.message.type ||
-    JSON.stringify(prev.message.content) !== JSON.stringify(next.message.content);
+    JSON.stringify(prev.message.content) !== JSON.stringify(next.message.content) ||
+    prev.message.flowStepId !== next.message.flowStepId
+  ) {
+    return false; // Props changed, should re-render
+  }
 
-  if (messageChanged) {
+  // Check other props
+  if (prev.isCurrentStep !== next.isCurrentStep || prev.className !== next.className) {
     return false;
   }
 
-  // For actions, we can be more lenient - they usually don't change often
-  // Only do expensive action comparison if message is the same
-  return prev.className === next.className;
+  // Actions object reference comparison (assumes parent memoizes actions)
+  if (prev.actions !== next.actions) {
+    return false;
+  }
+
+  return true; // Props are the same, skip re-render
 });

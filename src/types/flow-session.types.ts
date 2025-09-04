@@ -120,6 +120,7 @@ export type SystemAction =
   | { type: "wipe_messages" } // Wipe messages to empty array
   | { type: "reset_values" } // Reset input values
   | { type: "reset_session" } // Reset Flow, Messages, and Input Values
+  | { type: "restart_session"; stepId?: string; resetValues?: boolean } // Reset Flow, Messages, and Input Values
   | { type: "callback"; name: string; args?: Record<string, any> }; // Execute external callback
 
 export interface SystemContent {
@@ -168,3 +169,4 @@ export type StepOfType<T extends StepType> = Extract<FlowStep, { type: T }>;
 // Helper to get steps/messages of specific type
 export type UserInputStep = StepOfType<typeof StepType.USER_INPUT | typeof StepType.OPTIONS>;
 export type AutoAdvancingStep = Extract<FlowStep, { advanceMode: typeof AdvanceMode.AUTO }>;
+export type SystemActionCallback = (args?: Record<string, unknown>) => void | Promise<void>;

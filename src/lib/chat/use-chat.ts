@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 import { useSessionMessagesStore } from "@/stores/messages-store";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
@@ -6,10 +6,6 @@ import { ChatMessage } from "@/types/flow-chat-messages.types";
 export default function useChatEngine({ sessionId }: { sessionId: string }) {
   const messages = useSessionMessagesStore((state) => state.sessionMessages[sessionId]) as ChatMessage[] | undefined;
   const hasHydrated = useSessionMessagesStore((state) => state.hasHydrated);
-  //  const addSessionMessage = useSessionMessagesStore((state) => state.addMessage);
-  //  const updateSessionMessage = useSessionMessagesStore((state) => state.updateMessage);
-  //  const deleteSessionMessage = useSessionMessagesStore((state) => state.deleteMessage);
-  //  const clearSessionMessages = useSessionMessagesStore((state) => state.clearSessionMessages);
 
   const addMessage = useCallback(
     (message: ChatMessage) => {
@@ -38,51 +34,40 @@ export default function useChatEngine({ sessionId }: { sessionId: string }) {
     useSessionMessagesStore.getState().removeSession(sessionId);
   }, [sessionId]);
 
-  const messageMap = useMemo(() => {
-    if (!messages) return { byId: new Map<string, ChatMessage>(), byStepId: new Map<string, ChatMessage>() };
-    const byId = new Map<string, ChatMessage>();
-    const byStepId = new Map<string, ChatMessage>();
-
-    messages.forEach((msg) => {
-      byId.set(msg.id, msg);
-      if (msg.flowStepId) {
-        byStepId.set(msg.flowStepId, msg);
-      }
-    });
-
-    return { byId, byStepId };
-  }, [messages]);
-
   // ===========================
   // HELPER FUNCTIONS
   // ===========================
 
   const findMessageById = useCallback(
     (messageId: string): ChatMessage | undefined => {
-      return messageMap.byId.get(messageId);
+      const currentMessages = useSessionMessagesStore.getState().sessionMessages[sessionId];
+      return currentMessages?.find((msg) => msg.id === messageId);
     },
-    [messageMap.byId]
+    [sessionId]
   );
 
   const findMessageByStepId = useCallback(
     (stepId: string): ChatMessage | undefined => {
-      return messageMap.byStepId.get(stepId);
+      const currentMessages = useSessionMessagesStore.getState().sessionMessages[sessionId];
+      return currentMessages?.find((msg) => msg.flowStepId === stepId);
     },
-    [messageMap.byStepId]
+    [sessionId]
   );
 
   const messageExistsById = useCallback(
     (messageId: string): boolean => {
-      return messageMap.byId.has(messageId);
+      const currentMessages = useSessionMessagesStore.getState().sessionMessages[sessionId];
+      return currentMessages?.some((msg) => msg.id === messageId) ?? false;
     },
-    [messageMap.byId]
+    [sessionId]
   );
 
   const messageExistsByStepId = useCallback(
     (stepId: string): boolean => {
-      return messageMap.byStepId.has(stepId);
+      const currentMessages = useSessionMessagesStore.getState().sessionMessages[sessionId];
+      return currentMessages?.some((msg) => msg.flowStepId === stepId) ?? false;
     },
-    [messageMap.byStepId]
+    [sessionId]
   );
 
   // ===========================

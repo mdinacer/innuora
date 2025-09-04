@@ -7,10 +7,11 @@ import { MessageOfType } from "@/types/flow-chat-messages.types";
 
 interface Props {
   message: MessageOfType<"flow_end">;
+  isDisabled?: boolean;
   onAction: (actionType: "primary" | "secondary") => void;
 }
 
-const FlowChatEnd: React.FC<Props> = ({ message, onAction }) => {
+const FlowChatEnd: React.FC<Props> = ({ message, isDisabled = false, onAction }) => {
   const { title, message: closureMessage, primaryAction, secondaryAction } = message.content;
   return (
     <>
@@ -23,13 +24,15 @@ const FlowChatEnd: React.FC<Props> = ({ message, onAction }) => {
       <p className={cn("card-content", "mb-4")}>{closureMessage}</p>
       <div className="action-buttons flex flex-col gap-4">
         <button
+          disabled={isDisabled}
           onClick={() => onAction("primary")}
           className={cn(
             "action-btn primary",
+            "disabled:opacity-70 disabled:cursor-not-allowed",
             "w-full py-3.5 px-5 rounded-[12px] border-none font-semibold cursor-pointer",
             "transition-all duration-200 ease-in-out",
             "bg-white text-mir-bg-accent",
-            "hover:bg-white/80",
+            "not-disabled:hover:bg-white/80",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
         >
@@ -37,13 +40,15 @@ const FlowChatEnd: React.FC<Props> = ({ message, onAction }) => {
         </button>
         {secondaryAction && (
           <button
+            disabled={isDisabled}
             onClick={() => onAction("secondary")}
             className={cn(
               "action-btn primary",
+              "disabled:opacity-70 disabled:cursor-not-allowed",
               "w-full py-3.5 px-5 rounded-[12px] font-semibold cursor-pointer",
               "transition-all duration-200 ease-in-out",
               "bg-transparent text-white border border-white",
-              "hover:bg-white/10"
+              "not-disabled:hover:bg-white/10"
             )}
           >
             {secondaryAction}

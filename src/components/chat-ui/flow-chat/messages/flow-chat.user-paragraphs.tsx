@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { ChevronRightIcon, GraduationCapIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -9,13 +11,15 @@ import FlowChatMessageHeader from "../flow-chat.message-header";
 
 interface Props {
   message: MessageOfType<"paragraphs">;
+  isDisabled?: boolean;
   onMoveToNextStep: () => void;
 }
 
-const FlowChatParagraphs: React.FC<Props> = ({ message, onMoveToNextStep }) => {
+const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMoveToNextStep }) => {
   const { title, subtitle, paragraphs, buttonText } = message.content;
   return (
     <>
+      <p>{isDisabled ? "Disabled" : "Enabled"}</p>
       <FlowChatMessageHeader
         isAccent={false}
         secondaryContent="Mirael"
@@ -41,11 +45,11 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, onMoveToNextStep }) => {
         </div>
       ))}
 
-      {buttonText && (
+      {!isDisabled && buttonText && (
         <button
           onClick={onMoveToNextStep}
           className={
-            "mt-4 flex items-center gap-1.5 text-mir-bg-accent text-base rtl:text-lg font-semibold cursor-pointer bg-none border-none p-0"
+            "mt-4 ltr:ml-auto rtl:mr-auto flex items-center gap-1.5 text-mir-bg-accent text-base rtl:text-lg font-semibold cursor-pointer bg-none border-none p-0"
           }
         >
           <span>{buttonText}</span>

@@ -129,9 +129,7 @@ export async function updateUserById(
   }
 }
 
-export async function updateCurrentUser(
-  userData: Partial<Omit<Prisma.UserUpdateInput, "profile" | "config">>
-): Promise<AppUser> {
+export async function updateCurrentUser(userData: Partial<Prisma.UserUpdateInput>): Promise<UserWithRelations> {
   try {
     const currentAuthUser = await requireCurrentUser();
     return await updateUserById(currentAuthUser.id, userData);

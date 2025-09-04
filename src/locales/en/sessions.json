@@ -314,13 +314,25 @@
         "content": {
           "prompt": "Do you want to continue with what you’ve shared, or start over?",
           "primary": {
-            "label": "Continue",
-            "nextStepId": "end"
+            "label": "Continue"
           },
           "secondary": {
-            "label": "Start over",
-            "nextStepId": "welcome"
+            "label": "Start over"
           }
+        }
+      },
+      {
+        "id": "reset_onboarding_flow",
+        "content": {
+          "title": "Restarting Onboarding",
+          "message": "Resetting progress and returning to the beginning..."
+        }
+      },
+      {
+        "id": "sync_before_reflection",
+        "content": {
+          "title": "Saving Progress",
+          "message": "Applying session updates..."
         }
       },
       {

@@ -1,4 +1,4 @@
-import { AdvanceMode, SelectMode, StepType } from "@/types/flow-session.types";
+import { ActionContent, AdvanceMode, SelectMode, StepType, SystemAction } from "@/types/flow-session.types";
 
 export const ONBOARDING_STEP_IDS = {
   WELCOME: "welcome",
@@ -143,36 +143,46 @@ export const ONBOARDING_SESSION_PROPS = {
   [ONBOARDING_STEP_IDS.CONFIRM_INPUTS]: {
     type: StepType.ACTION,
     advancementMode: AdvanceMode.MANUAL,
+    content: {
+      primary: {
+        nextStepId: "sync_before_reflection",
+      },
+      secondary: {
+        nextStepId: "reset_onboarding_flow",
+      },
+    } as Partial<ActionContent>,
   },
 
-  // [ONBOARDING_STEP_IDS.RESET_ONBOARDING_FLOW]: {
-  //   type: StepType.SYSTEM,
-  //   advancementMode: AdvanceMode.MANUAL,
-  //   autoAdvanceDelay: 800,
-  //   nextStepId: ONBOARDING_STEP_IDS.WELCOME,
-  //   content: {
-  //     actions: [
-  //       {
-  //         type: "reset_session",
-  //       },
-  //     ] as SystemAction[],
-  //   },
-  // },
+  [ONBOARDING_STEP_IDS.RESET_ONBOARDING_FLOW]: {
+    type: StepType.SYSTEM,
+    advancementMode: AdvanceMode.MANUAL,
+    autoAdvanceDelay: 800,
+    nextStepId: ONBOARDING_STEP_IDS.WELCOME,
+    content: {
+      actions: [
+        {
+          type: "restart_session",
+          resetValues: true,
+          stepId: ONBOARDING_STEP_IDS.DISPLAY_NAME,
+        },
+      ] as SystemAction[],
+    },
+  },
 
-  // [ONBOARDING_STEP_IDS.SYNC_BEFORE_REFLECTION]: {
-  //   type: StepType.SYSTEM,
-  //   advancementMode: AdvanceMode.AUTO,
-  //   autoAdvanceDelay: 600,
-  //   nextStepId: ONBOARDING_STEP_IDS.REFLECTION,
-  //   content: {
-  //     actions: [
-  //       {
-  //         type: "callback",
-  //         name: "onSyncData",
-  //       },
-  //     ] as SystemAction[],
-  //   },
-  // },
+  [ONBOARDING_STEP_IDS.SYNC_BEFORE_REFLECTION]: {
+    type: StepType.SYSTEM,
+    advancementMode: AdvanceMode.MANUAL,
+    autoAdvanceDelay: 800,
+    nextStepId: ONBOARDING_STEP_IDS.END,
+    content: {
+      actions: [
+        {
+          type: "callback",
+          name: "onSyncData",
+        },
+      ] as SystemAction[],
+    },
+  },
 
   // [ONBOARDING_STEP_IDS.REFLECTION]: {
   //   type: StepType.REFLECTION,

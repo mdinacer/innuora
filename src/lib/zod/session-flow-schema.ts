@@ -111,6 +111,11 @@ export const SystemActionSchema = z.discriminatedUnion("type", [
     type: z.literal("reset_session"),
   }),
   z.object({
+    type: z.literal("restart_session"),
+    resetValues: z.boolean().optional(),
+    stepId: z.string().optional(),
+  }),
+  z.object({
     type: z.literal("callback"),
     name: z.string(),
     args: z.record(z.string(), z.any()).optional(),
