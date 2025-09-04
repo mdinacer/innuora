@@ -100,28 +100,20 @@ export const BranchContentSchema = z.object({
 export const SystemActionSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("reset_flow"),
-    resetMessages: z.boolean().optional(),
-    resetInputs: z.boolean().optional(),
-    toStepId: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal("log"),
-    message: z.string(),
-  }),
-  z.object({
-    type: z.literal("delay"),
-    ms: z.number(),
-  }),
-  z.object({
-    type: z.literal("callback"),
-    name: z.string(),
-    args: z.record(z.string(), z.any()).optional(),
   }),
   z.object({
     type: z.literal("wipe_messages"),
   }),
   z.object({
-    type: z.literal("reset_input_values"),
+    type: z.literal("reset_values"),
+  }),
+  z.object({
+    type: z.literal("reset_session"),
+  }),
+  z.object({
+    type: z.literal("callback"),
+    name: z.string(),
+    args: z.record(z.string(), z.any()).optional(),
   }),
 ]);
 

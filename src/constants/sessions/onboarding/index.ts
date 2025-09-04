@@ -1,4 +1,4 @@
-import { AdvanceMode, SelectMode, StepType, SystemAction } from "@/types/flow-session.types";
+import { AdvanceMode, SelectMode, StepType } from "@/types/flow-session.types";
 
 export const ONBOARDING_STEP_IDS = {
   WELCOME: "welcome",
@@ -145,34 +145,34 @@ export const ONBOARDING_SESSION_PROPS = {
     advancementMode: AdvanceMode.MANUAL,
   },
 
-  [ONBOARDING_STEP_IDS.RESET_ONBOARDING_FLOW]: {
-    type: StepType.SYSTEM,
-    advancementMode: AdvanceMode.MANUAL,
-    autoAdvanceDelay: 800,
-    nextStepId: ONBOARDING_STEP_IDS.WELCOME,
-    content: {
-      actions: [
-        {
-          type: "reset_session",
-        },
-      ] as SystemAction[],
-    },
-  },
+  // [ONBOARDING_STEP_IDS.RESET_ONBOARDING_FLOW]: {
+  //   type: StepType.SYSTEM,
+  //   advancementMode: AdvanceMode.MANUAL,
+  //   autoAdvanceDelay: 800,
+  //   nextStepId: ONBOARDING_STEP_IDS.WELCOME,
+  //   content: {
+  //     actions: [
+  //       {
+  //         type: "reset_session",
+  //       },
+  //     ] as SystemAction[],
+  //   },
+  // },
 
-  [ONBOARDING_STEP_IDS.SYNC_BEFORE_REFLECTION]: {
-    type: StepType.SYSTEM,
-    advancementMode: AdvanceMode.AUTO,
-    autoAdvanceDelay: 600,
-    nextStepId: ONBOARDING_STEP_IDS.REFLECTION,
-    content: {
-      actions: [
-        {
-          type: "callback",
-          name: "onSyncData",
-        },
-      ] as SystemAction[],
-    },
-  },
+  // [ONBOARDING_STEP_IDS.SYNC_BEFORE_REFLECTION]: {
+  //   type: StepType.SYSTEM,
+  //   advancementMode: AdvanceMode.AUTO,
+  //   autoAdvanceDelay: 600,
+  //   nextStepId: ONBOARDING_STEP_IDS.REFLECTION,
+  //   content: {
+  //     actions: [
+  //       {
+  //         type: "callback",
+  //         name: "onSyncData",
+  //       },
+  //     ] as SystemAction[],
+  //   },
+  // },
 
   // [ONBOARDING_STEP_IDS.REFLECTION]: {
   //   type: StepType.REFLECTION,
