@@ -4,6 +4,7 @@
 @plugin 'tailwind-scrollbar';
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant standalone ( @media all and (display-mode: standalone));
 
 @theme inline {
   --color-background: var(--background);
