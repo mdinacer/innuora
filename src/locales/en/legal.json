@@ -1,4 +1,74 @@
 {
+  "eula": {
+    "title": "End User License Agreement",
+    "lastUpdated": "Last Updated September 2, 2025",
+    "hero": {
+      "headline": "End User License Agreement",
+      "description": "This agreement governs your use of the Mirael application and defines the terms under which you may access our software."
+    },
+    "notice": {
+      "title": "Important Legal Agreement",
+      "message": "By downloading, installing, or using Mirael, you agree to be bound by the terms of this End User License Agreement.",
+      "warning": "If you do not agree to these terms, do not install or use Mirael."
+    },
+    "acceptance": {
+      "title": "Acceptance of Agreement",
+      "message": "By downloading, installing, or using Mirael, you agree to be bound by the terms of this End User License Agreement (EULA). If you do not agree, do not install or use Mirael."
+    },
+    "licenseGrant": {
+      "title": "License Grant",
+      "message": "Mirael grants you a limited, non-exclusive, non-transferable, revocable license to use the application for personal, non-commercial purposes in accordance with this EULA."
+    },
+    "licenseRestrictions": {
+      "title": "License Restrictions",
+      "message": "You agree that you will not:",
+      "items": [
+        "Reverse engineer, decompile, or disassemble Mirael",
+        "Rent, lease, lend, sell, redistribute, or sublicense Mirael",
+        "Use Mirael in any manner that violates applicable laws or regulations",
+        "Attempt to circumvent security measures or access Mirael's source code"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "Intellectual Property Ownership",
+      "message": "All rights, title, and interest in Mirael, including all content, design, and software, remain the exclusive property of Mirael and its licensors. This EULA does not grant you ownership of any part of Mirael."
+    },
+    "updates": {
+      "title": "Updates and Modifications",
+      "message": "Mirael may, at its discretion, provide updates, patches, or modifications to the application. This EULA applies to all such updates unless they are accompanied by a separate license agreement."
+    },
+    "termination": {
+      "title": "Termination",
+      "message": "This EULA is effective until terminated. Mirael may suspend or terminate your access at any time without notice if you breach any of its terms.",
+      "uponTermination": {
+        "label": "Upon Termination:",
+        "message": "You must immediately uninstall Mirael and cease all use of the application."
+      }
+    },
+    "disclaimer": {
+      "title": "Disclaimer of Warranties",
+      "message": "Mirael is provided \"as is\" without warranties of any kind, express or implied, including but not limited to warranties of fitness for a particular purpose, reliability, or availability.",
+      "note": "This means we cannot guarantee that the app will work perfectly or meet all your expectations, though we strive to provide the best experience possible."
+    },
+    "liability": {
+      "title": "Limitation of Liability",
+      "message": "To the maximum extent permitted by law, Mirael and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the application."
+    },
+    "governingLaw": {
+      "title": "Governing Law",
+      "message": "This EULA shall be governed by and construed in accordance with the laws of the applicable jurisdiction in which Mirael is made available, without regard to conflict of law provisions."
+    },
+    "contact": {
+      "title": "Contact Information",
+      "message": "For any questions regarding this End User License Agreement, please contact us:",
+      "supportEmail": "Email Support"
+    },
+    "summary": {
+      "title": "Agreement Summary",
+      "message": "This EULA grants you permission to use Mirael for personal purposes while protecting our intellectual property rights and limiting liability.",
+      "acknowledgment": "By continuing to use Mirael, you acknowledge that you have read, understood, and agree to be bound by these terms."
+    }
+  },
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: September 2025",
@@ -19,32 +89,16 @@
     "dataWeCollect": {
       "title": "What We Collect",
       "table": {
-        "headers": [
-          "Category",
-          "Purpose",
-          "Retention"
-        ],
+        "headers": ["Category", "Purpose", "Retention"],
         "rows": [
           [
             "Account Data (email, locale)",
             "Enable sign-in and set your language",
             "Kept until you delete your account"
           ],
-          [
-            "Session Data (temporary AI responses)",
-            "Provide AI reflections",
-            "Ephemeral - not stored"
-          ],
-          [
-            "Reflection Notes (if you save them)",
-            "Allow you to revisit past insights",
-            "Kept until you delete them"
-          ],
-          [
-            "Technical Logs (IP, device info)",
-            "Security and performance monitoring",
-            "Short-term, auto-deleted"
-          ]
+          ["Session Data (temporary AI responses)", "Provide AI reflections", "Ephemeral - not stored"],
+          ["Reflection Notes (if you save them)", "Allow you to revisit past insights", "Kept until you delete them"],
+          ["Technical Logs (IP, device info)", "Security and performance monitoring", "Short-term, auto-deleted"]
         ]
       }
     },
@@ -228,76 +282,6 @@
     "entireAgreement": {
       "title": "Entire Agreement",
       "message": "These Terms constitute the entire agreement between you and Mirael, Inc. regarding the Service and supersede all prior agreements relating to the subject matter hereof."
-    }
-  },
-  "eula": {
-    "title": "End User License Agreement",
-    "lastUpdated": "Last Updated September 2, 2025",
-    "hero": {
-      "headline": "End User License Agreement",
-      "description": "This agreement governs your use of the Mirael application and defines the terms under which you may access our software."
-    },
-    "notice": {
-      "title": "Important Legal Agreement",
-      "message": "By downloading, installing, or using Mirael, you agree to be bound by the terms of this End User License Agreement.",
-      "warning": "If you do not agree to these terms, do not install or use Mirael."
-    },
-    "acceptance": {
-      "title": "Acceptance of Agreement",
-      "message": "By downloading, installing, or using Mirael, you agree to be bound by the terms of this End User License Agreement (EULA). If you do not agree, do not install or use Mirael."
-    },
-    "licenseGrant": {
-      "title": "License Grant",
-      "message": "Mirael grants you a limited, non-exclusive, non-transferable, revocable license to use the application for personal, non-commercial purposes in accordance with this EULA."
-    },
-    "licenseRestrictions": {
-      "title": "License Restrictions",
-      "message": "You agree that you will not:",
-      "items": [
-        "Reverse engineer, decompile, or disassemble Mirael",
-        "Rent, lease, lend, sell, redistribute, or sublicense Mirael",
-        "Use Mirael in any manner that violates applicable laws or regulations",
-        "Attempt to circumvent security measures or access Mirael's source code"
-      ]
-    },
-    "intellectualProperty": {
-      "title": "Intellectual Property Ownership",
-      "message": "All rights, title, and interest in Mirael, including all content, design, and software, remain the exclusive property of Mirael and its licensors. This EULA does not grant you ownership of any part of Mirael."
-    },
-    "updates": {
-      "title": "Updates and Modifications",
-      "message": "Mirael may, at its discretion, provide updates, patches, or modifications to the application. This EULA applies to all such updates unless they are accompanied by a separate license agreement."
-    },
-    "termination": {
-      "title": "Termination",
-      "message": "This EULA is effective until terminated. Mirael may suspend or terminate your access at any time without notice if you breach any of its terms.",
-      "uponTermination": {
-        "label": "Upon Termination:",
-        "message": "You must immediately uninstall Mirael and cease all use of the application."
-      }
-    },
-    "disclaimer": {
-      "title": "Disclaimer of Warranties",
-      "message": "Mirael is provided \"as is\" without warranties of any kind, express or implied, including but not limited to warranties of fitness for a particular purpose, reliability, or availability.",
-      "note": "This means we cannot guarantee that the app will work perfectly or meet all your expectations, though we strive to provide the best experience possible."
-    },
-    "liability": {
-      "title": "Limitation of Liability",
-      "message": "To the maximum extent permitted by law, Mirael and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the application."
-    },
-    "governingLaw": {
-      "title": "Governing Law",
-      "message": "This EULA shall be governed by and construed in accordance with the laws of the applicable jurisdiction in which Mirael is made available, without regard to conflict of law provisions."
-    },
-    "contact": {
-      "title": "Contact Information",
-      "message": "For any questions regarding this End User License Agreement, please contact us:",
-      "supportEmail": "Email Support"
-    },
-    "summary": {
-      "title": "Agreement Summary",
-      "message": "This EULA grants you permission to use Mirael for personal purposes while protecting our intellectual property rights and limiting liability.",
-      "acknowledgment": "By continuing to use Mirael, you acknowledge that you have read, understood, and agree to be bound by these terms."
     }
   }
 }

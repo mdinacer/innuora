@@ -1,4 +1,74 @@
 {
+  "eula": {
+    "title": "Contrat de Licence Utilisateur Final",
+    "lastUpdated": "Dernière mise à jour : 2 septembre 2025",
+    "hero": {
+      "headline": "Contrat de Licence Utilisateur Final",
+      "description": "Ce contrat régit votre utilisation de l'application Mirael et définit les conditions selon lesquelles vous pouvez accéder à notre logiciel."
+    },
+    "notice": {
+      "title": "Accord Juridique Important",
+      "message": "En téléchargeant, installant ou utilisant Mirael, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final.",
+      "warning": "Si vous n'acceptez pas ces conditions, n'installez pas et n'utilisez pas Mirael."
+    },
+    "acceptance": {
+      "title": "Acceptation de l’Accord",
+      "message": "En téléchargeant, installant ou utilisant Mirael, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final (CLUF). Si vous n'acceptez pas, n'installez pas et n'utilisez pas Mirael."
+    },
+    "licenseGrant": {
+      "title": "Octroi de Licence",
+      "message": "Mirael vous accorde une licence limitée, non exclusive, non transférable et révocable pour utiliser l'application à des fins personnelles et non commerciales conformément à ce CLUF."
+    },
+    "licenseRestrictions": {
+      "title": "Restrictions de Licence",
+      "message": "Vous acceptez de ne pas :",
+      "items": [
+        "Ingénierie inverse, décompiler ou désassembler Mirael",
+        "Louer, prêter, vendre, redistribuer ou sous-licencier Mirael",
+        "Utiliser Mirael d'une manière qui viole les lois ou règlements applicables",
+        "Tenter de contourner les mesures de sécurité ou d'accéder au code source de Mirael"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "Propriété Intellectuelle",
+      "message": "Tous les droits, titres et intérêts sur Mirael, y compris tout le contenu, la conception et le logiciel, restent la propriété exclusive de Mirael et de ses concédants. Ce CLUF ne vous accorde aucun droit de propriété sur une partie de Mirael."
+    },
+    "updates": {
+      "title": "Mises à Jour et Modifications",
+      "message": "Mirael peut, à sa discrétion, fournir des mises à jour, correctifs ou modifications de l'application. Ce CLUF s'applique à toutes ces mises à jour sauf si elles sont accompagnées d'un accord de licence distinct."
+    },
+    "termination": {
+      "title": "Résiliation",
+      "message": "Ce CLUF reste en vigueur jusqu'à sa résiliation. Mirael peut suspendre ou résilier votre accès à tout moment sans préavis si vous violez l'une de ses conditions.",
+      "uponTermination": {
+        "label": "En cas de résiliation :",
+        "message": "Vous devez désinstaller immédiatement Mirael et cesser toute utilisation de l'application."
+      }
+    },
+    "disclaimer": {
+      "title": "Avertissement sur les Garanties",
+      "message": "Mirael est fourni « tel quel » sans aucune garantie, expresse ou implicite, y compris, mais sans s'y limiter, les garanties de qualité marchande, d'adéquation à un usage particulier, de fiabilité ou de disponibilité.",
+      "note": "Cela signifie que nous ne pouvons garantir que l'application fonctionnera parfaitement ou répondra à toutes vos attentes, bien que nous nous efforcions de fournir la meilleure expérience possible."
+    },
+    "liability": {
+      "title": "Limitation de Responsabilité",
+      "message": "Dans toute la mesure permise par la loi, Mirael et ses affiliés ne pourront être tenus responsables d'aucun dommage indirect, accessoire, spécial, consécutif ou punitif découlant de votre utilisation de l'application."
+    },
+    "governingLaw": {
+      "title": "Droit Applicable",
+      "message": "Ce CLUF est régi et interprété conformément aux lois de la juridiction applicable où Mirael est mis à disposition, sans tenir compte des dispositions sur les conflits de lois."
+    },
+    "contact": {
+      "title": "Informations de Contact",
+      "message": "Pour toute question concernant ce Contrat de Licence Utilisateur Final, veuillez nous contacter :",
+      "supportEmail": "Support par Email"
+    },
+    "summary": {
+      "title": "Résumé de l’Accord",
+      "message": "Ce CLUF vous permet d'utiliser Mirael à des fins personnelles tout en protégeant nos droits de propriété intellectuelle et en limitant la responsabilité.",
+      "acknowledgment": "En continuant à utiliser Mirael, vous reconnaissez avoir lu, compris et accepté d'être lié par ces termes."
+    }
+  },
   "privacy": {
     "title": "Politique de Confidentialité",
     "lastUpdated": "Dernière mise à jour : septembre 2025",
@@ -19,22 +89,14 @@
     "dataWeCollect": {
       "title": "Ce que nous collectons",
       "table": {
-        "headers": [
-          "Catégorie",
-          "Finalité",
-          "Durée de conservation"
-        ],
+        "headers": ["Catégorie", "Finalité", "Durée de conservation"],
         "rows": [
           [
             "Données du compte (email, langue)",
             "Permettre la connexion et définir votre langue",
             "Conservées jusqu’à la suppression de votre compte"
           ],
-          [
-            "Données de session (réponses IA temporaires)",
-            "Fournir des réflexions IA",
-            "Éphémères – non stockées"
-          ],
+          ["Données de session (réponses IA temporaires)", "Fournir des réflexions IA", "Éphémères – non stockées"],
           [
             "Notes de réflexion (si vous les enregistrez)",
             "Vous permettre de revisiter vos insights passés",
@@ -228,76 +290,6 @@
     "entireAgreement": {
       "title": "Accord complet",
       "message": "Ces Conditions constituent l'intégralité de l'accord entre vous et Mirael, Inc. concernant le Service et remplacent tous les accords antérieurs relatifs au même objet."
-    }
-  },
-  "eula": {
-    "title": "Contrat de Licence Utilisateur Final",
-    "lastUpdated": "Dernière mise à jour : 2 septembre 2025",
-    "hero": {
-      "headline": "Contrat de Licence Utilisateur Final",
-      "description": "Ce contrat régit votre utilisation de l'application Mirael et définit les conditions selon lesquelles vous pouvez accéder à notre logiciel."
-    },
-    "notice": {
-      "title": "Accord Juridique Important",
-      "message": "En téléchargeant, installant ou utilisant Mirael, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final.",
-      "warning": "Si vous n'acceptez pas ces conditions, n'installez pas et n'utilisez pas Mirael."
-    },
-    "acceptance": {
-      "title": "Acceptation de l’Accord",
-      "message": "En téléchargeant, installant ou utilisant Mirael, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final (CLUF). Si vous n'acceptez pas, n'installez pas et n'utilisez pas Mirael."
-    },
-    "licenseGrant": {
-      "title": "Octroi de Licence",
-      "message": "Mirael vous accorde une licence limitée, non exclusive, non transférable et révocable pour utiliser l'application à des fins personnelles et non commerciales conformément à ce CLUF."
-    },
-    "licenseRestrictions": {
-      "title": "Restrictions de Licence",
-      "message": "Vous acceptez de ne pas :",
-      "items": [
-        "Ingénierie inverse, décompiler ou désassembler Mirael",
-        "Louer, prêter, vendre, redistribuer ou sous-licencier Mirael",
-        "Utiliser Mirael d'une manière qui viole les lois ou règlements applicables",
-        "Tenter de contourner les mesures de sécurité ou d'accéder au code source de Mirael"
-      ]
-    },
-    "intellectualProperty": {
-      "title": "Propriété Intellectuelle",
-      "message": "Tous les droits, titres et intérêts sur Mirael, y compris tout le contenu, la conception et le logiciel, restent la propriété exclusive de Mirael et de ses concédants. Ce CLUF ne vous accorde aucun droit de propriété sur une partie de Mirael."
-    },
-    "updates": {
-      "title": "Mises à Jour et Modifications",
-      "message": "Mirael peut, à sa discrétion, fournir des mises à jour, correctifs ou modifications de l'application. Ce CLUF s'applique à toutes ces mises à jour sauf si elles sont accompagnées d'un accord de licence distinct."
-    },
-    "termination": {
-      "title": "Résiliation",
-      "message": "Ce CLUF reste en vigueur jusqu'à sa résiliation. Mirael peut suspendre ou résilier votre accès à tout moment sans préavis si vous violez l'une de ses conditions.",
-      "uponTermination": {
-        "label": "En cas de résiliation :",
-        "message": "Vous devez désinstaller immédiatement Mirael et cesser toute utilisation de l'application."
-      }
-    },
-    "disclaimer": {
-      "title": "Avertissement sur les Garanties",
-      "message": "Mirael est fourni « tel quel » sans aucune garantie, expresse ou implicite, y compris, mais sans s'y limiter, les garanties de qualité marchande, d'adéquation à un usage particulier, de fiabilité ou de disponibilité.",
-      "note": "Cela signifie que nous ne pouvons garantir que l'application fonctionnera parfaitement ou répondra à toutes vos attentes, bien que nous nous efforcions de fournir la meilleure expérience possible."
-    },
-    "liability": {
-      "title": "Limitation de Responsabilité",
-      "message": "Dans toute la mesure permise par la loi, Mirael et ses affiliés ne pourront être tenus responsables d'aucun dommage indirect, accessoire, spécial, consécutif ou punitif découlant de votre utilisation de l'application."
-    },
-    "governingLaw": {
-      "title": "Droit Applicable",
-      "message": "Ce CLUF est régi et interprété conformément aux lois de la juridiction applicable où Mirael est mis à disposition, sans tenir compte des dispositions sur les conflits de lois."
-    },
-    "contact": {
-      "title": "Informations de Contact",
-      "message": "Pour toute question concernant ce Contrat de Licence Utilisateur Final, veuillez nous contacter :",
-      "supportEmail": "Support par Email"
-    },
-    "summary": {
-      "title": "Résumé de l’Accord",
-      "message": "Ce CLUF vous permet d'utiliser Mirael à des fins personnelles tout en protégeant nos droits de propriété intellectuelle et en limitant la responsabilité.",
-      "acknowledgment": "En continuant à utiliser Mirael, vous reconnaissez avoir lu, compris et accepté d'être lié par ces termes."
     }
   }
 }

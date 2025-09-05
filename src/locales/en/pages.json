@@ -53,6 +53,106 @@
       }
     }
   },
+  "chat-ui": {
+    "onboarding": {
+      "header": {
+        "title": "Welcome to Mirael",
+        "subtitle": "A gentle space to begin your reflection"
+      },
+      "hero": {
+        "title": "Welcome to Mirael",
+        "subtitle": "A gentle space just for you",
+        "paragraphs": [
+          "**This is your private space to arrive as you are.**",
+          "No need to perform or explain yourself here. Take your time and simply be present.",
+          "Everything here stays with you: no tracking, no judgment, no agenda."
+        ],
+        "buttonText": "Enter the quiet"
+      }
+    },
+    "open-chat": {
+      "header": {
+        "title": "Reflection Space",
+        "subtitle": "Continue your reflection and explore your thoughts"
+      },
+      "hero": {
+        "title": "Reflection Space",
+        "subtitle": "A private space where you can explore your emotions and thoughts.",
+        "paragraphs": [
+          "Take a moment to settle in and notice what you are feeling.",
+          "This space is yours. Share freely and reflect at your own pace.",
+          "*Remember that Mirael mirrors your emotions back to help you gain clarity.*"
+        ],
+        "buttonText": "Start reflecting"
+      },
+      "initial-message": "Hi there. I'm here to listen. What's been on your mind lately? Take your time. Just start wherever feels right.",
+      "input": {
+        "label": "Type a message and press Enter to send",
+        "placeholder": "Share what's on your mind…",
+        "actionTitle": "Send message"
+      },
+      "actions": {
+        "reset_session": {
+          "label": "Reset",
+          "dialog": {
+            "title": "Reset This Session?",
+            "messages": [
+              "This will clear all messages in the current chat and start fresh.",
+              "You won't be able to recover them after reset."
+            ],
+            "actions": {
+              "confirm": "Reset",
+              "cancel": "Cancel"
+            }
+          }
+        },
+        "end_session": {
+          "label": "End",
+          "dialog": {
+            "title": "End This Session?",
+            "messages": [
+              "Ending the session will mark it as complete.",
+              "You can continue later or start a new session anytime."
+            ],
+            "actions": {
+              "confirm": "End Session",
+              "cancel": "Cancel"
+            }
+          }
+        },
+        "export_session": {
+          "label": "Export",
+          "dialog": {
+            "title": "Export This Session?",
+            "messages": [
+              "You can download the session as a JSON file.",
+              "Keep it safe, it contains your private reflections."
+            ],
+            "actions": {
+              "confirm": "Download",
+              "cancel": "Cancel"
+            }
+          }
+        }
+      }
+    },
+    "default": {
+      "header": {
+        "title": "Mirael",
+        "subtitle": "A private space where you can reflect"
+      },
+      "hero": {
+        "title": "Mirael",
+        "subtitle": "A private space to reflect and connect with your emotions.",
+        "paragraphs": [
+          "Start a new session whenever you are ready to check in with yourself.",
+          "Notice your thoughts and feelings gently as you begin.",
+          "*Every reflection is private and under your control.*"
+        ],
+        "buttonText": "Start session"
+      }
+    }
+  },
   "homepage": {
     "hero": {
       "badge": "Early Access",
@@ -172,106 +272,6 @@
           "answer": "Early access lets you shape Mirael with us. Your feedback will directly influence how the experience evolves, and you will be among the first to benefit from new features."
         }
       ]
-    }
-  },
-  "chat-ui": {
-    "onboarding": {
-      "header": {
-        "title": "Welcome to Mirael",
-        "subtitle": "A gentle space to begin your reflection"
-      },
-      "hero": {
-        "title": "Welcome to Mirael",
-        "subtitle": "A gentle space just for you",
-        "paragraphs": [
-          "**This is your private space to arrive as you are.**",
-          "No need to perform or explain yourself here. Take your time and simply be present.",
-          "Everything here stays with you: no tracking, no judgment, no agenda."
-        ],
-        "buttonText": "Enter the quiet"
-      }
-    },
-    "open-chat": {
-      "header": {
-        "title": "Reflection Space",
-        "subtitle": "Continue your reflection and explore your thoughts"
-      },
-      "hero": {
-        "title": "Reflection Space",
-        "subtitle": "A private space where you can explore your emotions and thoughts.",
-        "paragraphs": [
-          "Take a moment to settle in and notice what you are feeling.",
-          "This space is yours. Share freely and reflect at your own pace.",
-          "*Remember that Mirael mirrors your emotions back to help you gain clarity.*"
-        ],
-        "buttonText": "Start reflecting"
-      },
-      "initial-message": "Hi there. I'm here to listen. What's been on your mind lately? Take your time. Just start wherever feels right.",
-      "input": {
-        "label": "Type a message and press Enter to send",
-        "placeholder": "Share what's on your mind…",
-        "actionTitle": "Send message"
-      },
-      "actions": {
-        "reset_session": {
-          "label": "Reset",
-          "dialog": {
-            "title": "Reset This Session?",
-            "messages": [
-              "This will clear all messages in the current chat and start fresh.",
-              "You won't be able to recover them after reset."
-            ],
-            "actions": {
-              "confirm": "Reset",
-              "cancel": "Cancel"
-            }
-          }
-        },
-        "end_session": {
-          "label": "End",
-          "dialog": {
-            "title": "End This Session?",
-            "messages": [
-              "Ending the session will mark it as complete.",
-              "You can continue later or start a new session anytime."
-            ],
-            "actions": {
-              "confirm": "End Session",
-              "cancel": "Cancel"
-            }
-          }
-        },
-        "export_session": {
-          "label": "Export",
-          "dialog": {
-            "title": "Export This Session?",
-            "messages": [
-              "You can download the session as a JSON file.",
-              "Keep it safe, it contains your private reflections."
-            ],
-            "actions": {
-              "confirm": "Download",
-              "cancel": "Cancel"
-            }
-          }
-        }
-      }
-    },
-    "default": {
-      "header": {
-        "title": "Mirael",
-        "subtitle": "A private space where you can reflect"
-      },
-      "hero": {
-        "title": "Mirael",
-        "subtitle": "A private space to reflect and connect with your emotions.",
-        "paragraphs": [
-          "Start a new session whenever you are ready to check in with yourself.",
-          "Notice your thoughts and feelings gently as you begin.",
-          "*Every reflection is private and under your control.*"
-        ],
-        "buttonText": "Start session"
-      }
     }
   },
   "policies_footer": {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/chat-ui";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from "./language-switcher";
 
 interface Props {
   middleContent?: React.ReactNode;
@@ -21,7 +22,8 @@ export default async function Header({ middleContent, sideContent, className, lo
         </Link>
 
         {middleContent}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 rtl:font-sans">
+          <LanguageSwitcher />
           <ThemeToggle />
 
           {sideContent}

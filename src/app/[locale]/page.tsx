@@ -64,7 +64,7 @@ export default async function Home({
         sideContent={
           <Link
             href="#early-access"
-            className="inline-flex items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+            className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
           >
             {earlyAccess.form.button}
           </Link>

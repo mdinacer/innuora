@@ -1,4 +1,3 @@
-import Header from "@/components/header";
 import SessionsPage from "@/components/sessions/sessions-page";
 
 type SessionCardData = {
