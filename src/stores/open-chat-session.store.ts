@@ -39,34 +39,6 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
       setHasHydrated: (value) => set({ hasHydrated: value }),
 
       getSession: (id) => get().sessions[id],
-      //   getSession: (id) => {
-      //     const existing = get().sessions[id];
-      //     if (existing) return existing;
-
-      //     // auto-create if missing
-      //     const now = new Date();
-      //     const newSession: Session = {
-      //       id,
-      //       title: "Untitled Session",
-      //       subtitle: "",
-      //       createdAt: now,
-      //       updatedAt: now,
-      //       messages: [],
-      //       summary: null,
-      //       analysis: [],
-      //       meta: { messageCount: 0, tokenCount: 0, costUSD: 0 },
-      //       modelCode: DEFAULT_MODEL_CODE,
-      //     };
-
-      //     set((state) => ({
-      //       sessions: {
-      //         ...state.sessions,
-      //         [id]: newSession,
-      //       },
-      //     }));
-
-      //     return newSession;
-      //   },
 
       getSessionField: (id, key) => {
         const session = get().sessions[id];
@@ -76,23 +48,26 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
       createSession: (id, data = {}) => {
         console.log("Creating session", id, data);
         const now = new Date();
-        set((state) => ({
-          sessions: {
-            ...state.sessions,
-            [id]: {
-              id,
-              title: data.title ?? "Untitled Session",
-              subtitle: data.subtitle ?? "",
-              createdAt: data.createdAt ?? now,
-              updatedAt: data.updatedAt ?? now,
-              messages: data.messages ?? [],
-              summary: data.summary ?? null,
-              analysis: data.analysis ?? [],
-              meta: data.meta ?? { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
-              modelCode: data.modelCode ?? DEFAULT_MODEL_CODE,
+        set((state) => {
+          if (state.sessions[id]) return state;
+          return {
+            sessions: {
+              ...state.sessions,
+              [id]: {
+                id,
+                title: data.title ?? "Untitled Session",
+                subtitle: data.subtitle ?? "",
+                createdAt: data.createdAt ?? now,
+                updatedAt: data.updatedAt ?? now,
+                messages: data.messages ?? [],
+                summary: data.summary ?? null,
+                analysis: data.analysis ?? [],
+                meta: data.meta ?? { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
+                modelCode: data.modelCode ?? DEFAULT_MODEL_CODE,
+              },
             },
-          },
-        }));
+          };
+        });
       },
 
       updateSession: (id, update) => {

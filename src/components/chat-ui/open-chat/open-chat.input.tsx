@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SendIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,16 @@ interface Props {
 }
 
 const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
+  const { t } = useTranslation("common", { keyPrefix: "chat-ui.open-chat.input" });
+
+  const { label, placeholder, actionTitle } = useMemo(
+    () => ({
+      label: t("label"),
+      placeholder: t("placeholder"),
+      actionTitle: t("actionTitle"),
+    }),
+    [t]
+  );
   const [inputValue, setInputValue] = useState("");
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -36,24 +47,16 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
     inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
   }, [inputValue]);
 
-  const { label, placeholder, actionTitle } = useMemo(
-    () => ({
-      label: "Type a message and press Enter to send",
-      placeholder: "Share what's on your mind...",
-      actionTitle: "Send message",
-    }),
-    []
-  );
-
   return (
-    <div className={cn("p-6 pt-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
+    <div className={cn("p-6 pt-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150  ", className)}>
       <div
         className={cn(
           "flex gap-3 items-center",
           "bg-mir-bg-input",
           "rounded-3xl p-1",
           "transition-all duration-300 ease-in-out",
-          "focus-within:bg-mir-border-light "
+          "focus-within:bg-mir-border-light ",
+          "rtl:pl-4 ltr:pr-4"
         )}
       >
         <textarea

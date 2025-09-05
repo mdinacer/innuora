@@ -3,6 +3,7 @@
 import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AuthError } from "@supabase/supabase-js";
 import { XCircleIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -57,8 +58,10 @@ const SignInForm: React.FC<Props> = ({ className }) => {
     setFormError(null);
     try {
       await signIn(data);
-    } catch (error: any) {
-      setFormError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof AuthError) {
+        setFormError(error.message);
+      }
     }
   }, []);
 

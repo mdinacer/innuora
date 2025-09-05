@@ -14,8 +14,8 @@ interface Props {
 }
 
 const STYLES_MAP = {
-  user: "bg-mir-bg-accent text-white rounded-[20px] rounded-tr-[6px]",
-  assistant: "bg-mir-bg-input rounded-[20px] rounded-tl-[6px]",
+  user: "bg-mir-bg-accent text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
+  assistant: "bg-mir-bg-input rounded-[20px] ltr:rounded-tl-[6px] rtl:rounded-tr-[6px]",
   system: "bg-mir-bg-input rounded-[20px] rounded-tl-[6px]",
 };
 
@@ -26,18 +26,12 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
   const formattedDate = format(new Date(message.timestamp), "HH:mm");
   const messageStyle = STYLES_MAP[role];
   return (
-    <div
-      className={cn(
-        "message-group",
-        "mb-8 opacity-0 animate-slide-in-up duration-[600ms] ease-in delay-200",
-        className
-      )}
-    >
-      <div className={cn("flex gap-3 mb-4 items-start", isUser ? " flex-row-reverse" : "")}>
+    <div className={cn("mb-8 opacity-0 animate-slide-in-up duration-[600ms] ease-in delay-200", className)}>
+      <div className={cn("flex flex-col gap-3 mb-4 md:flex-row items-start", isUser ? " md:flex-row-reverse" : "")}>
         <div
           className={cn(
             "size-9 rounded-lg flex items-center justify-center",
-            "text-sm font-semibold shrink-0 text-white",
+            "text-sm font-semibold rtl:font-sans shrink-0 text-white",
             isUser ? "bg-mir-bg-secondary" : "bg-mir-bg-accent"
           )}
         >
@@ -46,7 +40,7 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
         <div
           className={cn(
             "message-bubble",
-            "max-w-[75%] py-4 px-5 rounded-3xl leading-[1.5] relative",
+            "w-full md:max-w-[75%] py-4 px-5 rounded-3xl leading-[1.5] relative",
             "[&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-4 ",
             messageStyle
           )}

@@ -1,17 +1,23 @@
 import { ChevronRightIcon } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
 
-const FlowChatHeroCard = () => {
-  const { title, subtitle, paragraphs, buttonText } = {
-    title: "Welcome To Your Emotional Journey",
-    subtitle: "I'm here to help you slow down, reflect, and gain clarity on what you're truly feeling.",
-    paragraphs: [
-      "This is a safe space for emotional exploration and healing.",
-      "Take your time and be honest with yourself as we work together.",
-    ],
-    buttonText: "Begin reflection",
-  };
+export interface FlowChatHeroProps {
+  title: string;
+  subtitle: string;
+  paragraphs: string[];
+  buttonText: string;
+}
+
+interface Props {
+  data: FlowChatHeroProps;
+  onStartSession: () => void;
+}
+
+const FlowChatHeroCard = (props: Props) => {
+  const { title, subtitle, paragraphs, buttonText } = props.data;
   return (
     <div
       className={cn(
@@ -40,23 +46,33 @@ const FlowChatHeroCard = () => {
         <p className={cn("hero-subtitle", "text-base text-mir-text-primary/70 leading-[1.5] mb-5 ")}>{subtitle}</p>
         <div className={cn("hero-paragraphs", "my-5")}>
           {paragraphs.map((paragraph, index) => (
-            <p className="text-mir-text-primary/70 leading-[1.5] mb-3" key={index}>
-              {paragraph}
-            </p>
+            <div
+              key={index}
+              className="leading-7 tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-3 [&>ul]:list-inside [&>ul]:list-disc"
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
+              >
+                {paragraph}
+              </ReactMarkdown>
+            </div>
           ))}
         </div>
         <button
+          onClick={props.onStartSession}
           className={cn(
             "hero-action",
-            "flex items-center gap-2",
+            "flex  ltr:flex-row  items-center gap-2",
             "text-mir-bg-accent font-semibold",
             "cursor-pointer bg-none",
-            "border-none p-0"
+            "border-none p-0",
+            "ltr:ml-auto rtl:mr-auto"
           )}
         >
           <span>{buttonText}</span>
 
-          <ChevronRightIcon className="size-4 shrink-0" />
+          <ChevronRightIcon className="size-4 shrink-0 ltr:rotate-0 rtl:rotate-180" />
         </button>
       </div>
     </div>

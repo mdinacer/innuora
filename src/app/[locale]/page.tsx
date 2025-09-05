@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import Header from "@/components/header";
-import initTranslations from "@/lib/i18n";
+import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export default async function Home({
@@ -69,6 +69,7 @@ export default async function Home({
     <main className="relative rtl:font-arabic-body text-base rtl:text-lg font-sans min-h-screen w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Header --> */}
       <Header
+        locale={locale as AppLocales}
         sideContent={
           <Link
             href="#early-access"
@@ -95,13 +96,13 @@ export default async function Home({
         <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5">
           <Link
             href="#early-access"
-            className="inline-flex justify-center rounded-2xl bg-mir-bg-accent px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
+            className="inline-flex justify-center rtl:pt-4 rounded-2xl bg-mir-bg-accent px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
           >
             {hero.cta.join}
           </Link>
           <Link
             href="#demo"
-            className="inline-flex justify-center rounded-2xl border border-mir-border-light bg-transparent px-6 py-3 font-semibold text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+            className="inline-flex justify-center rounded-2xl border border-mir-border-light bg-transparent rtl:pt-4 px-6 py-3 font-semibold text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
           >
             {hero.cta.demo}
           </Link>
@@ -121,7 +122,7 @@ export default async function Home({
           {howItHelps.features.map((feature, index) => (
             <div key={index} className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-subtle">
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-mir-text-secondary">{feature.subtitle}</p>
+              <p className="text-muted-foreground">{feature.subtitle}</p>
             </div>
           ))}
         </div>
@@ -161,7 +162,7 @@ export default async function Home({
               type="email"
               required
               placeholder={earlyAccess.form.placeholder}
-              className="flex-1 rounded-2xl bg-white px-4 py-3 text-black placeholder:mir-text-secondary dark:placeholder:mir-text-secondary ring-0 border-0 outline-none"
+              className="flex-1 rounded-2xl bg-white px-4 rtl:font-sans py-3 text-black placeholder:mir-text-secondary dark:placeholder:mir-text-secondary ring-0 border-0 outline-none"
             />
             <button
               type="submit"
@@ -178,8 +179,10 @@ export default async function Home({
         <div className="space-y-4">
           {faq.items.map((item, index) => (
             <details key={index} className="rounded-xl border border-mir-border-light bg-mir-bg-card p-4">
-              <summary className="cursor-pointer select-none list-none font-semibold">{item.question}</summary>
-              <p className="mt-2 text-primary/90">{item.answer}</p>
+              <summary className="cursor-pointer select-none list-none rtl:font-arabic font-semibold">
+                {item.question}
+              </summary>
+              <p className="mt-2 rtl:mt-3 text-primary">{item.answer}</p>
             </details>
           ))}
         </div>
@@ -187,7 +190,7 @@ export default async function Home({
       {/* <!-- Footer --> */}
       <footer className="border-t border-mir-border-light">
         <div className="max-w-6xl mx-auto px-6 py-10 text-center text-base rtl:text-lg text-mir-text-secondary">
-          <p className="mb-3">{footer.disclaimer}</p>
+          <p className="mb-3 text-primary">{footer.disclaimer}</p>
           <div className="flex justify-center gap-6 flex-wrap mb-3">
             <Link href="/privacy" className="hover:text-mir-text-primary">
               {footer.links.privacy}

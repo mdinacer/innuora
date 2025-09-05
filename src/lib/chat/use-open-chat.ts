@@ -36,6 +36,10 @@ export function useOpenChat({ sessionId, autoCreateSession = false }: OpenChatPr
     [sessionId]
   );
 
+  const resetSession = useCallback(() => {
+    useOpenChatSessionStore.getState().resetSession(sessionId);
+  }, [sessionId]);
+
   useEffect(() => {
     if (autoCreateSession && hasHydrated && !session) {
       useOpenChatSessionStore.getState().createSession(sessionId);
@@ -43,5 +47,5 @@ export function useOpenChat({ sessionId, autoCreateSession = false }: OpenChatPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasHydrated, session]);
 
-  return { hasHydrated, messages, session, addMessage, addAnalysis, addTokenUsage };
+  return { hasHydrated, messages, session, addMessage, addAnalysis, addTokenUsage, resetSession };
 }

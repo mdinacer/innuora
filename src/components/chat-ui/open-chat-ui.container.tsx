@@ -43,13 +43,14 @@ interface OpenChatContainerProps<T> extends React.HTMLAttributes<HTMLDivElement>
 
   title?: string;
   subtitle?: string;
+
   headerActions?: React.ReactNode;
   welcomeMessage?: React.ReactNode;
   renderItem: (message: T, index: number) => React.ReactNode;
   onUserInput?: (value: string) => Promise<void>;
 }
 
-const ChatUIContainer = <T,>({
+const OpenChatUIContainer = <T,>({
   className,
   messages = [],
   isLoading = false,
@@ -98,4 +99,4 @@ const ChatUIContainer = <T,>({
   );
 };
 
-export default ChatUIContainer;
+export default OpenChatUIContainer;

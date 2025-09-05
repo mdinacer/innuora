@@ -18,20 +18,19 @@ interface SessionOrchestratorProps {
   sessionFlow: SessionFlow;
   initStores?: boolean;
   autoStart?: boolean;
-  //options?: SessionOrchestratorOptions;
   onStepChange?: (step: FlowStep, previousStep: FlowStep | null) => void;
 }
 
 export default function useSessionOrchestrator({
   sessionFlow,
-  autoStart = true,
+  autoStart = false,
   //options,
   initStores = false,
   //onStepChange,
 }: SessionOrchestratorProps) {
   const { id: sessionId } = sessionFlow;
   useInitSessionStores({ sessionId, autoCreate: initStores });
-  const { session, hasHydrated: hasSessionHydrated, setInputValues } = useSessionState({ sessionId });
+  const { session, hasHydrated: hasSessionHydrated, setInputValues, updateSession } = useSessionState({ sessionId });
 
   const { isTransitioning, resetFlow, startFlow, moveToNext, jumpToStep } = useSessionFlowEngine(sessionFlow);
   const {
@@ -47,8 +46,8 @@ export default function useSessionOrchestrator({
   const resetSession = useCallback(() => {
     resetFlow();
     clearMessages();
-    setInputValues({});
-  }, [clearMessages, resetFlow, setInputValues]);
+    updateSession((prev) => ({ ...prev, inputValues: {}, isFlowStarted: false, isFlowEnded: false }));
+  }, [clearMessages, resetFlow, updateSession]);
 
   const handleUserInput = useCallback(
     (key: string, value: string, meta: { id: string; label: string }) => {
@@ -101,6 +100,7 @@ export default function useSessionOrchestrator({
     session,
     messages: messages ?? [],
     clearMessages,
+    startFlow,
     resetFlow,
     resetSession,
     moveToNext,

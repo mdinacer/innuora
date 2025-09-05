@@ -85,13 +85,13 @@ const PasswordField = <T extends FieldValues>({
         const passwordStrength = getPasswordStrength(field.value);
         return (
           <FormItem className={className}>
-            {label && <FormLabel>{label}</FormLabel>}
+            {label && <FormLabel className="rtl:font-arabic-body rtl:text-lg rtl:mb-1">{label}</FormLabel>}
             <FormControl>
               <div className="relative">
                 <input
                   aria-invalid={fieldState.invalid}
                   aria-describedby={label}
-                  className="w-full rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 pr-12 text-mir-text-primary placeholder-mir-text-secondary outline-none transition focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20"
+                  className="w-full rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 ltr:pr-12 rtl:pl-12 text-mir-text-primary placeholder-mir-text-secondary outline-none transition focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20"
                   {...field}
                   {...props}
                   type={isVisible ? "text" : "password"}

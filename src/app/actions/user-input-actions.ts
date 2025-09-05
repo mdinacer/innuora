@@ -1,5 +1,6 @@
 "use server";
 
+import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
@@ -13,6 +14,7 @@ import {
   StateAnalysisPrompt,
   TonePrompt,
 } from "@/lib/ai/prompts/";
+import { buildUserProfilePrompt } from "@/lib/ai/prompts/prompt.user-context";
 import { StateAnalysisEngine } from "@/lib/ai/state-analysis-engine";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
@@ -75,6 +77,7 @@ async function buildConversationPrompts(
   userInput: string,
   analysis: StateAnalysis,
   messages: OpenChatMessage[],
+  profile: Profile | null,
   locale: AppLocales
 ): Promise<ChatCompletionMessageParam[]> {
   // Initialize services - can be done in parallel
@@ -105,12 +108,15 @@ async function buildConversationPrompts(
     content: toneInstruction,
   };
 
+  const profileContextPrompt = profile ? buildUserProfilePrompt(profile) : "";
+
   // Compose prompts efficiently
   return [
     SecurityProtocolPrompt,
     PersonaPrompt,
     languagePrompt,
     tonePrompt,
+    ...(profileContextPrompt ? [profileContextPrompt] : []),
     ...modulesPrompt,
     ...(chatHistoryPrompt ? [chatHistoryPrompt] : []),
     { role: "user", content: userInput.trim() },
@@ -124,6 +130,7 @@ export async function handleUserInput(
   userInput: string,
   prevAnalysis: StateAnalysis[] = [],
   messages: OpenChatMessage[] = [],
+  profile: Profile | null,
   locale: AppLocales = "en",
   modelCode: ModelCode = MODELS_CODES.M1
 ): Promise<HandleUserInputResult> {
@@ -143,7 +150,7 @@ export async function handleUserInput(
     const { analysis, modelTokenUsage: analysisUsage } = analysisResult;
 
     // Step 2: Build conversation prompts
-    const conversationPrompts = await buildConversationPrompts(userInput, analysis, messages, locale);
+    const conversationPrompts = await buildConversationPrompts(userInput, analysis, messages, profile, locale);
 
     // Step 3: Generate AI response
     const miraelResponse = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
@@ -201,6 +208,7 @@ export async function handleBatchUserInputs(
     userInput: string;
     prevAnalysis?: StateAnalysis[];
     messages?: OpenChatMessage[];
+    profile: Profile | null;
     locale?: AppLocales;
     modelCode?: ModelCode;
   }>
@@ -208,7 +216,14 @@ export async function handleBatchUserInputs(
   const results = await Promise.allSettled(
     inputs.map(async (input) => {
       await validateUserInput(input.userInput);
-      return handleUserInput(input.userInput, input.prevAnalysis, input.messages, input.locale, input.modelCode);
+      return handleUserInput(
+        input.userInput,
+        input.prevAnalysis,
+        input.messages,
+        input.profile,
+        input.locale,
+        input.modelCode
+      );
     })
   );
 
