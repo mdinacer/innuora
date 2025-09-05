@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -12,7 +13,7 @@ export default async function Home({
   const { locale = "en" } = await params;
   const { t } = await initTranslations(locale, ["pages"]);
 
-  const { hero, howItHelps, demo, earlyAccess, faq, footer } = {
+  const { hero, howItHelps, demo, earlyAccess, faq } = {
     hero: {
       badge: t("homepage.hero.badge"),
       title: t("homepage.hero.title"),
@@ -53,16 +54,6 @@ export default async function Home({
         question: string;
         answer: string;
       }[],
-    },
-    footer: {
-      disclaimer: t("homepage.footer.disclaimer"),
-      links: {
-        privacy: t("homepage.footer.links.privacy"),
-        terms: t("homepage.footer.links.terms"),
-        contact: t("homepage.footer.links.contact"),
-        help: t("homepage.footer.links.help"),
-      },
-      copyright: t("homepage.footer.copyright"),
     },
   };
   return (
@@ -155,8 +146,10 @@ export default async function Home({
       {/* <!-- Early Access CTA --> */}
       <section id="early-access" className="px-6 py-16">
         <div className="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white bg-gradient-to-br from-[#FF6B5A] to-[#FF8A7A] rtl:to-mir-bg-accent-dark">
-          <h2 className="text-3xl md:text-4xl rtl:md:text-5xl font-bold mb-3 rtl:font-arabic">{earlyAccess.title}</h2>
-          <p className="text-base md:text-lg opacity-90 max-w-2xl mx-auto mb-8">{earlyAccess.subtitle}</p>
+          <h2 className="text-3xl md:text-4xl rtl:md:text-5xl font-bold mb-3 rtl:mb-5 rtl:font-arabic">
+            {earlyAccess.title}
+          </h2>
+          <p className="text-base md:text-lg rtl:font-medium max-w-2xl mx-auto mb-8">{earlyAccess.subtitle}</p>
           <form id="waitlistForm" className="mx-auto flex max-w-xl flex-col gap-3 sm:flex-row">
             <input
               type="email"
@@ -188,26 +181,7 @@ export default async function Home({
         </div>
       </section>
       {/* <!-- Footer --> */}
-      <footer className="border-t border-mir-border-light">
-        <div className="max-w-6xl mx-auto px-6 py-10 text-center text-base rtl:text-lg text-mir-text-secondary">
-          <p className="mb-3 text-primary">{footer.disclaimer}</p>
-          <div className="flex justify-center gap-6 flex-wrap mb-3">
-            <Link href="/privacy" className="hover:text-mir-text-primary">
-              {footer.links.privacy}
-            </Link>
-            <Link href="/terms" className="hover:text-mir-text-primary">
-              {footer.links.terms}
-            </Link>
-            <Link href="/contact" className="hover:text-mir-text-primary">
-              {footer.links.contact}
-            </Link>
-            <Link href="/help" className="hover:text-mir-text-primary">
-              {footer.links.help}
-            </Link>
-          </div>
-          <p>{footer.copyright}</p>
-        </div>
-      </footer>
+      <Footer locale={locale as AppLocales} />
     </main>
   );
 }

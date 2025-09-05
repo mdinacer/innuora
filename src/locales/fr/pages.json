@@ -172,16 +172,6 @@
                     "answer": "L'accès anticipé vous permet de façonner Mirael avec nous. Vos retours influenceront directement l'évolution de l'expérience et vous serez parmi les premiers à bénéficier des nouvelles fonctionnalités."
                 }
             ]
-        },
-        "footer": {
-            "disclaimer": "Important : Mirael n'est pas un service de santé mentale ou de crise. En cas de crise, contactez les services d'urgence locaux.",
-            "links": {
-                "privacy": "Confidentialité",
-                "terms": "Conditions",
-                "contact": "Contact",
-                "help": "Aide"
-            },
-            "copyright": "© 2025 Mirael. Accès anticipé."
         }
     },
     "chat-ui": {

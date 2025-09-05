@@ -172,16 +172,6 @@
           "answer": "Early access lets you shape Mirael with us. Your feedback will directly influence how the experience evolves, and you will be among the first to benefit from new features."
         }
       ]
-    },
-    "footer": {
-      "disclaimer": "Important: Mirael is not a mental health or crisis service. If you are in crisis, please contact local emergency services.",
-      "links": {
-        "privacy": "Privacy",
-        "terms": "Terms",
-        "contact": "Contact",
-        "help": "Help"
-      },
-      "copyright": "© 2025 Mirael. Early Access."
     }
   },
   "chat-ui": {
@@ -285,6 +275,10 @@
     }
   },
   "policies_footer": {
+    "disclaimer": {
+      "label": "Important: ",
+      "message": "Mirael is not a mental health or crisis service. If you are in crisis, please contact local emergency services."
+    },
     "questions": "Questions about this {{currentPage}}?",
     "contact_email": "Contact us at ",
     "links": {
