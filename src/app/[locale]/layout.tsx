@@ -7,6 +7,7 @@ import "../globals.css";
 import { notFound } from "next/navigation";
 import { dir } from "i18next";
 
+import { BackgroundBeams } from "@/components/background-beams";
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
 import { METADATA } from "@/lib/constants/metadata";
@@ -37,8 +38,9 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-mir-bg-primary`}
+        className={`relative ${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-mir-bg-primary`}
       >
+        <BackgroundBeams className="hidden md:block" />
         <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}

@@ -10,25 +10,41 @@
     "principles": {
       "title": "Key Principles",
       "items": [
-        "Minimal data collection – we only keep what is needed for your account and reflection history.",
-        "No advertising or data sales – your information is never shared for marketing.",
-        "Transparency – we explain clearly how and why data is used.",
-        "Safety first – emotional reflections are treated with heightened sensitivity."
+        "Minimal data collection - we only keep what is needed for your account and reflection history.",
+        "No advertising or data sales - your information is never shared for marketing.",
+        "Transparency - we explain clearly how and why data is used.",
+        "Safety first - emotional reflections are treated with heightened sensitivity."
       ]
     },
     "dataWeCollect": {
       "title": "What We Collect",
       "table": {
-        "headers": ["Category", "Purpose", "Retention"],
+        "headers": [
+          "Category",
+          "Purpose",
+          "Retention"
+        ],
         "rows": [
           [
             "Account Data (email, locale)",
             "Enable sign-in and set your language",
             "Kept until you delete your account"
           ],
-          ["Session Data (temporary AI responses)", "Provide AI reflections", "Ephemeral – not stored"],
-          ["Reflection Notes (if you save them)", "Allow you to revisit past insights", "Kept until you delete them"],
-          ["Technical Logs (IP, device info)", "Security and performance monitoring", "Short-term, auto-deleted"]
+          [
+            "Session Data (temporary AI responses)",
+            "Provide AI reflections",
+            "Ephemeral - not stored"
+          ],
+          [
+            "Reflection Notes (if you save them)",
+            "Allow you to revisit past insights",
+            "Kept until you delete them"
+          ],
+          [
+            "Technical Logs (IP, device info)",
+            "Security and performance monitoring",
+            "Short-term, auto-deleted"
+          ]
         ]
       }
     },
@@ -66,47 +82,73 @@
     },
     "contact": {
       "title": "Contact Information",
-      "entity": {
-        "key": "Legal Entity: ",
-        "value": "Mirael, Inc."
-      },
-      "support": "support@mirael.life",
-      "privacy": "privacy@mirael.life"
+      "entity": "Legal Entity: ",
+      "support": "Support",
+      "privacy": "Privacy Policy"
     },
     "eligibility": {
       "title": "Eligibility",
-      "ageRequirement": "18+",
+      "ageRequirement": "Age Requirement:",
       "message": "By using Mirael, you represent and warrant that you are at least 18 years old (or the legal age of majority in your jurisdiction) and have the legal capacity to enter into these Terms."
     },
     "license": {
       "title": "License to Use",
-      "permitted": "We grant you a limited, non-exclusive, non-transferable, revocable license to use Mirael for personal, non-commercial purposes in accordance with these Terms.",
-      "restricted": [
-        "Copy, modify, distribute, sell, or lease any part of the Service",
-        "Reverse engineer, decompile, or attempt to extract source code (except as permitted by law)",
-        "Use Mirael to build competitive products or services"
-      ]
+      "permitted": {
+        "title": "What You Can Do",
+        "message": "We grant you a limited, non-exclusive, non-transferable, revocable license to use Mirael for personal, non-commercial purposes in accordance with these Terms."
+      },
+      "restricted": {
+        "title": "What You Cannot Do",
+        "items": [
+          "Copy, modify, distribute, sell, or lease any part of the Service",
+          "Reverse engineer, decompile, or attempt to extract source code (except as permitted by law)",
+          "Use Mirael to build competitive products or services"
+        ]
+      }
     },
     "responsibilities": {
       "title": "Your Responsibilities",
-      "accountSecurity": "You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.",
-      "legalCompliance": "You agree to comply with all applicable laws and regulations when using Mirael.",
-      "prohibitedUses": [
-        "Submit content that is unlawful, harmful, defamatory, harassing, abusive, or otherwise objectionable",
-        "Attempt to gain unauthorized access to systems or networks",
-        "Use Mirael for medical diagnosis, emergency response, or as a substitute for professional therapy"
-      ]
+      "sections": {
+        "account_security": {
+          "title": "Account Security",
+          "description": "You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account."
+        },
+        "legal_compliance": {
+          "title": "Legal Compliance",
+          "description": "You agree to comply with all applicable laws and regulations when using Mirael."
+        },
+        "prohibited_uses": {
+          "title": "Prohibited Uses",
+          "description": "You agree not to:",
+          "items": [
+            "Submit content that is unlawful, harmful, defamatory, harassing, abusive, or otherwise objectionable",
+            "Attempt to gain unauthorized access to systems or networks",
+            "Use Mirael for medical diagnosis, emergency response, or as a substitute for professional therapy"
+          ]
+        }
+      }
     },
     "natureOfService": {
       "title": "What Mirael Is (And Isn't)",
       "message": "Mirael is an emotional reflection and clarity tool powered by AI. It is not a medical device, mental health service, or therapy substitute.",
       "disclaimer": "We do not provide medical, psychiatric, or psychological advice. Always seek the advice of a qualified health provider regarding mental health or medical conditions."
     },
-    "aiAndContent": {
+    "ai_and_content": {
       "title": "AI and Your Content",
-      "aiResponses": "Mirael uses stateless AI inference to generate reflective responses and insights. These outputs are generated automatically and are not guaranteed to be accurate or appropriate in all contexts.",
-      "userRights": "You retain ownership of content you submit to Mirael. However, you grant us a non-exclusive, worldwide, royalty-free license to process, store, and use such content to provide and improve the Service.",
-      "moderation": "We reserve the right to remove or restrict access to content that violates these Terms."
+      "sections": {
+        "ai_generated_responses": {
+          "title": "AI-Generated Responses",
+          "description": "Mirael uses stateless AI inference to generate reflective responses and insights. These outputs are generated automatically and are not guaranteed to be accurate or appropriate in all contexts."
+        },
+        "content_rights": {
+          "title": "Your Content Rights",
+          "description": "You retain ownership of content you submit to Mirael. However, you grant us a non-exclusive, worldwide, royalty-free license to process, store, and use such content to provide and improve the Service."
+        },
+        "content_moderation": {
+          "title": "Content Moderation",
+          "description": "We reserve the right to remove or restrict access to content that violates these Terms."
+        }
+      }
     },
     "fees": {
       "title": "Fees and Payments",
@@ -114,13 +156,22 @@
         "Certain features may require a subscription or payment. Fees, billing cycles, and cancellation terms will be disclosed at the time of purchase.",
         "Payments are processed through third-party providers. We do not store payment card details."
       ],
-      "refundPolicy": "Unless required by law, payments are non-refundable."
+      "refundPolicy": "Refund Policy: Unless required by law, payments are non-refundable."
     },
     "termination": {
       "title": "Account Termination",
-      "byUser": "You may stop using Mirael at any time and request account deletion through your settings.",
-      "byUs": "We may suspend or terminate your access if you violate these Terms, misuse the Service, or create legal risk.",
-      "effect": "Upon termination, all rights granted to you under these Terms will immediately cease."
+      "by_user": {
+        "title": "By You",
+        "description": "You may stop using Mirael at any time and request account deletion through your settings."
+      },
+      "by_us": {
+        "title": "By Us",
+        "description": "We may suspend or terminate your access if you violate these Terms, misuse the Service, or create legal risk."
+      },
+      "effect": {
+        "label": "Effect of Termination",
+        "description": "Upon termination, all rights granted to you under these Terms will immediately cease."
+      }
     },
     "intellectualProperty": {
       "title": "Intellectual Property",
@@ -129,13 +180,22 @@
     },
     "disclaimers": {
       "title": "Disclaimers",
-      "asIs": "Mirael is provided on an \"as-is\" and \"as-available\" basis without warranties of any kind. We do not warrant that Mirael will be error-free, uninterrupted, secure, or that results will be reliable or accurate.",
-      "health": "Mirael is not a substitute for professional diagnosis, treatment, or crisis support. Always consult qualified healthcare professionals for medical or mental health concerns."
+      "as_is_service": {
+        "title": "\"As-Is\" Service",
+        "description": "Mirael is provided on an \"as-is\" and \"as-available\" basis without warranties of any kind. We do not warrant that Mirael will be error-free, uninterrupted, secure, or that results will be reliable or accurate."
+      },
+      "health_disclaimer": {
+        "title": "Health Disclaimer",
+        "description": "Mirael is not a substitute for professional diagnosis, treatment, or crisis support. Always consult qualified healthcare professionals for medical or mental health concerns."
+      }
     },
     "liability": {
       "title": "Limitation of Liability",
       "message": "To the maximum extent permitted by law, Mirael, Inc. and its affiliates shall not be liable for indirect, incidental, special, consequential, or punitive damages.",
-      "cap": "Our total liability for any claim arising out of or relating to the Service is limited to the amount you paid us in the 12 months preceding the claim, or $50 if no payment was made."
+      "cap": {
+        "label": "Liability Cap:",
+        "message": "Our total liability for any claim arising out of or relating to the Service is limited to the amount you paid us in the 12 months preceding the claim, or $50 if no payment was made."
+      }
     },
     "indemnification": {
       "title": "Indemnification",
@@ -151,8 +211,14 @@
     },
     "additional": {
       "title": "Additional Terms",
-      "thirdParty": "Mirael may contain links or integrations to third-party services. We are not responsible for third-party content, policies, or practices.",
-      "exportControls": "You may not use or export Mirael in violation of applicable export laws and regulations."
+      "third_party_services": {
+        "title": "Third-Party Services",
+        "description": "Mirael may contain links or integrations to third-party services. We are not responsible for third-party content, policies, or practices."
+      },
+      "export_controls": {
+        "title": "Export Controls",
+        "description": "You may not use or export Mirael in violation of applicable export laws and regulations."
+      }
     },
     "changes": {
       "title": "Changes to These Terms",
@@ -162,6 +228,76 @@
     "entireAgreement": {
       "title": "Entire Agreement",
       "message": "These Terms constitute the entire agreement between you and Mirael, Inc. regarding the Service and supersede all prior agreements relating to the subject matter hereof."
+    }
+  },
+  "eula": {
+    "title": "End User License Agreement",
+    "lastUpdated": "Last Updated September 2, 2025",
+    "hero": {
+      "headline": "End User License Agreement",
+      "description": "This agreement governs your use of the Mirael application and defines the terms under which you may access our software."
+    },
+    "notice": {
+      "title": "Important Legal Agreement",
+      "message": "By downloading, installing, or using Mirael, you agree to be bound by the terms of this End User License Agreement.",
+      "warning": "If you do not agree to these terms, do not install or use Mirael."
+    },
+    "acceptance": {
+      "title": "Acceptance of Agreement",
+      "message": "By downloading, installing, or using Mirael, you agree to be bound by the terms of this End User License Agreement (EULA). If you do not agree, do not install or use Mirael."
+    },
+    "licenseGrant": {
+      "title": "License Grant",
+      "message": "Mirael grants you a limited, non-exclusive, non-transferable, revocable license to use the application for personal, non-commercial purposes in accordance with this EULA."
+    },
+    "licenseRestrictions": {
+      "title": "License Restrictions",
+      "message": "You agree that you will not:",
+      "items": [
+        "Reverse engineer, decompile, or disassemble Mirael",
+        "Rent, lease, lend, sell, redistribute, or sublicense Mirael",
+        "Use Mirael in any manner that violates applicable laws or regulations",
+        "Attempt to circumvent security measures or access Mirael's source code"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "Intellectual Property Ownership",
+      "message": "All rights, title, and interest in Mirael, including all content, design, and software, remain the exclusive property of Mirael and its licensors. This EULA does not grant you ownership of any part of Mirael."
+    },
+    "updates": {
+      "title": "Updates and Modifications",
+      "message": "Mirael may, at its discretion, provide updates, patches, or modifications to the application. This EULA applies to all such updates unless they are accompanied by a separate license agreement."
+    },
+    "termination": {
+      "title": "Termination",
+      "message": "This EULA is effective until terminated. Mirael may suspend or terminate your access at any time without notice if you breach any of its terms.",
+      "uponTermination": {
+        "label": "Upon Termination:",
+        "message": "You must immediately uninstall Mirael and cease all use of the application."
+      }
+    },
+    "disclaimer": {
+      "title": "Disclaimer of Warranties",
+      "message": "Mirael is provided \"as is\" without warranties of any kind, express or implied, including but not limited to warranties of fitness for a particular purpose, reliability, or availability.",
+      "note": "This means we cannot guarantee that the app will work perfectly or meet all your expectations, though we strive to provide the best experience possible."
+    },
+    "liability": {
+      "title": "Limitation of Liability",
+      "message": "To the maximum extent permitted by law, Mirael and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the application."
+    },
+    "governingLaw": {
+      "title": "Governing Law",
+      "message": "This EULA shall be governed by and construed in accordance with the laws of the applicable jurisdiction in which Mirael is made available, without regard to conflict of law provisions."
+    },
+    "contact": {
+      "title": "Contact Information",
+      "message": "For any questions regarding this End User License Agreement, please contact us:",
+      "supportEmail": "Email Support"
+    },
+    "summary": {
+      "title": "Agreement Summary",
+      "message": "This EULA grants you permission to use Mirael for personal purposes while protecting our intellectual property rights and limiting liability.",
+      "acknowledgment": "By continuing to use Mirael, you acknowledge that you have read, understood, and agree to be bound by these terms."
     }
   }
 }

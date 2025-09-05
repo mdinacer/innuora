@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import initTranslations from "@/lib/i18n";
+import PoliciesFooter from "@/components/policies/policies.footer";
+import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export default async function PrivacyPolicyRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;
@@ -43,11 +44,13 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
     },
   };
   return (
-    <main className="relative font-sans min-h-screen pt-20 w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative font-sans rtl:font-arabic-body rtl:text-lg min-h-screen pt-20 w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">{content.title}</h1>
-        <div className="inline-flex items-center gap-2 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] font-semibold text-mir-bg-accent mb-8">
+        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4 rtl:font-arabic">
+          {content.title}
+        </h1>
+        <div className="inline-flex items-center gap-2 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 ltr:text-[13px] rtl:text-base font-semibold text-mir-bg-accent mb-8">
           {content.lastUpdated}
         </div>
       </section>
@@ -55,11 +58,11 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
       {/* <!-- Intro Section --> */}
       <section className="max-w-4xl mx-auto px-6 pb-12">
         <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
-          <h2 className="text-3xl font-bold mb-4">{content.intro.title}</h2>
+          <h2 className="text-3xl font-bold mb-4 rtl:font-arabic">{content.intro.title}</h2>
           <div className="space-y-4 opacity-90">
-            <p>{content.intro.message}</p>
+            <p className="rtl:text-lg rtl:font-medium">{content.intro.message}</p>
             <div className="p-4 rounded-xl bg-white/10 mt-4">
-              <p className="text-sm opacity-90">{content.intro.note}</p>
+              <p className="text-sm opacity-90 rtl:text-base">{content.intro.note}</p>
             </div>
           </div>
         </div>
@@ -70,7 +73,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
         {/* <!-- Key Principles --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-6">{content.principles.title}</h2>
+            <h2 className="text-2xl font-bold mb-6 rtl:font-arabic">{content.principles.title}</h2>
             <div className="space-y-4">
               {content.principles.items.map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
@@ -84,7 +87,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
 
         {/* <!-- What We Collect --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">{content.dataWeCollect.title}</h2>
+          <h2 className="text-2xl font-bold mb-6 rtl:font-arabic">{content.dataWeCollect.title}</h2>
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card shadow-[0_2px_8px] shadow-black/5 overflow-hidden">
             {/* <!-- Desktop Table --> */}
             <div className="hidden md:block">
@@ -142,7 +145,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
         {/* <!-- How We Use Your Data --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">{content.howWeUse.title}</h2>
+            <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.howWeUse.title}</h2>
             <div className="space-y-4 text-mir-text-secondary">
               {content.howWeUse.paragraphs.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
@@ -154,7 +157,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
         {/* <!-- Your Rights --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">{content.yourRights.title}</h2>
+            <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.yourRights.title}</h2>
             <div className="space-y-4 text-mir-text-secondary">
               {content.yourRights.paragraphs.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
@@ -166,7 +169,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
         {/* <!-- Children --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">{content.children.title}</h2>
+            <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.children.title}</h2>
             <p className="text-mir-text-secondary">{content.children.note}</p>
           </div>
         </section>
@@ -174,7 +177,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
         {/* <!-- Contact Us --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">{content.contact.title}</h2>
+            <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.contact.title}</h2>
             <p className="text-mir-text-secondary">
               {content.contact.message}{" "}
               <Link href="mailto:privacy@mirael.app" className="text-mir-bg-accent text-center hover:underline">
@@ -184,6 +187,8 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
           </div>
         </section>
       </div>
+
+      <PoliciesFooter locale={locale as AppLocales} currentPage="privacy" />
     </main>
   );
 }

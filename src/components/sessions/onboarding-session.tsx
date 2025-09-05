@@ -25,7 +25,7 @@ interface Props {
 }
 
 const OnboardingSession = ({ className, sessionFlow }: Props) => {
-  const { t } = useTranslation("common", { keyPrefix: "chat-ui.onboarding" });
+  const { t } = useTranslation("pages", { keyPrefix: "chat-ui.onboarding" });
 
   const { title, subtitle, welcomeMessage } = {
     title: t("header.title", { defaultValue: "Welcome to Mirael" }),

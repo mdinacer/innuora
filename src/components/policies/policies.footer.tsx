@@ -1,41 +1,49 @@
 import Link from "next/link";
 
-const PoliciesFooter = ({ currentPage }: { currentPage?: "privacy" | "terms" }) => {
+import initTranslations, { AppLocales } from "@/lib/i18n";
+
+export default async function PoliciesFooter({
+  currentPage,
+  locale = "en",
+}: {
+  currentPage?: "privacy" | "terms" | "eula";
+  locale?: AppLocales;
+}) {
+  const { t } = await initTranslations(locale, ["pages"]);
+
+  const { questions, contactEmail, links, copyright } = {
+    questions: t("policies_footer.questions", { currentPage: t(`policies_footer.links.${currentPage}`) }),
+    contactEmail: t("policies_footer.contact_email"),
+    links: {
+      privacy: t("policies_footer.links.privacy"),
+      terms: t("policies_footer.links.terms"),
+      contact: t("policies_footer.links.contact"),
+      help: t("policies_footer.links.help"),
+      support: t("policies_footer.links.support"),
+      eula: t("policies_footer.links.eula"),
+    },
+    copyright: t("policies_footer.copyright"),
+  };
   return (
     <footer className="border-t border-mir-border-light">
       <div className="max-w-6xl mx-auto px-6 py-10 text-center text-sm text-mir-text-secondary">
         <p className="mb-3">
-          <strong>Questions about this policy?</strong> Contact us at{" "}
+          <strong>{questions}</strong> {contactEmail}
           <a href="mailto:privacy@mirael.life" className="text-mir-bg-accent hover:underline">
             privacy@mirael.life
           </a>
         </p>
-        <div className="flex justify-center gap-6 flex-wrap mb-3">
-          {currentPage === "terms" && (
-            <Link href="/privacy" className="hover:text-[var(--text-primary)]">
-              Privacy Policy
-            </Link>
-          )}
 
-          {currentPage === "privacy" && (
-            <Link href="/terms" className="hover:text-mir-text-primary">
-              Terms of Service
-            </Link>
-          )}
-          <Link href="#" className="hover:text-mir-text-primary">
-            Contact
-          </Link>
-          <Link href="#" className="hover:text-mir-text-primary">
-            Help
-          </Link>
-          <Link href="#" className="hover:text-mir-text-primary">
-            Support
-          </Link>
+        <div className="flex justify-center text-mir-text-secondary [&>a]:hover:text-mir-bg-accent [&>a]:hover:underline [&>a]:hover:underline-offset-2 gap-6 flex-wrap mb-3">
+          {currentPage !== "privacy" && <Link href="/privacy">{links.privacy}</Link>}
+          {currentPage !== "terms" && <Link href="/terms">{links.terms}</Link>}
+          {currentPage !== "eula" && <Link href="/eula">{links.eula}</Link>}
+          <Link href="/contact">{links.contact}</Link>
+          <Link href="/help">{links.help}</Link>
+          <Link href="/support">{links.support}</Link>
         </div>
-        <p>© 2025 Mirael, Inc. All rights reserved.</p>
+        <p>{copyright}</p>
       </div>
     </footer>
   );
-};
-
-export default PoliciesFooter;
+}

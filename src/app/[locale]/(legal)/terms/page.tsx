@@ -1,4 +1,8 @@
-import initTranslations from "@/lib/i18n";
+import Link from "next/link";
+
+import PoliciesFooter from "@/components/policies/policies.footer";
+import appConfig from "@/lib/constants/app-config";
+import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export default async function TermsOfUseRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;
@@ -30,15 +34,36 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
     license: {
       title: t("terms.license.title"),
-      permitted: t("terms.license.permitted"),
-      restricted: t("terms.license.restricted", { returnObjects: true, defaultValue: [] }) as string[],
+      permitted: {
+        title: t("terms.license.permitted.title"),
+        message: t("terms.license.permitted.message"),
+      },
+      restricted: {
+        title: t("terms.license.restricted.title"),
+        items: t("terms.license.restricted.items", { returnObjects: true, defaultValue: [] }) as string[],
+      },
     },
 
     responsibilities: {
       title: t("terms.responsibilities.title"),
-      accountSecurity: t("terms.responsibilities.accountSecurity"),
-      legalCompliance: t("terms.responsibilities.legalCompliance"),
-      prohibitedUses: t("terms.responsibilities.prohibitedUses", { returnObjects: true, defaultValue: [] }) as string[],
+      sections: {
+        accountSecurity: {
+          title: t("terms.responsibilities.sections.account_security.title"),
+          description: t("terms.responsibilities.sections.account_security.description"),
+        },
+        legalCompliance: {
+          title: t("terms.responsibilities.sections.legal_compliance.title"),
+          description: t("terms.responsibilities.sections.legal_compliance.description"),
+        },
+        prohibitedUses: {
+          title: t("terms.responsibilities.sections.prohibited_uses.title"),
+          description: t("terms.responsibilities.sections.prohibited_uses.description"),
+          items: t("terms.responsibilities.sections.prohibited_uses.items", {
+            returnObjects: true,
+            defaultValue: [],
+          }) as string[],
+        },
+      },
     },
 
     natureOfService: {
@@ -48,10 +73,21 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
     },
 
     aiAndContent: {
-      title: t("terms.aiAndContent.title"),
-      aiResponses: t("terms.aiAndContent.aiResponses"),
-      userRights: t("terms.aiAndContent.userRights"),
-      moderation: t("terms.aiAndContent.moderation"),
+      title: t("terms.ai_and_content.title"),
+      sections: {
+        generatedResponses: {
+          title: t("terms.ai_and_content.sections.ai_generated_responses.title"),
+          description: t("terms.ai_and_content.sections.ai_generated_responses.description"),
+        },
+        contentRights: {
+          title: t("terms.ai_and_content.sections.content_rights.title"),
+          description: t("terms.ai_and_content.sections.content_rights.description"),
+        },
+        contentModeration: {
+          title: t("terms.ai_and_content.sections.content_moderation.title"),
+          description: t("terms.ai_and_content.sections.content_moderation.description"),
+        },
+      },
     },
 
     fees: {
@@ -62,9 +98,18 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
     termination: {
       title: t("terms.termination.title"),
-      byUser: t("terms.termination.byUser"),
-      byUs: t("terms.termination.byUs"),
-      effect: t("terms.termination.effect"),
+      byUser: {
+        title: t("terms.termination.by_user.title"),
+        description: t("terms.termination.by_user.description"),
+      },
+      byUs: {
+        title: t("terms.termination.by_us.title"),
+        description: t("terms.termination.by_us.description"),
+      },
+      effect: {
+        label: t("terms.termination.effect.label"),
+        description: t("terms.termination.effect.description"),
+      },
     },
 
     intellectualProperty: {
@@ -75,14 +120,23 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
     disclaimers: {
       title: t("terms.disclaimers.title"),
-      asIs: t("terms.disclaimers.asIs"),
-      health: t("terms.disclaimers.health"),
+      asIsService: {
+        title: t("terms.disclaimers.as_is_service.title"),
+        description: t("terms.disclaimers.as_is_service.description"),
+      },
+      healthDisclaimer: {
+        title: t("terms.disclaimers.health_disclaimer.title"),
+        description: t("terms.disclaimers.health_disclaimer.description"),
+      },
     },
 
     liability: {
       title: t("terms.liability.title"),
       message: t("terms.liability.message"),
-      cap: t("terms.liability.cap"),
+      cap: {
+        label: t("terms.liability.cap.label"),
+        message: t("terms.liability.cap.message"),
+      },
     },
 
     indemnification: {
@@ -95,10 +149,16 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       points: t("terms.governingLaw.points", { returnObjects: true, defaultValue: [] }) as string[],
     },
 
-    additional: {
+    additionalTerms: {
       title: t("terms.additional.title"),
-      thirdParty: t("terms.additional.thirdParty"),
-      exportControls: t("terms.additional.exportControls"),
+      thirdPartyServices: {
+        title: t("terms.additional.third_party_services.title"),
+        description: t("terms.additional.third_party_services.description"),
+      },
+      exportControls: {
+        title: t("terms.additional.export_controls.title"),
+        description: t("terms.additional.export_controls.description"),
+      },
     },
 
     changes: {
@@ -113,11 +173,13 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
     },
   };
   return (
-    <main className="relative font-sans min-h-screen pt-20 w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">{content.title}</h1>
-        <div className="inline-flex items-center gap-2 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] font-semibold text-mir-bg-accent mb-8">
+        <h1 className="text-4xl rtl:font-arabic md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
+          {content.title}
+        </h1>
+        <div className="inline-flex items-center gap-2 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] rtl:text-base font-semibold text-mir-bg-accent mb-8">
           {content.effectiveDate} • {content.version}
         </div>
       </section>
@@ -125,7 +187,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       {/* <!-- Agreement Notice --> */}
       <section className="max-w-4xl mx-auto px-6 pb-12">
         <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
-          <h2 className="text-2xl font-bold mb-3">{content.intro.headline}</h2>
+          <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.intro.headline}</h2>
           <p className="mb-4 opacity-90">{content.intro.message}</p>
           <p className="text-sm opacity-80">{content.intro.note}</p>
         </div>
@@ -136,22 +198,23 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Contact Information --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">{content.contact.title}</h2>
-            <div className="space-y-2 text-mir-text-secondary">
-              <p>
-                <strong className="text-mir-text-primary">Legal Entity:</strong>
+            <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.contact.title}</h2>
+            <div className="space-y-2 text-muted-foreground">
+              <p className="space-x-2 rtl:space-x-reverse">
+                <strong className="text-mir-text-primary">{content.contact.entity}</strong>
+                <span>{appConfig.legalEntity}</span>
               </p>
-              <p>
-                <strong className="text-mir-text-primary">Support:</strong>{" "}
-                <a href="mailto:support@mirael.life" className="text-mir-bg-accent hover:underline">
-                  support@mirael.life
-                </a>
+              <p className="space-x-2 rtl:space-x-reverse">
+                <strong className="text-mir-text-primary">{content.contact.support}</strong>
+                <Link href="mailto:support@mirael.life" className="text-mir-bg-accent hover:underline">
+                  {appConfig.emails.support}
+                </Link>
               </p>
-              <p>
-                <strong className="text-mir-text-primary">Privacy:</strong>{" "}
-                <a href="mailto:privacy@mirael.life" className="text-mir-bg-accent hover:underline">
-                  privacy@mirael.life
-                </a>
+              <p className="space-x-2 rtl:space-x-reverse">
+                <strong className="text-mir-text-primary">{content.contact.privacy}</strong>
+                <Link href="mailto:privacy@mirael.life" className="text-mir-bg-accent hover:underline">
+                  {appConfig.emails.privacy}
+                </Link>
               </p>
             </div>
           </div>
@@ -160,35 +223,31 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Eligibility --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Eligibility</h2>
-            <div className="p-4 rounded-xl bg-mir-bg-soft border border-[rgba(255,107,90,0.15)] mb-4">
-              <p className="text-sm font-semibold text-mir-text-primary">Age Requirement: 18+</p>
+            <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.eligibility.title}</h2>
+            <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15 mb-4">
+              <p className="text-sm font-semibold text-mir-text-primary space-x-2 rtl:space-x-reverse">
+                <span>{content.eligibility.ageRequirement}</span> {appConfig.ageEligibility}
+              </p>
             </div>
-            <p className="text-mir-text-secondary">
-              By using Mirael, you represent and warrant that you are at least 18 years old (or the legal age of
-              majority in your jurisdiction) and have the legal capacity to enter into these Terms.
-            </p>
+            <p className="text-muted-foreground">{content.eligibility.message}</p>
           </div>
         </section>
 
         {/* <!-- License --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">License to Use</h2>
+          <h2 className="rtl:font-arabic text-2xl font-bold mb-6">{content.license.title}</h2>
           <div className="space-y-4">
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">What You Can Do</h3>
-              <p className="text-mir-text-secondary">
-                We grant you a limited, non-exclusive, non-transferable, revocable license to use Mirael for personal,
-                non-commercial purposes in accordance with these Terms.
-              </p>
+              <h3 className="rtl:font-arabic text-xl font-semibold mb-3">{content.license.permitted.title}</h3>
+              <p className="text-muted-foreground">{content.license.permitted.message}</p>
             </div>
 
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">What You Cannot Do</h3>
-              <ul className="space-y-2 text-mir-text-secondary">
-                <li>• Copy, modify, distribute, sell, or lease any part of the Service</li>
-                <li>• Reverse engineer, decompile, or attempt to extract source code (except as permitted by law)</li>
-                <li>• Use Mirael to build competitive products or services</li>
+              <h3 className="rtl:font-arabic text-xl font-semibold mb-3">{content.license.restricted.title}</h3>
+              <ul className="space-y-2 list-disc list-inside [&>li]:list-item text-muted-foreground">
+                {content.license.restricted.items.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -196,34 +255,35 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- User Responsibilities --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Your Responsibilities</h2>
+          <h2 className="text-2xl font-bold mb-6">{content.responsibilities.title}</h2>
           <div className="space-y-6">
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">Account Security</h3>
-              <p className="text-mir-text-secondary">
-                You are responsible for maintaining the confidentiality of your login credentials and for all activities
-                that occur under your account.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.responsibilities.sections.accountSecurity.title}
+              </h3>
+              <p className="text-muted-foreground">{content.responsibilities.sections.accountSecurity.description}</p>
             </div>
 
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">Legal Compliance</h3>
-              <p className="text-mir-text-secondary">
-                You agree to comply with all applicable laws and regulations when using Mirael.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.responsibilities.sections.legalCompliance.title}
+              </h3>
+              <p className="text-muted-foreground">{content.responsibilities.sections.legalCompliance.description} </p>
             </div>
 
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">Prohibited Uses</h3>
-              <p className="text-mir-text-secondary mb-3">You agree not to:</p>
-              <ul className="space-y-2 text-mir-text-secondary">
-                <li>
-                  • Submit content that is unlawful, harmful, defamatory, harassing, abusive, or otherwise objectionable
-                </li>
-                <li>• Attempt to gain unauthorized access to systems or networks</li>
-                <li>
-                  • Use Mirael for medical diagnosis, emergency response, or as a substitute for professional therapy
-                </li>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.responsibilities.sections.prohibitedUses.title}
+              </h3>
+              <p className="text-muted-foreground mb-3">
+                {content.responsibilities.sections.prohibitedUses.description}
+              </p>
+              <ul className="space-y-2 text-muted-foreground list-disc list-inside">
+                {content.responsibilities.sections.prohibitedUses.items.map((item, index) => (
+                  <li className="list-item" key={index}>
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -232,45 +292,37 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Nature of Service --> */}
         <section className="mb-12">
           <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
-            <h2 className="text-2xl font-bold mb-3">What Mirael Is (And Isn't)</h2>
-            <p className="mb-4 opacity-90">
-              Mirael is an emotional reflection and clarity tool powered by AI. It is not a medical device, mental
-              health service, or therapy substitute.
-            </p>
+            <h2 className="text-2xl font-bold mb-3">{content.natureOfService.title}</h2>
+            <p className="mb-4 opacity-90">{content.natureOfService.message}</p>
             <div className="p-4 rounded-xl bg-[rgba(255,255,255,0.1)] mt-4">
-              <p className="text-sm opacity-90">
-                <strong>Medical Disclaimer:</strong> We do not provide medical, psychiatric, or psychological advice.
-                Always seek the advice of a qualified health provider regarding mental health or medical conditions.
-              </p>
+              <p className="text-sm opacity-90">{content.natureOfService.disclaimer} </p>
             </div>
           </div>
         </section>
 
         {/* <!-- AI and Content --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">AI and Your Content</h2>
+          <h2 className="text-2xl font-bold mb-6">{content.aiAndContent.title}</h2>
           <div className="space-y-6">
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">AI-Generated Responses</h3>
-              <p className="text-mir-text-secondary">
-                Mirael uses stateless AI inference to generate reflective responses and insights. These outputs are
-                generated automatically and are not guaranteed to be accurate or appropriate in all contexts.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.aiAndContent.sections.generatedResponses.title}
+              </h3>
+              <p className="text-muted-foreground">{content.aiAndContent.sections.generatedResponses.description}</p>
             </div>
 
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">Your Content Rights</h3>
-              <p className="text-mir-text-secondary">
-                You retain ownership of content you submit to Mirael. However, you grant us a non-exclusive, worldwide,
-                royalty-free license to process, store, and use such content to provide and improve the Service.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.aiAndContent.sections.contentRights.title}
+              </h3>
+              <p className="text-muted-foreground">{content.aiAndContent.sections.contentRights.description} </p>
             </div>
 
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">Content Moderation</h3>
-              <p className="text-mir-text-secondary">
-                We reserve the right to remove or restrict access to content that violates these Terms.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.aiAndContent.sections.contentModeration.title}
+              </h3>
+              <p className="text-muted-foreground">{content.aiAndContent.sections.contentModeration.description}</p>
             </div>
           </div>
         </section>
@@ -278,18 +330,13 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Fees and Payments --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Fees and Payments</h2>
-            <div className="space-y-3 text-mir-text-secondary">
-              <p>
-                Certain features may require a subscription or payment. Fees, billing cycles, and cancellation terms
-                will be disclosed at the time of purchase.
-              </p>
-              <p>Payments are processed through third-party providers. We do not store payment card details.</p>
+            <h2 className="text-2xl font-bold mb-4">{content.fees.title}</h2>
+            <div className="space-y-3 text-muted-foreground">
+              {content.fees.points.map((item, index) => (
+                <p key={index}>{item}</p>
+              ))}
               <div className="p-3 rounded-lg bg-mir-bg-input">
-                <p className="text-sm">
-                  <strong className="text-mir-text-primary">Refund Policy:</strong> Unless required by law, payments are
-                  non-refundable.
-                </p>
+                <p className="text-sm">{content.fees.refundPolicy}</p>
               </div>
             </div>
           </div>
@@ -297,26 +344,20 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Termination --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Account Termination</h2>
+          <h2 className="text-2xl font-bold mb-6">{content.termination.title}</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-lg font-semibold mb-2">By You</h3>
-              <p className="text-mir-text-secondary">
-                You may stop using Mirael at any time and request account deletion through your settings.
-              </p>
+              <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">{content.termination.byUser.title}</h3>
+              <p className="text-muted-foreground">{content.termination.byUser.description} </p>
             </div>
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-lg font-semibold mb-2">By Us</h3>
-              <p className="text-mir-text-secondary">
-                We may suspend or terminate your access if you violate these Terms, misuse the Service, or create legal
-                risk.
-              </p>
+              <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">{content.termination.byUs.title}</h3>
+              <p className="text-muted-foreground">{content.termination.byUs.description} </p>
             </div>
           </div>
           <div className="mt-4 p-4 rounded-xl bg-mir-bg-soft border border-[rgba(255,107,90,0.15)]">
-            <p className="text-sm text-mir-text-secondary">
-              <strong>Effect of Termination:</strong> Upon termination, all rights granted to you under these Terms will
-              immediately cease.
+            <p className="text-sm text-muted-foreground">
+              <strong>{content.termination.effect.label}</strong> {content.termination.effect.description}
             </p>
           </div>
         </section>
@@ -324,36 +365,26 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Intellectual Property --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Intellectual Property</h2>
-            <p className="text-mir-text-secondary mb-3">
-              Mirael, including its design, features, software, and trademarks, is owned by Mirael, Inc. and protected
-              by intellectual property laws.
-            </p>
-            <p className="text-sm text-mir-text-secondary italic">
-              You may not use Mirael's trademarks or branding without our prior written permission.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{content.intellectualProperty.title}</h2>
+            <p className="text-muted-foreground mb-3">{content.intellectualProperty.ownership}</p>
+            <p className="text-sm text-muted-foreground italic">{content.intellectualProperty.branding} </p>
           </div>
         </section>
 
         {/* <!-- Disclaimers --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Disclaimers</h2>
+          <h2 className="text-2xl font-bold mb-6">{content.disclaimers.title}</h2>
           <div className="space-y-4">
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">"As-Is" Service</h3>
-              <p className="text-mir-text-secondary">
-                Mirael is provided on an "as-is" and "as-available" basis without warranties of any kind. We do not
-                warrant that Mirael will be error-free, uninterrupted, secure, or that results will be reliable or
-                accurate.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">{content.disclaimers.asIsService.title}</h3>
+              <p className="text-muted-foreground">{content.disclaimers.asIsService.description}</p>
             </div>
 
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-xl font-semibold mb-3">Health Disclaimer</h3>
-              <p className="text-mir-text-secondary">
-                Mirael is not a substitute for professional diagnosis, treatment, or crisis support. Always consult
-                qualified healthcare professionals for medical or mental health concerns.
-              </p>
+              <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
+                {content.disclaimers.healthDisclaimer.title}
+              </h3>
+              <p className="text-muted-foreground">{content.disclaimers.healthDisclaimer.description}</p>
             </div>
           </div>
         </section>
@@ -361,16 +392,11 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Limitation of Liability --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Limitation of Liability</h2>
-            <p className="text-mir-text-secondary mb-3">
-              To the maximum extent permitted by law, Mirael, Inc. and its affiliates shall not be liable for indirect,
-              incidental, special, consequential, or punitive damages.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{content.liability.title}</h2>
+            <p className="text-muted-foreground mb-3">{content.liability.message}</p>
             <div className="p-4 rounded-xl bg-mir-bg-input">
-              <p className="text-sm text-mir-text-secondary">
-                <strong>Liability Cap:</strong> Our total liability for any claim arising out of or relating to the
-                Service is limited to the amount you paid us in the 12 months preceding the claim, or $50 if no payment
-                was made.
+              <p className="text-sm text-muted-foreground">
+                <strong>{content.liability.cap.label}</strong> {content.liability.cap.message}
               </p>
             </div>
           </div>
@@ -379,52 +405,38 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Indemnification --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Indemnification</h2>
-            <p className="text-mir-text-secondary">
-              You agree to indemnify and hold harmless Mirael, Inc. and its affiliates from any claims, damages,
-              liabilities, costs, and expenses arising out of your use of the Service, your violation of these Terms, or
-              your violation of any law or rights of a third party.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{content.indemnification.title}</h2>
+            <p className="text-muted-foreground">{content.indemnification.message} </p>
           </div>
         </section>
 
         {/* <!-- Governing Law --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Governing Law and Disputes</h2>
-            <div className="space-y-3 text-mir-text-secondary">
-              <p>
-                These Terms are governed by the laws applicable to Mirael, Inc. without regard to conflict of laws
-                principles.
-              </p>
-              <p>
-                Disputes shall be resolved in the courts of the jurisdiction where Mirael, Inc. is registered, unless
-                otherwise required by law.
-              </p>
-              <p>
-                We may require certain disputes to be resolved through binding arbitration. Specific arbitration rules
-                will be disclosed if applicable.
-              </p>
+            <h2 className="text-2xl font-bold mb-4">{content.governingLaw.title}</h2>
+            <div className="space-y-3 text-muted-foreground">
+              {content.governingLaw.points.map((point, index) => (
+                <p key={index}>{point}</p>
+              ))}
             </div>
           </div>
         </section>
 
         {/* <!-- Additional Terms --> */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Additional Terms</h2>
+          <h2 className="text-2xl font-bold mb-6">{content.additionalTerms.title}</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-lg font-semibold mb-2">Third-Party Services</h3>
-              <p className="text-sm text-mir-text-secondary">
-                Mirael may contain links or integrations to third-party services. We are not responsible for third-party
-                content, policies, or practices.
-              </p>
+              <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">
+                {content.additionalTerms.thirdPartyServices.title}
+              </h3>
+              <p className="text-sm text-muted-foreground">{content.additionalTerms.thirdPartyServices.description}</p>
             </div>
             <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-              <h3 className="text-lg font-semibold mb-2">Export Controls</h3>
-              <p className="text-sm text-mir-text-secondary">
-                You may not use or export Mirael in violation of applicable export laws and regulations.
-              </p>
+              <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">
+                {content.additionalTerms.exportControls.title}
+              </h3>
+              <p className="text-sm text-muted-foreground">{content.additionalTerms.exportControls.description}</p>
             </div>
           </div>
         </section>
@@ -432,28 +444,21 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         {/* <!-- Changes to Terms --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Changes to These Terms</h2>
-            <p className="text-mir-text-secondary mb-3">
-              We may modify these Terms at any time. Changes will be effective when posted or when communicated to you
-              within the Service.
-            </p>
-            <p className="text-sm text-mir-text-secondary italic">
-              Your continued use of Mirael after changes indicates your acceptance of the updated Terms.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{content.changes.title}</h2>
+            <p className="text-muted-foreground mb-3">{content.changes.message}</p>
+            <p className="text-sm text-muted-foreground italic">{content.changes.note} </p>
           </div>
         </section>
 
         {/* <!-- Entire Agreement --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
-            <h2 className="text-2xl font-bold mb-4">Entire Agreement</h2>
-            <p className="text-mir-text-secondary">
-              These Terms constitute the entire agreement between you and Mirael, Inc. regarding the Service and
-              supersede all prior agreements relating to the subject matter hereof.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{content.entireAgreement.title}</h2>
+            <p className="text-muted-foreground">{content.entireAgreement.message} </p>
           </div>
         </section>
       </div>
+      <PoliciesFooter locale={locale as AppLocales} currentPage="terms" />
     </main>
   );
 }

@@ -14,7 +14,7 @@ interface Props {
 export default async function Header({ middleContent, sideContent, className, locale = "en" }: Props) {
   const { t } = await initTranslations(locale, ["common"]);
   return (
-    <header className={cn("border-b border-mir-border-light", className)}>
+    <header className={cn("border-b border-mir-border-light relative z-40", className)}>
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="#" className="font-extrabold text-xl tracking-tight rtl:font-arabic rtl:text-2xl">
           {t("app-name", { defaultValue: "Mirael" })}

@@ -1,1 +1,300 @@
-{}
+{
+    "auth": {
+        "sign-in": {
+            "title": "Bon retour",
+            "subtitle": "Continuez votre parcours de réflexion",
+            "form": {
+                "email": {
+                    "label": "Adresse e-mail",
+                    "placeholder": "vous@exemple.com"
+                },
+                "password": {
+                    "label": "Mot de passe",
+                    "placeholder": "Entrez votre mot de passe"
+                },
+                "forgot_password": "Mot de passe oublié ?",
+                "submit": "Se connecter"
+            },
+            "no_account": {
+                "text": "Vous n'avez pas de compte ?",
+                "link": "Inscrivez-vous"
+            }
+        },
+        "sign-up": {
+            "title": "Commencez votre parcours",
+            "subtitle": "Créez votre compte pour la réflexion émotionnelle et la clarté",
+            "form": {
+                "email": {
+                    "label": "Adresse e-mail",
+                    "placeholder": "vous@exemple.com"
+                },
+                "password": {
+                    "label": "Mot de passe",
+                    "placeholder": "Créez un mot de passe sécurisé"
+                },
+                "confirmPassword": {
+                    "label": "Confirmer le mot de passe",
+                    "placeholder": "Confirmez votre mot de passe",
+                    "match": "Les mots de passe correspondent",
+                    "mismatch": "Les mots de passe ne correspondent pas"
+                },
+                "ageConfirm": "Je confirme avoir au moins 18 ans et être légalement capable de conclure cet accord.",
+                "termsAgree": {
+                    "prefix": "J'accepte les",
+                    "terms": "Conditions d'utilisation",
+                    "and": "et",
+                    "privacy": "Politique de confidentialité"
+                },
+                "submit": "Créer un compte"
+            },
+            "have_account": {
+                "text": "Vous avez déjà un compte ?",
+                "link": "Se connecter"
+            }
+        }
+    },
+    "homepage": {
+        "hero": {
+            "badge": "Accès anticipé",
+            "title": "Un miroir pour votre monde intérieur",
+            "subtitle": "Mirael vous aide à faire une pause, remarquer les schémas et trouver la clarté lorsque la vie devient lourde. Il fonctionne à travers des conversations réfléchies et émotionnellement sensibles.",
+            "cta": {
+                "join": "Rejoindre l'accès anticipé",
+                "demo": "Voir une conversation"
+            },
+            "disclaimer": "Mirael n'est pas une thérapie ni un service de crise. En cas de danger immédiat, contactez les services d'urgence locaux."
+        },
+        "howItHelps": {
+            "title": "Comment Mirael aide",
+            "subtitle": "Mirael est un miroir doux qui vous aide à explorer vos émotions, reconnaître les schémas et réfléchir dans un espace privé que vous contrôlez.",
+            "features": [
+                {
+                    "title": "Conversations réfléchies",
+                    "subtitle": "Mirael reflète vos émotions pour vous aider à nommer et comprendre ce que vous ressentez réellement."
+                },
+                {
+                    "title": "Identifier les schémas",
+                    "subtitle": "Au fil du temps, Mirael met en évidence les thèmes récurrents dans votre pensée afin que vous puissiez remarquer des connexions que vous auriez pu manquer."
+                },
+                {
+                    "title": "Privé par défaut",
+                    "subtitle": "Vos réflexions vous appartiennent. Chaque conversation est privée et sous votre contrôle."
+                }
+            ]
+        },
+        "demo": {
+            "title": "Un aperçu de Mirael",
+            "subtitle": "Découvrez comment Mirael reflète les émotions avec clarté et attention.",
+            "conversation": [
+                {
+                    "role": "user",
+                    "text": "Je me sens bloquée et accablée par tout."
+                },
+                {
+                    "role": "mirael",
+                    "text": "Cela semble lourd. Quelle partie est la plus difficile à porter en ce moment ?"
+                },
+                {
+                    "role": "user",
+                    "text": "Surtout la pression au travail. Je n'arrive pas à me déconnecter le soir."
+                },
+                {
+                    "role": "mirael",
+                    "text": "Donc la pression vous suit même après le travail. Cela doit être épuisant. Quand cela arrive le soir, que remarquez-vous en vous ?"
+                },
+                {
+                    "role": "user",
+                    "text": "Mon esprit continue de courir. Je repense aux conversations et m'inquiète de ne pas en avoir fait assez."
+                },
+                {
+                    "role": "mirael",
+                    "text": "On dirait que vous vous imposez des standards très élevés. Où ressentez-vous cette pression le plus fortement ? Dans votre corps ou dans vos pensées ?"
+                },
+                {
+                    "role": "user",
+                    "text": "Surtout dans ma poitrine. Comme une tension que je ne peux relâcher."
+                },
+                {
+                    "role": "mirael",
+                    "text": "Cette tension montre que votre corps porte le stress autant que votre esprit. Que se passerait-il si vous preniez un moment pour observer ce sentiment ?"
+                },
+                {
+                    "role": "user",
+                    "text": "C'est inconfortable, j'ai envie de l'éviter."
+                },
+                {
+                    "role": "mirael",
+                    "text": "Éviter est compréhensible quand quelque chose est écrasant. Mais le remarquer doucement peut être le premier pas pour en alléger la pression. Voulez-vous essayer ensemble ?"
+                }
+            ]
+        },
+        "earlyAccess": {
+            "title": "Façonnez Mirael avec nous",
+            "subtitle": "Nous invitons un petit groupe de participants à tester Mirael, partager leurs retours et aider à façonner cette nouvelle expérience d'IA émotionnelle.",
+            "form": {
+                "placeholder": "vous@exemple.com",
+                "button": "Demander l'accès"
+            }
+        },
+        "faq": {
+            "title": "Questions fréquemment posées",
+            "items": [
+                {
+                    "question": "Qu'est-ce que Mirael ?",
+                    "answer": "Mirael est un miroir émotionnel. Il vous aide à ralentir, réfléchir et voir votre monde intérieur avec plus de clarté grâce à de courtes conversations émotionnellement sensibles."
+                },
+                {
+                    "question": "En quoi Mirael est-il différent de la thérapie ?",
+                    "answer": "Mirael n'est pas une thérapie et ne remplace pas un suivi professionnel. C'est un compagnon quotidien de réflexion conçu pour soutenir la conscience de soi, sans diagnostiquer ni traiter des problèmes de santé mentale."
+                },
+                {
+                    "question": "Comment Mirael fonctionne-t-il réellement ?",
+                    "answer": "Mirael utilise des invites et des modèles de conversation soigneusement conçus pour refléter vos émotions. Il met en lumière les pressions cachées, les pensées récurrentes et les règles non dites afin que vous puissiez mieux vous comprendre."
+                },
+                {
+                    "question": "Mes données sont-elles privées ?",
+                    "answer": "Oui. Vos réflexions vous appartiennent. Les conversations sont privées par conception, et vous pourrez exporter ou supprimer vos données."
+                },
+                {
+                    "question": "Pour qui est Mirael ?",
+                    "answer": "Mirael est conçu pour les personnes qui portent beaucoup, semblent souvent fortes à l'extérieur, mais se sentent émotionnellement épuisées à l'intérieur. Il leur offre un espace sûr pour réfléchir, reconnaître les schémas et retrouver la clarté."
+                },
+                {
+                    "question": "Mirael peut-il aider en cas de crise ?",
+                    "answer": "Non. Mirael n'est pas un service de crise. Si vous êtes en danger immédiat ou face à une urgence de santé mentale, veuillez contacter les services d'urgence locaux ou une ligne d'assistance professionnelle."
+                },
+                {
+                    "question": "Combien cela coûte-t-il ?",
+                    "answer": "Pendant l'accès anticipé, Mirael est gratuit. La tarification sera introduite plus tard en fonction des retours des premiers utilisateurs."
+                },
+                {
+                    "question": "Pourquoi devrais-je rejoindre l'accès anticipé ?",
+                    "answer": "L'accès anticipé vous permet de façonner Mirael avec nous. Vos retours influenceront directement l'évolution de l'expérience et vous serez parmi les premiers à bénéficier des nouvelles fonctionnalités."
+                }
+            ]
+        },
+        "footer": {
+            "disclaimer": "Important : Mirael n'est pas un service de santé mentale ou de crise. En cas de crise, contactez les services d'urgence locaux.",
+            "links": {
+                "privacy": "Confidentialité",
+                "terms": "Conditions",
+                "contact": "Contact",
+                "help": "Aide"
+            },
+            "copyright": "© 2025 Mirael. Accès anticipé."
+        }
+    },
+    "chat-ui": {
+        "onboarding": {
+            "header": {
+                "title": "Bienvenue sur Mirael",
+                "subtitle": "Un espace doux pour commencer votre réflexion"
+            },
+            "hero": {
+                "title": "Bienvenue sur Mirael",
+                "subtitle": "Un espace bienveillant rien que pour vous",
+                "paragraphs": [
+                    "**Ceci est votre espace privé pour arriver telle que vous êtes.**",
+                    "Pas besoin de jouer un rôle ou de vous justifier ici. Prenez votre temps et soyez simplement présente.",
+                    "Tout reste ici avec vous : aucun suivi, aucun jugement, aucun agenda caché."
+                ],
+                "buttonText": "Entrer dans le calme"
+            }
+        },
+        "open-chat": {
+            "header": {
+                "title": "Espace de réflexion",
+                "subtitle": "Un espace privé pour explorer vos pensées"
+            },
+            "hero": {
+                "title": "Espace de réflexion",
+                "subtitle": "Un espace privé où vous pouvez explorer vos émotions et vos pensées.",
+                "paragraphs": [
+                    "Prenez un moment pour vous installer et remarquer ce que vous ressentez.",
+                    "Cet espace est à vous. Partagez librement et réfléchissez à votre rythme.",
+                    "*Rappelez-vous que Mirael reflète vos émotions pour vous aider à y voir plus clair.*"
+                ],
+                "buttonText": "Commencer la réflexion"
+            },
+            "initial-message": "Bonjour. Je suis là pour vous écouter. Qu’est-ce qui occupe votre esprit ces derniers temps ? Prenez votre temps. Commencez simplement là où cela vous semble juste.",
+            "input": {
+                "label": "Tapez un message et appuyez sur Entrée pour envoyer",
+                "placeholder": "Partagez ce que vous ressentez…",
+                "actionTitle": "Envoyer le message"
+            },
+            "actions": {
+                "reset_session": {
+                    "label": "Réinitialiser",
+                    "dialog": {
+                        "title": "Réinitialiser cette session ?",
+                        "messages": [
+                            "Cela effacera tous les messages de la discussion actuelle et recommencera à zéro.",
+                            "Tu ne pourras pas les récupérer après la réinitialisation."
+                        ],
+                        "actions": {
+                            "confirm": "Réinitialiser",
+                            "cancel": "Annuler"
+                        }
+                    }
+                },
+                "end_session": {
+                    "label": "Terminer",
+                    "dialog": {
+                        "title": "Terminer cette session ?",
+                        "messages": [
+                            "Terminer la session la marquera comme complète.",
+                            "Tu pourras continuer plus tard ou commencer une nouvelle session à tout moment."
+                        ],
+                        "actions": {
+                            "confirm": "Terminer la session",
+                            "cancel": "Annuler"
+                        }
+                    }
+                },
+                "export_session": {
+                    "label": "Exporter",
+                    "dialog": {
+                        "title": "Exporter cette session ?",
+                        "messages": [
+                            "Tu peux télécharger la session sous forme de fichier JSON.",
+                            "Garde-le en sécurité, il contient tes réflexions privées."
+                        ],
+                        "actions": {
+                            "confirm": "Télécharger",
+                            "cancel": "Annuler"
+                        }
+                    }
+                }
+            }
+        },
+        "default": {
+            "header": {
+                "title": "Mirael",
+                "subtitle": "Un espace privé pour réfléchir"
+            },
+            "hero": {
+                "title": "Mirael",
+                "subtitle": "Un espace privé pour réfléchir et se reconnecter à vos émotions.",
+                "paragraphs": [
+                    "Commencez une nouvelle session quand vous êtes prête à faire le point avec vous-même.",
+                    "Observez doucement vos pensées et vos sentiments au fur et à mesure.",
+                    "*Chaque réflexion est privée et sous votre contrôle.*"
+                ],
+                "buttonText": "Commencer la session"
+            }
+        }
+    },
+    "policies_footer": {
+        "questions": "Des questions sur {{currentPage}} ?",
+        "contact_email": "Contactez-nous à ",
+        "links": {
+            "eula": "Conditions d'utilisation",
+            "privacy": "Politique de confidentialité",
+            "terms": "Conditions d'utilisation",
+            "contact": "Contact",
+            "help": "Aide",
+            "support": "Support"
+        },
+        "copyright": "© 2025 Mirael, Inc. Tous droits réservés."
+    }
+}

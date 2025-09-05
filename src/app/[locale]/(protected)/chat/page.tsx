@@ -4,11 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { handleUserInput } from "@/app/actions/user-input-actions";
-import { BackgroundBeams } from "@/components/background-beams";
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-import { Button } from "@/components/ui/button";
 import { generateMessageId } from "@/lib/chat/flow/generate-message-id";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { MODELS_CODES } from "@/lib/constants/ai-models";
@@ -25,7 +23,7 @@ export default function ChatRoute() {
   const {
     t,
     i18n: { language },
-  } = useTranslation("common", { keyPrefix: "chat-ui.open-chat" });
+  } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat" });
 
   const { title, subtitle, welcomeMessage, initialMessage } = {
     title: t("header.title", { defaultValue: "Welcome to Mirael" }),
@@ -140,8 +138,6 @@ export default function ChatRoute() {
 
   return (
     <main className="h-screen w-screen">
-      <BackgroundBeams className="hidden md:block" />
-
       <Container
         title={title}
         subtitle={subtitle}
