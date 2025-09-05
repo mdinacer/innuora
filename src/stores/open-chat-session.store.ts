@@ -2,7 +2,7 @@ import localforage from "localforage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { MODELS_CODES } from "@/constants/ai-models";
+import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 import { ModelTokenUsage } from "@/types/ai-model.types";

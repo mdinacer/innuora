@@ -3,7 +3,7 @@
 import React from "react";
 
 import SessionFlowChat from "@/components/chat-ui/flow-chat/flow-chat.main";
-import { mockChatMessages } from "@/constants/mock-flow-chat-messages";
+import { mockChatMessages } from "@/lib/constants/mock-flow-chat-messages";
 
 export default function SessionRoute() {
   return (

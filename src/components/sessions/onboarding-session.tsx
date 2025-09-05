@@ -8,7 +8,7 @@ import { Container } from "@/components/chat-ui";
 import FlowChatMessageRenderer from "@/components/chat-ui/flow-chat/flow-chat.message-renderer";
 import CodeView from "@/components/code-view";
 import { Button } from "@/components/ui/button";
-import { SESSIONS_IDS } from "@/constants/sessions/sessions.props";
+import { SESSIONS_IDS } from "@/lib/constants/sessions/sessions.props";
 import useFlowStepController from "@/lib/sessions/use-flow-step-controller";
 import useSessionOrchestrator from "@/lib/sessions/use-session-orchestrator";
 import { cn } from "@/lib/utils";

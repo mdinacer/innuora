@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 //import OnboardingSession from "@/components/sessions/onboarding-session";
-import { SESSIONS_IDS } from "@/constants/sessions/sessions.props";
+import { SESSIONS_IDS } from "@/lib/constants/sessions/sessions.props";
 import { AppLocales } from "@/lib/i18n";
 import { loadSessionFlow } from "@/lib/sessions/load-session-flow";
 

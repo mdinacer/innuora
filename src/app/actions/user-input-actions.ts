@@ -3,7 +3,6 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
-import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/constants/ai-models";
 import { AnalysisError, InvalidInputError, UserInputServiceError } from "@/errors/user-input.errors";
 import { ChatMessagesManager } from "@/lib/ai/chat-manager";
 import { ModulesPromptBuilder } from "@/lib/ai/modules-prompt-builder";
@@ -15,6 +14,7 @@ import {
   TonePrompt,
 } from "@/lib/ai/prompts/";
 import { StateAnalysisEngine } from "@/lib/ai/state-analysis-engine";
+import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
 import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";

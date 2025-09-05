@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { SESSION_PROPS, SessionId } from "@/constants/sessions/sessions.props";
+import { SESSION_PROPS, SessionId } from "@/lib/constants/sessions/sessions.props";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { safeValidateSessionFlow } from "@/lib/zod/session-flow-schema";
 import { FlowStep, SessionFlow } from "@/types/flow-session.types";

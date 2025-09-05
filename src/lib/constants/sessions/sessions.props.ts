@@ -1,4 +1,4 @@
-import { ONBOARDING_SESSION_PROPS } from "@/constants/sessions/onboarding";
+import { ONBOARDING_SESSION_PROPS } from "@/lib/constants/sessions/onboarding";
 
 export const SESSIONS_IDS = {
   ONBOARDING_SESSION: "onboarding",

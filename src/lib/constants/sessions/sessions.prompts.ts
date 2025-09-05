@@ -1,6 +1,6 @@
 import { Profile } from "@prisma/client";
 
-import { SessionId, SESSIONS_IDS } from "@/constants/sessions/sessions.props";
+import { SessionId, SESSIONS_IDS } from "@/lib/constants/sessions/sessions.props";
 
 export const sessionsPrompts: Record<SessionId, { prompt: (values: Record<string, any>) => string }> = {
   [SESSIONS_IDS.ONBOARDING_SESSION]: {
