@@ -19,7 +19,7 @@ export default async function Layout({
         sideContent={
           <Link
             href="/"
-            className="inline-flex items-center rtl:font-medium gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm rtl:text-base font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+            className="sm:inline-flex hidden items-center rtl:font-medium gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm rtl:text-base font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
           >
             {t("back-to-mirael")}
           </Link>
