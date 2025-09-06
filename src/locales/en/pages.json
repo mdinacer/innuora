@@ -154,6 +154,10 @@
     }
   },
   "homepage": {
+    "actions": {
+      "requestAccess": "Request Access",
+      "testerSignIn": "Tester Sign-In"
+    },
     "hero": {
       "badge": "Early Access",
       "title": "A mirror for your inner world",
@@ -183,50 +187,159 @@
       ]
     },
     "demo": {
-      "title": "A Glimpse of Mirael",
-      "subtitle": "See how Mirael reflects emotions with clarity and care.",
+      "title": "What Makes Mirael Different",
+      "subtitle": "See how Mirael goes beyond generic advice by uncovering deeper stress triggers and offering clear, practical ways forward.",
       "conversation": [
         {
-          "role": "user",
-          "text": "I feel stuck and weighed down by everything."
-        },
-        {
           "role": "mirael",
-          "text": "It sounds heavy. What feels like the hardest part to carry right now?"
+          "text": "Hi there. I'm here to listen. What's been on your mind lately? Take your time. Just start wherever feels right."
         },
         {
           "role": "user",
-          "text": "Mostly pressure at work. I can’t seem to shut it off at night."
+          "text": "I don’t even know what’s wrong exactly. I just feel… tired all the time. Like I’m dragging myself through everything."
+        },
+        {
+          "role": "generic",
+          "text": "Maybe you just need more rest or a break. Try to prioritize self-care when you can."
         },
         {
           "role": "mirael",
-          "text": "So the pressure follows you even after work ends. That sounds exhausting. When it shows up at night, what do you notice in yourself?"
+          "text": "That constant weariness you’re carrying sounds exhausting, like you’re caught in a loop where rest feels out of reach. It makes sense that functioning on autopilot would feel disconnected and heavy—it’s as if the usual ways you push through aren’t enough anymore. Maybe slowing down or focusing on one small part of this feeling could help you find a bit of clarity. Would you want to start there, or simply sit with how this heaviness shows up for you?"
         },
         {
           "role": "user",
-          "text": "My mind keeps racing. I replay conversations and worry I should have done more."
+          "text": "Mostly at work. But also at home, honestly. It feels like there’s never a pause. Everyone needs something from me."
+        },
+        {
+          "role": "generic",
+          "text": "That sounds stressful. Maybe you could try setting firmer boundaries."
         },
         {
           "role": "mirael",
-          "text": "It seems like you hold yourself to very high standards. Where do you feel that pressure most strongly right now? In your body or in your thoughts?"
+          "text": "That constant pull from all sides sounds exhausting, like you’re carrying a weight that never lets up. It makes sense you keep pushing—you’re trying to prevent everything from falling apart. But that pressure to always be \"on\" leaves little space to breathe or recharge. Would it feel okay to slow down just a bit, even if only in one small area?"
         },
         {
           "role": "user",
-          "text": "Mostly in my chest. Like a tightness I can’t release."
+          "text": "I feel like if I slow down, everything will fall apart."
+        },
+        {
+          "role": "generic",
+          "text": "It shows you’re very responsible. But remember you don’t have to carry it all yourself."
         },
         {
           "role": "mirael",
-          "text": "That tightness tells me your body is carrying the stress as much as your mind. What happens if you pause and give that feeling a moment of attention?"
+          "text": "It sounds like there’s a strong inner rule telling you that slowing down equals failure or disappointment—like you have to keep moving to prove your worth. That pressure to not let others down can make the idea of rest feel dangerous, even though your body and mind are signaling otherwise. This tension between needing a break and fearing the consequences of it is heavy.\n\nI wonder how this need to keep going, despite the cost, shows up in other parts of your life—are there moments when you feel stuck between what you want and what you think you should do? What do you notice about the voice inside that pushes you forward even when you’re worn out?"
         },
         {
           "role": "user",
-          "text": "It feels uncomfortable, like I want to avoid it."
+          "text": "I always feel I should handle everything. If I don’t, things will fall apart."
+        },
+        {
+          "role": "generic",
+          "text": "You might try prioritizing tasks and letting go of some responsibility when possible."
         },
         {
           "role": "mirael",
-          "text": "Avoiding makes sense when something feels overwhelming. But noticing it gently can be the first step to easing its grip. Would you like to try that together?"
+          "text": "That voice you’re describing—the one pushing you to “keep it together” no matter what—feels like a silent rule that you must always put others first, even at the cost of your own well-being. It’s understandable that guilt shows up when you consider stopping; it’s tied to this internal pressure that your value depends on constant productivity and care for others.\n\nI wonder how this expectation shapes your sense of who you are—does it feel like your worth is tied to how much you can do for everyone else? How might that pressure be influencing the way you make choices day to day?"
+        },
+        {
+          "role": "user",
+          "text": "I feel like no matter what I do, it’s never enough."
+        },
+        {
+          "role": "generic",
+          "text": "It’s natural to feel that way, but try to recognize the effort you’re putting in and give yourself credit."
+        },
+        {
+          "role": "mirael",
+          "text": "That sense of “not enough” tied to how much you do is a heavy burden to carry. It sounds like there’s a silent rule that your value depends on constant productivity, making even small acts of self-care feel risky or wrong. This kind of all-or-nothing thinking narrows your options and keeps you locked in a cycle where rest feels like failure.\n\nWhat if, instead of seeing breaks as proof of weakness, you considered them as part of how you sustain your strength? How do you think your life might shift if rest was a way to protect your ability to show up, rather than a sign you’re falling short?"
+        },
+        {
+          "role": "user",
+          "text": "I guess I could try to see rest differently."
+        },
+        {
+          "role": "generic",
+          "text": "Taking breaks can help you recharge. Maybe schedule a short pause to see how it affects your day."
+        },
+        {
+          "role": "mirael",
+          "text": "That difference you’re naming—feeling less like a failure and more energized—points to a deeper truth: the voice pushing you to keep going may actually be clouding your sense of your own strength. It’s like you’ve been running on a story that says rest equals weakness, but your experience shows the opposite.\n\nWhat might it feel like to challenge that story, even just a little, and notice how it changes your day or your sense of yourself?"
+        },
+        {
+          "role": "user",
+          "text": "I feel a little scared to try, but also like maybe it could help."
+        },
+        {
+          "role": "generic",
+          "text": "It’s okay to feel nervous. Start small and notice the difference it makes."
+        },
+        {
+          "role": "mirael",
+          "text": "That mix of relief and fear makes a lot of sense—letting go of a belief that’s been your safety net feels risky because it’s tied to control and avoiding chaos. You’ve noticed how holding tightly to that idea keeps you stuck in constant motion, even when it wears you down. Trying small pauses isn’t about proving the belief wrong all at once, but gently inviting new experiences that could shift what feels possible.\n\nWhat might be one small, low-stakes way you could test that belief this week, something that feels manageable yet meaningful enough to notice how it lands for you?"
+        },
+        {
+          "role": "user",
+          "text": "Maybe I could pause before answering emails."
+        },
+        {
+          "role": "generic",
+          "text": "You could try setting a short timer before responding to see how it feels."
+        },
+        {
+          "role": "mirael",
+          "text": "That’s a thoughtful step—pausing before answering an email can open space to notice how much urgency you’re carrying. It might feel uncomfortable at first, maybe even a bit rebellious against that inner voice pushing for immediate action.\n\nIf you try it today, pay attention to what thoughts and feelings come up during that pause. You might learn where that pressure lives and how it affects you. Small experiments like this can gently shift the hold those silent rules have over you. Keep noticing—this kind of awareness is where change begins."
+        },
+        {
+          "role": "user",
+          "text": "I tried, and it felt strange, but also a bit freeing."
+        },
+        {
+          "role": "generic",
+          "text": "Good. Even a small break can help you gain perspective. Keep noticing how it feels."
+        },
+        {
+          "role": "mirael",
+          "text": "You’re holding a complex mix of fear and hope, which is both natural and important to acknowledge. That tension between wanting space and fearing collapse shows how much control and safety are tied up in your usual way of pushing through. It’s brave to even consider giving yourself that tiny bit of room, especially when the stakes feel high inside.\n\nTo keep this manageable today, try these small steps:  \n1. **Set a 5-minute pause**—choose a moment to step back, breathe, and notice what’s happening inside without needing to fix it.  \n2. **Name the fear**—silently acknowledge the worry that things might fall apart, without arguing with it.  \n3. **Notice what actually happens**—after the pause, check in with yourself: did the world shift, or did you just feel a little more grounded?\n\nThese small actions can help you gather evidence that space doesn’t equal collapse. Remember, change comes from tiny, consistent steps, not leaps. You’re already moving toward a different way of being by just considering this."
+        },
+        {
+          "role": "user",
+          "text": "I’ll try setting a 5-minute pause today."
+        },
+        {
+          "role": "generic",
+          "text": "Great. Keep track of what you notice—both thoughts and feelings."
+        },
+        {
+          "role": "mirael",
+          "text": "You’re noticing how much this quiet pressure to rush influences your day-to-day, and that awareness is a strong first step. This pattern—feeling like you have to move fast—often hides a deeper belief that slowing down means falling behind or losing control. But you’re already testing that by choosing small pauses, which shows you can rewrite that story.\n\nHow do you see this “must move fast” feeling showing up in other parts of your life?"
         }
-      ]
+      ],
+      "legend": {
+        "user": "User",
+        "generic": "Generic AI",
+        "mirael": "Mirael"
+      },
+      "insights": {
+        "generic": {
+          "title": "Generic AI Approach",
+          "points": [
+            "Gives **one-size-fits-all tips** without really tuning into you",
+            "Overlooks the **emotional undercurrents** behind your words",
+            "Doesn't notice when your thoughts turn **harsh or unrealistic**",
+            "Misses chances to offer **deeper understanding or relief**"
+          ]
+        },
+        "mirael": {
+          "title": "Mirael's Difference",
+          "points": [
+            "Notices when your thoughts make situations feel **bigger or scarier** than they really are",
+            "Helps you spot **black and white thinking** that leaves no room for balance",
+            "Uncovers hidden rules you’ve been living by, like *always needing to be available*",
+            "Gives you **practical ways** to shift your thoughts so they feel lighter and less rigid"
+          ]
+        }
+      }
     },
     "earlyAccess": {
       "title": "Shape Mirael with Us",

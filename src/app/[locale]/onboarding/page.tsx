@@ -24,7 +24,7 @@ export default async function OnboardingRoute({
   const sessionData = await loadSessionFlow(SESSION_ID, locale as AppLocales);
 
   return (
-    <main className="min-h-screen w-screen">
+    <main className="min-h-screen w-screen standalone:w-full">
       <Suspense fallback={<div>Loading...</div>}>
         <OnboardingSession sessionFlow={sessionData} />
       </Suspense>

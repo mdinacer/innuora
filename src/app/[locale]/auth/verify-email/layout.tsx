@@ -11,7 +11,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     redirect("/auth/sign-in");
   }
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-mir-bg-primary text-mir-text-primary">
+    <div className="min-h-screen w-screen standalone:w-full flex flex-col bg-mir-bg-primary text-mir-text-primary">
       <Header />
       <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
     </div>

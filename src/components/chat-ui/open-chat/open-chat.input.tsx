@@ -13,7 +13,7 @@ interface Props {
 }
 
 const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
-  const { t } = useTranslation("common", { keyPrefix: "chat-ui.open-chat.input" });
+  const { t } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.input" });
 
   const { label, placeholder, actionTitle } = useMemo(
     () => ({

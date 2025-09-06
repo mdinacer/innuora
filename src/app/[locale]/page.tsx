@@ -1,9 +1,85 @@
 import Link from "next/link";
+import { BotIcon } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+
+type Conversation = {
+  role: "user" | "generic" | "mirael";
+  text: string;
+};
+
+interface ConversationCardProps {
+  conversation: Conversation;
+  label: string;
+}
+
+function ConversationCard({ conversation, label }: ConversationCardProps) {
+  if (conversation.role === "user") {
+    return (
+      <div className="flex justify-end">
+        <div className="flex items-end gap-2 max-w-[90%] md:max-w-[80%]">
+          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 text-base rtl:text-lg rtl:font-medium text-mir-text-primary">
+            {conversation.text}
+          </div>
+          <div className="size-7 sm:size-9 rounded-full bg-mir-bg-secondary flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+            U
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (conversation.role === "mirael") {
+    return (
+      <div className="flex justify-start">
+        <div className="flex items-start gap-3 max-w-[85%]">
+          <div className="size-7 sm:size-9 rounded-full bg-mir-bg-accent flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
+            M
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-sm font-medium text-mir-bg-accent">{label}</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-mir-bg-accent"></div>
+            </div>
+            <div
+              className="rounded-2xl bg-mir-bg-accent text-white px-4 py-3 text-base rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
+              [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 
+              [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-2"
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
+              >
+                {conversation.text}
+              </ReactMarkdown>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex justify-start">
+      <div className="flex items-start gap-3 max-w-[85%]">
+        <div className="size-7 sm:size-9 rounded-full bg-gray-400 flex items-center justify-center text-white flex-shrink-0">
+          <BotIcon className="size-4 shrink-0" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium text-gray-500 px-1">{label}</span>
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800 px-4 py-3 text-base rtl:text-lg rtl:font-medium text-gray-700 dark:text-gray-300">
+            {conversation.text}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default async function Home({
   params,
@@ -13,7 +89,11 @@ export default async function Home({
   const { locale = "en" } = await params;
   const { t } = await initTranslations(locale, ["pages"]);
 
-  const { hero, howItHelps, demo, earlyAccess, faq } = {
+  const { actions, hero, howItHelps, demo, earlyAccess, faq } = {
+    actions: {
+      requestAccess: t("homepage.actions.requestAccess"),
+      testerSignIn: t("homepage.actions.testerSignIn"),
+    },
     hero: {
       badge: t("homepage.hero.badge"),
       title: t("homepage.hero.title"),
@@ -39,6 +119,21 @@ export default async function Home({
         role: string;
         text: string;
       }[],
+      legend: {
+        user: t("homepage.demo.legend.user"),
+        generic: t("homepage.demo.legend.generic"),
+        mirael: t("homepage.demo.legend.mirael"),
+      },
+      insights: {
+        generic: {
+          title: t("homepage.demo.insights.generic.title"),
+          points: t("homepage.demo.insights.generic.points", { returnObjects: true, defaultValue: [] }) as string[],
+        },
+        mirael: {
+          title: t("homepage.demo.insights.mirael.title"),
+          points: t("homepage.demo.insights.mirael.points", { returnObjects: true, defaultValue: [] }) as string[],
+        },
+      },
     },
     earlyAccess: {
       title: t("homepage.earlyAccess.title"),
@@ -57,17 +152,25 @@ export default async function Home({
     },
   };
   return (
-    <main className="relative rtl:font-arabic-body text-base rtl:text-lg font-sans min-h-screen w-screen overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative rtl:font-arabic-body text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Header --> */}
       <Header
         locale={locale as AppLocales}
         sideContent={
-          <Link
-            href="#early-access"
-            className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
-          >
-            {earlyAccess.form.button}
-          </Link>
+          <>
+            <Link
+              href="#early-access"
+              className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+            >
+              {actions.requestAccess}
+            </Link>
+            <Link
+              href="#early-access"
+              className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+            >
+              {actions.testerSignIn}
+            </Link>
+          </>
         }
       />
 
@@ -111,7 +214,10 @@ export default async function Home({
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {howItHelps.features.map((feature, index) => (
-            <div key={index} className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-subtle">
+            <div
+              key={index}
+              className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5"
+            >
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.subtitle}</p>
             </div>
@@ -119,29 +225,85 @@ export default async function Home({
         </div>
       </section>
 
+      <section id="demo" className="max-w-4xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl rtl:font-arabic md:text-3xl font-bold mb-3 rtl:mb-5">{demo.title}</h2>
+          <p className="text-base rtl:text-lg text-mir-text-secondary max-w-2xl mx-auto mb-4">{demo.subtitle}</p>
+          <div className="flex justify-center items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-mir-bg-accent"></div>
+              <span className="font-medium">{demo.legend.mirael}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-gray-400"></div>
+              <span className="font-medium">{demo.legend.generic}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-mir-bg-secondary"></div>
+              <span className="font-medium">{demo.legend.user}</span>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-3xl border border-mir-border-light bg-mir-bg-card sm:p-8 p-4 shadow-md">
+          <div
+            className="space-y-6 max-h-[500px] overflow-y-auto overscroll-content overflow-x-hidden pr-2"
+            id="conversationContainer"
+          >
+            {demo.conversation.map((conversation, index) => (
+              <ConversationCard
+                key={index}
+                conversation={conversation as Conversation}
+                label={demo.legend[conversation.role as keyof typeof demo.legend]}
+              />
+            ))}
+          </div>
+
+          {/* <!-- Conversation Insights --> */}
+          <div className="mt-8 pt-6 border-t border-mir-border-light">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h4 className="font-semibold text-mir-text-primary flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                  {demo.insights.generic.title}
+                </h4>
+                <ul className="space-y-3 text-base list-inside text-primary/80 rtl:text-lg">
+                  {demo.insights.generic.points.map((item, index) => (
+                    <li key={index} className="list-item">
+                      <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>{item}</ReactMarkdown>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h4 className="font-semibold text-mir-text-primary flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-mir-bg-accent"></div>
+                  {demo.insights.mirael.title}
+                </h4>
+                <ul className="space-y-3 text-base text-primary/80 rtl:text-lg list-inside">
+                  {demo.insights.mirael.points.map((item, index) => (
+                    <li key={index} className="list-item">
+                      <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>{item}</ReactMarkdown>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* <!-- Demo --> */}
-      <section id="demo" className="max-w-4xl mx-auto px-6 py-16">
+      {/* <section id="demo" className="max-w-4xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl rtl:md:text-5xl font-bold mb-3 rtl:font-arabic">{demo.title}</h2>
           <p className="text-[17px] text-mir-text-secondary max-w-2xl mx-auto">{demo.subtitle}</p>
         </div>
-        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-card space-y-4">
+        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_4px_20px] shadow-black/8 space-y-4">
           {demo.conversation.map((message, index) => (
-            <div key={index} className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
-              <div
-                className={cn(
-                  "max-w-[80%] rounded-2xl px-4 rtl:font-medium py-3 text-base rtl:text-lg rtl:font-arabic-body",
-                  message.role === "user"
-                    ? "border border-mir-border-light bg-mir-bg-input"
-                    : "bg-mir-bg-accent rtl:bg-mir-bg-accent-dark text-white"
-                )}
-              >
-                {message.text}
-              </div>
-            </div>
+            <ConversationCard key={index} message={message as Conversation} />
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* <!-- Early Access CTA --> */}
       <section id="early-access" className="px-6 py-16">

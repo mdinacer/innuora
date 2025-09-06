@@ -137,14 +137,15 @@ export default function ChatRoute() {
   }
 
   return (
-    <main className="h-screen w-screen">
+    <main className="h-screen w-screen standalone:w-full">
+      {/* <CodeView data={messages} /> */}
       <Container
         title={title}
         subtitle={subtitle}
         messages={messages}
         isLoading={isTyping}
         renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-        onUserInput={hasStarted ? (message) => handleOnSendMessage(message) : undefined}
+        onUserInput={(message) => handleOnSendMessage(message)}
         welcomeMessage={welcomeMessageContent}
         headerActions={<Menu disabled={!hasStarted || !messages?.length} onAction={handleActions} />}
       />

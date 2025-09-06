@@ -33,7 +33,7 @@ export default async function VerificationEmailSentRoute() {
         )}
 
         {/* <!-- Instructions Card --> */}
-        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card mb-6">
+        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
           <h2 className="text-xl font-semibold mb-4">Next Steps</h2>
           <div className="space-y-4 text-left">
             <div className="flex items-start gap-3">

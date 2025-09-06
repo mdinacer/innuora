@@ -55,7 +55,7 @@ const sampleSessions: SessionCardData[] = [
 
 export default function SessionsRoute() {
   return (
-    <main className="h-screen w-screen bg-mir-bg-primary">
+    <main className="h-screen w-screen standalone:w-full bg-mir-bg-primary">
       <SessionsPage sessions={sampleSessions} />
     </main>
   );

@@ -24,9 +24,9 @@ export default async function Header({ middleContent, sideContent, className, lo
         {middleContent}
         <div className="flex items-center gap-3 rtl:font-sans">
           <LanguageSwitcher />
-          <ThemeToggle />
 
           {sideContent}
+          <ThemeToggle />
         </div>
       </div>
     </header>

@@ -40,7 +40,7 @@ export default async function EmailValidationResendRoute() {
         </div>
 
         {/* <!-- Resend Form --> */}
-        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card">
+        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_4px_20px] shadow-black/8">
           <form id="resendForm" className="space-y-6">
             {/* <!-- Email Field --> */}
             <div>

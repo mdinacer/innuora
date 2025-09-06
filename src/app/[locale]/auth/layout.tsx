@@ -10,7 +10,7 @@ export default async function Layout({
 }) {
   const { locale = "en" } = await params;
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-mir-bg-primary text-mir-text-primary">
+    <div className="min-h-screen w-screen standalone:w-full flex flex-col bg-mir-bg-primary text-mir-text-primary">
       <Header locale={locale as AppLocales} />
       {children}
     </div>

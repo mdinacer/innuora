@@ -28,7 +28,7 @@ export default async function EmailValidationResultRoute({
           </div>
 
           {/* <!-- Welcome Card --> */}
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card mb-6">
+          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
             <h2 className="text-xl font-semibold mb-4">You're all set</h2>
             <p className="text-mir-text-secondary mb-6">
               Your account is now active and ready to use. Start your journey of emotional reflection and clarity.
@@ -73,7 +73,7 @@ export default async function EmailValidationResultRoute({
           </div>
 
           {/* <!-- Error Details Card --> */}
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card mb-6">
+          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
             <h2 className="text-xl font-semibold mb-4">What went wrong?</h2>
             <div className="text-left space-y-3 text-mir-text-secondary mb-6">
               <div className="flex items-start gap-3">
