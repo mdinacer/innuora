@@ -7,6 +7,7 @@ import { handleUserInput } from "@/app/actions/user-input-actions";
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
+import CodeView from "@/components/code-view";
 import { generateMessageId } from "@/lib/chat/flow/generate-message-id";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { MODELS_CODES } from "@/lib/constants/ai-models";
@@ -45,7 +46,6 @@ export default function ChatRoute() {
       console.log("handleOnSendMessage", message);
 
       if (!session) return;
-      console.log(session);
 
       const userMessage: ChatMessage = {
         id: generateMessageId(`user-message-${session.id}`), //`user-${Date.now()}`,
@@ -57,9 +57,12 @@ export default function ChatRoute() {
       try {
         setIsTyping(true);
 
+        // Take Last three analysis
+        const prevAnalysis = session.analysis ? session.analysis.slice(-3) : [];
+
         const result = await handleUserInput(
           message,
-          [],
+          prevAnalysis,
           messages,
           userProfile,
           language as AppLocales,
@@ -138,7 +141,7 @@ export default function ChatRoute() {
 
   return (
     <main className="h-screen w-screen standalone:w-full">
-      {/* <CodeView data={messages} /> */}
+      <CodeView data={{ session, messages }} className="absolute top-4 left-4 z-50 opacity-30 hover:opacity-100" />
       <Container
         title={title}
         subtitle={subtitle}
@@ -147,7 +150,7 @@ export default function ChatRoute() {
         renderItem={(message, index) => <MessageBubble key={index} message={message} />}
         onUserInput={(message) => handleOnSendMessage(message)}
         welcomeMessage={welcomeMessageContent}
-        headerActions={<Menu disabled={!hasStarted || !messages?.length} onAction={handleActions} />}
+        headerActions={<Menu disabled={!messages?.length} onAction={handleActions} />}
       />
     </main>
   );

@@ -9,8 +9,8 @@ export const StateAnalysisSchema = z.object({
   secondary_module: z.enum(SESSION_MODULES).nullable(),
   intensity: z.enum(EMOTION_INTENSITY_MAP),
   crisis: z.enum(CRISIS_LEVEL_MAP),
-  distortions: z.array(z.string()).max(3), // 0-3 max
-  themes: z.array(z.string()).max(3), // max 3 recurring themes
+  distortions: z.array(z.string()),
+  themes: z.array(z.string()),
   state: z.enum(USER_STATE_MAP),
 });
 

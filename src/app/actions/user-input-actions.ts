@@ -7,13 +7,8 @@ import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
 import { AnalysisError, InvalidInputError, UserInputServiceError } from "@/errors/user-input.errors";
 import { ChatMessagesManager } from "@/lib/ai/chat-manager";
 import { ModulesPromptBuilder } from "@/lib/ai/modules-prompt-builder";
-import {
-  LanguagePrompt,
-  PersonaPrompt,
-  SecurityProtocolPrompt,
-  StateAnalysisPrompt,
-  TonePrompt,
-} from "@/lib/ai/prompts/";
+import { LanguagePrompt, SecurityProtocolPrompt, StateAnalysisPrompt, TonePrompt } from "@/lib/ai/prompts/";
+import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/lib/ai/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/lib/ai/prompts/prompt.user-context";
 import { StateAnalysisEngine } from "@/lib/ai/state-analysis-engine";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
@@ -54,6 +49,9 @@ export async function analyzeUserInput(
     const analysisContextPrompt = stateAnalysisEngine.getAnalysisContextPrompt(userInput, prevData);
 
     const prompts = [StateAnalysisPrompt, analysisContextPrompt];
+
+    console.log("Prompts:", prompts);
+
     const response = await SendPromptsToAiWithRetry(prompts, model);
     const { message, modelTokenUsage } = response;
 
@@ -103,19 +101,28 @@ async function buildConversationPrompts(
     throw new UserInputServiceError(`Unsupported intensity: ${analysis.intensity}`, "UNSUPPORTED_INTENSITY");
   }
 
-  const tonePrompt: ChatCompletionMessageParam = {
-    role: "system",
-    content: toneInstruction,
-  };
+  // const tonePrompt: ChatCompletionMessageParam = {
+  //   role: "system",
+  //   content: toneInstruction,
+  // };
 
   const profileContextPrompt = profile ? buildUserProfilePrompt(profile) : "";
+
+  const fullPersonaPrompt: ChatCompletionMessageParam = {
+    role: "system",
+    content: MIRAEL_PERSONA_PROMPT_INSTRUCTIONS.replace("{{TONE_DESCRIPTION}}", toneInstruction || "").replace(
+      "{{LANGUAGE_RULES}}",
+      (languagePrompt?.content as string | undefined) ?? ""
+    ),
+  };
 
   // Compose prompts efficiently
   return [
     SecurityProtocolPrompt,
-    PersonaPrompt,
-    languagePrompt,
-    tonePrompt,
+    fullPersonaPrompt,
+    //PersonaPrompt,
+    //languagePrompt,
+    //tonePrompt,
     ...(profileContextPrompt ? [profileContextPrompt] : []),
     ...modulesPrompt,
     ...(chatHistoryPrompt ? [chatHistoryPrompt] : []),

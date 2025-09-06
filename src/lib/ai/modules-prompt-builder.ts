@@ -17,12 +17,15 @@ export class ModulesPromptBuilder {
   Secondary Module: ${secondary_module ? capitalize(secondary_module) : "None"}
   
   Instructions:
-  - Combine the modules into a single, cohesive, human-like response.
-  - Integrate validation, guidance, and cognitive insights seamlessly.
-  - Avoid clearly separating the response by module.
-  - Ensure the flow feels natural, warm, and conversational.
-  - Maintain continuity with the user's previous messages.
-  `,
+- Combine all active modules into a single, cohesive response.
+- Integrate validation, pattern recognition, guidance, and cognitive insights seamlessly.
+- **Important:** Keep the response short—**1 to 2 paragraphs only**.
+- Reflect the user's words and emotions clearly, highlighting key patterns or insights.
+- Suggest small, practical, actionable steps if relevant, without over-explaining.
+- Avoid separating the response by module; it should read naturally as one message.
+- Maintain continuity with the user's previous messages and emotional state.
+- Match the tone and intensity based on analysis (calm, moderate, or high).
+  `.trim(),
       },
     ];
 

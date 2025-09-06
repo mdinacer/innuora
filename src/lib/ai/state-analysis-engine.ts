@@ -19,7 +19,8 @@ export class StateAnalysisEngine {
   }
 
   getAnalysisContextPrompt(userInput: string, prevData: StateAnalysis[]): ChatCompletionMessageParam {
-    return prevData.length > 0
+    console.log("prevData", prevData);
+    return prevData.length === 0
       ? {
           role: "user",
           content: ` current_message: ${userInput.trim()}`,
