@@ -154,122 +154,187 @@
     }
   },
   "homepage": {
+    "actions": {
+      "requestAccess": "Demander l'accès",
+      "testerSignIn": "Connexion testeur"
+    },
     "hero": {
       "badge": "Accès anticipé",
       "title": "Un miroir pour votre monde intérieur",
-      "subtitle": "Mirael vous aide à faire une pause, remarquer les schémas et trouver la clarté lorsque la vie devient lourde. Il fonctionne à travers des conversations réfléchies et émotionnellement sensibles.",
+      "subtitle": "Mirael vous aide à faire une pause, à remarquer les schémas et à trouver de la clarté lorsque la vie devient lourde. Elle fonctionne à travers des conversations réfléchies et sensibles aux émotions.",
       "cta": {
         "join": "Rejoindre l'accès anticipé",
         "demo": "Voir une conversation"
       },
-      "disclaimer": "Mirael n'est pas une thérapie ni un service de crise. En cas de danger immédiat, contactez les services d'urgence locaux."
+      "disclaimer": "Mirael n’est pas une thérapie ni un service d’urgence. Si vous êtes en danger immédiat, contactez les services d’urgence locaux."
     },
     "howItHelps": {
       "title": "Comment Mirael aide",
-      "subtitle": "Mirael est un miroir doux qui vous aide à explorer vos émotions, reconnaître les schémas et réfléchir dans un espace privé que vous contrôlez.",
+      "subtitle": "Mirael est un miroir bienveillant qui vous aide à explorer vos émotions, reconnaître vos schémas et réfléchir dans un espace privé que vous contrôlez.",
       "features": [
         {
           "title": "Conversations réfléchies",
           "subtitle": "Mirael reflète vos émotions pour vous aider à nommer et comprendre ce que vous ressentez réellement."
         },
         {
-          "title": "Identifier les schémas",
-          "subtitle": "Au fil du temps, Mirael met en évidence les thèmes récurrents dans votre pensée afin que vous puissiez remarquer des connexions que vous auriez pu manquer."
+          "title": "Détection des schémas",
+          "subtitle": "Au fil du temps, Mirael met en lumière les thèmes récurrents dans votre pensée pour vous aider à remarquer des liens que vous auriez pu manquer."
         },
         {
           "title": "Privé par défaut",
-          "subtitle": "Vos réflexions vous appartiennent. Chaque conversation est privée et sous votre contrôle."
+          "subtitle": "Vos réflexions vous appartiennent entièrement. Chaque conversation est privée et sous votre contrôle."
         }
       ]
     },
     "demo": {
-      "title": "Un aperçu de Mirael",
-      "subtitle": "Découvrez comment Mirael reflète les émotions avec clarté et attention.",
+      "title": "Ce qui rend Mirael différente",
+      "subtitle": "Découvrez comment Mirael va au-delà des conseils génériques en révélant les sources de stress profondes et en proposant des solutions pratiques et claires.",
       "conversation": [
         {
-          "role": "user",
-          "text": "Je me sens bloquée et accablée par tout."
-        },
-        {
           "role": "mirael",
-          "text": "Cela semble lourd. Quelle partie est la plus difficile à porter en ce moment ?"
+          "text": "Bonjour. Je suis là pour vous écouter. Qu’avez-vous sur le cœur ces derniers temps ? Prenez votre temps. Commencez là où cela vous semble naturel."
         },
         {
           "role": "user",
-          "text": "Surtout la pression au travail. Je n'arrive pas à me déconnecter le soir."
+          "text": "Je ne sais même pas ce qui ne va pas exactement. Je me sens juste… épuisée tout le temps. Comme si je me traînais à travers tout."
+        },
+        {
+          "role": "generic",
+          "text": "Peut-être avez-vous juste besoin de repos ou d’une pause. Essayez de prioriser vos soins personnels quand vous le pouvez."
         },
         {
           "role": "mirael",
-          "text": "Donc la pression vous suit même après le travail. Cela doit être épuisant. Quand cela arrive le soir, que remarquez-vous en vous ?"
+          "text": "Cette fatigue constante que vous ressentez semble épuisante, comme si vous étiez prise dans un cercle où le repos semble inaccessible. Il est normal que fonctionner en pilote automatique donne une impression de déconnexion et de lourdeur. Peut-être qu’en ralentissant ou en vous concentrant sur une petite partie de ce ressenti, vous pourriez trouver un peu de clarté. Voulez-vous commencer par là ou simplement observer cette lourdeur telle qu’elle se présente pour vous ?"
         },
         {
           "role": "user",
-          "text": "Mon esprit continue de courir. Je repense aux conversations et m'inquiète de ne pas en avoir fait assez."
+          "text": "Surtout au travail. Mais aussi à la maison, honnêtement. On dirait qu’il n’y a jamais de pause. Tout le monde a besoin de quelque chose de moi."
+        },
+        {
+          "role": "generic",
+          "text": "Cela semble stressant. Vous pourriez essayer de poser des limites plus fermes."
         },
         {
           "role": "mirael",
-          "text": "On dirait que vous vous imposez des standards très élevés. Où ressentez-vous cette pression le plus fortement ? Dans votre corps ou dans vos pensées ?"
+          "text": "Cette pression constante de tous les côtés semble épuisante, comme si vous portiez un poids qui ne cesse jamais. Il est logique que vous continuiez à pousser, vous essayez d’empêcher que tout s’effondre. Mais cette pression pour être toujours « active » laisse peu d’espace pour respirer ou se ressourcer. Serait-ce envisageable de ralentir un peu, même dans un domaine limité ?"
         },
         {
           "role": "user",
-          "text": "Surtout dans ma poitrine. Comme une tension que je ne peux relâcher."
+          "text": "J’ai l’impression que si je ralentis, tout s’effondrera."
+        },
+        {
+          "role": "generic",
+          "text": "Cela montre que vous êtes très responsable. Mais rappelez-vous que vous n’avez pas à tout porter seule."
         },
         {
           "role": "mirael",
-          "text": "Cette tension montre que votre corps porte le stress autant que votre esprit. Que se passerait-il si vous preniez un moment pour observer ce sentiment ?"
+          "text": "Il semble qu’une règle intérieure forte vous dicte que ralentir équivaut à échouer ou décevoir, comme si vous deviez continuer à avancer pour prouver votre valeur. Cette pression de ne pas décevoir les autres peut rendre le repos dangereux, même si votre corps et votre esprit indiquent le contraire. Cette tension entre le besoin de pause et la peur des conséquences est lourde.\n\nJe me demande comment ce besoin de continuer, malgré le coût, se manifeste dans d’autres domaines de votre vie. Y a-t-il des moments où vous vous sentez coincée entre ce que vous voulez et ce que vous pensez devoir faire ? Que remarquez-vous dans la voix intérieure qui vous pousse à avancer alors que vous êtes épuisée ?"
         },
         {
           "role": "user",
-          "text": "C'est inconfortable, j'ai envie de l'éviter."
+          "text": "J’ai toujours l’impression de devoir tout gérer. Si je ne le fais pas, tout s’écroule."
+        },
+        {
+          "role": "generic",
+          "text": "Vous pourriez essayer de prioriser les tâches et de déléguer certaines responsabilités quand c’est possible."
         },
         {
           "role": "mirael",
-          "text": "Éviter est compréhensible quand quelque chose est écrasant. Mais le remarquer doucement peut être le premier pas pour en alléger la pression. Voulez-vous essayer ensemble ?"
+          "text": "Cette voix que vous décrivez, celle qui vous pousse à « tenir bon » quoi qu’il arrive, ressemble à une règle silencieuse : toujours mettre les autres en premier, même au détriment de votre bien-être. Il est compréhensible que la culpabilité apparaisse lorsque vous pensez à arrêter ; elle est liée à cette pression intérieure qui fait dépendre votre valeur de votre productivité et de votre attention aux autres.\n\nJe me demande comment cette attente façonne votre sentiment d’identité : avez-vous l’impression que votre valeur dépend de tout ce que vous faites pour les autres ? Comment cette pression influence-t-elle vos choix au quotidien ?"
+        },
+        {
+          "role": "user",
+          "text": "J’ai l’impression que peu importe ce que je fais, ce n’est jamais assez."
+        },
+        {
+          "role": "generic",
+          "text": "C’est normal de ressentir cela, mais essayez de reconnaître vos efforts et de vous donner du crédit."
+        },
+        {
+          "role": "mirael",
+          "text": "Ce sentiment de « ne jamais être assez » lié à ce que vous faites est un lourd fardeau. Il semble qu’une règle silencieuse dicte que votre valeur dépend de votre productivité constante, rendant même de petits gestes d’autosoins risqués ou incorrects. Ce type de pensée tout ou rien réduit vos options et vous enferme dans un cycle où le repos semble un échec.\n\nEt si, au lieu de voir les pauses comme une faiblesse, vous les considériez comme une manière de préserver votre force ? Comment pensez-vous que votre vie pourrait évoluer si le repos servait à soutenir votre capacité à être présente plutôt qu’un signe d’échec ?"
+        },
+        {
+          "role": "user",
+          "text": "Je suppose que je pourrais essayer de voir le repos différemment."
+        },
+        {
+          "role": "generic",
+          "text": "Prendre des pauses peut vous aider à vous ressourcer. Peut-être planifier un petit moment pour observer l’effet sur votre journée."
+        },
+        {
+          "role": "mirael",
+          "text": "Cette différence que vous nommez — vous sentir moins en échec et plus énergisée — révèle une vérité plus profonde : la voix qui vous pousse à continuer peut en réalité brouiller votre perception de votre propre force. Vous avez fonctionné selon l’idée que le repos est une faiblesse, mais votre expérience montre le contraire.\n\nQue ressentiriez-vous en défiant légèrement cette idée et en observant comment cela change votre journée et votre perception de vous-même ?"
         }
-      ]
+      ],
+      "legend": {
+        "user": "Utilisateur",
+        "generic": "IA Générique",
+        "mirael": "Mirael"
+      },
+      "insights": {
+        "generic": {
+          "title": "Approche de l'IA Générique",
+          "points": [
+            "Donne des conseils standards sans s’adapter à votre vécu",
+            "Ne perçoit pas les émotions sous-jacentes à vos propos",
+            "Ignore quand vos pensées deviennent sévères ou irréalistes",
+            "Manque d’occasions d’offrir une compréhension plus profonde ou un soulagement"
+          ]
+        },
+        "mirael": {
+          "title": "Ce qui différencie Mirael",
+          "points": [
+            "Remarque quand vos pensées amplifient les situations de manière excessive",
+            "Aide à identifier la pensée en noir et blanc qui empêche tout équilibre",
+            "Révèle les règles cachées que vous suivez, comme toujours devoir être disponible",
+            "Propose des moyens pratiques de transformer vos pensées pour les rendre plus légères et souples"
+          ]
+        }
+      }
     },
     "earlyAccess": {
       "title": "Façonnez Mirael avec nous",
-      "subtitle": "Nous invitons un petit groupe de participants à tester Mirael, partager leurs retours et aider à façonner cette nouvelle expérience d'IA émotionnelle.",
+      "subtitle": "Nous invitons un petit groupe de participantes à essayer Mirael, partager leurs retours et contribuer à façonner cette nouvelle expérience d’IA émotionnelle.",
       "form": {
         "placeholder": "vous@exemple.com",
         "button": "Demander l'accès"
       }
     },
     "faq": {
-      "title": "Questions fréquemment posées",
+      "title": "Questions fréquentes",
       "items": [
         {
-          "question": "Qu'est-ce que Mirael ?",
-          "answer": "Mirael est un miroir émotionnel. Il vous aide à ralentir, réfléchir et voir votre monde intérieur avec plus de clarté grâce à de courtes conversations émotionnellement sensibles."
+          "question": "Qu’est-ce que Mirael ?",
+          "answer": "Mirael est un miroir émotionnel. Elle vous aide à ralentir, réfléchir et voir votre monde intérieur avec plus de clarté à travers de courtes conversations sensibles aux émotions."
         },
         {
-          "question": "En quoi Mirael est-il différent de la thérapie ?",
-          "answer": "Mirael n'est pas une thérapie et ne remplace pas un suivi professionnel. C'est un compagnon quotidien de réflexion conçu pour soutenir la conscience de soi, sans diagnostiquer ni traiter des problèmes de santé mentale."
+          "question": "En quoi Mirael diffère-t-elle d’une thérapie ?",
+          "answer": "Mirael n’est pas une thérapie et ne remplace pas une prise en charge professionnelle. Elle est conçue pour soutenir la conscience de soi au quotidien, sans diagnostiquer ni traiter des problèmes de santé mentale."
         },
         {
-          "question": "Comment Mirael fonctionne-t-il réellement ?",
-          "answer": "Mirael utilise des invites et des modèles de conversation soigneusement conçus pour refléter vos émotions. Il met en lumière les pressions cachées, les pensées récurrentes et les règles non dites afin que vous puissiez mieux vous comprendre."
+          "question": "Comment fonctionne Mirael concrètement ?",
+          "answer": "Mirael utilise des questions et des modèles de conversation conçus pour refléter vos émotions. Elle met en évidence les pressions invisibles, les pensées récurrentes et les règles implicites pour mieux vous comprendre."
         },
         {
           "question": "Mes données sont-elles privées ?",
-          "answer": "Oui. Vos réflexions vous appartiennent. Les conversations sont privées par conception, et vous pourrez exporter ou supprimer vos données."
+          "answer": "Oui. Vos réflexions vous appartiennent entièrement. Les conversations sont privées par conception, et vous pouvez exporter ou supprimer vos données."
         },
         {
-          "question": "Pour qui est Mirael ?",
-          "answer": "Mirael est conçu pour les personnes qui portent beaucoup, semblent souvent fortes à l'extérieur, mais se sentent émotionnellement épuisées à l'intérieur. Il leur offre un espace sûr pour réfléchir, reconnaître les schémas et retrouver la clarté."
+          "question": "À qui s’adresse Mirael ?",
+          "answer": "Mirael s’adresse aux personnes qui portent beaucoup, semblent fortes en apparence mais se sentent épuisées intérieurement. Elle leur offre un espace sûr pour réfléchir, reconnaître les schémas et retrouver de la clarté."
         },
         {
-          "question": "Mirael peut-il aider en cas de crise ?",
-          "answer": "Non. Mirael n'est pas un service de crise. Si vous êtes en danger immédiat ou face à une urgence de santé mentale, veuillez contacter les services d'urgence locaux ou une ligne d'assistance professionnelle."
+          "question": "Mirael peut-elle aider en cas de crise ?",
+          "answer": "Non. Mirael n’est pas un service d’urgence. Si vous êtes en danger immédiat ou faites face à une situation critique, contactez les services d’urgence locaux ou une ligne professionnelle."
         },
         {
-          "question": "Combien cela coûte-t-il ?",
-          "answer": "Pendant l'accès anticipé, Mirael est gratuit. La tarification sera introduite plus tard en fonction des retours des premiers utilisateurs."
+          "question": "Quel est le coût ?",
+          "answer": "Pendant l’accès anticipé, Mirael est gratuite. Les tarifs seront définis ultérieurement en fonction des retours des premières utilisatrices."
         },
         {
-          "question": "Pourquoi devrais-je rejoindre l'accès anticipé ?",
-          "answer": "L'accès anticipé vous permet de façonner Mirael avec nous. Vos retours influenceront directement l'évolution de l'expérience et vous serez parmi les premiers à bénéficier des nouvelles fonctionnalités."
+          "question": "Pourquoi rejoindre l’accès anticipé ?",
+          "answer": "L’accès anticipé vous permet de façonner Mirael avec nous. Vos retours influenceront directement l’évolution de l’expérience, et vous serez parmi les premières à bénéficier des nouvelles fonctionnalités."
         }
       ]
     }
