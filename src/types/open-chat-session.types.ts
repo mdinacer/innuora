@@ -3,6 +3,8 @@ import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
+//type PersistenceMode = "local" | "remote";
+
 export type Session = {
   id: string;
   title: string;
@@ -13,6 +15,8 @@ export type Session = {
   summary: string | null;
   analysis: StateAnalysis[];
   modelCode: ModelCode;
+  persistOnCloud: boolean;
+  aiSuggestedTitle: boolean;
   meta: {
     tokenUsage: ModelTokenUsage[];
     messageCount: number;

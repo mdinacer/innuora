@@ -64,7 +64,9 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
                 analysis: data.analysis ?? [],
                 meta: data.meta ?? { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
                 modelCode: data.modelCode ?? DEFAULT_MODEL_CODE,
-              },
+                aiSuggestedTitle: data.aiSuggestedTitle ?? false,
+                persistOnCloud: data.persistOnCloud ?? false,
+              } as Session,
             },
           };
         });
