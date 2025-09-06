@@ -403,5 +403,44 @@
       "support": "Support"
     },
     "copyright": "© 2025 Mirael, Inc. All rights reserved."
+  },
+  "sessionForm": {
+    "dialogButton": {
+      "create": "Create Session",
+      "edit": "Edit Session"
+    },
+    "title": {
+      "create": "Create New Session",
+      "edit": "Edit Session"
+    },
+    "subtitle": {
+      "create": "Optionally set a title and subtitle for your session.",
+      "edit": "Update the session title, subtitle, or storage mode."
+    },
+    "fields": {
+      "title": {
+        "label": "Session Title",
+        "placeholder": "Optional"
+      },
+      "subtitle": {
+        "label": "Session Subtitle",
+        "placeholder": "Optional"
+      },
+      "aiSuggestedTitle": {
+        "label": "Let Mirael suggest a title and subtitle",
+        "description": "Mirael can create a brief, reflective title and subtitle for this session. You can edit them afterward if you want."
+      },
+      "persistOnCloud": {
+        "label": "Store anonymized summary on the cloud",
+        "description": "Your chat messages always stay on this device. Enabling this allows a fully anonymized summary of this session to be stored on the cloud, so you can continue where you left off on another device."
+      }
+    },
+    "actions": {
+      "submit": {
+        "create": "Create Session",
+        "edit": "Save Changes"
+      },
+      "cancel": "Cancel"
+    }
   }
 }

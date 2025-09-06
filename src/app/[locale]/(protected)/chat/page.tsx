@@ -8,7 +8,7 @@ import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
-import { generateMessageId } from "@/lib/chat/flow/generate-message-id";
+import { generateMessageId } from "@/lib/chat/flow/generate-id";
 import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";

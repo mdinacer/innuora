@@ -1,6 +1,6 @@
 import { ChatMessage, MessageOfType, MessageType } from "@/types/flow-chat-messages.types";
 import { FlowStep, StepType } from "@/types/flow-session.types";
-import { generateMessageId } from "./generate-message-id";
+import { generateMessageId } from "./generate-id";
 
 export interface MessageCreationOptions {
   id?: string;
