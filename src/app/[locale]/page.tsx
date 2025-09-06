@@ -152,9 +152,10 @@ export default async function Home({
     },
   };
   return (
-    <main className="relative rtl:font-arabic-body text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative rtl:font-arabic-body pt-20 text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden  transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Header --> */}
       <Header
+        className="fixed top-0 inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
         locale={locale as AppLocales}
         sideContent={
           <>
