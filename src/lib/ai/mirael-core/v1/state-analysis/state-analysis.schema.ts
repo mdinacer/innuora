@@ -1,7 +1,11 @@
 import z from "zod";
 
-import { SESSION_MODULES } from "@/lib/ai/session-modules";
-import { CRISIS_LEVEL_MAP, EMOTION_INTENSITY_MAP, USER_STATE_MAP } from "@/types/state-analysis.types";
+import {
+  CRISIS_LEVEL_MAP,
+  EMOTION_INTENSITY_MAP,
+  USER_STATE_MAP,
+} from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.types";
+import { SESSION_MODULES } from "@/lib/ai/shared/session-modules";
 
 // === Zod Schema ===
 export const StateAnalysisSchema = z.object({

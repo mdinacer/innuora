@@ -1,4 +1,4 @@
-import { SessionModule } from "@/lib/ai/session-modules";
+import { SessionModule } from "@/lib/ai/shared/session-modules";
 
 // === Maps and Types ===
 export const USER_STATE_MAP = {

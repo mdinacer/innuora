@@ -5,15 +5,15 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
 import { AnalysisError, InvalidInputError, UserInputServiceError } from "@/errors/user-input.errors";
-import { ChatMessagesManager } from "@/lib/ai/chat-manager";
-import { ModulesPromptBuilder } from "@/lib/ai/modules-prompt-builder";
-import { LanguagePrompt, SecurityProtocolPrompt, StateAnalysisPrompt, TonePrompt } from "@/lib/ai/prompts/";
-import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/lib/ai/prompts/prompt.persona";
-import { buildUserProfilePrompt } from "@/lib/ai/prompts/prompt.user-context";
-import { StateAnalysisEngine } from "@/lib/ai/state-analysis-engine";
+import { ModulesPromptBuilder } from "@/lib/ai/mirael-core/v1/modules-prompt-builder";
+import { StateAnalysisEngine } from "@/lib/ai/mirael-core/v1/state-analysis";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
+import { ChatMessagesManager } from "@/lib/ai/shared/chat-manager";
+import { LanguagePrompt, SecurityProtocolPrompt, StateAnalysisPrompt, TonePrompt } from "@/lib/ai/shared/prompts/";
+import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/lib/ai/shared/prompts/prompt.persona";
+import { buildUserProfilePrompt } from "@/lib/ai/shared/prompts/prompt.user-context";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
-import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 

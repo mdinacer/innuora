@@ -1,5 +1,5 @@
+import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
 import { ModelCode } from "@/lib/constants/ai-models";
-import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 

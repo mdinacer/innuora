@@ -3,7 +3,7 @@
 import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 
 import { AiClientError, EmptyResponseError, NetworkError, OpenAiError, OpenRouterError } from "@/errors/ai-errors";
-import { calculateCost } from "@/lib/ai/cost-estimation";
+import { calculateCost } from "@/lib/ai/shared/cost-estimation";
 import openai from "@/lib/openai";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 

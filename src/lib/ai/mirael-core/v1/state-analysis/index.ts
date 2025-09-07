@@ -1,7 +1,7 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { StateAnalysis, StateAnalysisSchema } from "@/lib/zod/state-analysis.schema";
-import { AnalysisContext, AnalysisContextItem } from "@/types/state-analysis.types";
+import { StateAnalysis, StateAnalysisSchema } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
+import { AnalysisContext, AnalysisContextItem } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.types";
 
 export class StateAnalysisEngine {
   safeParseStateAnalysis(aiResponse: string): StateAnalysis | null {
