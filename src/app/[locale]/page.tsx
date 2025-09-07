@@ -345,6 +345,7 @@ export default async function Home({
       </section>
       {/* <!-- Footer --> */}
       <Footer locale={locale as AppLocales} />
+      <div className="hidden standalone:block h-[env(safe-area-inset-bottom)] z-40  backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"></div>
     </main>
   );
 }
