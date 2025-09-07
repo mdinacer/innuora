@@ -1,8 +1,8 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/lib/ai/modules";
-import { IN_SCOPE_CHALLENGES, OUT_OF_SCOPE_CHALLENGES, SessionModule } from "@/lib/ai/session-modules";
-import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
+import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/lib/ai/mirael-core/v1/modules";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
+import { IN_SCOPE_CHALLENGES, OUT_OF_SCOPE_CHALLENGES, SessionModule } from "@/lib/ai/shared/session-modules";
 import { capitalize } from "@/utils/capitalize-word";
 
 export class ModulesPromptBuilder {
