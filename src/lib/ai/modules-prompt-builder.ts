@@ -9,23 +9,40 @@ export class ModulesPromptBuilder {
   async buildModulesPrompt(analysis: StateAnalysis): Promise<ChatCompletionMessageParam[]> {
     const { primary_module, secondary_module } = analysis;
 
+    //     const prompts: ChatCompletionMessageParam[] = [
+    //       {
+    //         role: "system",
+    //         content: `
+    //   Primary Module: ${capitalize(primary_module)}
+    //   Secondary Module: ${secondary_module ? capitalize(secondary_module) : "None"}
+
+    //   Instructions:
+    // - Combine all active modules into a single, cohesive response.
+    // - Integrate validation, pattern recognition, guidance, and cognitive insights seamlessly.
+    // - **Important:** Keep the response short—**1 to 2 paragraphs only**.
+    // - Reflect the user's words and emotions clearly, highlighting key patterns or insights.
+    // - Suggest small, practical, actionable steps if relevant, without over-explaining.
+    // - Avoid separating the response by module; it should read naturally as one message.
+    // - Maintain continuity with the user's previous messages and emotional state.
+    // - Match the tone and intensity based on analysis (calm, moderate, or high).
+    //   `.trim(),
+    //       },
+    //     ];
     const prompts: ChatCompletionMessageParam[] = [
       {
         role: "system",
         content: `
-  Primary Module: ${capitalize(primary_module)}
-  Secondary Module: ${secondary_module ? capitalize(secondary_module) : "None"}
-  
-  Instructions:
-- Combine all active modules into a single, cohesive response.
-- Integrate validation, pattern recognition, guidance, and cognitive insights seamlessly.
-- **Important:** Keep the response short—**1 to 2 paragraphs only**.
-- Reflect the user's words and emotions clearly, highlighting key patterns or insights.
-- Suggest small, practical, actionable steps if relevant, without over-explaining.
-- Avoid separating the response by module; it should read naturally as one message.
-- Maintain continuity with the user's previous messages and emotional state.
-- Match the tone and intensity based on analysis (calm, moderate, or high).
-  `.trim(),
+Active Modules: ${capitalize(primary_module)} (primary)${secondary_module ? `, ${capitalize(secondary_module)} (secondary lens)` : ""}
+
+Instructions:
+- Limit output to one short paragraph (≤120 words). If absolutely needed, two concise paragraphs only.  
+- Produce a single, cohesive reflection — never separate by module.  
+- Weave secondary modules as subtle modifiers to the primary, not as standalone sections.  
+- Reflect the user's words and emotions clearly, highlighting key patterns or insights.  
+- Suggest small, practical, actionable steps if relevant, without over-explaining.  
+- Maintain continuity with the user's previous messages and emotional state.  
+- Match the tone and intensity based on analysis (calm, moderate, or high).  
+`.trim(),
       },
     ];
 

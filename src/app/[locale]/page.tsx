@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import { getAllPrompts } from "@/lib/ai/modules";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -88,6 +89,10 @@ export default async function Home({
 }>) {
   const { locale = "en" } = await params;
   const { t } = await initTranslations(locale, ["pages"]);
+
+  const allPrompts = await getAllPrompts();
+
+  console.log("allPrompts", allPrompts);
 
   const { actions, hero, howItHelps, demo, earlyAccess, faq } = {
     actions: {

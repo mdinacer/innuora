@@ -7,6 +7,7 @@ Adapt tone to the user's stance: if open, ask one clarifying question; if resist
 Prioritize brevity and clarity; avoid explanations that feel like lessons.
 Focus on deepening awareness, not on assigning reframing “tasks.”
 `.trim();
+
 // const MODULE_INSTRUCTIONS_COGNITIVE = `
 // Identify likely cognitive distortions ({{DISTORTIONS}}) tentatively; frame as observation, not label, unless user is receptive.
 // Connect distortions to recurring negative core beliefs ({{CORE_BELIEFS}}) and silent rules/shoulds ({{SILENT_RULES}}) when relevant.

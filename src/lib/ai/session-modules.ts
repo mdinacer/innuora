@@ -1,15 +1,38 @@
 export const SESSION_MODULES = {
-  CRISIS: "crisis", // High risk, override all
-  VALIDATE: "validate", // Emotional validation
-  RESISTANCE_PUSHBACK: "resistance_pushback", // Pushback against AI insight
-  RESISTANCE_OVERWHELM: "resistance_overwhelm", // Shutdown/flooding avoidance
-  PSYCHOEDUCATION: "psychoeducation", // Clarity/explanation needed
+  BEHAVIORAL: "behavioral", //Behavioral Experiment (Micro-Actions)
   COGNITIVE: "cognitive", // Cognitive reframing
-  PATTERN: "pattern", // Deep pattern recognition
-  OVERWHELM: "overwhelm", // Emotional flooding/freeze
-  GUIDANCE: "guidance",
+  CORE_BELIEFS: "core_beliefs", // Core Beliefs & Self-Criticism
+  CRISIS: "crisis", // High risk, override all
   FIRST_TIME: "first_time", // Onboarding/initiation
+  GUIDANCE: "guidance",
+  OVERWHELM: "overwhelm", // Emotional flooding/freeze
+  PATTERN: "pattern", // Deep pattern recognition
+  PSYCHOEDUCATION: "psychoeducation", // Clarity/explanation needed
+  REFRAMING: "reframing", // Positive Reframing
+  RESISTANCE_OVERWHELM: "resistance_overwhelm", // Shutdown/flooding avoidance
+  RESISTANCE_PUSHBACK: "resistance_pushback", // Pushback against AI insight
+  SHOULDS: "shoulds", // Silent Rules & Shoulds
+  VALIDATE: "validate", // Emotional validation
 } as const;
+
+export const CORE_MODULES = {
+  COGNITIVE: "cognitive", // Cognitive reframing
+  CORE_BELIEFS: "core_beliefs", // Core Beliefs & Self-Criticism
+  CRISIS: "crisis", // High risk, override all
+  REFRAMING: "reframing", // Positive Reframing
+  SHOULDS: "shoulds", // Silent Rules & Shoulds
+};
+export const PROCESS_MODULES = {
+  OVERWHELM: "overwhelm", // Emotional flooding/freeze
+  RESISTANCE_OVERWHELM: "resistance_overwhelm", // Shutdown/flooding avoidance
+  RESISTANCE_PUSHBACK: "resistance_pushback", // Pushback against AI insight
+  VALIDATE: "validate", // Emotional validation
+};
+export const UTILITY_MODULES = {
+  GUIDANCE: "guidance",
+  PATTERN: "pattern", // Deep pattern recognition
+  PSYCHOEDUCATION: "psychoeducation", // Clarity/explanation needed
+};
 
 export type SessionModule = (typeof SESSION_MODULES)[keyof typeof SESSION_MODULES];
 
