@@ -1,4 +1,6 @@
-import { SessionModule } from "@/lib/ai/session-modules";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
+import { SessionModule } from "@/lib/ai/shared/session-modules";
+import { ModelTokenUsage } from "@/types/ai-model.types";
 
 // === Maps and Types ===
 export const USER_STATE_MAP = {
@@ -38,3 +40,8 @@ export type AnalysisContext = {
   recurringThemes: string[];
   distortions: string[];
 };
+
+export interface AnalysisResult {
+  analysis: StateAnalysis;
+  modelTokenUsage: ModelTokenUsage | null;
+}

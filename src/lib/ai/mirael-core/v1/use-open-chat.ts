@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from "react";
 
-import { useOpenChatSessionStore } from "@/stores/open-chat-session.store";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { StateAnalysis } from "../zod/state-analysis.schema";
 
 interface OpenChatProps {
   sessionId: string;

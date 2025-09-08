@@ -2,12 +2,12 @@ import localforage from "localforage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { Session } from "@/lib/ai/mirael-core/v1/open-chat-session.types";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
 import { MODELS_CODES } from "@/lib/constants/ai-models";
-import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { Session } from "@/types/open-chat-session.types";
 
 const DEFAULT_MODEL_CODE = MODELS_CODES.M1;
 

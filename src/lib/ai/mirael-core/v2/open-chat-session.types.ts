@@ -1,9 +1,19 @@
+import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { ModelCode } from "@/lib/constants/ai-models";
-import { StateAnalysis } from "@/lib/zod/state-analysis.schema";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 //type PersistenceMode = "local" | "remote";
+
+export type SessionSummaryMeta = {
+  createdAt: Date;
+  lastSummarizedMessageId: string;
+};
+
+export type SessionSummary = {
+  text: string;
+  meta: SessionSummaryMeta;
+};
 
 export type Session = {
   id: string;
@@ -12,7 +22,8 @@ export type Session = {
   createdAt: Date;
   updatedAt?: Date;
   messages: OpenChatMessage[];
-  summary: string | null;
+  chatSummary: SessionSummary | null;
+  sessionSummary: SessionSummary | null;
   analysis: StateAnalysis[];
   modelCode: ModelCode;
   persistOnCloud: boolean;

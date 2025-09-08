@@ -16,10 +16,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
+import { Session } from "@/lib/ai/mirael-core/v1/open-chat-session.types";
 import { generateId } from "@/lib/chat/flow/generate-id";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
-import { useOpenChatSessionStore } from "@/stores/open-chat-session.store";
-import { Session } from "@/types/open-chat-session.types";
 import SwitchField from "../input/switch-field";
 import TextField from "../input/text-field";
 import { Form } from "../ui/form";

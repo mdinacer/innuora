@@ -1,12 +1,17 @@
 import z from "zod";
 
-import { SESSION_MODULES } from "@/lib/ai/session-modules";
-import { CRISIS_LEVEL_MAP, EMOTION_INTENSITY_MAP, USER_STATE_MAP } from "@/types/state-analysis.types";
+import {
+  CRISIS_LEVEL_MAP,
+  EMOTION_INTENSITY_MAP,
+  USER_STATE_MAP,
+} from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.types";
+import { SESSION_MODULES } from "@/lib/ai/shared/session-modules";
 
 // === Zod Schema ===
 export const StateAnalysisSchema = z.object({
-  primary_module: z.enum(SESSION_MODULES),
-  secondary_module: z.enum(SESSION_MODULES).nullable(),
+  core_module: z.enum(SESSION_MODULES).nullable(),
+  process_module: z.enum(SESSION_MODULES).nullable(),
+  utility_module: z.enum(SESSION_MODULES).nullable(),
   intensity: z.enum(EMOTION_INTENSITY_MAP),
   crisis: z.enum(CRISIS_LEVEL_MAP),
   distortions: z.array(z.string()),
