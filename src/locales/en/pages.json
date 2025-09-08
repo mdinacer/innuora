@@ -202,103 +202,155 @@
       "conversation": [
         {
           "role": "mirael",
-          "text": "Hello. I'm here to listen. What's been on your mind lately? Take your time. Just start wherever feels right."
+          "text": "Hi, I can see this is a stressful moment for you. Let’s take a breath together. Can you tell me what’s weighing most heavily on you right now?"
         },
         {
           "role": "user",
-          "text": "I… I don’t even know where to start. Everything feels so tangled inside me, like I can’t make sense of anything."
+          "text": "I have to close a deal with a huge client at work, and everything depends on me. I feel like if I mess up, it could ruin everything for the team… and for me."
         },
         {
           "role": "generic",
-          "text": "It sounds like you might be feeling overwhelmed. Maybe you need to take a break or write down your thoughts to get some clarity."
+          "text": "It sounds like you’re under a lot of pressure. Maybe breaking the deal preparation into smaller steps could help reduce stress."
         },
         {
           "role": "mirael",
-          "text": "I can hear that things feel tangled and overwhelming. When life feels like this, focusing on **one small thing at a time** can help. Would you like to explore a specific area on your mind, or take a moment to breathe and slow down?"
+          "text": "I hear how much responsibility is on your shoulders. There’s a **silent rule** here: you must succeed perfectly, or it’s a disaster. That belief can make your chest tighten and your thoughts race. What physical sensations are you noticing as you think about this deal?"
         },
         {
           "role": "user",
-          "text": "I guess work is the first thing that comes to mind… but even talking about it feels heavy. I keep thinking I should be handling everything perfectly, but I’m just… exhausted."
+          "text": "My chest feels tight, my stomach is in knots, and I can’t focus properly. I keep imagining the worst-case scenarios."
         },
         {
           "role": "generic",
-          "text": "Work can be stressful. Perhaps you can prioritize tasks or delegate some responsibilities to ease the load."
+          "text": "Visualizing the worst case can increase anxiety. Focusing on actionable steps or your preparation might help you feel more in control."
         },
         {
           "role": "mirael",
-          "text": "It sounds like you are carrying a heavy burden with the belief that you **should** handle everything perfectly. That expectation creates a lot of pressure. What if handling things well didn't mean doing them perfectly? How might that change things for you?"
+          "text": "That’s **catastrophizing** — imagining disasters before they happen. Recognizing this pattern is the first step. You’re preparing, and preparation is what matters. Let’s identify **one thing you can control right now**."
         },
         {
           "role": "user",
-          "text": "Honestly… I’m not sure. Part of me wants to just push through like I always do, but another part of me feels like I’m running on empty and might crack if I keep going."
+          "text": "I guess I could review the client’s data and the proposal one more time."
         },
         {
           "role": "generic",
-          "text": "Feeling burned out is common when pushing yourself. Maybe try taking a short break or talking to someone about how you feel."
+          "text": "Reviewing the details can help you feel more prepared. It’s a practical step to reduce uncertainty."
         },
         {
           "role": "mirael",
-          "text": "You seem caught between the pressure to keep going and the deep exhaustion inside. Recognizing that you are running on empty is important. Sometimes **allowing yourself rest** can be the first step to balance. Would it help to consider one small way to take a break, or just sit with this feeling for now?"
+          "text": "Exactly. That’s a **tangible step**. Focusing on what’s within your control helps quiet the mental storm. Notice that preparation is competence, not failure. How does it feel to take this small step?"
         },
         {
           "role": "user",
-          "text": "Maybe… maybe just talking about it helps a little. I feel like if I even slow down, everything will fall apart, but keeping it all inside is suffocating."
+          "text": "A bit calmer… but I still feel like the weight of the outcome is on me alone."
         },
         {
           "role": "generic",
-          "text": "It sounds like you're under a lot of pressure. Maybe start by sharing a little with someone you trust, so it doesn't feel so heavy."
+          "text": "Sharing responsibility or talking with a colleague might help ease that feeling. You don’t have to carry everything alone."
         },
         {
           "role": "mirael",
-          "text": "I hear that fear of things falling apart is strong, yet keeping everything inside feels suffocating. Talking can release some pressure without losing control. Let's take a **small step together** and focus on one thing you're carrying today. It might help lighten the load."
+          "text": "You’re recognizing the **pressure of carrying it alone**. What if your role was guiding the team rather than controlling everything yourself? Delegating even small tasks could lift some weight while keeping you in charge."
         },
         {
           "role": "user",
-          "text": "Okay… I think the thing that’s really weighing me down is my team at work. I feel responsible for everything going right, and I’m scared if I don’t fix things, it’ll all fall apart."
+          "text": "I could assign the financial part to Sam. I usually do it myself, but I trust him."
         },
         {
           "role": "generic",
-          "text": "It’s natural to feel responsible, but you might not need to do everything yourself. Delegating could help reduce stress."
+          "text": "Delegating to a trusted team member is a practical step. It can reduce your stress while maintaining oversight."
         },
         {
           "role": "mirael",
-          "text": "Holding responsibility for everything at work is heavy, especially with the fear of failure. You might be following a **silent rule** that you must fix everything. What if your role was guiding rather than fixing? How would that shift the weight you feel?"
+          "text": "That’s a **powerful shift** — trusting your team while staying accountable. Notice how sharing responsibility changes the tension in your body. Even small steps challenge the old rule that you must do everything perfectly."
         },
         {
           "role": "user",
-          "text": "Guiding… I don’t know. I feel like if I don’t take control, nothing gets done. But… I’m so tired of always carrying it all alone."
+          "text": "It actually feels lighter. I didn’t expect letting go of one small part would help so much."
         },
         {
           "role": "generic",
-          "text": "It’s understandable to want control. Maybe start by letting someone else handle one small task and see how it goes."
+          "text": "Even small changes in workload can have a positive effect on stress levels and performance."
         },
         {
           "role": "mirael",
-          "text": "You’re carrying the weight of needing control, and the loneliness of doing it all alone is exhausting. Sometimes **sharing even a small part** of that load brings relief. Could you delegate one task or talk to someone about this feeling?"
+          "text": "Now, let’s explore what’s under the **surface pressure**. You’re worried about judgment and failing your team. That’s a lot of **internal pressure**. What’s the story you tell yourself when you imagine failing?"
         },
         {
           "role": "user",
-          "text": "I… I don’t usually ask for help. I feel like I should handle it, or people will think I’m not capable. But part of me… really wants to just say it out loud, that I’m overwhelmed."
+          "text": "I keep thinking I’ll look incompetent, that people will doubt me, and maybe I’ll lose respect. It feels humiliating even imagining it."
         },
         {
           "role": "generic",
-          "text": "Asking for help doesn't make you weak. Consider sharing a small part of your burden with someone you trust."
+          "text": "Fears of judgment are common. It might help to reframe failure as a learning opportunity rather than a reflection of your worth."
         },
         {
           "role": "mirael",
-          "text": "It seems like you hold a strong rule that you **must manage everything alone**. That creates pressure and makes asking for help hard. Recognizing that you’re overwhelmed is a brave step. What if asking for help was a **strength** rather than a weakness? How might that change things for you?"
+          "text": "I hear the **fear of being judged**. That’s a strong core belief influencing your stress. You’re not your mistakes — you’re a competent professional facing a challenge. If you notice this fear without acting on it, how does it shift in your body?"
         },
         {
           "role": "user",
-          "text": "I… I think it could be a strength. I just don’t know who I can actually trust to not judge me. Even saying it here feels like a risk."
-        },
-        {
-          "role": "generic",
-          "text": "It's normal to worry about judgment. Maybe try sharing a small part of what you're feeling with someone you feel safest with first."
+          "text": "It’s still tense, but less like panic… more like awareness."
         },
         {
           "role": "mirael",
-          "text": "I understand that sharing feels risky. The fact that even considering it takes courage shows your self-awareness. Starting with **one trusted person** in a small way can give relief and a sense of shared responsibility. You've reflected a lot today. **Acknowledge that courage**. When ready, try a small step and pace yourself safely."
+          "text": "Exactly. That’s the difference between **reactive overwhelm** and **conscious awareness**. You can feel the fear without letting it control your actions. Let’s try naming one positive aspect about your preparation or skills."
+        },
+        {
+          "role": "user",
+          "text": "I’ve been thorough with my research and proposals. I know the client’s needs well."
+        },
+        {
+          "role": "generic",
+          "text": "Recognizing your preparedness helps build confidence. Focus on your strengths to counteract anxiety."
+        },
+        {
+          "role": "mirael",
+          "text": "Perfect. That’s **anchoring in competence**. Every time your mind jumps to worst-case scenarios, you can return to this grounded fact: you are prepared and capable. How does that feel?"
+        },
+        {
+          "role": "user",
+          "text": "It makes me feel a little steadier, more in control."
+        },
+        {
+          "role": "mirael",
+          "text": "Now, let’s consider **what asking for support might look like**. It doesn’t mean weakness — it’s a strength. Even asking one team member for input or feedback can reduce pressure. Who could you approach safely for insight?"
+        },
+        {
+          "role": "user",
+          "text": "Maybe I can ask Sarah to review the proposal. She’s detail-oriented, and I trust her judgment."
+        },
+        {
+          "role": "generic",
+          "text": "Getting feedback from someone trustworthy is a concrete way to ease stress and catch potential issues."
+        },
+        {
+          "role": "mirael",
+          "text": "Exactly. That’s **strategic collaboration**. You’re not giving up control — you’re amplifying effectiveness while reducing internal pressure. Notice how even thinking about sharing feels in your body and mind."
+        },
+        {
+          "role": "user",
+          "text": "It feels relieving… like the weight in my chest has lessened a bit."
+        },
+        {
+          "role": "generic",
+          "text": "Sharing tasks and responsibilities can reduce emotional load and help maintain focus."
+        },
+        {
+          "role": "mirael",
+          "text": "Before we close, let’s integrate today’s insights. You practiced **preparation, delegation, emotional awareness, and collaboration**. You challenged the old rule that you must carry everything alone and perfectly. Notice the shift: your strength isn’t in perfection, but in conscious, deliberate action."
+        },
+        {
+          "role": "user",
+          "text": "I really feel that. I’m calmer and more confident, and I know I’m not alone in handling this."
+        },
+        {
+          "role": "generic",
+          "text": "Recognizing your progress and building on it will help maintain confidence and reduce stress over time."
+        },
+        {
+          "role": "mirael",
+          "text": "You did something significant today. You acknowledged your fear, noticed your body, challenged old rules, and practiced self-compassion. That’s real strength. You can take this into the meeting tomorrow with clarity and grounded focus. You’re ready."
         }
       ],
       "legend": {
