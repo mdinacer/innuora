@@ -4,23 +4,18 @@ import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
-import { AnalysisError, InvalidInputError, UserInputServiceError } from "@/errors/user-input.errors";
-import { ModulesPromptBuilder } from "@/lib/ai/mirael-core/v1/modules-prompt-builder";
-import { StateAnalysisEngine } from "@/lib/ai/mirael-core/v1/state-analysis";
-import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
+import { InvalidInputError, UserInputServiceError } from "@/errors/user-input.errors";
+import { ModulesPromptBuilder } from "@/lib/ai/mirael-core/v2/modules-prompt-builder";
+import { analyzeUserInput } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.action";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { ChatMessagesManager } from "@/lib/ai/shared/chat-manager";
-import { LanguagePrompt, SecurityProtocolPrompt, StateAnalysisPrompt, TonePrompt } from "@/lib/ai/shared/prompts/";
+import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/lib/ai/shared/prompts/";
 import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/lib/ai/shared/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/lib/ai/shared/prompts/prompt.user-context";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-
-interface AnalysisResult {
-  analysis: StateAnalysis;
-  modelTokenUsage: ModelTokenUsage | null;
-}
 
 interface HandleUserInputResult {
   analysis: StateAnalysis | null;
@@ -30,42 +25,6 @@ interface HandleUserInputResult {
     responseUsage: ModelTokenUsage | null;
   };
   cost: number;
-}
-
-/**
- * Analyzes user input to determine intent, emotion, and context
- */
-export async function analyzeUserInput(
-  userInput: string,
-  prevData: StateAnalysis[] = [],
-  model: AiModel
-): Promise<AnalysisResult> {
-  try {
-    if (!userInput?.trim()) {
-      throw new InvalidInputError("User input cannot be empty");
-    }
-
-    const stateAnalysisEngine = new StateAnalysisEngine();
-    const analysisContextPrompt = stateAnalysisEngine.getAnalysisContextPrompt(userInput, prevData);
-
-    const prompts = [StateAnalysisPrompt, analysisContextPrompt];
-
-    console.log("Prompts:", prompts);
-
-    const response = await SendPromptsToAiWithRetry(prompts, model);
-    const { message, modelTokenUsage } = response;
-
-    const analysis = stateAnalysisEngine.safeParseStateAnalysis(message);
-    if (!analysis) {
-      throw new AnalysisError("Failed to parse state analysis from AI response");
-    }
-
-    return { analysis, modelTokenUsage };
-  } catch (error) {
-    if (error instanceof UserInputServiceError) throw error;
-
-    throw new AnalysisError(`Analysis failed: ${error instanceof Error ? error.message : "Unknown error"}`);
-  }
 }
 
 /**
@@ -120,9 +79,6 @@ async function buildConversationPrompts(
   return [
     SecurityProtocolPrompt,
     fullPersonaPrompt,
-    //PersonaPrompt,
-    //languagePrompt,
-    //tonePrompt,
     ...(profileContextPrompt ? [profileContextPrompt] : []),
     ...modulesPrompt,
     ...(chatHistoryPrompt ? [chatHistoryPrompt] : []),

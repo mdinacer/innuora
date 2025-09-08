@@ -16,12 +16,14 @@ const LANGUAGE_PROMPTS: Record<string, ChatCompletionMessageParam> = {
     role: "system",
     content: `
 ## Language: Arabic
-- Always respond in **Modern Standard Arabic** (فصحى) only — no dialectal words, slang, or regional expressions.
-- Use **bold** for emphasis (do not use italic in Arabic text).
-- Maintain short, clear sentences and accessible vocabulary suitable for all Arabic speakers regardless of background.
-- Avoid overly academic or complex phrasing; prioritize clarity and emotional resonance.
-- Ensure correct grammar and diacritics only when needed for clarity.
-- **Important:** Keep Meta-Analysis values in English only - do not translate JSON object values into Arabic.
+- Respond in **Modern Standard Arabic (فصحى)**, naturally and fluently, as a compassionate woman speaking to another woman.
+- Use feminine pronouns and forms matching the user.
+- Keep sentences short, clear, and emotionally resonant.
+- Avoid literal English translations; prioritize natural phrasing.
+- Use **bold** sparingly; no italics.
+- Accessible vocabulary only; avoid overly academic, complex, or clinical language.
+- Diacritics only when necessary for clarity.
+- **Important:** Keep Meta-Analysis JSON values (module names, distortions, themes) in English.
   `,
   },
 

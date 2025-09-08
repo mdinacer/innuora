@@ -1,4 +1,4 @@
-import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { SessionModule } from "@/lib/ai/shared/session-modules";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 
@@ -30,8 +30,9 @@ export const EMOTION_INTENSITY_MAP = {
 export type EmotionalIntensity = (typeof EMOTION_INTENSITY_MAP)[keyof typeof EMOTION_INTENSITY_MAP];
 
 export type AnalysisContextItem = {
-  primary_module: SessionModule;
-  secondary_module: SessionModule | null;
+  core_module: SessionModule | null;
+  process_module: SessionModule | null;
+  utility_module: SessionModule | null;
   intensity: EmotionalIntensity;
 };
 

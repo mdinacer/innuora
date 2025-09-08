@@ -83,6 +83,6 @@ export type ModelCode = keyof typeof MODELS_CODES;
 
 export const MODELS_CODES_MAP = {
   M1: GPT_4_1_MINI_MODEL,
-  M2: GPT_3_5_TURBO_MODEL,
-  M3: GPT_4O_MODEL,
+  M2: GPT_4O_MODEL,
+  M3: GPT_3_5_TURBO_MODEL,
 };

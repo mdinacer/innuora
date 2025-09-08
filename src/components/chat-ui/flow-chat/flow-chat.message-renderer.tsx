@@ -126,7 +126,6 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
     <FlowChatMessageBubble
       className={cn("z-10 ", isUser ? "self-end" : "self-start w-full", className, messageStyling)}
     >
-      <p>{isCurrentStep ? "Current" : "Previous"}</p>
       {messageContent}
     </FlowChatMessageBubble>
   );

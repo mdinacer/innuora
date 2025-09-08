@@ -7,6 +7,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 type Conversation = {
   role: "user" | "generic" | "mirael";
@@ -16,6 +17,15 @@ type Conversation = {
 interface ConversationCardProps {
   conversation: Conversation;
   label: string;
+}
+
+export function formatMessagesForSummary(messages: OpenChatMessage[]): string {
+  return messages
+    .map((msg) => {
+      const role = msg.role === "user" ? "User" : "Mirael";
+      return `${role}: ${msg.content.trim()}`;
+    })
+    .join("\n");
 }
 
 function ConversationCard({ conversation, label }: ConversationCardProps) {
