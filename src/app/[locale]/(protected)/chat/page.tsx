@@ -1,23 +1,39 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Profile } from "@prisma/client";
 import { useTranslation } from "react-i18next";
 
-import { handleUserInput } from "@/app/actions/user-input-actions";
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
+import { handleUserInput } from "@/lib/ai/mirael-core/v2/mirael-chat.action";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import { useOpenChat } from "@/lib/ai/mirael-core/v2/use-open-chat";
+import useSummarizeChat from "@/lib/ai/shared/chat-summary/chat-summary.hook";
 import { generateMessageId } from "@/lib/chat/flow/generate-id";
-import { useOpenChat } from "@/lib/chat/use-open-chat";
 import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
-import { useOpenChatSessionStore } from "@/stores/open-chat-session.store";
 import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage as ChatMessage, OpenChatMessage } from "@/types/open-chat-message.types";
 
 const sessionId = "test-session";
-const MODEL_CODE = MODELS_CODES.M1;
+const MODEL_CODE = MODELS_CODES.M2;
+
+const mockUserProfile: Profile = {
+  id: "user_demo_001",
+  createdAt: new Date("2025-09-08T12:00:00Z"),
+  updatedAt: new Date("2025-09-08T12:00:00Z"),
+  userId: "demo_user_001",
+  displayName: "Sara",
+  ageGroup: "Age25_34",
+  identityConnection: "conflicted",
+  copingMechanism: "push_through",
+  socialPressureSources: ["family", "work_or_school", "self"],
+  emotionalConcerns: ["burnout", "anxiety", "self_worth", "overthinking"],
+  emotionalAspirations: ["clarity", "self_compassion", "calm"],
+};
 
 export default function ChatRoute() {
   const userProfile = useUserDataStore((state) => state.profile);
@@ -39,6 +55,7 @@ export default function ChatRoute() {
     autoCreateSession: true,
   });
 
+  const dataSummary = useSummarizeChat({ sessionId });
   const [hasStarted, setHasStarted] = useState(hasHydrated && !!messages && !!messages.length);
 
   const handleOnSendMessage = useCallback(
@@ -64,9 +81,10 @@ export default function ChatRoute() {
           message,
           prevAnalysis,
           messages,
-          userProfile,
+          mockUserProfile,
           language as AppLocales,
-          session.modelCode || MODEL_CODE
+          MODEL_CODE
+          //session.modelCode || MODEL_CODE
         );
 
         const {
@@ -94,7 +112,7 @@ export default function ChatRoute() {
         console.error("Error:", error);
       }
     },
-    [addAnalysis, addMessage, addTokenUsage, language, messages, session, userProfile]
+    [addAnalysis, addMessage, addTokenUsage, language, messages, session]
   );
 
   const handleSessionStart = useCallback(() => {
@@ -141,7 +159,10 @@ export default function ChatRoute() {
 
   return (
     <main className="h-screen w-screen standalone:w-full">
-      <CodeView data={{ session, messages }} className="absolute top-4 left-4 z-50 opacity-30 hover:opacity-100" />
+      <CodeView
+        data={{ dataSummary, session, messages }}
+        className="absolute top-4 left-4 z-50 opacity-30 hover:opacity-100"
+      />
       <Container
         title={title}
         subtitle={subtitle}
@@ -150,7 +171,11 @@ export default function ChatRoute() {
         renderItem={(message, index) => <MessageBubble key={index} message={message} />}
         onUserInput={(message) => handleOnSendMessage(message)}
         welcomeMessage={welcomeMessageContent}
-        headerActions={<Menu disabled={!messages?.length} onAction={handleActions} />}
+        headerActions={
+          <>
+            <Menu disabled={!messages?.length} onAction={handleActions} />
+          </>
+        }
       />
     </main>
   );

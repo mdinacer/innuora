@@ -20,12 +20,12 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
     avatarLetter: t("avatar-letter", { defaultValue: "M" }),
   };
   return (
-    <div className={cn("chat-header", "p-6  pb-4 flex items-center justify-between relative z-[20]", className)}>
+    <div className={cn("chat-header", "p-6 pb-4 flex items-center justify-between relative z-[20]", className)}>
       <div className={cn("header-left", "flex items-center gap-4")}>
         <div
           className={cn(
             "rtl:font-arabic rtl:leading-4",
-            "size-12 flex items-center justify-center",
+            "size-12 shrink-0 flex items-center justify-center",
             "bg-mir-bg-accent",
             "rounded-2xl text-xl font-semibold ",
             "text-white"
@@ -41,8 +41,8 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
         </div>
       </div>
       <div className={cn("header-actions ", "flex items-center gap-3")}>
-        <ChatUIThemeToggle />
         {headerActions}
+        <ChatUIThemeToggle />
       </div>
     </div>
   );

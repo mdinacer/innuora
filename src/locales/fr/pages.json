@@ -134,6 +134,16 @@
             }
           }
         }
+      },
+      "models": {
+        "professional": {
+          "label": "Professionnel",
+          "description": "Réflexions avancées et nuancées offrant des insights approfondis pour des expériences émotionnelles complexes."
+        },
+        "standard": {
+          "label": "Équilibré",
+          "description": "Réflexions utiles et claires pour un usage quotidien, avec une bonne compréhension mais moins de profondeur."
+        }
       }
     },
     "default": {
@@ -192,79 +202,103 @@
       "conversation": [
         {
           "role": "mirael",
-          "text": "Bonjour. Je suis là pour vous écouter. Qu’avez-vous sur le cœur ces derniers temps ? Prenez votre temps. Commencez là où cela vous semble naturel."
+          "text": "Bonjour. Je suis là pour t'écouter. Qu'est-ce qui te préoccupe ces derniers temps ? Prends ton temps et commence où tu te sens à l'aise."
         },
         {
           "role": "user",
-          "text": "Je ne sais même pas ce qui ne va pas exactement. Je me sens juste… épuisée tout le temps. Comme si je me traînais à travers tout."
+          "text": "Je… je ne sais même pas par où commencer. Tout est tellement emmêlé à l'intérieur de moi, je n'arrive à rien comprendre."
         },
         {
           "role": "generic",
-          "text": "Peut-être avez-vous juste besoin de repos ou d’une pause. Essayez de prioriser vos soins personnels quand vous le pouvez."
+          "text": "On dirait que tu te sens très dépassée. Écrire tes pensées ou prendre une courte pause pourrait t'aider à clarifier ton esprit."
         },
         {
           "role": "mirael",
-          "text": "Cette fatigue constante que vous ressentez semble épuisante, comme si vous étiez prise dans un cercle où le repos semble inaccessible. Il est normal que fonctionner en pilote automatique donne une impression de déconnexion et de lourdeur. Peut-être qu’en ralentissant ou en vous concentrant sur une petite partie de ce ressenti, vous pourriez trouver un peu de clarté. Voulez-vous commencer par là ou simplement observer cette lourdeur telle qu’elle se présente pour vous ?"
+          "text": "Je vois que tout semble lourd et confus pour toi. Quand on se sent ainsi, il peut être utile de se concentrer sur **une petite chose à la fois**. Veux-tu explorer un point précis qui te préoccupe maintenant, ou préfères-tu d'abord prendre un moment pour respirer et te calmer ?"
         },
         {
           "role": "user",
-          "text": "Surtout au travail. Mais aussi à la maison, honnêtement. On dirait qu’il n’y a jamais de pause. Tout le monde a besoin de quelque chose de moi."
+          "text": "Je suppose que le travail est la première chose qui me vient à l'esprit… mais même en parler est lourd. Je pense toujours que je devrais tout gérer parfaitement, mais je suis… épuisée."
         },
         {
           "role": "generic",
-          "text": "Cela semble stressant. Vous pourriez essayer de poser des limites plus fermes."
+          "text": "Le travail peut être accablant. Peut-être qu'établir des priorités ou déléguer certaines tâches aiderait à réduire la pression."
         },
         {
           "role": "mirael",
-          "text": "Cette pression constante de tous les côtés semble épuisante, comme si vous portiez un poids qui ne cesse jamais. Il est logique que vous continuiez à pousser, vous essayez d’empêcher que tout s’effondre. Mais cette pression pour être toujours « active » laisse peu d’espace pour respirer ou se ressourcer. Serait-ce envisageable de ralentir un peu, même dans un domaine limité ?"
+          "text": "Il semble que tu portes un poids énorme avec la croyance que tu dois tout faire parfaitement. Cette attente crée beaucoup de pression. Et si bien gérer les choses ne signifiait pas tout faire parfaitement ? Comment cela changerait-il ce que tu ressens ?"
         },
         {
           "role": "user",
-          "text": "J’ai l’impression que si je ralentis, tout s’effondrera."
+          "text": "Honnêtement… je ne sais pas. Une partie de moi veut continuer comme toujours, mais l'autre partie sent que je pourrais craquer si je continue."
         },
         {
           "role": "generic",
-          "text": "Cela montre que vous êtes très responsable. Mais rappelez-vous que vous n’avez pas à tout porter seule."
+          "text": "Se sentir dépassée est normal quand on se met trop de pression. Peut-être qu'une petite pause ou parler avec quelqu'un de confiance pourrait aider."
         },
         {
           "role": "mirael",
-          "text": "Il semble qu’une règle intérieure forte vous dicte que ralentir équivaut à échouer ou décevoir, comme si vous deviez continuer à avancer pour prouver votre valeur. Cette pression de ne pas décevoir les autres peut rendre le repos dangereux, même si votre corps et votre esprit indiquent le contraire. Cette tension entre le besoin de pause et la peur des conséquences est lourde.\n\nJe me demande comment ce besoin de continuer, malgré le coût, se manifeste dans d’autres domaines de votre vie. Y a-t-il des moments où vous vous sentez coincée entre ce que vous voulez et ce que vous pensez devoir faire ? Que remarquez-vous dans la voix intérieure qui vous pousse à avancer alors que vous êtes épuisée ?"
+          "text": "Je remarque que tu es partagée entre la pression de continuer et l'épuisement profond que tu ressens. Reconnaître que tu es à bout est déjà important. Parfois, **prendre une petite pause** peut être la première étape pour retrouver un certain équilibre. Veux-tu réfléchir à une manière simple de te reposer, ou préfères-tu rester avec ce ressenti pour le moment ?"
         },
         {
           "role": "user",
-          "text": "J’ai toujours l’impression de devoir tout gérer. Si je ne le fais pas, tout s’écroule."
+          "text": "Peut-être… parler un peu aide déjà. J'ai l'impression que si je ralentis, tout va s'effondrer, mais garder tout à l'intérieur m'étouffe."
         },
         {
           "role": "generic",
-          "text": "Vous pourriez essayer de prioriser les tâches et de déléguer certaines responsabilités quand c’est possible."
+          "text": "On dirait que tu es sous beaucoup de pression. Tu pourrais commencer par partager un petit peu avec quelqu'un de confiance pour alléger le poids."
         },
         {
           "role": "mirael",
-          "text": "Cette voix que vous décrivez, celle qui vous pousse à « tenir bon » quoi qu’il arrive, ressemble à une règle silencieuse : toujours mettre les autres en premier, même au détriment de votre bien-être. Il est compréhensible que la culpabilité apparaisse lorsque vous pensez à arrêter ; elle est liée à cette pression intérieure qui fait dépendre votre valeur de votre productivité et de votre attention aux autres.\n\nJe me demande comment cette attente façonne votre sentiment d’identité : avez-vous l’impression que votre valeur dépend de tout ce que vous faites pour les autres ? Comment cette pression influence-t-elle vos choix au quotidien ?"
+          "text": "Je comprends que la peur que tout s'effondre soit forte et que garder tout à l'intérieur soit étouffant. Parler peut soulager une partie de cette pression sans perdre le contrôle. Prenons **une petite étape ensemble** et concentrons-nous sur une seule chose qui te pèse aujourd'hui. Cela pourrait aider à alléger le fardeau."
         },
         {
           "role": "user",
-          "text": "J’ai l’impression que peu importe ce que je fais, ce n’est jamais assez."
+          "text": "D'accord… je pense que ce qui me pèse le plus, c'est mon équipe au travail. Je me sens responsable de tout, et j'ai peur que si je ne règle pas les problèmes, tout s'effondrera."
         },
         {
           "role": "generic",
-          "text": "C’est normal de ressentir cela, mais essayez de reconnaître vos efforts et de vous donner du crédit."
+          "text": "Il est normal de ressentir cette responsabilité, mais tu n'as pas besoin de tout faire toi-même. Déléguer certaines tâches pourrait diminuer la pression."
         },
         {
           "role": "mirael",
-          "text": "Ce sentiment de « ne jamais être assez » lié à ce que vous faites est un lourd fardeau. Il semble qu’une règle silencieuse dicte que votre valeur dépend de votre productivité constante, rendant même de petits gestes d’autosoins risqués ou incorrects. Ce type de pensée tout ou rien réduit vos options et vous enferme dans un cycle où le repos semble un échec.\n\nEt si, au lieu de voir les pauses comme une faiblesse, vous les considériez comme une manière de préserver votre force ? Comment pensez-vous que votre vie pourrait évoluer si le repos servait à soutenir votre capacité à être présente plutôt qu’un signe d’échec ?"
+          "text": "Porter la responsabilité de tout au travail est un poids énorme, surtout avec la peur de l'échec. On dirait que tu suis une **règle silencieuse** qui dit que tu dois tout réparer. Et si ton rôle était de **guider** plutôt que de tout résoudre ? Comment cela changerait-il ton sentiment de lourdeur ?"
         },
         {
           "role": "user",
-          "text": "Je suppose que je pourrais essayer de voir le repos différemment."
+          "text": "Guider… je ne sais pas. J'ai l'impression que si je ne contrôle pas, rien ne sera fait. Mais… je suis fatiguée de tout porter seule."
         },
         {
           "role": "generic",
-          "text": "Prendre des pauses peut vous aider à vous ressourcer. Peut-être planifier un petit moment pour observer l’effet sur votre journée."
+          "text": "C'est normal de vouloir contrôler les choses. Peut-être pourrais-tu laisser quelqu'un d'autre gérer une petite tâche pour voir comment ça se passe."
         },
         {
           "role": "mirael",
-          "text": "Cette différence que vous nommez — vous sentir moins en échec et plus énergisée — révèle une vérité plus profonde : la voix qui vous pousse à continuer peut en réalité brouiller votre perception de votre propre force. Vous avez fonctionné selon l’idée que le repos est une faiblesse, mais votre expérience montre le contraire.\n\nQue ressentiriez-vous en défiant légèrement cette idée et en observant comment cela change votre journée et votre perception de vous-même ?"
+          "text": "Je remarque que tu ressens le poids du besoin de contrôle, et que la solitude de tout porter seule t'épuise. Parfois, partager **une petite partie seulement** du fardeau apporte un certain soulagement. Y a-t-il une tâche que tu pourrais déléguer ou quelqu'un à qui parler de ce sentiment ?"
+        },
+        {
+          "role": "user",
+          "text": "Je… je ne demande pas souvent de l'aide. Je sens que je dois tout gérer, sinon les gens penseront que je ne suis pas capable. Mais une partie de moi… veut juste dire à voix haute que je suis dépassée."
+        },
+        {
+          "role": "generic",
+          "text": "Demander de l'aide ne veut pas dire que tu es faible. Tu peux commencer par partager une petite partie de ton ressenti avec quelqu'un de confiance."
+        },
+        {
+          "role": "mirael",
+          "text": "On dirait que tu suis une règle forte : tu dois **tout gérer seule**. Cela crée beaucoup de pression et rend difficile de demander de l'aide. Reconnaître que tu es dépassée est un pas courageux. Et si demander de l'aide était **une force** plutôt qu'une faiblesse ? Comment cela changerait-il ton ressenti ?"
+        },
+        {
+          "role": "user",
+          "text": "Je suppose… cela pourrait être une force. Mais je ne sais pas à qui je peux vraiment faire confiance pour ne pas me juger. Même le dire ici semble risqué."
+        },
+        {
+          "role": "generic",
+          "text": "C'est normal de craindre le jugement. Peut-être commencer par partager un petit peu avec la personne en qui tu as le plus confiance."
+        },
+        {
+          "role": "mirael",
+          "text": "Je comprends que partager te semble risqué. Simplement y penser montre ta **courage et ton introspection**. Commencer avec **quelqu'un de confiance et de manière progressive** peut alléger ton fardeau et te donner un sentiment de soutien. Tu as déjà beaucoup réfléchi aujourd'hui. **Reconnais ton courage**. Quand tu seras prête, fais un petit pas en douceur."
         }
       ],
       "legend": {

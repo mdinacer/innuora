@@ -153,7 +153,133 @@
       .header-actions {
         display: flex;
         align-items: center;
+        gap: 8px;
+      }
+
+      /* Model Selector Styles */
+      .model-selector {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .model-toggle {
+        background: var(--bg-input);
+        border: none;
+        border-radius: 12px;
+        padding: 8px 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        min-width: 100px;
+        justify-content: space-between;
+      }
+
+      .model-toggle:hover {
+        background: var(--border-light);
+      }
+
+      .model-icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      .model-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 8px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        box-shadow: var(--shadow-floating);
+        overflow: hidden;
+        min-width: 260px;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: all 0.3s ease;
+      }
+
+      .model-dropdown.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .model-option {
+        display: flex;
+        align-items: flex-start;
         gap: 12px;
+        padding: 16px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .model-option:last-child {
+        border-bottom: none;
+      }
+
+      .model-option:hover {
+        background: var(--bg-input);
+      }
+
+      .model-option.selected {
+        background: var(--bg-accent);
+        color: var(--text-on-accent);
+      }
+
+      .model-option.selected .model-option-icon,
+      .model-option.selected .model-option-title,
+      .model-option.selected .model-option-desc {
+        color: var(--text-on-accent);
+      }
+
+      .model-option-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .model-option-content {
+        flex: 1;
+      }
+
+      .model-option-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+
+      .model-option-desc {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+
+      .chevron-icon {
+        width: 12px;
+        height: 12px;
+        color: var(--text-secondary);
+        transition: transform 0.3s ease;
+      }
+
+      .model-toggle.active .chevron-icon {
+        transform: rotate(180deg);
       }
 
       .theme-toggle {
@@ -482,6 +608,10 @@
         .decorative-shapes {
           border-radius: 0;
         }
+
+        .model-dropdown {
+          min-width: 240px;
+        }
       }
     </style>
   </head>
@@ -501,6 +631,45 @@
           </div>
         </div>
         <div class="header-actions">
+          <!-- AI Model Selector -->
+          <div class="model-selector">
+            <button class="model-toggle" id="modelToggle" onclick="toggleModelDropdown()">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <svg class="model-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 1v6m0 6v6"></path>
+                </svg>
+                <span id="selectedModelName">Standard</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            
+            <div class="model-dropdown" id="modelDropdown">
+              <button class="model-option selected" onclick="selectModel('standard')" data-model="standard">
+                <svg class="model-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 1v6m0 6v6"></path>
+                </svg>
+                <div class="model-option-content">
+                  <div class="model-option-title">Standard</div>
+                  <div class="model-option-desc">Balanced responses for everyday reflection</div>
+                </div>
+              </button>
+              
+              <button class="model-option" onclick="selectModel('professional')" data-model="professional">
+                <svg class="model-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                <div class="model-option-content">
+                  <div class="model-option-title">Professional</div>
+                  <div class="model-option-desc">Advanced therapeutic insights and techniques</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
           <button class="theme-toggle" onclick="toggleTheme()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path
@@ -581,6 +750,8 @@
       const typingIndicator = document.getElementById("typingIndicator");
       const suggestions = document.getElementById("suggestions");
 
+      let currentModel = 'standard';
+
       const miraeResponses = [
         "I hear that you're feeling overwhelmed. That's a heavy feeling to carry. What's contributing most to that sense of being overwhelmed right now?",
         "It sounds like there's a lot on your plate. Sometimes when we feel this way, we're carrying more than just our own expectations. What voices are you hearing in your head about how you 'should' be handling things?",
@@ -591,6 +762,86 @@
         "It sounds like you're carrying a lot of invisible labor - the kind that others don't see but weighs heavily on you. That's exhausting. What would it feel like to set some of that down?",
         "Sometimes our emotions are trying to protect us from something. What do you think this feeling might be trying to tell you?",
       ];
+
+      // AI Model Selector Functions
+      function toggleModelDropdown() {
+        const dropdown = document.getElementById('modelDropdown');
+        const toggle = document.getElementById('modelToggle');
+        
+        const isActive = dropdown.classList.contains('active');
+        
+        if (isActive) {
+          dropdown.classList.remove('active');
+          toggle.classList.remove('active');
+        } else {
+          dropdown.classList.add('active');
+          toggle.classList.add('active');
+        }
+      }
+
+      function selectModel(modelId) {
+        currentModel = modelId;
+        
+        // Update selected model name
+        const modelNames = {
+          'standard': 'Standard',
+          'professional': 'Professional'
+        };
+        
+        document.getElementById('selectedModelName').textContent = modelNames[modelId];
+        
+        // Update selected state in dropdown
+        document.querySelectorAll('.model-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+        document.querySelector(`[data-model="${modelId}"]`).classList.add('selected');
+        
+        // Close dropdown
+        document.getElementById('modelDropdown').classList.remove('active');
+        document.getElementById('modelToggle').classList.remove('active');
+        
+        // Save preference
+        localStorage.setItem('mirael-model', modelId);
+        
+        // Add a subtle message to show model changed
+        if (modelId === 'professional') {
+          addSystemMessage('Switched to Professional mode - deeper insights and advanced techniques enabled.');
+        } else {
+          addSystemMessage('Switched to Standard mode - balanced responses for everyday reflection.');
+        }
+      }
+
+      function addSystemMessage(content) {
+        const messageGroup = document.createElement("div");
+        messageGroup.className = "message-group";
+        messageGroup.style.opacity = "0.7";
+
+        messageGroup.innerHTML = `
+          <div style="text-align: center; padding: 8px; font-size: 13px; color: var(--text-secondary); font-style: italic;">
+            ${content}
+          </div>
+        `;
+
+        chatMessages.insertBefore(messageGroup, typingIndicator);
+        scrollToBottom();
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        const modelSelector = document.querySelector('.model-selector');
+        if (!modelSelector.contains(event.target)) {
+          document.getElementById('modelDropdown').classList.remove('active');
+          document.getElementById('modelToggle').classList.remove('active');
+        }
+      });
+
+      // Load saved model preference
+      function loadModelPreference() {
+        const savedModel = localStorage.getItem('mirael-model') || 'standard';
+        if (savedModel !== 'standard') {
+          selectModel(savedModel);
+        }
+      }
 
       // Theme functionality
       function toggleTheme() {
@@ -709,6 +960,13 @@
               response = miraeResponses[5];
             }
 
+            // Modify response based on selected model
+            if (currentModel === 'professional') {
+              // Add more therapeutic language for professional mode
+              response = response.replace(/\./g, '. This is what we call in therapy a common cognitive pattern.');
+              response = response.replace(/\?/g, '? From a clinical perspective, this question can help us explore your emotional landscape.');
+            }
+
             addMessage(response);
           },
           1500 + Math.random() * 1000
@@ -717,6 +975,7 @@
 
       // Initialize
       loadTheme();
+      loadModelPreference();
       scrollToBottom();
       chatInput.focus();
     </script>

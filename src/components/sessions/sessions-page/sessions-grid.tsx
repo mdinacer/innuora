@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Session } from "@/types/open-chat-session.types";
+import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import SessionCard from "./session-card";
 
 interface Props {

@@ -31,8 +31,8 @@
         "id": "display_name",
         "content": {
           "label": "What name feels most true for you right now?",
-          "placeholder": "Your name, as you feel it",
-          "hint": "You can use your real name, a nickname, or any word that feels safe and true. Choose what feels most like *you* in this moment."
+          "placeholder": "Your nickname or chosen name",
+          "hint": "For privacy and comfort, we recommend using a nickname or a name that feels safe and true to you, rather than your legal name. Choose what feels most like *you* in this moment."
         }
       },
       {

@@ -2,12 +2,12 @@
 
 import React from "react";
 
+import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-empty-state";
+import SessionsGrid from "@/components/sessions/sessions-page//sessions-grid";
+import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
+import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
 import { cn } from "@/lib/utils";
-import { useOpenChatSessionStore } from "@/stores/open-chat-session.store";
-import SessionsEmptyState from "./sessions-empty-state";
-import SessionsGrid from "./sessions-grid";
-import SessionsPageActions from "./sessions-page-actions";
-import SessionsPageHeader from "./sessions-page-header";
 
 interface SessionsPageProps {
   className?: string;

@@ -19,7 +19,6 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
   const { title, subtitle, paragraphs, buttonText } = message.content;
   return (
     <>
-      <p>{isDisabled ? "Disabled" : "Enabled"}</p>
       <FlowChatMessageHeader
         isAccent={false}
         secondaryContent="Mirael"
@@ -53,7 +52,7 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
           }
         >
           <span>{buttonText}</span>
-          <ChevronRightIcon className="size-4 shrink-0" />
+          <ChevronRightIcon className="size-4 shrink-0 rtl:rotate-180" />
         </button>
       )}
     </>
