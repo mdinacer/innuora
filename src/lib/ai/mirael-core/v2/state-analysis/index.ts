@@ -2,16 +2,18 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { StateAnalysis, StateAnalysisSchema } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { AnalysisContext, AnalysisContextItem } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.types";
+import { parseJsonObject } from "@/lib/ai/shared/parse-json";
 
 export class StateAnalysisEngine {
   safeParseStateAnalysis(aiResponse: string): StateAnalysis | null {
     try {
-      const parsed = StateAnalysisSchema.safeParse(JSON.parse(aiResponse));
-      if (!parsed.success) {
-        console.error("StateAnalysis validation failed:", parsed.error);
+      const parsedJSON = parseJsonObject(aiResponse);
+      const parsedAnalysisResult = StateAnalysisSchema.safeParse(parsedJSON);
+      if (!parsedAnalysisResult.success) {
+        console.error("StateAnalysis validation failed:", parsedAnalysisResult.error);
         return null;
       }
-      return parsed.data;
+      return parsedAnalysisResult.data;
     } catch (error) {
       console.error("Failed to parse AI response:", error);
       return null;

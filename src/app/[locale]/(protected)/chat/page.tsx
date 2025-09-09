@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Profile } from "@prisma/client";
 import { useTranslation } from "react-i18next";
 
 import { Container, Menu } from "@/components/chat-ui";
@@ -19,21 +18,7 @@ import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage as ChatMessage, OpenChatMessage } from "@/types/open-chat-message.types";
 
 const sessionId = "test-session";
-const MODEL_CODE = MODELS_CODES.M2;
-
-const mockUserProfile: Profile = {
-  id: "user_demo_001",
-  createdAt: new Date("2025-09-08T12:00:00Z"),
-  updatedAt: new Date("2025-09-08T12:00:00Z"),
-  userId: "demo_user_001",
-  displayName: "Sara",
-  ageGroup: "Age25_34",
-  identityConnection: "conflicted",
-  copingMechanism: "push_through",
-  socialPressureSources: ["family", "work_or_school", "self"],
-  emotionalConcerns: ["burnout", "anxiety", "self_worth", "overthinking"],
-  emotionalAspirations: ["clarity", "self_compassion", "calm"],
-};
+const MODEL_CODE = MODELS_CODES.M1;
 
 export default function ChatRoute() {
   const userProfile = useUserDataStore((state) => state.profile);
@@ -81,7 +66,7 @@ export default function ChatRoute() {
           message,
           prevAnalysis,
           messages,
-          mockUserProfile,
+          userProfile,
           language as AppLocales,
           MODEL_CODE
           //session.modelCode || MODEL_CODE
@@ -112,7 +97,7 @@ export default function ChatRoute() {
         console.error("Error:", error);
       }
     },
-    [addAnalysis, addMessage, addTokenUsage, language, messages, session]
+    [addAnalysis, addMessage, addTokenUsage, language, messages, session, userProfile]
   );
 
   const handleSessionStart = useCallback(() => {
