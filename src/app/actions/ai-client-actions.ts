@@ -136,6 +136,7 @@ function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelToken
   const costUSD = model.pricing ? calculateCost(model.pricing, data.usage) : 0;
 
   return {
+    type: "completion",
     model: data.model,
     mode: model.mode,
     usage: data.usage,
