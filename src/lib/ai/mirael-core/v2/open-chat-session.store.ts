@@ -60,7 +60,7 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
                 createdAt: data.createdAt ?? now,
                 updatedAt: data.updatedAt ?? now,
                 messages: data.messages ?? [],
-                chatSummary: data.chatSummary ?? null,
+                sessionMemory: data.sessionMemory ?? null,
                 sessionSummary: data.sessionSummary ?? null,
                 analysis: data.analysis ?? [],
                 meta: data.meta ?? { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
@@ -150,6 +150,7 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
                 ...session,
                 meta: {
                   ...session.meta,
+                  tokenUsage: [...session.meta.tokenUsage, tokenUsage],
                   tokenCount: session.meta.tokenCount + (tokenUsage.usage?.total_tokens || 0),
                   costUSD: session.meta.costUSD + tokenUsage.costUSD,
                 },

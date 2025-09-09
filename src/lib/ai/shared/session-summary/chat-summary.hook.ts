@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { OpenChatMessage } from "@/types/open-chat-message.types";
 import { getChatSummary } from "./chat-summary.action";
 import { countCompleteRounds, getRecentMessages } from "./chat-summary.utils";
 
@@ -18,13 +17,6 @@ const DEFAULT_CONFIG: SessionSummaryConfig = {
   maxRecentRounds: 4,
 };
 
-function getLastSummarizedIndex(messages: OpenChatMessage[], lastSummarizedMessageId?: string): number {
-  if (!lastSummarizedMessageId) return 0;
-
-  const index = messages.findIndex((msg) => msg.id === lastSummarizedMessageId);
-  return index === -1 ? 0 : index + 1; // +1 to start from the next message
-}
-
 interface Props {
   sessionId: string;
   config?: Partial<SessionSummaryConfig>;
@@ -36,14 +28,22 @@ export default function useSummarizeChat({ sessionId, config = {} }: Props) {
   const session = useOpenChatSessionStore((state) => state.sessions[sessionId]) as Session | undefined;
 
   const messages = useMemo(() => session?.messages ?? [], [session]);
-  const currentSummaryData = useMemo(() => session?.chatSummary, [session]);
 
-  const lastSummarizedIndex = useMemo(
-    () => getLastSummarizedIndex(messages, currentSummaryData?.meta.lastSummarizedMessageId),
-    [currentSummaryData?.meta.lastSummarizedMessageId, messages]
+  const messagesIdMap: Record<string, number> = useMemo(
+    () => messages.reduce((acc, msg, currentIndex) => ({ ...acc, [msg.id]: currentIndex }), {}),
+    [messages]
   );
 
-  const unsummarizedMessages = useMemo(() => messages.slice(lastSummarizedIndex), [lastSummarizedIndex, messages]);
+  const currentSummaryData = useMemo(() => session?.chatSummary, [session]);
+
+  const lastSummarizedIndex = useMemo(() => {
+    const lastSummarizedMessageId = currentSummaryData?.meta.lastSummarizedMessageId;
+    if (!lastSummarizedMessageId) return -1;
+    const foundIndex = messagesIdMap[lastSummarizedMessageId];
+    return foundIndex !== undefined ? foundIndex : -1; // Fallback if message was deleted
+  }, [currentSummaryData?.meta.lastSummarizedMessageId, messagesIdMap]);
+
+  const unsummarizedMessages = useMemo(() => messages.slice(lastSummarizedIndex + 1), [lastSummarizedIndex, messages]);
 
   const unsummarizedRoundsCount = useMemo(() => countCompleteRounds(unsummarizedMessages), [unsummarizedMessages]);
 

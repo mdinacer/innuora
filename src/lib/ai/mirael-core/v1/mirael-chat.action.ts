@@ -8,7 +8,7 @@ import { InvalidInputError, UserInputServiceError } from "@/errors/user-input.er
 import { ModulesPromptBuilder } from "@/lib/ai/mirael-core/v1/modules-prompt-builder";
 import { analyzeUserInput } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.action";
 import { StateAnalysis } from "@/lib/ai/mirael-core/v1/state-analysis/state-analysis.schema";
-import { ChatMessagesManager } from "@/lib/ai/shared/chat-manager";
+import { ChatContextManager } from "@/lib/ai/shared/chat-context.manager";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/lib/ai/shared/prompts/";
 import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/lib/ai/shared/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/lib/ai/shared/prompts/prompt.user-context";
@@ -40,7 +40,7 @@ async function buildConversationPrompts(
   // Initialize services - can be done in parallel
   const [modulesPromptBuilder, messagesManager] = await Promise.all([
     Promise.resolve(new ModulesPromptBuilder()),
-    Promise.resolve(new ChatMessagesManager()),
+    Promise.resolve(new ChatContextManager()),
   ]);
 
   // Build prompts - some can be done in parallel

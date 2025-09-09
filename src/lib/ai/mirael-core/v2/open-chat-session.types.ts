@@ -2,37 +2,40 @@ import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-anal
 import { ModelCode } from "@/lib/constants/ai-models";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+import { SessionAnalysis } from "./session-analysis/session-analysis.types";
 
-//type PersistenceMode = "local" | "remote";
-
-export type SessionSummaryMeta = {
-  createdAt: Date;
-  lastSummarizedMessageId: string;
-};
-
-export type SessionSummary = {
-  text: string;
-  meta: SessionSummaryMeta;
-};
-
-export type Session = {
+export interface Session {
   id: string;
   title: string;
   subtitle?: string;
+
   createdAt: Date;
   updatedAt?: Date;
+
   messages: OpenChatMessage[];
-  chatSummary: SessionSummary | null;
+
+  sessionMemory: string | null;
   sessionSummary: SessionSummary | null;
+  sessionAnalysis: SessionAnalysis | null;
   analysis: StateAnalysis[];
+
   modelCode: ModelCode;
   persistOnCloud: boolean;
   aiSuggestedTitle: boolean;
-  meta: {
-    tokenUsage: ModelTokenUsage[];
-    messageCount: number;
-    tokenCount: number;
-    costUSD: number;
-    [key: string]: any;
-  };
-};
+
+  meta: SessionMeta;
+}
+
+export interface SessionSummary {
+  text: string;
+  updatedAt: Date;
+  lastMessageIndex: number;
+}
+
+export interface SessionMeta {
+  tokenUsage: ModelTokenUsage[];
+  messageCount: number;
+  tokenCount: number;
+  costUSD: number;
+  [key: string]: unknown; // more flexible than `any`
+}

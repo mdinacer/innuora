@@ -71,7 +71,7 @@ const ChatUIContainer = <T,>({
     <div
       className={cn(
         "max-[480px]:m-0 max-[480px]:h-screen max-[480px]:rounded-none w-full",
-        "relative flex flex-col max-w-xl mx-auto h-[calc(100vh-40px)]",
+        "relative flex flex-col max-w-2xl mx-auto h-[calc(100vh-40px)]",
         "mt-5 mb-5",
         "rounded-3xl",
         "bg-mir-bg-card",

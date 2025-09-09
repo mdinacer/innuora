@@ -1,20 +1,22 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-import CodeView from "@/components/code-view";
-import { combineToSessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.utils";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
-const sessionId = "test-session";
+interface Props {
+  sessionId: string;
+  autoCreateSession?: boolean;
+}
 
-export default function ChatRoute() {
+const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) => {
   const {
     t,
     i18n: { language },
@@ -71,35 +73,32 @@ export default function ChatRoute() {
     [resetSession]
   );
 
+  useEffect(() => {
+    if (!autoCreateSession) return;
+    if (hasHydrated && !session) {
+      useOpenChatSessionStore.getState().createSession(sessionId);
+    }
+  }, [autoCreateSession, hasHydrated, session, sessionId]);
+
   if (!hasHydrated || !session || !messages) {
     return null;
   }
-
   return (
-    <main className="h-screen w-screen standalone:w-full">
-      {process.env.NODE_ENV === "development" && (
+    <Container
+      title={session?.title ?? title}
+      subtitle={session?.subtitle ?? subtitle}
+      messages={messages}
+      isLoading={isProcessing}
+      renderItem={(message, index) => <MessageBubble key={index} message={message} />}
+      onUserInput={processMessage}
+      welcomeMessage={welcomeMessage}
+      headerActions={
         <>
-          <CodeView
-            data={{ sessionsAnalysis: combineToSessionAnalysis(session.analysis ?? []), session }}
-            className="absolute top-4 left-4 z-50 opacity-30 hover:opacity-100"
-          />
+          <Menu disabled={!messages?.length} onAction={handleActions} />
         </>
-      )}
-
-      <Container
-        title={session?.title ?? title}
-        subtitle={session?.subtitle ?? subtitle}
-        messages={messages}
-        isLoading={isProcessing}
-        renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-        onUserInput={processMessage}
-        welcomeMessage={welcomeMessage}
-        headerActions={
-          <>
-            <Menu disabled={!messages?.length} onAction={handleActions} />
-          </>
-        }
-      />
-    </main>
+      }
+    />
   );
-}
+};
+
+export default SessionPage;
