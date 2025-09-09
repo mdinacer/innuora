@@ -29,6 +29,13 @@ export const metadata: Metadata = {
     "self-awareness",
     "CBT inspired AI",
     "personal growth",
+    "AI companion for emotional clarity",
+    "reflective emotional AI",
+    "high-functioning women stress support",
+    "burnout recovery AI",
+    "perfectionism support app",
+    "emotional awareness tool",
+    "self-reflection AI",
   ],
   openGraph: {
     title: "Mirael — Emotional AI Companion for High-Functioning Women",
@@ -62,7 +69,7 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
   if (conversation.role === "user") {
     return (
       <div className="flex justify-end">
-        <div className="flex items-end gap-2 max-w-[90%] md:max-w-[80%]">
+        <div className="flex items-end gap-2 max-w-[95%] md:max-w-[80%]">
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 text-base rtl:text-lg rtl:font-medium text-mir-text-primary">
             {conversation.text}
           </div>
@@ -77,14 +84,15 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
   if (conversation.role === "mirael") {
     return (
       <div className="flex justify-start">
-        <div className="flex items-start gap-3 max-w-[85%]">
-          <div className="size-7 sm:size-9 rounded-full bg-mir-bg-accent flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
+        <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
+          <div className="size-7  sm:size-9 rounded-full bg-mir-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
             M
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col sm:gap-1 gap-3">
             <div className="flex items-center gap-2 px-1">
+              <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-mir-bg-accent"></div>
               <span className="text-sm font-medium text-mir-bg-accent">{label}</span>
-              <div className="w-1.5 h-1.5 rounded-full bg-mir-bg-accent"></div>
+              <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-mir-bg-accent"></div>
             </div>
             <div
               className="rounded-2xl bg-mir-bg-accent text-white px-4 py-3 text-base rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
@@ -106,8 +114,8 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
 
   return (
     <div className="flex justify-start">
-      <div className="flex items-start gap-3 max-w-[85%]">
-        <div className="size-7 sm:size-9 rounded-full bg-gray-400 flex items-center justify-center text-white flex-shrink-0">
+      <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
+        <div className="size-7 sm:size-9 rounded-full bg-gray-400 hidden md:flex items-center justify-center text-white flex-shrink-0">
           <BotIcon className="size-4 shrink-0" />
         </div>
         <div className="flex flex-col gap-1">
