@@ -1,28 +1,29 @@
 import { Metadata } from "next";
 
 export const METADATA = {
-  title: "Mirael — A Gentle Companion for Emotional Clarity",
+  title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
   description:
-    "Mirael is a soft and emotionally intelligent space for high-functioning yet emotionally exhausted women to reconnect with themselves, gain clarity, and find gentle insight.",
+    "Mirael is an emotionally intelligent AI designed for high-functioning women navigating burnout, perfectionism, and emotional overwhelm. It reflects your emotions, highlights silent rules and cognitive distortions, and guides you toward clarity and actionable self-insight.",
   keywords: [
-    "emotional wellness",
-    "self-awareness",
-    "burnout recovery",
-    "CBT",
-    "emotional exhaustion",
-    "women mental health",
-    "introspective app",
-    "gentle companion",
     "Mirael",
-    "healing",
-    "clarity",
+    "AI emotional companion",
+    "emotional clarity",
+    "burnout recovery",
+    "perfectionism support",
+    "self-awareness",
+    "CBT inspired AI",
+    "emotional reflection",
+    "stress management",
+    "personal growth",
+    "mental wellbeing",
+    "high-functioning women",
   ],
 
   applicationName: "Mirael",
-  authors: [{ name: "Mirael" }],
-  creator: "Mirael",
+  authors: [{ name: "Abdenasser Mohammedi" }],
+  creator: "Abdenasser Mohammedi",
   category: "health",
-  metadataBase: new URL("https://mirael.app"),
+  metadataBase: new URL("https://www.mirael.life"),
 
   // iOS PWA Support
   appleWebApp: {
@@ -60,10 +61,10 @@ export const METADATA = {
   },
 
   openGraph: {
-    title: "Mirael — A Gentle Companion for Emotional Clarity",
+    title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
     description:
-      "Designed for emotionally exhausted, high-functioning women. Mirael helps you reconnect with your inner self and find peace through introspective flow.",
-    url: "https://mirael.app",
+      "Mirael helps high-functioning women navigate emotional exhaustion, perfectionism, and stress by reflecting emotions, uncovering silent rules, and offering actionable self-insight.",
+    url: "https://www.mirael.life",
     siteName: "Mirael",
     images: [
       {
@@ -79,14 +80,13 @@ export const METADATA = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Mirael — A Gentle Companion for Emotional Clarity",
+    title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
     description:
-      "Mirael is an emotionally intelligent app helping high-functioning women navigate disconnection, burnout, and emotional numbness with grace.",
+      "Mirael is a unique AI companion helping high-functioning women gain clarity, process overwhelm, and navigate perfectionism with emotional reflection and insight.",
     creator: "@miraelapp",
     images: ["/og/mirael-cover.png"],
   },
 
-  // Additional meta tags for iOS
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",

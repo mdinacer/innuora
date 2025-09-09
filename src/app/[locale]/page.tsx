@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { BotIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -11,6 +12,45 @@ import { cn } from "@/lib/utils";
 type Conversation = {
   role: "user" | "generic" | "mirael";
   text: string;
+};
+
+export const metadata: Metadata = {
+  title: "Mirael — Emotional AI Companion for Clarity and Burnout Recovery",
+  description:
+    "Mirael helps high-functioning women gain emotional clarity, reflect on overwhelm, and receive actionable insights to manage stress, perfectionism, and burnout.",
+  keywords: [
+    "Mirael",
+    "emotional AI companion",
+    "burnout recovery",
+    "stress management",
+    "perfectionism support",
+    "high-functioning women",
+    "emotional reflection",
+    "self-awareness",
+    "CBT inspired AI",
+    "personal growth",
+  ],
+  openGraph: {
+    title: "Mirael — Emotional AI Companion for High-Functioning Women",
+    description:
+      "Navigate overwhelm and perfectionism with Mirael, the AI companion for emotional clarity and insight.",
+    url: "https://www.mirael.life",
+    siteName: "Mirael",
+    images: [{ url: "/og/mirael-cover.png", width: 1200, height: 630, alt: "Mirael Open Graph Cover" }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mirael — Emotional AI Companion",
+    description:
+      "Gain clarity, process overwhelm, and manage perfectionism with Mirael, the AI companion for emotional insight.",
+    images: ["/og/mirael-cover.png"],
+    creator: "@miraelapp",
+  },
+  alternates: {
+    canonical: "https://www.mirael.life",
+  },
 };
 
 interface ConversationCardProps {
