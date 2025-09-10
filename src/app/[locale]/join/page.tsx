@@ -1,29 +1,30 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import JoinPage, { JoinPageData } from "@/components/tester/join-page";
-import initTranslations, { AppLocales } from "@/lib/i18n";
+import JoinPage from "@/components/tester/join-page";
+import JoinPageSuccess from "@/components/tester/join-page-success";
+import { AppLocales } from "@/lib/i18n";
 
 export default async function TesterJoinRoute({
   params,
+  searchParams,
 }: Readonly<{
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ status: string }>;
 }>) {
   const { locale = "en" } = await params;
-  const { t } = await initTranslations(locale, ["pages"]);
+  const { status = "error" } = (await searchParams) as { status: "success" | "error" };
 
-  const pageData = t("advancedTester", { returnObjects: true, defaultValue: "" }) as JoinPageData | undefined;
-
-  if (!pageData) {
-    return notFound();
-  }
   return (
     <main className="min-h-screen standalone:min-h-screen-safe w-screen standalone:w-full">
       <Header />
       <Suspense fallback={<div>Loading...</div>}>
-        <JoinPage className="" pageData={pageData} />
+        {status === "success" ? (
+          <JoinPageSuccess className="" locale={locale as AppLocales} />
+        ) : (
+          <JoinPage className="" />
+        )}
       </Suspense>
       <Footer locale={locale as AppLocales} />
     </main>

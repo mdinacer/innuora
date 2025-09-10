@@ -2,16 +2,20 @@
 
 import React, { useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import z from "zod";
 
+import { createTester } from "@/app/actions/tester-actions";
+import TextField from "@/components/input/text-field";
+import TextareaField from "@/components/input/textarea-field";
+import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import TextField from "../input/text-field";
-import TextareaField from "../input/textarea-field";
-import { Form } from "../ui/form";
 
 const advancedTesterSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  email: z.email("Invalid email address").min(1, "Email is required"),
   occupation: z.string().max(100, "Occupation is too long").optional().nullable(),
   struggles: z.string().max(1000, "Struggles text is too long").optional().nullable(),
   coping: z.string().max(1000, "Coping mechanisms text is too long").optional().nullable(),
@@ -21,7 +25,7 @@ const advancedTesterSchema = z.object({
 
 type AdvancedTester = z.infer<typeof advancedTesterSchema>;
 
-export type JoinPageData = {
+type JoinPageData = {
   hero: {
     badge: string;
     title: string;
@@ -75,11 +79,11 @@ const mockAdvancedJoinDefaultValues = {
 
 interface Props {
   className?: string;
-  pageData: JoinPageData;
 }
 
-const JoinPage: React.FC<Props> = ({ className, pageData }) => {
-  const { hero, form: formData } = pageData;
+const JoinPage: React.FC<Props> = ({ className }) => {
+  const { t } = useTranslation("pages");
+
   const form = useForm<AdvancedTester>({
     resolver: zodResolver(advancedTesterSchema),
     defaultValues: mockAdvancedJoinDefaultValues || {
@@ -92,9 +96,31 @@ const JoinPage: React.FC<Props> = ({ className, pageData }) => {
     },
   });
 
+  const { hero, form: formData } = t("advancedTester", { returnObjects: true }) as JoinPageData;
+
+  const { isSubmitting } = form.formState;
+
   const handleOnSubmit = useCallback(async (data: AdvancedTester) => {
-    console.log(data);
+    try {
+      await createTester(data, "/join?status=success");
+      //mock api call
+      await toast.promise(
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 3000);
+        }),
+        {
+          loading: "Creating tester...",
+          success: "Tester created successfully",
+          error: "Failed to create tester",
+        }
+      );
+    } catch (error) {
+      toast.error("Failed to create tester", { description: (error as Error).message });
+    }
   }, []);
+
   return (
     <div className={cn("relative", className)}>
       {/* <!-- Hero Section --> */}
@@ -172,8 +198,10 @@ const JoinPage: React.FC<Props> = ({ className, pageData }) => {
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full rounded-2xl bg-mir-bg-accent px-6 py-4 text-white font-semibold shadow hover:translate-y-[-1px] transition-all duration-200"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center gap-x-2 justify-center disabled:cursor-not-allowed disabled:opacity-50 rounded-2xl bg-mir-bg-accent px-6 py-4 text-white font-semibold shadow hover:translate-y-[-1px] transition-all duration-200"
                 >
+                  {isSubmitting && <Loader2Icon className="mr-2 size-5 animate-spin" />}
                   {formData.submitButton}
                 </button>
               </div>

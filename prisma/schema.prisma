@@ -275,6 +275,7 @@ model Tester {
   source     String? @map("source") // homepage, invite link, etc.
   occupation String? // optional: what she does in life
   struggles  String? // optional: general struggles / pain points
+  coping     String? // optional: what she does to cope
   notes      String? // internal admin notes
 
   // Timestamps

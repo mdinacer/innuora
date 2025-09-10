@@ -1,4 +1,45 @@
 {
+  "advancedTester": {
+    "hero": {
+      "badge": "Programme de Test Exclusif",
+      "title": "Aidez à façonner l'avenir de Mirael",
+      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
+    },
+    "form": {
+      "email": {
+        "label": "Adresse e-mail",
+        "placeholder": "you@example.com",
+        "required": "L’e-mail est requis"
+      },
+      "occupation": {
+        "label": "Profession / Rôle",
+        "placeholder": "Ex: Ingénieure logicielle, Enseignante, Étudiante, etc.",
+        "helpText": "Cela nous aide à comprendre les perspectives et besoins des différentes utilisatrices."
+      },
+      "struggles": {
+        "label": "Défis généraux / Difficultés émotionnelles",
+        "placeholder": "Quelles difficultés émotionnelles ou situations de vie souhaitez-vous partager ? (Ex: stress au travail, relations personnelles, prise de décision, etc.)",
+        "helpText": "Partagez ce sur quoi vous aimeriez réfléchir ou recevoir du soutien. Cela nous aide à mieux comprendre vos besoins."
+      },
+      "coping": {
+        "label": "Mécanismes d’adaptation / Comment vous gérez le stress",
+        "placeholder": "Comment gérez-vous actuellement le stress ou les émotions difficiles ? (Ex: journal, sport, discussions avec des amies, méditation, etc.)",
+        "helpText": "Comprendre vos stratégies actuelles nous aide à créer des outils complémentaires adaptés."
+      },
+      "source": {
+        "label": "Comment avez-vous entendu parler de Mirael ?",
+        "placeholder": "Ex: Twitter, recommandation d’une amie, article de blog, etc.",
+        "helpText": "Cela nous permet de savoir quels moyens de communication sont les plus efficaces."
+      },
+      "notes": {
+        "label": "Commentaires / Notes supplémentaires",
+        "placeholder": "Y a-t-il autre chose que vous aimeriez que nous sachions sur votre intérêt pour Mirael ou vos retours sur les outils d’IA émotionnelle ?",
+        "helpText": "Partagez toute autre réflexion, question ou domaine spécifique sur lequel vous souhaitez vous concentrer lors du test."
+      },
+      "submitButton": "Envoyer la candidature",
+      "thankYouNote": "Merci pour votre intérêt à contribuer à façonner Mirael. Nous examinerons les candidatures et contacterons les participantes sélectionnées au fur et à mesure du programme. Rappelez-vous, Mirael n’est pas un service thérapeutique ou de crise."
+    }
+  },
   "auth": {
     "sign-in": {
       "title": "Bon retour",
@@ -422,6 +463,38 @@
       ]
     }
   },
+  "joinSuccess": {
+    "badge": "Candidature envoyée",
+    "title": "Merci de nous avoir rejoints",
+    "message": "Nous avons bien reçu votre candidature pour le programme de test avancé de Mirael. Votre intérêt compte beaucoup alors que nous continuons à créer un espace de réflexion et de clarté.",
+    "nextSteps": {
+      "title": "Quelle est la suite ?",
+      "steps": [
+        {
+          "title": "Examen de la candidature",
+          "description": "Notre équipe analysera attentivement votre candidature afin de comprendre votre parcours et ce que vous pouvez apporter au programme."
+        },
+        {
+          "title": "Processus de sélection",
+          "description": "Toutes les candidatures ne seront pas retenues. Nous sélectionnons les testeurs en fonction de la diversité des perspectives, des contextes de vie et de la capacité du programme. Cela nous aide à créer un cercle de retours véritablement enrichissant."
+        },
+        {
+          "title": "Si vous êtes sélectionné, nous vous contacterons",
+          "description": "Les testeurs retenus recevront un email avec les détails d’accès ainsi que des instructions simples pour partager leurs retours."
+        }
+      ]
+    },
+    "timeline": {
+      "title": "Calendrier prévisionnel",
+      "description": "Nous examinons généralement les candidatures sous 1 à 2 semaines. Les candidats sélectionnés seront contactés peu après. En raison du grand nombre de demandes, nous ne pourrons peut-être pas répondre individuellement à chacun."
+    },
+    "closingNote": "En attendant, vous pouvez suivre l’avancée de Mirael ou nous contacter pour toute question concernant le programme de test.",
+    "actions": {
+      "follow": "Suivre les mises à jour",
+      "contact": "Nous contacter",
+      "back": "Retour à Mirael"
+    }
+  },
   "policies_footer": {
     "disclaimer": {
       "label": "Important : ",
@@ -438,46 +511,5 @@
       "support": "Support"
     },
     "copyright": "© 2025 Mirael, Inc. Tous droits réservés."
-  },
-  "advancedTester": {
-    "hero": {
-      "badge": "Programme de Test Exclusif",
-      "title": "Aidez à façonner l'avenir de Mirael",
-      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
-    },
-    "form": {
-      "email": {
-        "label": "Adresse e-mail",
-        "placeholder": "you@example.com",
-        "required": "L’e-mail est requis"
-      },
-      "occupation": {
-        "label": "Profession / Rôle",
-        "placeholder": "Ex: Ingénieure logicielle, Enseignante, Étudiante, etc.",
-        "helpText": "Cela nous aide à comprendre les perspectives et besoins des différentes utilisatrices."
-      },
-      "struggles": {
-        "label": "Défis généraux / Difficultés émotionnelles",
-        "placeholder": "Quelles difficultés émotionnelles ou situations de vie souhaitez-vous partager ? (Ex: stress au travail, relations personnelles, prise de décision, etc.)",
-        "helpText": "Partagez ce sur quoi vous aimeriez réfléchir ou recevoir du soutien. Cela nous aide à mieux comprendre vos besoins."
-      },
-      "coping": {
-        "label": "Mécanismes d’adaptation / Comment vous gérez le stress",
-        "placeholder": "Comment gérez-vous actuellement le stress ou les émotions difficiles ? (Ex: journal, sport, discussions avec des amies, méditation, etc.)",
-        "helpText": "Comprendre vos stratégies actuelles nous aide à créer des outils complémentaires adaptés."
-      },
-      "source": {
-        "label": "Comment avez-vous entendu parler de Mirael ?",
-        "placeholder": "Ex: Twitter, recommandation d’une amie, article de blog, etc.",
-        "helpText": "Cela nous permet de savoir quels moyens de communication sont les plus efficaces."
-      },
-      "notes": {
-        "label": "Commentaires / Notes supplémentaires",
-        "placeholder": "Y a-t-il autre chose que vous aimeriez que nous sachions sur votre intérêt pour Mirael ou vos retours sur les outils d’IA émotionnelle ?",
-        "helpText": "Partagez toute autre réflexion, question ou domaine spécifique sur lequel vous souhaitez vous concentrer lors du test."
-      },
-      "submitButton": "Envoyer la candidature",
-      "thankYouNote": "Merci pour votre intérêt à contribuer à façonner Mirael. Nous examinerons les candidatures et contacterons les participantes sélectionnées au fur et à mesure du programme. Rappelez-vous, Mirael n’est pas un service thérapeutique ou de crise."
-    }
   }
 }

@@ -12,6 +12,7 @@ import { dir } from "i18next";
 import { BackgroundBeams } from "@/components/background-beams";
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
+import { Toaster } from "@/components/ui/sonner";
 import { METADATA } from "@/lib/constants/metadata";
 import { VIEWPORT } from "@/lib/constants/viewport-config";
 import initTranslations, { i18nNamespaces } from "@/lib/i18n";
@@ -46,6 +47,7 @@ export default async function RootLayout({
         <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}
+            <Toaster />
           </ThemeProvider>
           {process.env.NODE_ENV === "production" && (
             <>

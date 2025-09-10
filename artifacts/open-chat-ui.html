@@ -634,7 +634,7 @@
           <!-- AI Model Selector -->
           <div class="model-selector">
             <button class="model-toggle" id="modelToggle" onclick="toggleModelDropdown()">
-              <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px">
                 <svg class="model-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="3"></circle>
                   <path d="M12 1v6m0 6v6"></path>
@@ -645,7 +645,7 @@
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-            
+
             <div class="model-dropdown" id="modelDropdown">
               <button class="model-option selected" onclick="selectModel('standard')" data-model="standard">
                 <svg class="model-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -657,10 +657,12 @@
                   <div class="model-option-desc">Balanced responses for everyday reflection</div>
                 </div>
               </button>
-              
+
               <button class="model-option" onclick="selectModel('professional')" data-model="professional">
                 <svg class="model-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  <path
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  ></path>
                 </svg>
                 <div class="model-option-content">
                   <div class="model-option-title">Professional</div>
@@ -750,7 +752,7 @@
       const typingIndicator = document.getElementById("typingIndicator");
       const suggestions = document.getElementById("suggestions");
 
-      let currentModel = 'standard';
+      let currentModel = "standard";
 
       const miraeResponses = [
         "I hear that you're feeling overwhelmed. That's a heavy feeling to carry. What's contributing most to that sense of being overwhelmed right now?",
@@ -765,49 +767,49 @@
 
       // AI Model Selector Functions
       function toggleModelDropdown() {
-        const dropdown = document.getElementById('modelDropdown');
-        const toggle = document.getElementById('modelToggle');
-        
-        const isActive = dropdown.classList.contains('active');
-        
+        const dropdown = document.getElementById("modelDropdown");
+        const toggle = document.getElementById("modelToggle");
+
+        const isActive = dropdown.classList.contains("active");
+
         if (isActive) {
-          dropdown.classList.remove('active');
-          toggle.classList.remove('active');
+          dropdown.classList.remove("active");
+          toggle.classList.remove("active");
         } else {
-          dropdown.classList.add('active');
-          toggle.classList.add('active');
+          dropdown.classList.add("active");
+          toggle.classList.add("active");
         }
       }
 
       function selectModel(modelId) {
         currentModel = modelId;
-        
+
         // Update selected model name
         const modelNames = {
-          'standard': 'Standard',
-          'professional': 'Professional'
+          standard: "Standard",
+          professional: "Professional",
         };
-        
-        document.getElementById('selectedModelName').textContent = modelNames[modelId];
-        
+
+        document.getElementById("selectedModelName").textContent = modelNames[modelId];
+
         // Update selected state in dropdown
-        document.querySelectorAll('.model-option').forEach(option => {
-          option.classList.remove('selected');
+        document.querySelectorAll(".model-option").forEach((option) => {
+          option.classList.remove("selected");
         });
-        document.querySelector(`[data-model="${modelId}"]`).classList.add('selected');
-        
+        document.querySelector(`[data-model="${modelId}"]`).classList.add("selected");
+
         // Close dropdown
-        document.getElementById('modelDropdown').classList.remove('active');
-        document.getElementById('modelToggle').classList.remove('active');
-        
+        document.getElementById("modelDropdown").classList.remove("active");
+        document.getElementById("modelToggle").classList.remove("active");
+
         // Save preference
-        localStorage.setItem('mirael-model', modelId);
-        
+        localStorage.setItem("mirael-model", modelId);
+
         // Add a subtle message to show model changed
-        if (modelId === 'professional') {
-          addSystemMessage('Switched to Professional mode - deeper insights and advanced techniques enabled.');
+        if (modelId === "professional") {
+          addSystemMessage("Switched to Professional mode - deeper insights and advanced techniques enabled.");
         } else {
-          addSystemMessage('Switched to Standard mode - balanced responses for everyday reflection.');
+          addSystemMessage("Switched to Standard mode - balanced responses for everyday reflection.");
         }
       }
 
@@ -827,18 +829,18 @@
       }
 
       // Close dropdown when clicking outside
-      document.addEventListener('click', function(event) {
-        const modelSelector = document.querySelector('.model-selector');
+      document.addEventListener("click", function (event) {
+        const modelSelector = document.querySelector(".model-selector");
         if (!modelSelector.contains(event.target)) {
-          document.getElementById('modelDropdown').classList.remove('active');
-          document.getElementById('modelToggle').classList.remove('active');
+          document.getElementById("modelDropdown").classList.remove("active");
+          document.getElementById("modelToggle").classList.remove("active");
         }
       });
 
       // Load saved model preference
       function loadModelPreference() {
-        const savedModel = localStorage.getItem('mirael-model') || 'standard';
-        if (savedModel !== 'standard') {
+        const savedModel = localStorage.getItem("mirael-model") || "standard";
+        if (savedModel !== "standard") {
           selectModel(savedModel);
         }
       }
@@ -961,10 +963,13 @@
             }
 
             // Modify response based on selected model
-            if (currentModel === 'professional') {
+            if (currentModel === "professional") {
               // Add more therapeutic language for professional mode
-              response = response.replace(/\./g, '. This is what we call in therapy a common cognitive pattern.');
-              response = response.replace(/\?/g, '? From a clinical perspective, this question can help us explore your emotional landscape.');
+              response = response.replace(/\./g, ". This is what we call in therapy a common cognitive pattern.");
+              response = response.replace(
+                /\?/g,
+                "? From a clinical perspective, this question can help us explore your emotional landscape."
+              );
             }
 
             addMessage(response);
