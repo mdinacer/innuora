@@ -265,6 +265,27 @@ model AdminAdjustment {
   @@map("admin_adjustments")
 }
 
+model Tester {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Tester info
+  email      String  @unique
+  accepted   Boolean @default(false) // has this tester been approved to join
+  source     String? @map("source") // homepage, invite link, etc.
+  occupation String? // optional: what she does in life
+  struggles  String? // optional: general struggles / pain points
+  coping     String? // optional: what she does to cope
+  notes      String? // internal admin notes
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@map("testers")
+}
+
 // =========================
 // Enums
 // =========================

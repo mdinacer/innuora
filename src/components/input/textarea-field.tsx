@@ -5,7 +5,7 @@ import { Control, FieldValues, Path } from "react-hook-form";
 
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-type InputProps = React.ComponentProps<"input">;
+type InputProps = React.ComponentProps<"textarea">;
 
 interface Props<T extends FieldValues> extends Omit<InputProps, "value" | "onChange"> {
   control: Control<T>;
@@ -14,7 +14,7 @@ interface Props<T extends FieldValues> extends Omit<InputProps, "value" | "onCha
   helperText?: string;
 }
 
-const TextField = <T extends FieldValues>({ control, name, label, helperText, ...props }: Props<T>) => {
+const TextareaField = <T extends FieldValues>({ control, name, label, helperText, ...props }: Props<T>) => {
   return (
     <FormField
       control={control}
@@ -22,16 +22,14 @@ const TextField = <T extends FieldValues>({ control, name, label, helperText, ..
       render={({ field }) => (
         <FormItem>
           {label && (
-            <FormLabel className="rtl:font-arabic-body rtl:text-lg mb-1 font-semibold text-base">
-              {label} {props.required && <span className="text-mir-bg-accent">*</span>}
-            </FormLabel>
+            <FormLabel className="rtl:font-arabic-body rtl:text-lg mb-1 font-semibold text-base">{label}</FormLabel>
           )}
           <FormControl>
-            <input
+            <textarea
               {...props}
               {...field}
               className={
-                "w-full rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 ltr:pr-12 rtl:pl-12 text-mir-text-primary placeholder-mir-text-secondary outline-none transition focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20 disabled:opacity-70 disabled:cursor-not-allowed"
+                "w-full rounded-2xl border min-h-[100px] border-mir-border-light bg-mir-bg-input px-4 py-3 ltr:pr-12 rtl:pl-12 text-mir-text-primary placeholder-mir-text-secondary outline-none transition focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20 disabled:opacity-70 disabled:cursor-not-allowed"
               }
             />
           </FormControl>
@@ -43,6 +41,6 @@ const TextField = <T extends FieldValues>({ control, name, label, helperText, ..
   );
 };
 
-export default TextField;
+export default TextareaField;
 
-TextField.displayName = "TextField";
+TextareaField.displayName = "TextareaField";
