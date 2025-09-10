@@ -2,29 +2,25 @@ import { MetadataRoute } from "next";
 
 const baseUrl = "https://mirael.life";
 
-function makeUrl(path: string, priority: number, changeFrequency: "weekly" | "monthly" | "daily") {
-  const url = `${baseUrl}${path}`;
-  return {
-    url,
-    lastModified: new Date(),
-    changeFrequency,
-    priority,
-    alternates: {
-      languages: {
-        en: `${baseUrl}/en${path}`,
-        fr: `${baseUrl}/fr${path}`,
-        ar: `${baseUrl}/ar${path}`,
-      },
-    },
-  };
-}
+const routes = [
+  { path: "", changeFrequency: "weekly", priority: 1 },
+  { path: "/join", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/privacy", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/eula", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/terms", changeFrequency: "monthly", priority: 0.5 },
+];
+
+const locales = ["en", "fr", "ar"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    makeUrl("", 1, "weekly"), // homepage
-    makeUrl("/join", 0.8, "weekly"),
-    makeUrl("/privacy", 0.5, "monthly"),
-    makeUrl("/eula", 0.5, "monthly"),
-    makeUrl("/terms", 0.5, "monthly"),
-  ];
+  const lastModified = new Date();
+
+  return routes.flatMap((route) =>
+    locales.map((locale) => ({
+      url: `${baseUrl}/${locale}${route.path}`,
+      lastModified,
+      changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
+      priority: route.priority,
+    }))
+  );
 }
