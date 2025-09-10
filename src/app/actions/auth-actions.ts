@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 import { AuthenticationError, AuthorizationError } from "@/errors/auth.errors";
+import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
 
@@ -31,6 +32,15 @@ export async function requireCurrentUser(): Promise<User> {
   }
 
   return data.user;
+}
+
+export async function requireAdmin() {
+  const authUser = await requireCurrentUser();
+  const user = await prisma.user.findUnique({ where: { authId: authUser.id } });
+  if (!user?.role || user.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+  return user;
 }
 
 export async function assertCurrentUserId(userId: string): Promise<void> {
