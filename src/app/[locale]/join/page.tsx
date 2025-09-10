@@ -61,7 +61,7 @@ export default async function TesterJoinRoute({
 
   return (
     <main className="min-h-screen standalone:min-h-screen-safe w-screen standalone:w-full">
-      <Header />
+      <Header locale={locale as AppLocales} />
       <Suspense fallback={<div>Loading...</div>}>
         {status && status === "success" ? (
           <JoinPageSuccess className="" locale={locale as AppLocales} />
