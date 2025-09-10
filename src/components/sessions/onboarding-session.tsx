@@ -1,14 +1,13 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { updateCurrentUser } from "@/app/actions/user-actions";
 import { Container } from "@/components/chat-ui";
+import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import FlowChatMessageRenderer from "@/components/chat-ui/flow-chat/flow-chat.message-renderer";
-import CodeView from "@/components/code-view";
-import { Button } from "@/components/ui/button";
 import { SESSIONS_IDS } from "@/lib/constants/sessions/sessions.props";
 import useFlowStepController from "@/lib/sessions/use-flow-step-controller";
 import useSessionOrchestrator from "@/lib/sessions/use-session-orchestrator";
@@ -17,7 +16,7 @@ import { userProfileSchema } from "@/lib/zod/user-profile-schema";
 import { useUserDataStore } from "@/stores/user-data.store";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
 import { SessionFlow } from "@/types/flow-session.types";
-import FlowChatHeroCard, { FlowChatHeroProps } from "../chat-ui/flow-chat/flow-chat.hero";
+import LanguageDropdown from "../language-dropdown";
 
 interface Props {
   className?: string;
@@ -25,17 +24,18 @@ interface Props {
 }
 
 const OnboardingSession = ({ className, sessionFlow }: Props) => {
-  const { t } = useTranslation("pages", { keyPrefix: "chat-ui.onboarding" });
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation("pages", { keyPrefix: "chat-ui.onboarding" });
 
-  const { title, subtitle, welcomeMessage } = {
+  const { title, subtitle } = {
     title: t("header.title", { defaultValue: "Welcome to Mirael" }),
     subtitle: t("header.subtitle", { defaultValue: "A gentle space to begin your reflection" }),
-    welcomeMessage: t("hero", { returnObjects: true, defaultValue: {} }) as FlowChatHeroProps,
   };
   const router = useRouter();
   const { setProfile } = useUserDataStore();
   const {
-    isReady,
     isTransitioning,
     messages,
     session,
@@ -48,6 +48,7 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
   } = useSessionOrchestrator({
     sessionFlow,
     autoStart: false,
+    initStores: true,
   });
 
   const handleFlowEndAction = useCallback(
@@ -80,6 +81,19 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
     },
     [handleFlowEndAction, handleUserInput, moveToNext, moveToStep, processUserSelection, session?.currentStepId]
   );
+
+  const welcomeMessageContent = useMemo(() => {
+    if (session?.isFlowStarted) return null;
+    const data = t("hero", { returnObjects: true, defaultValue: "" }) as FlowChatHeroProps | undefined;
+
+    if (!data) return null;
+    return <FlowChatHeroCard data={data} onStartSession={startFlow} />;
+  }, [session?.isFlowStarted, startFlow, t]);
+
+  useEffect(() => {
+    resetSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   const handleSyncData = useCallback(
     async (data: Record<string, unknown>) => {
@@ -117,31 +131,25 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
     throw new Error(`Invalid session id: ${sessionFlow.id}`);
   }
 
-  if (!isReady) {
+  if (!session) {
     return null;
   }
 
   return (
-    <div className={cn("relative", className)}>
-      <CodeView
-        data={{ session, messages, sessionFlow }}
-        className="absolute top-4 left-4 z-50 opacity-30 hover:opacity-100"
+    <div className={cn("max-w-4xl w-full mx-auto flex", className)}>
+      <Container
+        title={title}
+        subtitle={subtitle}
+        messages={messages}
+        isLoading={isTransitioning}
+        renderItem={renderMessage}
+        headerActions={
+          <>
+            <LanguageDropdown />
+          </>
+        }
+        welcomeMessage={welcomeMessageContent}
       />
-      <Button onClick={() => resetSession()} variant="outline" size="sm" className="absolute right-4 top-4">
-        Reset
-      </Button>
-      <div className="max-w-4xl w-full mx-auto flex ">
-        <Container
-          title={title}
-          subtitle={subtitle}
-          messages={messages}
-          isLoading={isTransitioning}
-          renderItem={renderMessage}
-          welcomeMessage={
-            session.isFlowStarted ? undefined : <FlowChatHeroCard data={welcomeMessage} onStartSession={startFlow} />
-          }
-        />
-      </div>
     </div>
   );
 };

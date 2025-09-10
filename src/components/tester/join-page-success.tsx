@@ -105,7 +105,7 @@ export default async function JoinPageSuccess({ className, locale = "en" }: Prop
         <div className="mt-8 text-center">
           <div>
             <Link
-              href="#early-access"
+              href="/"
               className="inline-flex justify-center rtl:pt-4 rounded-2xl bg-mir-bg-accent px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
             >
               {pageData.actions.back}

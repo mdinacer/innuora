@@ -1,5 +1,10 @@
 {
   "app-name": "Mirael",
   "avatar-letter": "M",
-  "back-to-mirael": "Retour vers Mirael"
+  "back-to-mirael": "Retour vers Mirael",
+  "actions": {
+    "continue": "Continuer",
+    "showMoreWithCount": "Afficher {{count}} de plus",
+    "showLess": "Afficher moins"
+  }
 }

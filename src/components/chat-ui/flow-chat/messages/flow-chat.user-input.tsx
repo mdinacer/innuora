@@ -2,10 +2,11 @@
 
 import React, { useCallback, useState } from "react";
 import { PencilLineIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
+import FlowChatMessageHeader from "@/components/chat-ui/flow-chat/flow-chat.message-header";
 import { cn } from "@/lib/utils";
 import { MessageOfType } from "@/types/flow-chat-messages.types";
-import FlowChatMessageHeader from "../flow-chat.message-header";
 
 interface Props {
   message: MessageOfType<"user_input">;
@@ -13,6 +14,8 @@ interface Props {
 }
 
 const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
+  const { t } = useTranslation("common", { keyPrefix: "actions" });
+
   const [inputValue, setInputValue] = useState<string>("");
 
   const { label, placeholder, hint, charLimit = 255, key } = message.content;
@@ -77,7 +80,7 @@ const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
             "disabled:opacity-60 disabled:cursor-not-allowed"
           )}
         >
-          Continue
+          {t("continue")}
         </button>
       </div>
     </>

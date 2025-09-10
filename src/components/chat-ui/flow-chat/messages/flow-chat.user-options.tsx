@@ -2,6 +2,7 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import { CheckIcon, ChevronDownIcon, ListCheckIcon, ListChecksIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import FlowChatMessageHeader from "@/components/chat-ui/flow-chat/flow-chat.message-header";
 import { cn } from "@/lib/utils";
@@ -78,6 +79,7 @@ interface Props {
 }
 
 const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
+  const { t } = useTranslation("common", { keyPrefix: "actions" });
   const [isCollapsed, setCollapsed] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<UserOption[]>([]);
   const { mode, label, hint, maxSelected, options, key } = message.content;
@@ -154,14 +156,14 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
             className={cn(
               "show-more-btn",
               "bg-transparent border border-mir-border-light",
-              "py-2 px-4 rounded-2xl text-sm font-medium cursor-pointer",
+              "py-2 px-4 rounded-2xl text-sm rtl:text-base rtl:font-arabic-body font-medium cursor-pointer",
               "transition-all duration-200 ease-in-out",
               " inline-flex items-center gap-1.5",
               "hover:border-mir-bg-accent hover:text-mir-bg-accent"
             )}
             onClick={() => setCollapsed((prev) => !prev)}
           >
-            <span>{isCollapsed ? `Show ${options.length - 4} more` : "Show fewer"}</span>
+            <span>{isCollapsed ? t("showMoreWithCount", { count: options.length - 4 }) : t("showLess")}</span>
             <ChevronDownIcon className={cn("size-3.5", { "rotate-180": !isCollapsed })} />
           </button>
         </div>
@@ -180,11 +182,7 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
         disabled={!selectedOptions.length}
         onClick={handleUserSelect}
       >
-        {mode === "multiple"
-          ? maxSelected
-            ? `Continue (${selectedOptions.length}/${maxSelected}) selected)`
-            : `Continue (${selectedOptions.length} selected)`
-          : "Continue"}
+        {t("continue")}
       </button>
     </>
   );

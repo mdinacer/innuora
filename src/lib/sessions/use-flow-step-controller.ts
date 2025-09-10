@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { flowStepToChatMessage } from "@/lib/chat/flow/step-to-chat-message";
 import useChatEngine from "@/lib/chat/use-chat";
 import { useSessionState } from "@/lib/sessions/use-session-state";
-import { useSessionStore } from "@/stores/session.store";
 import {
   FlowStep,
   SessionFlow,
@@ -30,22 +29,13 @@ export default function useFlowStepController({
 }: FlowStepControllerOptions) {
   const { id: sessionId } = sessionFlow;
   const { autoCreateMessages = true, skipStepTypes = [, "reflection"] } = options;
-  const hasSessionHydrated = useSessionStore((state) => state.hasHydrated);
   const { session, updateSession } = useSessionState({ sessionId });
 
   const currentStepId = useMemo(() => session?.currentStepId || null, [session]);
 
   const previousStepIdRef = useRef<string | null>(null);
 
-  const {
-    hasHydrated: hasMessagesHydrated,
-    addMessage,
-    removeMessage,
-    messageExistsByStepId,
-    clearMessages,
-  } = useChatEngine({ sessionId });
-
-  const isReady = useMemo(() => hasSessionHydrated && hasMessagesHydrated, [hasSessionHydrated, hasMessagesHydrated]);
+  const { addMessage, removeMessage, messageExistsByStepId, clearMessages } = useChatEngine({ sessionId });
 
   // Memoize steps map once (only recalculates if steps change)
   const stepLookupMap = useMemo(() => new Map(sessionFlow.steps.map((step) => [step.id, step])), [sessionFlow.steps]);
@@ -212,7 +202,7 @@ export default function useFlowStepController({
   );
 
   useEffect(() => {
-    if (!isReady || !session || !currentStep) return;
+    if (!session || !currentStep) return;
 
     // Check if step actually changed
     const hasStepChanged = previousStepIdRef.current !== currentStepId;
@@ -222,5 +212,5 @@ export default function useFlowStepController({
       // Update ref for next comparison
       previousStepIdRef.current = currentStepId || null;
     }
-  }, [currentStep, currentStepId, isReady, previousStep, processStepChange, session]);
+  }, [currentStep, currentStepId, previousStep, processStepChange, session]);
 }

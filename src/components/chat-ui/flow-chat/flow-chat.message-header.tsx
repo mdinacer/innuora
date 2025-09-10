@@ -20,7 +20,13 @@ const FlowChatMessageHeader: React.FC<Props> = ({ className, isAccent = false, p
       >
         {primaryContent}
       </div>
-      <div className={cn("card-meta", "text-right text-sm ", isAccent ? " text-white/70" : "text-inherit opacity-70")}>
+      <div
+        className={cn(
+          "card-meta",
+          "text-right text-sm  rtl:font-arabic rtl:text-base rtl:font-semibold",
+          isAccent ? " text-white/70" : "text-inherit opacity-70"
+        )}
+      >
         {secondaryContent}
       </div>
     </div>

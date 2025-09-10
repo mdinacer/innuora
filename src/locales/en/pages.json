@@ -478,38 +478,6 @@
       "cancel": "Cancel"
     }
   },
-  "joinSuccess": {
-    "badge": "Application Submitted",
-    "title": "Thank you for joining us",
-    "message": "We have received your application for Mirael’s advanced testing program. Your interest means a lot as we continue building a space for reflection and clarity.",
-    "nextSteps": {
-      "title": "What happens next?",
-      "steps": [
-        {
-          "title": "Application Review",
-          "description": "Our team will carefully look over your application to understand your background and what you might bring to the program."
-        },
-        {
-          "title": "Selection Process",
-          "description": "Not every application will be accepted. We choose testers based on diversity of perspectives, life contexts, and program capacity. This helps us create the most meaningful feedback circle."
-        },
-        {
-          "title": "If Selected, We Will Contact You",
-          "description": "Chosen testers will receive an email with access details and simple guidance on how to share feedback with us."
-        }
-      ]
-    },
-    "timeline": {
-      "title": "Expected Timeline",
-      "description": "We usually review applications within 1 to 2 weeks. Selected testers will be contacted shortly after. Because of the volume of interest, we may not reply individually to everyone."
-    },
-    "closingNote": "While waiting, you are welcome to follow Mirael’s progress or reach out with any questions about the testing program.",
-    "actions": {
-      "follow": "Follow Updates",
-      "contact": "Contact Us",
-      "back": "Back to Mirael"
-    }
-  },
   "advancedTester": {
     "hero": {
       "badge": "Advanced Testing",
@@ -549,6 +517,43 @@
       },
       "submitButton": "Submit Application",
       "thankYouNote": "Thank you for your interest in helping shape Mirael. We'll review applications and reach out to selected testers as we expand our program. Remember, Mirael is not therapy or a crisis service."
+    },
+    "messages": {
+      "success": "Application submitted",
+      "pending": "Submitting...",
+      "error": "Submission failed"
+    }
+  },
+  "joinSuccess": {
+    "badge": "Application Submitted",
+    "title": "Thank you for joining us",
+    "message": "We have received your application for Mirael’s advanced testing program. Your interest means a lot as we continue building a space for reflection and clarity.",
+    "nextSteps": {
+      "title": "What happens next?",
+      "steps": [
+        {
+          "title": "Application Review",
+          "description": "Our team will carefully look over your application to understand your background and what you might bring to the program."
+        },
+        {
+          "title": "Selection Process",
+          "description": "Not every application will be accepted. We choose testers based on diversity of perspectives, life contexts, and program capacity. This helps us create the most meaningful feedback circle."
+        },
+        {
+          "title": "If Selected, We Will Contact You",
+          "description": "Chosen testers will receive an email with access details and simple guidance on how to share feedback with us."
+        }
+      ]
+    },
+    "timeline": {
+      "title": "Expected Timeline",
+      "description": "We usually review applications within 1 to 2 weeks. Selected testers will be contacted shortly after. Because of the volume of interest, we may not reply individually to everyone."
+    },
+    "closingNote": "While waiting, you are welcome to follow Mirael’s progress or reach out with any questions about the testing program.",
+    "actions": {
+      "follow": "Follow Updates",
+      "contact": "Contact Us",
+      "back": "Back to Mirael"
     }
   }
 }

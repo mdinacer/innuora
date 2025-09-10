@@ -1,5 +1,10 @@
 {
   "app-name": "ميراييل",
   "avatar-letter": "م",
-  "back-to-mirael": "العودة إلى ميراييل"
+  "back-to-mirael": "العودة إلى ميراييل",
+  "actions": {
+    "continue": "متابعة",
+    "showMoreWithCount": "عرض {{count}} إضافية",
+    "showLess": "عرض أقل"
+  }
 }

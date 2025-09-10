@@ -21,10 +21,10 @@ const FlowChatAction: React.FC<Props> = ({ message, isDisabled = false, onUserAc
       <FlowChatMessageHeader
         isAccent={true}
         primaryContent={<SplitIcon className="size-6 shrink-0" />}
-        secondaryContent="Choose Action"
+        // secondaryContent="Choose Action"
       />
 
-      <h3 className={"text-2xl font-bold  mb-2 leading-[1.3] -tracking-[0.3px]"}>Decision Point</h3>
+      {/* <h3 className={"text-2xl font-bold  mb-2 leading-[1.3] -tracking-[0.3px]"}>Decision Point</h3> */}
 
       <p className=" mb-5 leading-[1.5] text-[15px]">{prompt}</p>
       <div className="action-buttons flex flex-col gap-4">

@@ -57,11 +57,19 @@ export default async function TesterJoinRoute({
       submitButton: t("advancedTester.form.submitButton"),
       thankYouNote: t("advancedTester.form.thankYouNote"),
     },
+    messages: {
+      success: t("advancedTester.messages.success"),
+      pending: t("advancedTester.messages.pending"),
+      error: t("advancedTester.messages.error"),
+    },
   };
 
   return (
-    <main className="min-h-screen standalone:min-h-screen-safe w-screen standalone:w-full">
-      <Header locale={locale as AppLocales} />
+    <main className="min-h-screen  standalone:min-h-screen-safe w-screen standalone:w-full">
+      <Header
+        locale={locale as AppLocales}
+        className="sticky top-0 standalone:pt-safe  standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
+      />
       <Suspense fallback={<div>Loading...</div>}>
         {status && status === "success" ? (
           <JoinPageSuccess className="" locale={locale as AppLocales} />
