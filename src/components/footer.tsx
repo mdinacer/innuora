@@ -25,7 +25,7 @@ export default async function Footer({ locale = "en" }: Props) {
     copyright: t("policies_footer.copyright"),
   };
   return (
-    <footer className="border-t border-mir-border-light">
+    <footer className="relative border-t border-mir-border-light">
       <div className="max-w-6xl mx-auto px-6 py-10 text-center text-base rtl:text-lg text-mir-text-secondary">
         <p className="mb-3 text-primary">
           <span className="font-semibold">{disclaimer.label}</span>
