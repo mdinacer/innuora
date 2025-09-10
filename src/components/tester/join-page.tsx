@@ -4,7 +4,6 @@ import React, { useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -25,7 +24,7 @@ const advancedTesterSchema = z.object({
 
 type AdvancedTester = z.infer<typeof advancedTesterSchema>;
 
-type JoinPageData = {
+export type JoinPageData = {
   hero: {
     badge: string;
     title: string;
@@ -66,24 +65,23 @@ type JoinPageData = {
     thankYouNote: string;
   };
 };
-const mockAdvancedJoinDefaultValues = {
-  email: "sara@example.com",
-  occupation: "Product Manager",
-  struggles:
-    "Balancing work responsibilities with personal life. Often feel overwhelmed and anxious when deadlines approach.",
-  coping: "Meditation in the morning, journaling before bed, occasional therapy sessions, talking to friends.",
-  source: "Heard about Mirael through a friend on Instagram.",
-  notes:
-    "Excited to see how Mirael can help me reflect on my emotions and prioritize self-care. Would love to test features focused on reducing overwhelm.",
-};
+// const mockAdvancedJoinDefaultValues = {
+//   email: "sara@example.com",
+//   occupation: "Product Manager",
+//   struggles:
+//     "Balancing work responsibilities with personal life. Often feel overwhelmed and anxious when deadlines approach.",
+//   coping: "Meditation in the morning, journaling before bed, occasional therapy sessions, talking to friends.",
+//   source: "Heard about Mirael through a friend on Instagram.",
+//   notes:
+//     "Excited to see how Mirael can help me reflect on my emotions and prioritize self-care. Would love to test features focused on reducing overwhelm.",
+// };
 
 interface Props {
   className?: string;
+  pageData: JoinPageData;
 }
 
-const JoinPage: React.FC<Props> = ({ className }) => {
-  const { t } = useTranslation("pages");
-
+const JoinPage: React.FC<Props> = ({ className, pageData }) => {
   const form = useForm<AdvancedTester>({
     resolver: zodResolver(advancedTesterSchema),
     defaultValues: {
@@ -95,8 +93,48 @@ const JoinPage: React.FC<Props> = ({ className }) => {
       notes: "",
     },
   });
-
-  const { hero, form: formData } = t("advancedTester", { returnObjects: true }) as JoinPageData;
+  const { hero, form: formData } = pageData;
+  // const { hero, form: formData } = {
+  //   hero: {
+  //     badge: t("advancedTester.hero.badge"),
+  //     title: t("advancedTester.hero.title"),
+  //     description: t("advancedTester.hero.description"),
+  //   },
+  //   form: {
+  //     email: {
+  //       label: t("advancedTester.form.email.label"),
+  //       placeholder: t("advancedTester.form.email.placeholder"),
+  //       required: t("advancedTester.form.email.required"),
+  //     },
+  //     occupation: {
+  //       label: t("advancedTester.form.occupation.label"),
+  //       placeholder: t("advancedTester.form.occupation.placeholder"),
+  //       helpText: t("advancedTester.form.occupation.helpText"),
+  //     },
+  //     struggles: {
+  //       label: t("advancedTester.form.struggles.label"),
+  //       placeholder: t("advancedTester.form.struggles.placeholder"),
+  //       helpText: t("advancedTester.form.struggles.helpText"),
+  //     },
+  //     coping: {
+  //       label: t("advancedTester.form.coping.label"),
+  //       placeholder: t("advancedTester.form.coping.placeholder"),
+  //       helpText: t("advancedTester.form.coping.helpText"),
+  //     },
+  //     source: {
+  //       label: t("advancedTester.form.source.label"),
+  //       placeholder: t("advancedTester.form.source.placeholder"),
+  //       helpText: t("advancedTester.form.source.helpText"),
+  //     },
+  //     notes: {
+  //       label: t("advancedTester.form.notes.label"),
+  //       placeholder: t("advancedTester.form.notes.placeholder"),
+  //       helpText: t("advancedTester.form.notes.helpText"),
+  //     },
+  //     submitButton: t("advancedTester.form.submitButton"),
+  //     thankYouNote: t("advancedTester.form.thankYouNote"),
+  //   },
+  // };
 
   const { isSubmitting } = form.formState;
 

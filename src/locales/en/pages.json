@@ -1,45 +1,4 @@
 {
-  "advancedTester": {
-    "hero": {
-      "badge": "Advanced Testing",
-      "title": "Help shape Mirael's future",
-      "description": "Join our advanced testing program and provide valuable feedback as we refine Mirael's reflective AI conversations. Your insights will directly influence how we build this emotional support tool."
-    },
-    "form": {
-      "email": {
-        "label": "Email Address",
-        "placeholder": "you@example.com",
-        "required": "Email is required"
-      },
-      "occupation": {
-        "label": "Occupation / Role",
-        "placeholder": "e.g., Software Engineer, Teacher, Student, etc.",
-        "helpText": "Helps us understand different user perspectives and needs."
-      },
-      "struggles": {
-        "label": "General Struggles / Emotional Challenges",
-        "placeholder": "What emotional challenges or life situations would you like support with? (e.g., work stress, relationship concerns, decision-making, etc.)",
-        "helpText": "Share what you'd like help processing or reflecting on. This helps us understand your needs."
-      },
-      "coping": {
-        "label": "Coping Mechanisms / How You Manage Stress",
-        "placeholder": "How do you currently handle stress or difficult emotions? (e.g., journaling, exercise, talking to friends, meditation, etc.)",
-        "helpText": "Understanding your current strategies helps us build better complementary tools."
-      },
-      "source": {
-        "label": "How Did You Hear About Mirael?",
-        "placeholder": "e.g., Twitter, friend referral, blog post, etc.",
-        "helpText": "Helps us understand which outreach efforts are most effective."
-      },
-      "notes": {
-        "label": "Additional Comments / Notes",
-        "placeholder": "Anything else you'd like us to know about your interest in Mirael or feedback on emotional AI tools?",
-        "helpText": "Share any other thoughts, questions, or specific areas you'd like to focus on during testing."
-      },
-      "submitButton": "Submit Application",
-      "thankYouNote": "Thank you for your interest in helping shape Mirael. We'll review applications and reach out to selected testers as we expand our program. Remember, Mirael is not therapy or a crisis service."
-    }
-  },
   "auth": {
     "sign-in": {
       "title": "Welcome back",
@@ -463,38 +422,6 @@
       ]
     }
   },
-  "joinSuccess": {
-    "badge": "Application Submitted",
-    "title": "Thank you for joining us",
-    "message": "We have received your application for Mirael’s advanced testing program. Your interest means a lot as we continue building a space for reflection and clarity.",
-    "nextSteps": {
-      "title": "What happens next?",
-      "steps": [
-        {
-          "title": "Application Review",
-          "description": "Our team will carefully look over your application to understand your background and what you might bring to the program."
-        },
-        {
-          "title": "Selection Process",
-          "description": "Not every application will be accepted. We choose testers based on diversity of perspectives, life contexts, and program capacity. This helps us create the most meaningful feedback circle."
-        },
-        {
-          "title": "If Selected, We Will Contact You",
-          "description": "Chosen testers will receive an email with access details and simple guidance on how to share feedback with us."
-        }
-      ]
-    },
-    "timeline": {
-      "title": "Expected Timeline",
-      "description": "We usually review applications within 1 to 2 weeks. Selected testers will be contacted shortly after. Because of the volume of interest, we may not reply individually to everyone."
-    },
-    "closingNote": "While waiting, you are welcome to follow Mirael’s progress or reach out with any questions about the testing program.",
-    "actions": {
-      "follow": "Follow Updates",
-      "contact": "Contact Us",
-      "back": "Back to Mirael"
-    }
-  },
   "policies_footer": {
     "disclaimer": {
       "label": "Important: ",
@@ -549,6 +476,79 @@
         "edit": "Save Changes"
       },
       "cancel": "Cancel"
+    }
+  },
+  "joinSuccess": {
+    "badge": "Application Submitted",
+    "title": "Thank you for joining us",
+    "message": "We have received your application for Mirael’s advanced testing program. Your interest means a lot as we continue building a space for reflection and clarity.",
+    "nextSteps": {
+      "title": "What happens next?",
+      "steps": [
+        {
+          "title": "Application Review",
+          "description": "Our team will carefully look over your application to understand your background and what you might bring to the program."
+        },
+        {
+          "title": "Selection Process",
+          "description": "Not every application will be accepted. We choose testers based on diversity of perspectives, life contexts, and program capacity. This helps us create the most meaningful feedback circle."
+        },
+        {
+          "title": "If Selected, We Will Contact You",
+          "description": "Chosen testers will receive an email with access details and simple guidance on how to share feedback with us."
+        }
+      ]
+    },
+    "timeline": {
+      "title": "Expected Timeline",
+      "description": "We usually review applications within 1 to 2 weeks. Selected testers will be contacted shortly after. Because of the volume of interest, we may not reply individually to everyone."
+    },
+    "closingNote": "While waiting, you are welcome to follow Mirael’s progress or reach out with any questions about the testing program.",
+    "actions": {
+      "follow": "Follow Updates",
+      "contact": "Contact Us",
+      "back": "Back to Mirael"
+    }
+  },
+  "advancedTester": {
+    "hero": {
+      "badge": "Advanced Testing",
+      "title": "Help shape Mirael's future",
+      "description": "Join our advanced testing program and provide valuable feedback as we refine Mirael's reflective AI conversations. Your insights will directly influence how we build this emotional support tool."
+    },
+    "form": {
+      "email": {
+        "label": "Email Address",
+        "placeholder": "you@example.com",
+        "required": "Email is required"
+      },
+      "occupation": {
+        "label": "Occupation / Role",
+        "placeholder": "e.g., Software Engineer, Teacher, Student, etc.",
+        "helpText": "Helps us understand different user perspectives and needs."
+      },
+      "struggles": {
+        "label": "General Struggles / Emotional Challenges",
+        "placeholder": "What emotional challenges or life situations would you like support with? (e.g., work stress, relationship concerns, decision-making, etc.)",
+        "helpText": "Share what you'd like help processing or reflecting on. This helps us understand your needs."
+      },
+      "coping": {
+        "label": "Coping Mechanisms / How You Manage Stress",
+        "placeholder": "How do you currently handle stress or difficult emotions? (e.g., journaling, exercise, talking to friends, meditation, etc.)",
+        "helpText": "Understanding your current strategies helps us build better complementary tools."
+      },
+      "source": {
+        "label": "How Did You Hear About Mirael?",
+        "placeholder": "e.g., Twitter, friend referral, blog post, etc.",
+        "helpText": "Helps us understand which outreach efforts are most effective."
+      },
+      "notes": {
+        "label": "Additional Comments / Notes",
+        "placeholder": "Anything else you'd like us to know about your interest in Mirael or feedback on emotional AI tools?",
+        "helpText": "Share any other thoughts, questions, or specific areas you'd like to focus on during testing."
+      },
+      "submitButton": "Submit Application",
+      "thankYouNote": "Thank you for your interest in helping shape Mirael. We'll review applications and reach out to selected testers as we expand our program. Remember, Mirael is not therapy or a crisis service."
     }
   }
 }
