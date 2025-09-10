@@ -212,7 +212,7 @@ export default async function Home({
             </Link>
             <Link
               href="#early-access"
-              className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+              className="sm:inline-flex opacity-50 pointer-events-none cursor-not-allowed hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
             >
               {actions.testerSignIn}
             </Link>
