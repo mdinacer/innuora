@@ -86,7 +86,7 @@ const JoinPage: React.FC<Props> = ({ className }) => {
 
   const form = useForm<AdvancedTester>({
     resolver: zodResolver(advancedTesterSchema),
-    defaultValues: mockAdvancedJoinDefaultValues || {
+    defaultValues: {
       email: "",
       occupation: "",
       struggles: "",
