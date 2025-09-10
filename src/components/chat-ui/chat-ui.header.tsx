@@ -34,10 +34,10 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
           <span className="rtl:-translate-y-1">{defaultData.avatarLetter}</span>
         </div>
         <div className="header-info">
-          <h1 className=" text-mir-text-primary rtl:text-lg rtl:mt-1 font-bold rtl:font-arabic mb-0.5 -tracking-[0.5px]">
+          <h1 className=" text-mir-text-primary rtl:text-lg rtl:mt-1 font-bold rtl:font-arabic rtl:mb-1 mb-0.5 -tracking-[0.5px]">
             {title || defaultData.title}
           </h1>
-          <p className="text-mir-text-secondary text-sm">{subtitle || defaultData.subtitle}</p>
+          <p className="text-primary/80 rtl:font-medium rtl:text-base text-sm">{subtitle || defaultData.subtitle}</p>
         </div>
       </div>
       <div className={cn("header-actions ", "flex items-center gap-3")}>

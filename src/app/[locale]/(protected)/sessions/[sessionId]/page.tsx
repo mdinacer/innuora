@@ -1,14 +1,21 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import React from "react";
+import SessionPage from "@/components/sessions/session-page";
 
-import SessionFlowChat from "@/components/chat-ui/flow-chat/flow-chat.main";
-import { mockChatMessages } from "@/lib/constants/mock-flow-chat-messages";
+export default async function SessionRoute({
+  params,
+}: Readonly<{
+  params: Promise<{ sessionId: string }>;
+}>) {
+  const { sessionId } = await params;
 
-export default function SessionRoute() {
+  if (!sessionId) {
+    redirect("/sessions");
+  }
+
   return (
-    <main className="h-screen w-screen standalone:w-full">
-      <SessionFlowChat messages={mockChatMessages} />
+    <main className="h-screen w-screen relative standalone:w-full standalone:h-full">
+      <SessionPage sessionId={sessionId} />
     </main>
   );
 }

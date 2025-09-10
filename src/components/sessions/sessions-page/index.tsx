@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 
 import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-empty-state";
-import SessionsGrid from "@/components/sessions/sessions-page//sessions-grid";
 import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
 import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
 import { cn } from "@/lib/utils";
+import SessionCard from "./session-card";
 
 interface SessionsPageProps {
   className?: string;
@@ -15,14 +15,20 @@ interface SessionsPageProps {
 
 const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
   const sessions = useOpenChatSessionStore((state) => state.sessions);
+
+  const sessionsArray = useMemo(() => Object.values(sessions), [sessions]);
   return (
     <div className={cn("max-w-6xl mx-auto px-6 py-12", className)}>
       <SessionsPageHeader />
 
-      {Object.keys(sessions).length > 0 ? (
+      {sessionsArray.length > 0 ? (
         <>
           <SessionsPageActions />
-          <SessionsGrid sessions={sessions} />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" id="sessionsGrid">
+            {sessionsArray.map((session, index) => (
+              <SessionCard key={index} session={session} />
+            ))}
+          </div>
         </>
       ) : (
         <SessionsEmptyState />

@@ -1,13 +1,15 @@
 import React from "react";
+import Markdown from "react-markdown";
 
 import { cn } from "@/lib/utils";
 
 interface CodeViewProps {
   data: unknown;
   className?: string;
+  isMarkdown?: boolean;
 }
 
-const CodeView: React.FC<CodeViewProps> = ({ data, className }) => {
+const CodeView: React.FC<CodeViewProps> = ({ data, className, isMarkdown = false }) => {
   return (
     <div
       dir="ltr"
@@ -19,7 +21,15 @@ const CodeView: React.FC<CodeViewProps> = ({ data, className }) => {
         className
       )}
     >
-      <code className="text-start whitespace-pre">{JSON.stringify(data, null, 2)}</code>
+      {isMarkdown ? (
+        <code className=" whitespace-pre leading-7 tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 [&>ul]:list-inside [&>ul]:list-disc">
+          <Markdown allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}>
+            {JSON.stringify(data, null, 2)}
+          </Markdown>
+        </code>
+      ) : (
+        <code className="text-start whitespace-pre">{JSON.stringify(data, null, 2)}</code>
+      )}
     </div>
   );
 };

@@ -32,6 +32,7 @@ export interface AiModel {
 }
 
 export type ModelTokenUsage = {
+  type: "analysis" | "memory" | "completion" | "summary" | "other";
   model: ModelType;
   mode: ModelMode;
   version: string; // e.g., "2025-07-01"

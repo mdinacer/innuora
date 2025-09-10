@@ -16,7 +16,11 @@ export const StateAnalysisSchema = z.object({
   crisis: z.enum(CRISIS_LEVEL_MAP),
   distortions: z.array(z.string()),
   themes: z.array(z.string()),
+  core_beliefs: z.array(z.string()),
+  silent_rules: z.array(z.string()),
   state: z.enum(USER_STATE_MAP),
+  update_memory: z.boolean(),
+  recall_memory: z.boolean(),
 });
 
 // === Type inferred from schema ===

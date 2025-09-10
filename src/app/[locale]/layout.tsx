@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 
 import { geistMono, geistSans, tajawal, zain } from "@/lib/fonts";
 
@@ -45,6 +46,7 @@ export default async function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}
           </ThemeProvider>
+          <Analytics />
         </TranslationProvider>
       </body>
     </html>

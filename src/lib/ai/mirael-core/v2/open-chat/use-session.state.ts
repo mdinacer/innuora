@@ -1,19 +1,18 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
   sessionId: string;
-  autoCreateSession?: boolean;
 }
 
-export function useOpenChat({ sessionId, autoCreateSession = false }: OpenChatProps) {
+export function useChatSessionState({ sessionId }: OpenChatProps) {
   const hasHydrated = useOpenChatSessionStore((state) => state.hasHydrated);
   const session = useOpenChatSessionStore((state) => state.getSession(sessionId));
-  const messages = useOpenChatSessionStore((state) => state.getSession(sessionId))?.messages;
 
   const addMessage = useCallback(
     (message: OpenChatMessage) => {
@@ -36,16 +35,24 @@ export function useOpenChat({ sessionId, autoCreateSession = false }: OpenChatPr
     [sessionId]
   );
 
+  const updateSession = useCallback(
+    (updates: Partial<Session> | ((session: Session) => Session)) => {
+      useOpenChatSessionStore.getState().updateSession(sessionId, updates);
+    },
+    [sessionId]
+  );
+
   const resetSession = useCallback(() => {
     useOpenChatSessionStore.getState().resetSession(sessionId);
   }, [sessionId]);
 
-  useEffect(() => {
-    if (autoCreateSession && hasHydrated && !session) {
-      useOpenChatSessionStore.getState().createSession(sessionId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasHydrated, session]);
-
-  return { hasHydrated, messages, session, addMessage, addAnalysis, addTokenUsage, resetSession };
+  return {
+    hasHydrated,
+    session,
+    addAnalysis,
+    addMessage,
+    addTokenUsage,
+    resetSession,
+    updateSession,
+  };
 }
