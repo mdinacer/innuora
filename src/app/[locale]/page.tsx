@@ -186,10 +186,7 @@ export default async function Home({
     earlyAccess: {
       title: t("homepage.earlyAccess.title"),
       subtitle: t("homepage.earlyAccess.subtitle"),
-      form: {
-        placeholder: t("homepage.earlyAccess.form.placeholder"),
-        button: t("homepage.earlyAccess.form.button"),
-      },
+      cta: t("homepage.earlyAccess.cta"),
     },
     faq: {
       title: t("homepage.faq.title"),
@@ -341,40 +338,17 @@ export default async function Home({
         </div>
       </section>
 
-      {/* <!-- Demo --> */}
-      {/* <section id="demo" className="max-w-4xl mx-auto px-6 py-16">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl rtl:md:text-5xl font-bold mb-3 rtl:font-arabic">{demo.title}</h2>
-          <p className="text-[17px] text-mir-text-secondary max-w-2xl mx-auto">{demo.subtitle}</p>
-        </div>
-        <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_4px_20px] shadow-black/8 space-y-4">
-          {demo.conversation.map((message, index) => (
-            <ConversationCard key={index} message={message as Conversation} />
-          ))}
-        </div>
-      </section> */}
-
       {/* <!-- Early Access CTA --> */}
       <section id="early-access" className="px-6 py-16">
         <div className="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white bg-gradient-to-br from-[#FF6B5A] to-[#FF8A7A] rtl:to-mir-bg-accent-dark">
-          <h2 className="text-3xl md:text-4xl rtl:md:text-5xl font-bold mb-3 rtl:mb-5 rtl:font-arabic">
-            {earlyAccess.title}
-          </h2>
+          <h2 className="text-3xl md:text-4xl  font-bold mb-3 rtl:mb-5 rtl:font-arabic">{earlyAccess.title}</h2>
           <p className="text-base md:text-lg rtl:font-medium max-w-2xl mx-auto mb-8">{earlyAccess.subtitle}</p>
-          <form id="waitlistForm" className="mx-auto flex max-w-xl flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              required
-              placeholder={earlyAccess.form.placeholder}
-              className="flex-1 rounded-2xl bg-white px-4 rtl:font-sans py-3 text-black placeholder:mir-text-secondary dark:placeholder:mir-text-secondary ring-0 border-0 outline-none"
-            />
-            <button
-              type="submit"
-              className="rounded-2xl bg-white px-6 py-3 font-semibold text-mir-bg-accent transition hover:translate-y-[-1px]"
-            >
-              {earlyAccess.form.button}
-            </button>
-          </form>
+          <Link
+            href={"/join"}
+            className="rounded-2xl bg-white px-6 py-3 font-semibold text-mir-bg-accent transition hover:translate-y-[-1px]"
+          >
+            {earlyAccess.cta}
+          </Link>
         </div>
       </section>
       {/* <!-- FAQ (native details/summary for a11y, no extra JS needed) --> */}

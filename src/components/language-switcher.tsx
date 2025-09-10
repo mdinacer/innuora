@@ -71,6 +71,7 @@ const LanguageSwitcher = () => {
             "disabled:opacity-50 disabled:cursor-not-allowed",
             {
               "bg-mir-bg-accent text-white rounded-xl": locale.value === i18n.language,
+              "font-arabic font-semibold": locale.value === "ar",
             }
           )}
         >
