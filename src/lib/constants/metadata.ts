@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-export const METADATA = {
+export const METADATA: Metadata = {
   title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
   description:
     "Mirael is an emotionally intelligent AI designed for high-functioning women navigating burnout, perfectionism, and emotional overwhelm. It reflects your emotions, highlights silent rules and cognitive distortions, and guides you toward clarity and actionable self-insight.",
@@ -24,6 +24,28 @@ export const METADATA = {
   creator: "Abdenasser Mohammedi",
   category: "health",
   metadataBase: new URL("https://www.mirael.life"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      en: "/en",
+      ar: "/ar",
+      fr: "/fr",
+    },
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 
   // iOS PWA Support
   appleWebApp: {
@@ -95,4 +117,4 @@ export const METADATA = {
     "msapplication-TileColor": "#ffffff",
     "msapplication-config": "/browserconfig.xml",
   },
-} as Metadata;
+};
