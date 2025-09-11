@@ -1,10 +1,25 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import JoinPage from "@/components/tester/join-page";
 import JoinPageSuccess from "@/components/tester/join-page-success";
 import initTranslations, { AppLocales } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  title: "Apply for Mirael Advanced Testing",
+  description:
+    "Submit your application to participate in Mirael's advanced testing program. Provide feedback on our reflective AI and help shape the future of this emotional support tool.",
+  alternates: {
+    canonical: "https://mirael.life/en/join",
+    languages: {
+      fr: "https://mirael.life/fr/join",
+      ar: "https://mirael.life/ar/join",
+      "x-default": "https://mirael.life/en/join",
+    },
+  },
+};
 
 export default async function TesterJoinRoute({
   params,

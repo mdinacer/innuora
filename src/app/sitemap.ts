@@ -21,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
       priority: route.priority,
+      alternates: {
+        languages: {
+          ...Object.fromEntries(locales.filter((l) => l !== locale).map((l) => [l, `${baseUrl}/${l}${route.path}`])),
+          "x-default": `${baseUrl}/en${route.path}`,
+        },
+      },
     }))
   );
 }
