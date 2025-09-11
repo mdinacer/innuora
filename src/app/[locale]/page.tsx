@@ -73,7 +73,7 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
           <div className="rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 text-base rtl:text-lg rtl:font-medium text-mir-text-primary">
             {conversation.text}
           </div>
-          <div className="size-7 sm:size-9 rounded-full bg-mir-bg-secondary flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+          <div className="size-7 sm:size-9 font-sans rounded-full bg-mir-bg-secondary flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
             U
           </div>
         </div>
@@ -85,17 +85,19 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
     return (
       <div className="flex justify-start">
         <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
-          <div className="size-7  sm:size-9 rounded-full bg-mir-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
+          <div className="size-7 font-sans sm:size-9 rounded-full bg-mir-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
             M
           </div>
           <div className="flex flex-col sm:gap-1 gap-3">
             <div className="flex items-center gap-2 px-1">
               <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-mir-bg-accent"></div>
-              <span className="text-sm font-medium text-mir-bg-accent">{label}</span>
+              <span className="text-sm font-medium rtl:font-arabic-body rtl:text-base text-mir-bg-accent rtl:font-semibold">
+                {label}
+              </span>
               <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-mir-bg-accent"></div>
             </div>
             <div
-              className="rounded-2xl bg-mir-bg-accent text-white px-4 py-3 text-base rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
+              className="rounded-2xl bg-mir-bg-accent text-white px-4 py-3 text-base  rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
               [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 
               [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-2"
             >
@@ -119,7 +121,7 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
           <BotIcon className="size-4 shrink-0" />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-500 px-1">{label}</span>
+          <span className="text-sm font-medium text-gray-500 px-1 rtl:font-arabic-body rtl:text-base">{label}</span>
           <div className="rounded-2xl border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800 px-4 py-3 text-base rtl:text-lg rtl:font-medium text-gray-700 dark:text-gray-300">
             {conversation.text}
           </div>
@@ -200,23 +202,23 @@ export default async function Home({
     <main className="relative rtl:font-arabic-body pt-20 text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden  transition-all duration-300 ease-in text-mir-text-primary">
       {/* <!-- Header --> */}
       <Header
-        className="fixed top-0 standalone:pt-safe  standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
+        className="fixed top-0 standalone:pt-safe standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
         locale={locale as AppLocales}
         sideContent={
-          <>
+          <div className="flex items-center gap-x-4 ltr:ml-5 rtl:mr-5">
             <Link
               href="#early-access"
               className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
             >
               {actions.requestAccess}
             </Link>
-            <Link
+            {/* <Link
               href="#early-access"
               className="sm:inline-flex opacity-50 pointer-events-none cursor-not-allowed hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
             >
               {actions.testerSignIn}
-            </Link>
-          </>
+            </Link> */}
+          </div>
         }
       />
 
@@ -227,7 +229,7 @@ export default async function Home({
         </div>
         <h1
           className={cn(
-            "text-4xl md:text-6xl rtl:md:text-7xl font-extrabold leading-tight tracking-tight mb-4 rtl:font-arabic"
+            "text-4xl md:text-6xl rtl:md:text-7xl font-extrabold leading-tight rtl:leading-normal tracking-tight mb-4  rtl:font-arabic"
           )}
         >
           {hero.title}
@@ -255,7 +257,9 @@ export default async function Home({
       {/* <!-- How it helps --> */}
       <section className="max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl rtl:md:text-5xl font-bold mb-3 rtl:font-arabic">{howItHelps.title}</h2>
+          <h2 className="text-3xl md:text-4xl rtl:md:text-5xl rtl:leading-loose font-bold mb-3 rtl:font-arabic">
+            {howItHelps.title}
+          </h2>
           <p className="text-[17px] rtl:text-xl text-mir-text-secondary max-w-3xl mx-auto">{howItHelps.subtitle}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -273,9 +277,13 @@ export default async function Home({
 
       <section id="demo" className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <h2 className="text-2xl rtl:font-arabic md:text-3xl font-bold mb-3 rtl:mb-5">{demo.title}</h2>
+          <h2 className="text-2xl rtl:font-arabic md:text-3xl rtl:leading-normal rtl:md:text-5xl font-bold mb-3 rtl:mb-5">
+            {demo.title}
+          </h2>
           <p className="text-base rtl:text-lg text-mir-text-secondary max-w-2xl mx-auto mb-4">{demo.subtitle}</p>
-          <div className="flex justify-center items-center gap-4 text-sm">
+        </div>
+        <div className="rounded-3xl border border-mir-border-light bg-mir-bg-card sm:p-8 p-4 shadow-md">
+          <div className="flex justify-center items-center gap-4 pb-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-mir-bg-accent"></div>
               <span className="font-medium">{demo.legend.mirael}</span>
@@ -289,10 +297,8 @@ export default async function Home({
               <span className="font-medium">{demo.legend.user}</span>
             </div>
           </div>
-        </div>
-        <div className="rounded-3xl border border-mir-border-light bg-mir-bg-card sm:p-8 p-4 shadow-md">
           <div
-            className="space-y-6 max-h-[500px] overflow-y-auto overscroll-content overflow-x-hidden pr-2"
+            className="space-y-6 max-h-[500px] overflow-y-auto rtl:pl-3 ltr:pr-3 overscroll-content overflow-x-hidden pr-2"
             id="conversationContainer"
           >
             {demo.conversation.map((conversation, index) => (

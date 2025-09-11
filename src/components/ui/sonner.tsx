@@ -9,6 +9,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
+      toastOptions={{
+        classNames: {
+          title: "rtl:font-arabic rtl:text-base ltr:font-sans",
+          description: "rtl:font-arabic-body rtl:text-base ltr:font-sans",
+        },
+      }}
       className="toaster group"
       style={
         {

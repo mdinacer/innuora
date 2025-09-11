@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ChevronRightIcon, GraduationCapIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -16,12 +17,13 @@ interface Props {
 }
 
 const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMoveToNextStep }) => {
+  const { t } = useTranslation("common");
   const { title, subtitle, paragraphs, buttonText } = message.content;
   return (
     <>
       <FlowChatMessageHeader
         isAccent={false}
-        secondaryContent="Mirael"
+        secondaryContent={t("app-name")}
         primaryContent={<GraduationCapIcon className="size-6 shrink-0" />}
       />
       <h3
@@ -33,7 +35,7 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
       {paragraphs.map((paragraph, index) => (
         <div
           key={index}
-          className="leading-7 tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 [&>ul]:list-inside [&>ul]:list-disc"
+          className="leading-7 rtl:leading-loose tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>ul]:list-inside [&>ul]:list-disc"
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}

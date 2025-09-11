@@ -1,11 +1,9 @@
-import localforage from "localforage";
 import { create } from "zustand";
-import { createJSONStorage, devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 
-import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
 
-interface MessagesStoreState extends PersistedStoreBaseProps {
+interface MessagesStoreState {
   sessionMessages: Record<string, ChatMessage[]>;
 
   // Session-level
@@ -30,165 +28,147 @@ interface MessagesStoreState extends PersistedStoreBaseProps {
 
 export const useSessionMessagesStore = create<MessagesStoreState>()(
   devtools(
-    persist(
-      (set) => ({
-        sessionMessages: {},
-        hasHydrated: false,
-        // Session-level
-        createSession: (sessionId) =>
-          set(
-            (state) => {
-              if (state.sessionMessages[sessionId]) {
-                // Already exists → no-op
-                return state;
-              }
+    (set) => ({
+      sessionMessages: {},
+      hasHydrated: false,
+      // Session-level
+      createSession: (sessionId) =>
+        set(
+          (state) => {
+            if (state.sessionMessages[sessionId]) {
+              // Already exists → no-op
+              return state;
+            }
 
-              return {
-                sessionMessages: {
-                  ...state.sessionMessages,
-                  [sessionId]: [],
-                },
-              };
-            },
-            false,
-            "createSession"
-          ),
-
-        clearSessionMessages: (sessionId) =>
-          set(
-            (state) => ({
+            return {
               sessionMessages: {
                 ...state.sessionMessages,
                 [sessionId]: [],
               },
-            }),
-            false,
-            "clearSessionMessages"
-          ),
+            };
+          },
+          false,
+          "createSession"
+        ),
 
-        removeSession: (sessionId) =>
-          set(
-            (state) => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              const { [sessionId]: _, ...rest } = state.sessionMessages;
-              return { sessionMessages: rest };
+      clearSessionMessages: (sessionId) =>
+        set(
+          (state) => ({
+            sessionMessages: {
+              ...state.sessionMessages,
+              [sessionId]: [],
             },
-            false,
-            "removeSession"
-          ),
+          }),
+          false,
+          "clearSessionMessages"
+        ),
 
-        // Message-level
-        addMessage: (sessionId, message) =>
-          set(
-            (state) => {
-              const msgs = state.sessionMessages[sessionId] ?? [];
-              return {
-                sessionMessages: {
-                  ...state.sessionMessages,
-                  [sessionId]: [...msgs, message],
-                },
-              };
-            },
-            false,
-            "addMessage"
-          ),
+      removeSession: (sessionId) =>
+        set(
+          (state) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [sessionId]: _, ...rest } = state.sessionMessages;
+            return { sessionMessages: rest };
+          },
+          false,
+          "removeSession"
+        ),
 
-        addMessages: (sessionId, messages) =>
-          set(
-            (state) => {
-              const msgs = state.sessionMessages[sessionId] ?? [];
-              return {
-                sessionMessages: {
-                  ...state.sessionMessages,
-                  [sessionId]: [...msgs, ...messages],
-                },
-              };
-            },
-            false,
-            "addMessages"
-          ),
-
-        updateMessage: (sessionId, messageId, updater) =>
-          set(
-            (state) => {
-              const msgs = state.sessionMessages[sessionId] ?? [];
-              return {
-                sessionMessages: {
-                  ...state.sessionMessages,
-                  [sessionId]: msgs.map(
-                    (m): ChatMessage =>
-                      m.id === messageId
-                        ? typeof updater === "function"
-                          ? updater(m as ChatMessage) // enforce function returns ChatMessage
-                          : ({ ...m, ...updater } as ChatMessage)
-                        : m
-                  ),
-                },
-              };
-            },
-            false,
-            "updateMessage"
-          ),
-        deleteMessage: (sessionId, messageId) =>
-          set(
-            (state) => {
-              const msgs = state.sessionMessages[sessionId] ?? [];
-              return {
-                sessionMessages: {
-                  ...state.sessionMessages,
-                  [sessionId]: msgs.filter((m) => m.id !== messageId),
-                },
-              };
-            },
-            false,
-            "deleteMessage"
-          ),
-
-        // Bulk ops
-        replaceMessages: (sessionId, messages) =>
-          set(
-            (state) => ({
+      // Message-level
+      addMessage: (sessionId, message) =>
+        set(
+          (state) => {
+            const msgs = state.sessionMessages[sessionId] ?? [];
+            return {
               sessionMessages: {
                 ...state.sessionMessages,
-                [sessionId]: [...messages],
+                [sessionId]: [...msgs, message],
               },
-            }),
-            false,
-            "replaceMessages"
-          ),
+            };
+          },
+          false,
+          "addMessage"
+        ),
 
-        mapMessages: (sessionId, fn) =>
-          set(
-            (state) => {
-              const msgs = state.sessionMessages[sessionId] ?? [];
-              return {
-                sessionMessages: {
-                  ...state.sessionMessages,
-                  [sessionId]: msgs.map(fn),
-                },
-              };
+      addMessages: (sessionId, messages) =>
+        set(
+          (state) => {
+            const msgs = state.sessionMessages[sessionId] ?? [];
+            return {
+              sessionMessages: {
+                ...state.sessionMessages,
+                [sessionId]: [...msgs, ...messages],
+              },
+            };
+          },
+          false,
+          "addMessages"
+        ),
+
+      updateMessage: (sessionId, messageId, updater) =>
+        set(
+          (state) => {
+            const msgs = state.sessionMessages[sessionId] ?? [];
+            return {
+              sessionMessages: {
+                ...state.sessionMessages,
+                [sessionId]: msgs.map(
+                  (m): ChatMessage =>
+                    m.id === messageId
+                      ? typeof updater === "function"
+                        ? updater(m as ChatMessage) // enforce function returns ChatMessage
+                        : ({ ...m, ...updater } as ChatMessage)
+                      : m
+                ),
+              },
+            };
+          },
+          false,
+          "updateMessage"
+        ),
+      deleteMessage: (sessionId, messageId) =>
+        set(
+          (state) => {
+            const msgs = state.sessionMessages[sessionId] ?? [];
+            return {
+              sessionMessages: {
+                ...state.sessionMessages,
+                [sessionId]: msgs.filter((m) => m.id !== messageId),
+              },
+            };
+          },
+          false,
+          "deleteMessage"
+        ),
+
+      // Bulk ops
+      replaceMessages: (sessionId, messages) =>
+        set(
+          (state) => ({
+            sessionMessages: {
+              ...state.sessionMessages,
+              [sessionId]: [...messages],
             },
-            false,
-            "mapMessages"
-          ),
+          }),
+          false,
+          "replaceMessages"
+        ),
 
-        setHasHydrated: (state) => {
-          set({
-            hasHydrated: state,
-          });
-        },
-      }),
-      {
-        name: "messages-store",
-        storage: createJSONStorage(() => localforage),
-        partialize: (state) => ({ sessionMessages: state.sessionMessages }),
-        onRehydrateStorage: () => (state) => {
-          if (state) {
-            state.setHasHydrated(true);
-          }
-        },
-      }
-    ),
+      mapMessages: (sessionId, fn) =>
+        set(
+          (state) => {
+            const msgs = state.sessionMessages[sessionId] ?? [];
+            return {
+              sessionMessages: {
+                ...state.sessionMessages,
+                [sessionId]: msgs.map(fn),
+              },
+            };
+          },
+          false,
+          "mapMessages"
+        ),
+    }),
     { name: "MessagesStore" }
   )
 );

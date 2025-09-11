@@ -1,10 +1,25 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import JoinPage from "@/components/tester/join-page";
 import JoinPageSuccess from "@/components/tester/join-page-success";
 import initTranslations, { AppLocales } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  title: "Apply for Mirael Advanced Testing",
+  description:
+    "Submit your application to participate in Mirael's advanced testing program. Provide feedback on our reflective AI and help shape the future of this emotional support tool.",
+  alternates: {
+    canonical: "https://mirael.life/en/join",
+    languages: {
+      fr: "https://mirael.life/fr/join",
+      ar: "https://mirael.life/ar/join",
+      "x-default": "https://mirael.life/en/join",
+    },
+  },
+};
 
 export default async function TesterJoinRoute({
   params,
@@ -57,11 +72,19 @@ export default async function TesterJoinRoute({
       submitButton: t("advancedTester.form.submitButton"),
       thankYouNote: t("advancedTester.form.thankYouNote"),
     },
+    messages: {
+      success: t("advancedTester.messages.success"),
+      pending: t("advancedTester.messages.pending"),
+      error: t("advancedTester.messages.error"),
+    },
   };
 
   return (
-    <main className="min-h-screen standalone:min-h-screen-safe w-screen standalone:w-full">
-      <Header locale={locale as AppLocales} />
+    <main className="min-h-screen  standalone:min-h-screen-safe w-screen standalone:w-full">
+      <Header
+        locale={locale as AppLocales}
+        className="sticky top-0 standalone:pt-safe  standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
+      />
       <Suspense fallback={<div>Loading...</div>}>
         {status && status === "success" ? (
           <JoinPageSuccess className="" locale={locale as AppLocales} />

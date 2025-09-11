@@ -45,7 +45,7 @@ const FlowChatHeroCard = (props: Props) => {
         </h2>
         <p className={cn("hero-subtitle", "text-base text-mir-text-primary/70 leading-[1.5] mb-5 ")}>{subtitle}</p>
         <div className={cn("hero-paragraphs", "my-5")}>
-          {paragraphs.map((paragraph, index) => (
+          {paragraphs?.map((paragraph, index) => (
             <div
               key={index}
               className="leading-7 tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-3 [&>ul]:list-inside [&>ul]:list-disc"

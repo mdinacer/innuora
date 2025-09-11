@@ -64,6 +64,11 @@ export type JoinPageData = {
     submitButton: string;
     thankYouNote: string;
   };
+  messages: {
+    success: string;
+    pending: string;
+    error: string;
+  };
 };
 // const mockAdvancedJoinDefaultValues = {
 //   email: "sara@example.com",
@@ -93,7 +98,11 @@ const JoinPage: React.FC<Props> = ({ className, pageData }) => {
       notes: "",
     },
   });
-  const { hero, form: formData } = pageData;
+  const {
+    hero,
+    form: formData,
+    messages: { success, pending, error },
+  } = pageData;
   // const { hero, form: formData } = {
   //   hero: {
   //     badge: t("advancedTester.hero.badge"),
@@ -138,29 +147,26 @@ const JoinPage: React.FC<Props> = ({ className, pageData }) => {
 
   const { isSubmitting } = form.formState;
 
-  const handleOnSubmit = useCallback(async (data: AdvancedTester) => {
-    try {
-      await createTester(data, "/join?status=success");
-      //mock api call
-      await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 3000);
-        }),
-        {
-          loading: "Creating tester...",
-          success: "Tester created successfully",
-          error: "Failed to create tester",
-        }
-      );
-    } catch (error) {
-      toast.error("Failed to create tester", { description: (error as Error).message });
-    }
-  }, []);
+  const handleOnSubmit = useCallback(
+    async (data: AdvancedTester) => {
+      try {
+        await createTester(data, "/join?status=success");
+        //mock api call
+        await toast.promise(createTester(data, "/join?status=success"), {
+          loading: pending,
+          success: success,
+          error: error,
+        });
+      } catch (err) {
+        toast.error(error);
+        console.error(err);
+      }
+    },
+    [error, pending, success]
+  );
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative pt-20", className)}>
       {/* <!-- Hero Section --> */}
       <section className={"max-w-4xl mx-auto px-6 py-12 text-center"}>
         <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] font-semibold text-mir-bg-accent">

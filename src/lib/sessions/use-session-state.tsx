@@ -4,7 +4,6 @@ import { SessionFlowState, useSessionStore } from "@/stores/session.store";
 
 export function useSessionState({ sessionId, autoCreate = false }: { sessionId: string; autoCreate?: boolean }) {
   const session = useSessionStore((state) => state.sessions[sessionId]);
-  const hasHydrated = useSessionStore((state) => state.hasHydrated);
 
   const updateSession = useCallback(
     (updates: Partial<SessionFlowState> | ((prev: SessionFlowState) => SessionFlowState)) =>
@@ -31,15 +30,15 @@ export function useSessionState({ sessionId, autoCreate = false }: { sessionId: 
   const deleteSession = useCallback(() => useSessionStore.getState().deleteSession(sessionId), [sessionId]);
 
   useEffect(() => {
-    if (autoCreate && hasHydrated && !session) {
+    if (autoCreate && !session) {
       useSessionStore.getState().createSession(sessionId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, hasHydrated]);
+  }, [session]);
 
   return {
     session,
-    hasHydrated,
+
     createSession,
     setCurrentStepId,
     updateSession,

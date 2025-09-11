@@ -5,7 +5,6 @@ import { ChatMessage } from "@/types/flow-chat-messages.types";
 
 export default function useChatEngine({ sessionId }: { sessionId: string }) {
   const messages = useSessionMessagesStore((state) => state.sessionMessages[sessionId]) as ChatMessage[] | undefined;
-  const hasHydrated = useSessionMessagesStore((state) => state.hasHydrated);
 
   const addMessage = useCallback(
     (message: ChatMessage) => {
@@ -200,7 +199,6 @@ export default function useChatEngine({ sessionId }: { sessionId: string }) {
     messageCount,
     lastMessage,
     hasMessages,
-    hasHydrated,
     isSessionReady,
 
     // Core CRUD operations

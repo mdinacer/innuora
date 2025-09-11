@@ -31,7 +31,7 @@ const TextField = <T extends FieldValues>({ control, name, label, helperText, ..
               {...props}
               {...field}
               className={
-                "w-full rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 ltr:pr-12 rtl:pl-12 text-mir-text-primary placeholder-mir-text-secondary outline-none transition focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20 disabled:opacity-70 disabled:cursor-not-allowed"
+                "w-full rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 ltr:pr-12 rtl:pl-12 text-primary placeholder:text-muted-foreground outline-none transition focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20 disabled:opacity-70 disabled:cursor-not-allowed"
               }
             />
           </FormControl>

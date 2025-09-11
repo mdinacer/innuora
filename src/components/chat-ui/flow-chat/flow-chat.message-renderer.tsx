@@ -124,7 +124,12 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
 
   return (
     <FlowChatMessageBubble
-      className={cn("z-10 ", isUser ? "self-end" : "self-start w-full", className, messageStyling)}
+      className={cn(
+        "z-10 ",
+        isUser ? "self-end rtl:self-start" : "self-start rtl:self-end w-full",
+        className,
+        messageStyling
+      )}
     >
       {messageContent}
     </FlowChatMessageBubble>

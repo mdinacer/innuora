@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 
 import { MessageType } from "@/types/flow-chat-messages.types";
 import { FlowStep, SessionFlow, StepType } from "@/types/flow-session.types";
@@ -24,24 +24,14 @@ interface SessionOrchestratorProps {
 export default function useSessionOrchestrator({
   sessionFlow,
   autoStart = false,
-  //options,
   initStores = false,
-  //onStepChange,
 }: SessionOrchestratorProps) {
   const { id: sessionId } = sessionFlow;
   useInitSessionStores({ sessionId, autoCreate: initStores });
-  const { session, hasHydrated: hasSessionHydrated, setInputValues, updateSession } = useSessionState({ sessionId });
+  const { session, setInputValues, updateSession } = useSessionState({ sessionId });
 
   const { isTransitioning, resetFlow, startFlow, moveToNext, jumpToStep } = useSessionFlowEngine(sessionFlow);
-  const {
-    messages,
-    hasHydrated: hasMessagesHydrated,
-    addMessage,
-    clearMessages,
-    updateMessage,
-  } = useChatEngine({ sessionId });
-
-  const isReady = useMemo(() => hasSessionHydrated && hasMessagesHydrated, [hasSessionHydrated, hasMessagesHydrated]);
+  const { messages, addMessage, clearMessages, updateMessage } = useChatEngine({ sessionId });
 
   const resetSession = useCallback(() => {
     resetFlow();
@@ -90,12 +80,11 @@ export default function useSessionOrchestrator({
     [updateMessage, setInputValues, addMessage, moveToNext]
   );
   useEffect(() => {
-    if (autoStart && hasSessionHydrated && session && !session.isFlowStarted) startFlow();
+    if (autoStart && session && !session.isFlowStarted) startFlow();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, hasSessionHydrated, startFlow]);
+  }, [session, startFlow]);
 
   return {
-    isReady,
     isTransitioning,
     session,
     messages: messages ?? [],
