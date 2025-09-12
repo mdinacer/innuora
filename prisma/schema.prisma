@@ -27,6 +27,9 @@ model User {
   status         UserAccountStatus? @default(active)
   isOnboarded    Boolean            @default(false)
 
+  // Encryption salt (safe to persist)
+  encryptionSalt String? @map("encryption_salt") // Base64 encoded salt for key derivation
+
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -142,13 +145,11 @@ model Session {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Encrypted artifacts
-  summary  Bytes? @map("summary")
-  analysis Bytes? @map("analysis") // Last three analyses
-
-  // Crypto metadata
-  keyId  String? @map("key_id")
-  encAlg String? @map("enc_alg")
+  // Encrypted session bundle
+  encryptedData Bytes  @map("encrypted_data") // ciphertext of full session object
+  iv            Bytes  @map("iv") // initialization vector
+  authTag       Bytes  @map("auth_tag") // GCM authentication tag
+  encAlg        String @default("AES-256-GCM") @map("enc_alg") // algorithm used
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")

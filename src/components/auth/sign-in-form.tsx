@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthError } from "@supabase/supabase-js";
 import { XCircleIcon } from "lucide-react";
@@ -12,6 +13,8 @@ import { signIn } from "@/app/actions/auth-actions";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
+import { deriveUserKey, setSessionKey } from "@/lib/crypto/  session-encryption";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
 
@@ -20,6 +23,7 @@ interface Props {
 }
 
 const SignInForm: React.FC<Props> = ({ className }) => {
+  const router = useRouter();
   const { t } = useTranslation("pages", { keyPrefix: "auth.sign-in" });
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -54,16 +58,32 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
   const { isSubmitting } = form.formState;
 
-  const handleOnSubmit = useCallback(async (data: SignInSchemaType) => {
-    setFormError(null);
-    try {
-      await signIn(data);
-    } catch (error: unknown) {
-      if (error instanceof AuthError) {
-        setFormError(error.message);
+  const handleOnSubmit = useCallback(
+    async (data: SignInSchemaType) => {
+      setFormError(null);
+      try {
+        const { user, session } = await signIn(data);
+
+        if (session) {
+          const client = createClient();
+          client.auth.setSession(session);
+        }
+        const metadata = user.user_metadata;
+        if (!metadata.encryptionSalt) {
+          throw new Error("No encryption salt found in user metadata");
+        }
+        const generatedKey = await deriveUserKey(data.password, metadata.encryptionSalt);
+        setSessionKey(generatedKey.toString("hex"));
+
+        router.push("/sessions");
+      } catch (error: unknown) {
+        if (error instanceof AuthError) {
+          setFormError(error.message);
+        }
       }
-    }
-  }, []);
+    },
+    [router]
+  );
 
   return (
     <div className={cn("w-full max-w-md", className)}>

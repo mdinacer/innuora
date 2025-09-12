@@ -1,8 +1,10 @@
 import Link from "next/link";
 
+import { findCurrentUser } from "@/app/actions/auth-actions";
 import { ThemeToggle } from "@/components/chat-ui";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import SignoutButton from "./auth/signout-button";
 import LanguageSwitcher from "./language-switcher";
 
 interface Props {
@@ -13,6 +15,7 @@ interface Props {
 }
 
 export default async function Header({ middleContent, sideContent, className, locale = "en" }: Props) {
+  const authUser = await findCurrentUser();
   const { t } = await initTranslations(locale, ["common"]);
   return (
     <header className={cn("border-b border-mir-border-light relative z-40", className)}>
@@ -26,6 +29,7 @@ export default async function Header({ middleContent, sideContent, className, lo
           <LanguageSwitcher />
 
           {sideContent}
+          {authUser && <SignoutButton />}
           <ThemeToggle />
         </div>
       </div>

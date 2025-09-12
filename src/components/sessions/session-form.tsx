@@ -6,6 +6,9 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { createSession } from "@/app/actions/session-actions";
+import SwitchField from "@/components/input/switch-field";
+import TextField from "@/components/input/text-field";
 import {
   Dialog,
   DialogClose,
@@ -16,14 +19,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
-import { Session } from "@/lib/ai/mirael-core/v1/open-chat-session.types";
+import { Form } from "@/components/ui/form";
+import { Separator } from "@/components/ui/separator";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import {
+  encryptionResultToPayload,
+  PersistedSessionData,
+  Session,
+} from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { generateId } from "@/lib/chat/flow/generate-id";
+import { encryptSession } from "@/lib/crypto/  session-encryption";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
-import SwitchField from "../input/switch-field";
-import TextField from "../input/text-field";
-import { Form } from "../ui/form";
-import { Separator } from "../ui/separator";
 
 interface Props {
   className?: string;
@@ -86,17 +92,36 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
     async (data: SessionCreate) => {
       const id = session?.id || generateId("Session");
       const state = useOpenChatSessionStore.getState();
+
       if (session) {
         state.updateSession(id, (prev) => ({ ...prev, ...data }));
       } else {
-        state.createSession(id, {
-          title: data.title || generateId("Session"),
+        const payload: Partial<PersistedSessionData> = {
+          ...(session ? session : {}),
+          title: data.title,
           subtitle: data.subtitle,
           aiSuggestedTitle: data.aiSuggestedTitle,
-          persistOnCloud: data.persistOnCloud,
-        } as Partial<Session>);
+        };
+        if (data.persistOnCloud) {
+          const encryptedData = encryptSession(payload);
+          const result = await createSession(encryptionResultToPayload(encryptedData));
+          if (result.id) {
+            state.createSession(result.id, {
+              title: data.title,
+              subtitle: data.subtitle,
+              aiSuggestedTitle: data.aiSuggestedTitle,
+              persistOnCloud: true,
+            } as Partial<Session>);
+          }
+        } else {
+          state.createSession(id, {
+            title: data.title || generateId("Session"),
+            subtitle: data.subtitle,
+            aiSuggestedTitle: data.aiSuggestedTitle,
+            persistOnCloud: data.persistOnCloud,
+          } as Partial<Session>);
+        }
       }
-      console.log(state.sessions[id]);
       onSubmit?.(state.sessions[id]);
     },
     [onSubmit, session]

@@ -6,6 +6,7 @@ import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-em
 import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
 import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import useFetchSessions from "@/lib/sessions/use-fetch-sessions";
 import { cn } from "@/lib/utils";
 import SessionCard from "./session-card";
 
@@ -14,6 +15,7 @@ interface SessionsPageProps {
 }
 
 const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
+  useFetchSessions();
   const sessions = useOpenChatSessionStore((state) => state.sessions);
 
   const sessionsArray = useMemo(() => Object.values(sessions), [sessions]);

@@ -12,11 +12,11 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
   const { session, addTokenUsage, updateSession } = useChatSessionState({ sessionId });
 
   const summarizeSession = useCallback(async () => {
-    if (!session || !session.sessionMemory || !session.analysis.length) return;
+    if (!session || !session.memoryStore || !session.analysisSnapshots.length) return;
 
     try {
-      const sessionAnalysis = combineToSessionAnalysis(session.analysis);
-      const result = await getSessionSummary(sessionAnalysis, session.sessionMemory, locale);
+      const sessionAnalysis = combineToSessionAnalysis(session.analysisSnapshots);
+      const result = await getSessionSummary(sessionAnalysis, session.memoryStore, locale);
 
       if (result.modelTokenUsage) {
         addTokenUsage({ ...result.modelTokenUsage, type: "summary" });
@@ -46,7 +46,7 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
         };
         updateSession((prev) => ({
           ...prev,
-          sessionSummary: sessionSummary,
+          continuitySummary: sessionSummary,
         }));
       }
 

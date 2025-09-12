@@ -74,8 +74,6 @@ const SignUpForm: React.FC<Props> = ({}) => {
     await signOut();
     setFormError(null);
     try {
-      console.log(data);
-
       await signUp(data);
     } catch (error: unknown) {
       if (error instanceof AuthError) {

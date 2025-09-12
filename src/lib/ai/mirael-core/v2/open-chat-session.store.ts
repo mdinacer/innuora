@@ -1,4 +1,3 @@
-import localforage from "localforage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -9,7 +8,7 @@ import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
-const DEFAULT_MODEL_CODE = MODELS_CODES.M1;
+const DEFAULT_MODEL_CODE = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE ?? MODELS_CODES.M1;
 
 interface OpenChatSessionStoreState extends PersistedStoreBaseProps {
   sessions: Record<string, Session>;
@@ -60,10 +59,10 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
                 createdAt: data.createdAt ?? now,
                 updatedAt: data.updatedAt ?? now,
                 messages: data.messages ?? [],
-                sessionMemory: data.sessionMemory ?? null,
-                sessionSummary: data.sessionSummary ?? null,
-                analysis: data.analysis ?? [],
-                meta: data.meta ?? { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
+                memoryStore: data.memoryStore ?? null,
+                continuitySummary: data.continuitySummary ?? null,
+                analysisSnapshots: data.analysisSnapshots ?? [],
+                metadata: data.metadata ?? { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
                 modelCode: data.modelCode ?? DEFAULT_MODEL_CODE,
                 aiSuggestedTitle: data.aiSuggestedTitle ?? false,
                 persistOnCloud: data.persistOnCloud ?? false,
@@ -110,9 +109,9 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
                 ...session,
                 messages: [...session.messages, message],
                 updatedAt: new Date(),
-                meta: {
-                  ...session.meta,
-                  messageCount: session.meta.messageCount + 1,
+                metadata: {
+                  ...session.metadata,
+                  messageCount: session.metadata.messageCount + 1,
                 },
               },
             },
@@ -130,7 +129,7 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
               ...state.sessions,
               [id]: {
                 ...session,
-                analysis: [...session.analysis, analysis],
+                analysisSnapshots: [...session.analysisSnapshots, analysis],
                 updatedAt: new Date(),
               },
             },
@@ -148,11 +147,11 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
               ...state.sessions,
               [id]: {
                 ...session,
-                meta: {
-                  ...session.meta,
-                  tokenUsage: [...session.meta.tokenUsage, tokenUsage],
-                  tokenCount: session.meta.tokenCount + (tokenUsage.usage?.total_tokens || 0),
-                  costUSD: session.meta.costUSD + tokenUsage.costUSD,
+                metadata: {
+                  ...session.metadata,
+                  tokenUsage: [...session.metadata.tokenUsage, tokenUsage],
+                  tokenCount: session.metadata.tokenCount + (tokenUsage.usage?.total_tokens || 0),
+                  costUSD: session.metadata.costUSD + tokenUsage.costUSD,
                 },
               },
             },
@@ -170,9 +169,9 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
               ...state.sessions,
               [id]: {
                 ...session,
-                meta: {
-                  ...session.meta,
-                  costUSD: typeof cost === "function" ? cost(session.meta.costUSD) : cost,
+                metadata: {
+                  ...session.metadata,
+                  costUSD: typeof cost === "function" ? cost(session.metadata.costUSD) : cost,
                 },
               },
             },
@@ -182,7 +181,7 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
     }),
     {
       name: "open-chat-session-store",
-      storage: createJSONStorage(() => localforage),
+      storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({ sessions: state.sessions }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

@@ -40,7 +40,7 @@ export default function useSessionInput({ sessionId, locale = "en" }: { sessionI
         return null;
       }
 
-      const recentAnalysis = session.analysis?.slice(-3) ?? [];
+      const recentAnalysis = session.analysisSnapshots?.slice(-3) ?? [];
       const history: OpenChatMessage[] = session.messages ?? [];
       const userProfile = useUserDataStore.getState().profile;
 
@@ -49,7 +49,7 @@ export default function useSessionInput({ sessionId, locale = "en" }: { sessionI
         recentAnalysis,
         history,
         userProfile,
-        session.sessionMemory,
+        session.memoryStore,
         locale,
         session?.modelCode ?? FALLBACK_MODEL
       );

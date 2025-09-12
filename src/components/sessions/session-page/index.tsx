@@ -83,6 +83,7 @@ const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) 
   if (!hasHydrated || !session || !messages) {
     return null;
   }
+
   return (
     <Container
       title={session?.title ?? title}

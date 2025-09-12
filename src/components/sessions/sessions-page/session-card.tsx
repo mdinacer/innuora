@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SessionCard: React.FC<Props> = ({ session }) => {
-  const { sessionAnalysis } = session;
+  const { aggregatedAnalysis: sessionAnalysis } = session;
   const router = useRouter();
 
   return (

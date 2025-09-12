@@ -30,8 +30,8 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         }
 
         updateSession((prev) => {
-          const mergedMemory = [prev.sessionMemory, ...memoryArray].filter(Boolean).join("\n");
-          return { ...prev, sessionMemory: mergedMemory };
+          const mergedMemory = [prev.memoryStore, ...memoryArray].filter(Boolean).join("\n");
+          return { ...prev, memoryStore: mergedMemory };
         });
       } catch (error) {
         console.error("Error updating session memory:", error);

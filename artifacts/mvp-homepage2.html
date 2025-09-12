@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mirael — Early Access</title>
+    <title>Mirael — Your Emotional Mirror</title>
     <meta
       name="description"
-      content="Mirael is an AI mirror for your inner world — reflective conversations, pattern insight, and a private space to slow down and find clarity."
+      content="Mirael helps you pause, notice patterns, and gain clarity through reflective, emotionally attuned conversations. See your inner world clearly."
     />
-    <meta property="og:title" content="Mirael — A mirror for your inner world" />
+    <meta property="og:title" content="Mirael — See Your Inner World Clearly" />
     <meta
       property="og:description"
-      content="Reflective AI conversations that help you notice patterns and find clarity. Not therapy. Early access."
+      content="Reflective AI conversations that help you understand emotional patterns and find clarity. Private, secure, and built for self-awareness."
     />
     <meta property="og:type" content="website" />
 
@@ -37,46 +37,6 @@
               card: "0 4px 20px rgba(0,0,0,0.08)",
               floating: "0 8px 30px rgba(0,0,0,0.12)",
               subtle: "0 2px 8px rgba(0,0,0,0.04)",
-              premium: "0 20px 60px rgba(255,107,90,0.15)",
-              glow: "0 0 40px rgba(255,107,90,0.3)",
-            },
-            animation: {
-              float: "float 6s ease-in-out infinite",
-              "float-slow": "float 8s ease-in-out infinite",
-              "float-slower": "float 10s ease-in-out infinite",
-              "pulse-slow": "pulse 4s ease-in-out infinite",
-              gradient: "gradient 15s ease infinite",
-              "fade-in-up": "fadeInUp 0.8s ease-out",
-              "fade-in-down": "fadeInDown 0.8s ease-out",
-              "scale-in": "scaleIn 0.6s ease-out",
-            },
-            keyframes: {
-              float: {
-                "0%, 100%": { transform: "translateY(0px)" },
-                "50%": { transform: "translateY(-20px)" },
-              },
-              gradient: {
-                "0%, 100%": {
-                  "background-size": "200% 200%",
-                  "background-position": "left center",
-                },
-                "50%": {
-                  "background-size": "200% 200%",
-                  "background-position": "right center",
-                },
-              },
-              fadeInUp: {
-                "0%": { opacity: "0", transform: "translateY(30px)" },
-                "100%": { opacity: "1", transform: "translateY(0)" },
-              },
-              fadeInDown: {
-                "0%": { opacity: "0", transform: "translateY(-30px)" },
-                "100%": { opacity: "1", transform: "translateY(0)" },
-              },
-              scaleIn: {
-                "0%": { opacity: "0", transform: "scale(0.9)" },
-                "100%": { opacity: "1", transform: "scale(1)" },
-              },
             },
           },
         },
@@ -87,7 +47,7 @@
     <style>
       :root {
         --bg-primary: #f5f3f0;
-        --bg-card: rgba(255, 255, 255, 0.9);
+        --bg-card: #ffffff;
         --bg-accent: #ff6b5a;
         --bg-secondary: #2c2c2e;
         --bg-input: #f8f8f8;
@@ -102,7 +62,7 @@
       }
       .dark {
         --bg-primary: #1c1c1e;
-        --bg-card: rgba(44, 44, 46, 0.9);
+        --bg-card: #2c2c2e;
         --bg-accent: #ff6b5a;
         --bg-secondary: #3a3a3c;
         --bg-input: #3a3a3c;
@@ -115,128 +75,45 @@
         --border-light: #48484a;
       }
 
-      .animated-bg {
-        background: linear-gradient(-45deg, #ff6b5a, #ff8a7a, #ffa07a, #ff6b5a);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
+      .chat-bubble-user {
+        background: var(--bg-input);
+        border: 1px solid var(--border-light);
+      }
+      
+      .chat-bubble-generic {
+        background: var(--bg-secondary);
+        color: white;
+      }
+      
+      .chat-bubble-mirael {
+        background: var(--bg-accent);
+        color: var(--text-on-accent);
       }
 
-      .glass-morphism {
-        backdrop-filter: blur(10px);
-        background: var(--bg-card);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+      .comparison-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        align-items: start;
       }
 
-      .dark .glass-morphism {
-        background: rgba(44, 44, 46, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      .floating-orb {
-        position: absolute;
-        border-radius: 50%;
-        opacity: 0.1;
-        pointer-events: none;
-      }
-
-      .floating-orb-1 {
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, #ff6b5a 0%, transparent 70%);
-        top: 10%;
-        left: 10%;
-        animation: float 8s ease-in-out infinite;
-      }
-
-      .floating-orb-2 {
-        width: 150px;
-        height: 150px;
-        background: radial-gradient(circle, #ff8a7a 0%, transparent 70%);
-        top: 60%;
-        right: 15%;
-        animation: float-slow 10s ease-in-out infinite reverse;
-      }
-
-      .floating-orb-3 {
-        width: 100px;
-        height: 100px;
-        background: radial-gradient(circle, #ffa07a 0%, transparent 70%);
-        top: 30%;
-        right: 30%;
-        animation: float-slower 12s ease-in-out infinite;
-      }
-
-      .floating-orb-4 {
-        width: 120px;
-        height: 120px;
-        background: radial-gradient(circle, #ff6b5a 0%, transparent 70%);
-        bottom: 20%;
-        left: 20%;
-        animation: float 9s ease-in-out infinite reverse;
-      }
-
-      .floating-orb-5 {
-        width: 80px;
-        height: 80px;
-        background: radial-gradient(circle, #ff8a7a 0%, transparent 70%);
-        top: 80%;
-        left: 60%;
-        animation: float-slow 7s ease-in-out infinite;
-      }
-
-      .hero-content {
-        animation: fade-in-up 0.8s ease-out;
-      }
-
-      .card-hover {
-        transition: all 0.3s ease;
-      }
-
-      .card-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(255, 107, 90, 0.1);
-      }
-
-      .btn-premium {
-        position: relative;
-        overflow: hidden;
-      }
-
-      .btn-premium::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-      }
-
-      .btn-premium:hover::before {
-        left: 100%;
+      @media (max-width: 768px) {
+        .comparison-container {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
       }
     </style>
   </head>
-  <body class="bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased relative overflow-x-hidden">
-    <!-- Animated Background -->
-    <div class="fixed inset-0 z-0">
-      <div class="absolute inset-0 animated-bg opacity-5"></div>
-      <div class="floating-orb floating-orb-1"></div>
-      <div class="floating-orb floating-orb-2"></div>
-      <div class="floating-orb floating-orb-3"></div>
-      <div class="floating-orb floating-orb-4"></div>
-      <div class="floating-orb floating-orb-5"></div>
-    </div>
-
+  <body class="bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased">
     <!-- Header -->
-    <header class="relative z-10 border-b border-[var(--border-light)] glass-morphism">
+    <header class="border-b border-[var(--border-light)]">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" class="font-extrabold text-xl tracking-tight animate-fade-in-down">Mirael</a>
-        <div class="flex items-center gap-3 animate-fade-in-down">
+        <a href="#" class="font-extrabold text-xl tracking-tight">Mirael</a>
+        <div class="flex items-center gap-3">
           <button
             id="themeToggle"
-            class="w-10 h-10 rounded-full border border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-center transition hover:scale-105 hover:shadow-glow"
+            class="w-10 h-10 rounded-full border border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-center transition hover:scale-105"
             aria-label="Toggle theme"
           >
             <svg
@@ -258,196 +135,282 @@
             </svg>
           </button>
           <a
-            href="#early-access"
-            class="inline-flex items-center gap-2 rounded-2xl border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition hover:shadow-glow"
-            >Request access</a
+            href="#get-started"
+            class="inline-flex items-center gap-2 rounded-2xl border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition"
+            >Sign In</a
           >
         </div>
       </div>
     </header>
 
     <!-- Hero -->
-    <section class="relative z-10 max-w-5xl mx-auto px-6 py-16 text-center">
-      <div class="hero-content">
-        <div
-          class="inline-flex items-center gap-2 mb-4 rounded-full border border-[rgba(255,107,90,0.25)] bg-[var(--bg-soft)] px-3 py-1 text-[13px] font-semibold text-[var(--bg-accent)] animate-pulse-slow"
-        >
-          Early Access
-        </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4 animate-scale-in">
-          A mirror for your inner world
-        </h1>
-        <p class="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8">
-          Mirael helps you slow down, notice patterns, and find clarity when life feels overwhelming — through
-          reflective, emotionally attuned conversations.
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-3 mb-5">
-          <a
-            href="#early-access"
-            class="btn-premium inline-flex justify-center rounded-2xl bg-[var(--bg-accent)] px-6 py-3 text-white font-semibold shadow-premium hover:translate-y-[-2px] hover:shadow-glow transition"
-            >Join early access</a
-          >
-          <a
-            href="#demo"
-            class="btn-premium inline-flex justify-center rounded-2xl border border-[var(--border-light)] bg-transparent px-6 py-3 font-semibold text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition hover:shadow-glow"
-            >See a conversation</a
-          >
-        </div>
-        <p class="text-sm text-[var(--text-secondary)] max-w-xl mx-auto">
-          <em
-            >Mirael is not therapy or a crisis service. If you're in immediate danger, contact local emergency
-            services.</em
-          >
-        </p>
+    <section class="max-w-5xl mx-auto px-6 py-16 text-center">
+      <div
+        class="inline-flex items-center gap-2 mb-4 rounded-full border border-[rgba(255,107,90,0.25)] bg-[var(--bg-soft)] px-3 py-1 text-[13px] font-semibold text-[var(--bg-accent)]"
+      >
+        Your Emotional Mirror
       </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">
+        See Your Inner World Clearly
+      </h1>
+      <p class="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8">
+        Mirael helps you pause, notice patterns, and gain clarity through reflective, emotionally attuned conversations.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-3 mb-5">
+        <a
+          href="#get-started"
+          class="inline-flex justify-center rounded-2xl bg-[var(--bg-accent)] px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
+          >Get Started</a
+        >
+        <a
+          href="#demo"
+          class="inline-flex justify-center rounded-2xl border border-[var(--border-light)] bg-transparent px-6 py-3 font-semibold text-[var(--text-primary)] hover:text-[var(--bg-accent)] hover:border-[var(--bg-accent)] transition"
+          >Explore a Conversation</a
+        >
+      </div>
+      <p class="text-sm text-[var(--text-secondary)] max-w-xl mx-auto">
+        <em
+          >Mirael is not therapy or a crisis service. If you are in immediate danger, contact local emergency
+          services.</em
+        >
+      </p>
     </section>
 
-    <!-- How it helps -->
-    <section class="relative z-10 max-w-6xl mx-auto px-6 py-16">
+    <!-- Core Features -->
+    <section class="max-w-6xl mx-auto px-6 py-16">
       <div class="text-center mb-10">
-        <h2 class="text-3xl md:text-4xl font-bold mb-3">How Mirael helps</h2>
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Core Features</h2>
         <p class="text-[17px] text-[var(--text-secondary)] max-w-3xl mx-auto">
-          Designed as a gentle mirror, Mirael helps you explore feelings, recognize patterns, and reflect in a private
-          space you control.
+          Mirael goes beyond surface-level reflection, offering tools that help you understand yourself.
         </p>
       </div>
-      <div class="grid gap-6 md:grid-cols-3">
-        <div class="card-hover rounded-2xl border border-[var(--border-light)] glass-morphism p-6 shadow-subtle">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
           <h3 class="text-xl font-semibold mb-2">Reflective Conversations</h3>
           <p class="text-[var(--text-secondary)]">
-            Mirael mirrors back your emotions, helping you name and understand what you're really experiencing.
+            Mirael mirrors your thoughts and feelings, helping you identify emotional patterns and hidden pressures.
           </p>
         </div>
-        <div class="card-hover rounded-2xl border border-[var(--border-light)] glass-morphism p-6 shadow-subtle">
-          <h3 class="text-xl font-semibold mb-2">Spotting Patterns</h3>
+        <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
+          <h3 class="text-xl font-semibold mb-2">Pattern Recognition</h3>
           <p class="text-[var(--text-secondary)]">
-            Over time, Mirael highlights recurring themes in your thinking so you can see connections you might miss.
+            Over time, Mirael highlights recurring thoughts and internal rules, giving actionable insight.
           </p>
         </div>
-        <div class="card-hover rounded-2xl border border-[var(--border-light)] glass-morphism p-6 shadow-subtle">
-          <h3 class="text-xl font-semibold mb-2">Private by Default</h3>
+        <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
+          <h3 class="text-xl font-semibold mb-2">Private and Secure</h3>
           <p class="text-[var(--text-secondary)]">
-            Your reflections are yours alone. Conversations are private and under your control.
+            Every conversation belongs to you. Privacy and control are built-in.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle">
+          <h3 class="text-xl font-semibold mb-2">Practical Guidance</h3>
+          <p class="text-[var(--text-secondary)]">
+            Mirael suggests concrete steps to manage stress, make decisions, and regain focus.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-subtle lg:col-span-1 md:col-span-2 lg:col-start-2">
+          <h3 class="text-xl font-semibold mb-2">Awareness Tools</h3>
+          <p class="text-[var(--text-secondary)]">
+            Short, emotionally attuned prompts help you notice bodily sensations, triggers, and cognitive patterns.
           </p>
         </div>
       </div>
     </section>
 
     <!-- Demo -->
-    <section id="demo" class="relative z-10 max-w-4xl mx-auto px-6 py-16">
+    <section id="demo" class="max-w-6xl mx-auto px-6 py-16">
       <div class="text-center mb-10">
-        <h2 class="text-3xl md:text-4xl font-bold mb-3">A glimpse of Mirael</h2>
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">See Mirael in Action</h2>
         <p class="text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
-          Here's how Mirael mirrors back emotions with clarity and care:
+          Compare a standard AI response with Mirael's reflective approach.
         </p>
       </div>
-      <div class="card-hover rounded-2xl border border-[var(--border-light)] glass-morphism p-6 shadow-card space-y-4">
-        <div class="flex justify-end animate-fade-in-up" style="animation-delay: 0.2s">
-          <div
-            class="max-w-[80%] rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-sm"
-          >
-            I feel stuck and weighed down by everything.
+      
+      <div class="rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-6 shadow-card">
+        <div class="space-y-6">
+          <!-- User message -->
+          <div class="flex justify-center">
+            <div class="max-w-[85%] rounded-2xl chat-bubble-user px-4 py-3 text-sm text-center">
+              <strong class="text-[var(--bg-accent)]">You:</strong> I have a big presentation tomorrow. I feel like if I mess up, it will be a disaster for me and my team.
+            </div>
+          </div>
+          
+          <!-- Comparison responses -->
+          <div class="comparison-container">
+            <!-- Generic AI -->
+            <div class="space-y-3">
+              <div class="text-center">
+                <span class="inline-block px-3 py-1 rounded-full bg-[var(--bg-secondary)] text-white text-xs font-semibold">Generic AI</span>
+              </div>
+              <div class="rounded-2xl chat-bubble-generic px-4 py-3 text-sm">
+                It sounds like you're anxious. Maybe review your slides and practice; preparation can help reduce stress.
+              </div>
+            </div>
+            
+            <!-- Mirael -->
+            <div class="space-y-3">
+              <div class="text-center">
+                <span class="inline-block px-3 py-1 rounded-full bg-[var(--bg-accent)] text-white text-xs font-semibold">Mirael</span>
+              </div>
+              <div class="rounded-2xl chat-bubble-mirael px-4 py-3 text-sm">
+                I hear the weight you're carrying. There's a silent rule here: you must perform perfectly, or it's a disaster. That belief creates tension. What sensations do you notice in your body as you think about this?
+              </div>
+            </div>
+          </div>
+
+          <!-- User follow-up -->
+          <div class="flex justify-center">
+            <div class="max-w-[85%] rounded-2xl chat-bubble-user px-4 py-3 text-sm text-center">
+              <strong class="text-[var(--bg-accent)]">You:</strong> My chest feels tight, I can't focus, and I keep imagining worst-case outcomes.
+            </div>
+          </div>
+          
+          <!-- Second comparison -->
+          <div class="comparison-container">
+            <!-- Generic AI -->
+            <div class="space-y-3">
+              <div class="rounded-2xl chat-bubble-generic px-4 py-3 text-sm">
+                Visualizing worst-case scenarios can be stressful. Try breaking the presentation into steps and practicing each one.
+              </div>
+            </div>
+            
+            <!-- Mirael -->
+            <div class="space-y-3">
+              <div class="rounded-2xl chat-bubble-mirael px-4 py-3 text-sm">
+                That's catastrophizing — imagining disaster before it happens. Recognizing it is the first step. You're prepared, and preparation is within your control. Let's identify one tangible action you can take right now to ease pressure.
+              </div>
+            </div>
+          </div>
+
+          <!-- Final exchange -->
+          <div class="flex justify-center">
+            <div class="max-w-[85%] rounded-2xl chat-bubble-user px-4 py-3 text-sm text-center">
+              <strong class="text-[var(--bg-accent)]">You:</strong> I can rehearse the key points and check the slides one more time.
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <div class="max-w-[85%] rounded-2xl chat-bubble-mirael px-4 py-3 text-sm">
+              <strong class="text-white">Mirael:</strong> Perfect. Focusing on what's actionable reduces stress. Notice how this small step shifts your tension and perspective.
+            </div>
           </div>
         </div>
-        <div class="flex justify-start animate-fade-in-up" style="animation-delay: 0.4s">
-          <div class="max-w-[80%] rounded-2xl bg-[var(--bg-accent)] px-4 py-3 text-sm text-white shadow-glow">
-            It sounds like there's a heaviness you're carrying. What part of that weight feels most present right now?
+        
+        <!-- Insights comparison -->
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          <div class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-input)] p-4">
+            <h4 class="font-semibold mb-3 text-[var(--bg-secondary)]">Generic AI</h4>
+            <ul class="space-y-2 text-sm text-[var(--text-secondary)]">
+              <li>• Gives one-size-fits-all advice</li>
+              <li>• Misses emotional depth</li>
+              <li>• Doesn't notice cognitive distortions</li>
+              <li>• Focuses on steps without context</li>
+            </ul>
           </div>
-        </div>
-        <div class="flex justify-end animate-fade-in-up" style="animation-delay: 0.6s">
-          <div
-            class="max-w-[80%] rounded-2xl border border-[var(--border-light)] bg-[var(--bg-input)] px-4 py-3 text-sm"
-          >
-            Mostly pressure at work. I can't seem to shut it off at night.
-          </div>
-        </div>
-        <div class="flex justify-start animate-fade-in-up" style="animation-delay: 0.8s">
-          <div class="max-w-[80%] rounded-2xl bg-[var(--bg-accent)] px-4 py-3 text-sm text-white shadow-glow">
-            So even after work ends, the pressure follows you. That must be exhausting. How do you usually cope when
-            that pressure shows up?
+          <div class="rounded-xl border border-[rgba(255,107,90,0.25)] bg-[var(--bg-soft)] p-4">
+            <h4 class="font-semibold mb-3 text-[var(--bg-accent)]">Mirael</h4>
+            <ul class="space-y-2 text-sm text-[var(--text-secondary)]">
+              <li>• Notices when thoughts amplify stress</li>
+              <li>• Highlights black-and-white thinking</li>
+              <li>• Uncovers hidden rules and internal pressures</li>
+              <li>• Provides actionable steps in emotional context</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Early Access CTA -->
-    <section id="early-access" class="relative z-10 px-6 py-16">
-      <div
-        class="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white shadow-premium"
-        style="background: var(--bg-gradient)"
-      >
-        <h2 class="text-3xl md:text-4xl font-bold mb-3">Shape Mirael with us</h2>
+    <!-- CTA Section -->
+    <section id="get-started" class="px-6 py-16">
+      <div class="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white" style="background: var(--bg-gradient)">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Start Reflecting with Mirael</h2>
         <p class="text-base md:text-lg opacity-90 max-w-2xl mx-auto mb-8">
-          We're inviting a small group of early testers to try Mirael, share feedback, and help us shape this new kind
-          of emotional AI tool.
+          Gain insight into your patterns, reduce mental clutter, and practice conscious awareness daily.
         </p>
-        <form id="waitlistForm" class="mx-auto flex max-w-xl flex-col gap-3 sm:flex-row">
-          <input
-            type="email"
-            required
-            placeholder="you@example.com"
-            class="flex-1 rounded-2xl px-4 py-3 text-[var(--text-primary)] placeholder-[var(--text-secondary)] ring-0 border-0 outline-none shadow-subtle"
-          />
-          <button
-            type="submit"
-            class="btn-premium rounded-2xl bg-white px-6 py-3 font-semibold text-[var(--bg-accent)] transition hover:translate-y-[-2px] hover:shadow-glow"
-          >
-            Request access
-          </button>
-        </form>
+        <a
+          href="#"
+          class="inline-flex justify-center rounded-2xl bg-white px-8 py-4 font-semibold text-[var(--bg-accent)] transition hover:translate-y-[-1px] text-lg"
+          >Get Started</a
+        >
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="relative z-10 max-w-3xl mx-auto px-6 py-16">
-      <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">FAQ</h2>
+    <section class="max-w-3xl mx-auto px-6 py-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
       <div class="space-y-4">
-        <details
-          class="card-hover rounded-xl border border-[var(--border-light)] glass-morphism p-4 open:shadow-subtle"
-        >
-          <summary class="cursor-pointer select-none list-none font-semibold">Is this therapy?</summary>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4 open:shadow-subtle">
+          <summary class="cursor-pointer select-none list-none font-semibold">What is Mirael?</summary>
           <p class="mt-2 text-[var(--text-secondary)]">
-            No. Mirael is a reflective tool for daily emotional check-ins. It is not therapy or a replacement for
-            professional help.
+            Mirael is an emotional mirror that helps you pause, reflect, and see your inner world clearly through short, emotionally attuned conversations.
           </p>
         </details>
-        <details class="card-hover rounded-xl border border-[var(--border-light)] glass-morphism p-4">
-          <summary class="cursor-pointer select-none list-none font-semibold">How does the AI work?</summary>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">How is Mirael different from therapy?</summary>
           <p class="mt-2 text-[var(--text-secondary)]">
-            Mirael uses conversational patterns and reflective prompts designed to mirror emotions and surface patterns.
-            The system is evolving with user feedback.
+            Mirael is not therapy and cannot replace professional care. It is a reflective companion designed to support awareness, not to diagnose or treat mental health conditions.
           </p>
         </details>
-        <details class="card-hover rounded-xl border border-[var(--border-light)] glass-morphism p-4">
-          <summary class="cursor-pointer select-none list-none font-semibold">Is my data private?</summary>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">How does Mirael work?</summary>
           <p class="mt-2 text-[var(--text-secondary)]">
-            Conversations are private by design. We aim for minimal data retention and user control. In production, you
-            will be able to export and delete your data.
+            Mirael uses conversational prompts to reflect emotions, highlight hidden pressures, recurring thoughts, and unspoken rules, giving insight and actionable steps.
           </p>
         </details>
-        <details class="card-hover rounded-xl border border-[var(--border-light)] glass-morphism p-4">
-          <summary class="cursor-pointer select-none list-none font-semibold">When will it be ready?</summary>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">Is my data private and secure?</summary>
           <p class="mt-2 text-[var(--text-secondary)]">
-            We are in early testing. Joining the waitlist helps us invite a small cohort as features stabilize.
+            Yes. All reflections are private. You have full control, including the ability to export or delete conversations.
           </p>
         </details>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">Who is Mirael for?</summary>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            Mirael is built for people who often appear strong outwardly but feel emotionally drained inside. It provides a safe space to reflect, notice patterns, and regain clarity.
+          </p>
+        </details>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">Can Mirael help in a crisis?</summary>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            No. Mirael is not a crisis service. In immediate danger or emergencies, contact local authorities or professional hotlines.
+          </p>
+        </details>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">How much does it cost?</summary>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            Mirael is free to use initially. Pricing will be introduced as the platform evolves.
+          </p>
+        </details>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">Why use Mirael?</summary>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            Mirael helps you notice patterns, understand hidden pressures, and practice reflective awareness — turning stress into actionable insight.
+          </p>
+        </details>
+        <details class="rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] p-4">
+          <summary class="cursor-pointer select-none list-none font-semibold">How often should I use Mirael?</summary>
+          <p class="mt-2 text-[var(--text-secondary)]">
+            Short, regular sessions help you recognize patterns and practice conscious awareness over time.
+          </p>
+        </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="relative z-10 border-t border-[var(--border-light)] glass-morphism">
+    <footer class="border-t border-[var(--border-light)]">
       <div class="max-w-6xl mx-auto px-6 py-10 text-center text-sm text-[var(--text-secondary)]">
         <p class="mb-3">
           <strong>Important:</strong> Mirael is not a mental health or crisis service. If you are in crisis, contact
           local emergency services.
         </p>
         <div class="flex justify-center gap-6 flex-wrap mb-3">
-          <a href="#" class="hover:text-[var(--text-primary)] transition">Privacy</a>
-          <a href="#" class="hover:text-[var(--text-primary)] transition">Terms</a>
-          <a href="#" class="hover:text-[var(--text-primary)] transition">Contact</a>
-          <a href="#" class="hover:text-[var(--text-primary)] transition">Help</a>
+          <a href="#" class="hover:text-[var(--text-primary)]">Privacy</a>
+          <a href="#" class="hover:text-[var(--text-primary)]">Terms</a>
+          <a href="#" class="hover:text-[var(--text-primary)]">Contact</a>
+          <a href="#" class="hover:text-[var(--text-primary)]">Help</a>
         </div>
-        <p>© 2025 Mirael. Early access.</p>
+        <p>© 2025 Mirael. Your Emotional Mirror.</p>
       </div>
     </footer>
 
@@ -460,38 +423,6 @@
       document.getElementById("themeToggle")?.addEventListener("click", () => {
         const isDark = root.classList.toggle("dark");
         localStorage.setItem("mirael-theme", isDark ? "dark" : "light");
-      });
-
-      // Simple waitlist UX (placeholder)
-      document.getElementById("waitlistForm")?.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector("button");
-        const original = btn.textContent;
-        btn.textContent = "Added to waitlist!";
-        btn.classList.add("translate-y-[-1px]");
-        setTimeout(() => {
-          btn.textContent = original;
-          e.target.reset();
-        }, 1800);
-      });
-
-      // Add scroll-triggered animations
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.style.animationPlayState = "running";
-          }
-        });
-      }, observerOptions);
-
-      document.querySelectorAll(".animate-fade-in-up, .animate-scale-in").forEach((el) => {
-        el.style.animationPlayState = "paused";
-        observer.observe(el);
       });
     </script>
   </body>
