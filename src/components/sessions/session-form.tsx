@@ -22,13 +22,8 @@ import {
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
-import {
-  encryptionResultToPayload,
-  PersistedSessionData,
-  Session,
-} from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { generateId } from "@/lib/chat/flow/generate-id";
-import { encryptSession } from "@/lib/crypto/  session-encryption";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
 
 interface Props {
@@ -47,7 +42,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
     defaultValues: {
       title: session?.title ?? "",
       subtitle: session?.subtitle ?? "",
-      aiSuggestedTitle: session?.aiSuggestedTitle ?? false,
+      autoUpdateTitle: session?.autoUpdateTitle ?? false,
       persistOnCloud: session?.persistOnCloud ?? false,
     },
   });
@@ -93,35 +88,29 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
       const id = session?.id || generateId("Session");
       const state = useOpenChatSessionStore.getState();
 
+      const createLocalSession = (sessionData: Partial<Session>) => state.createSession(id, sessionData);
+
       if (session) {
         state.updateSession(id, (prev) => ({ ...prev, ...data }));
-      } else {
-        const payload: Partial<PersistedSessionData> = {
-          ...(session ? session : {}),
-          title: data.title,
-          subtitle: data.subtitle,
-          aiSuggestedTitle: data.aiSuggestedTitle,
-        };
-        if (data.persistOnCloud) {
-          const encryptedData = encryptSession(payload);
-          const result = await createSession(encryptionResultToPayload(encryptedData));
-          if (result.id) {
-            state.createSession(result.id, {
-              title: data.title,
-              subtitle: data.subtitle,
-              aiSuggestedTitle: data.aiSuggestedTitle,
-              persistOnCloud: true,
-            } as Partial<Session>);
-          }
-        } else {
-          state.createSession(id, {
-            title: data.title || generateId("Session"),
-            subtitle: data.subtitle,
-            aiSuggestedTitle: data.aiSuggestedTitle,
-            persistOnCloud: data.persistOnCloud,
-          } as Partial<Session>);
+      } else if (data.persistOnCloud) {
+        const result = await createSession(data);
+        if (result) {
+          createLocalSession({
+            title: result.title,
+            subtitle: result.subtitle || undefined,
+            autoUpdateTitle: result.autoUpdateTitle,
+            persistOnCloud: true,
+          });
         }
+      } else {
+        createLocalSession({
+          title: data.title || generateId("Session"),
+          subtitle: data.subtitle,
+          autoUpdateTitle: data.autoUpdateTitle,
+          persistOnCloud: data.persistOnCloud,
+        });
       }
+
       onSubmit?.(state.sessions[id]);
     },
     [onSubmit, session]
@@ -163,7 +152,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
                 <Separator />
                 <SwitchField
                   control={control}
-                  name="aiSuggestedTitle"
+                  name="autoUpdateTitle"
                   label={data.fields.aiSuggestedTitle.label}
                   description={data.fields.aiSuggestedTitle.description}
                 />

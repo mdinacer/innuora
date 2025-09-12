@@ -13,7 +13,7 @@ import { signIn } from "@/app/actions/auth-actions";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
-import { deriveUserKey, setSessionKey } from "@/lib/crypto/  session-encryption";
+import { deriveUserKey, setSessionKey } from "@/lib/crypto/encryption";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";

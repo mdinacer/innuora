@@ -1,22 +1,25 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
+import useFetchSession from "@/lib/ai/mirael-core/v2/open-chat/use-fetch-session";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
   sessionId: string;
-  autoCreateSession?: boolean;
+  lastUpdatedAt?: Date | null;
 }
 
-const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) => {
+const SessionPage: React.FC<Props> = ({ sessionId, lastUpdatedAt }) => {
+  const router = useRouter();
+  const { loading, error } = useFetchSession({ sessionId, lastUpdatedAt });
   const {
     t,
     i18n: { language },
@@ -62,23 +65,36 @@ const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) 
       switch (action) {
         case "reset":
           resetSession();
-
           break;
         case "end":
+          router.push("/sessions");
           break;
         case "export":
           break;
       }
     },
-    [resetSession]
+    [resetSession, router]
   );
 
   useEffect(() => {
-    if (!autoCreateSession) return;
-    if (hasHydrated && !session) {
-      useOpenChatSessionStore.getState().createSession(sessionId);
-    }
-  }, [autoCreateSession, hasHydrated, session, sessionId]);
+    const handler = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      console.log("Unloading session", sessionId);
+      return (event.returnValue = "Are you sure you want to leave?");
+
+      // Only sync data already stored locally
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!hasHydrated || !session || !messages) {
     return null;

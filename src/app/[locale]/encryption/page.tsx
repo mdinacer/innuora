@@ -4,18 +4,17 @@
 import { useCallback, useRef, useState } from "react";
 import { Session as PrismaSession } from "@prisma/client";
 
-import { createSession, getSessionById } from "@/app/actions/session-actions";
+import { getSessionById } from "@/app/actions/session-actions";
 import CodeView from "@/components/code-view";
 import { Button } from "@/components/ui/button";
-import { PersistedSessionData, Session as StoreSession } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { Session as StoreSession } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import {
   deriveUserKey,
-  encryptSession,
   generateUserSalt,
   getSessionKey,
   safeDecryptSession,
   setSessionKey,
-} from "@/lib/crypto/  session-encryption";
+} from "@/lib/crypto/encryption";
 
 export default function EncryptionTestRoute() {
   const [sessionId, setSessionId] = useState<string | null>("ff70ee68-81ab-41cd-acb3-0d2256ac2de7");
@@ -32,50 +31,50 @@ export default function EncryptionTestRoute() {
       }
     }
   };
-  const encryptAndPersistSession = useCallback(async () => {
-    try {
-      if (!userSaltRef.current) {
-        userSaltRef.current = generateUserSalt();
-      }
-      if (!userSaltRef.current) return;
-      const userSalt = userSaltRef.current;
-      const password = "@Campus8410";
-      const generatedKey = await deriveUserKey(password, userSalt);
+  // const encryptAndPersistSession = useCallback(async () => {
+  //   try {
+  //     if (!userSaltRef.current) {
+  //       userSaltRef.current = generateUserSalt();
+  //     }
+  //     if (!userSaltRef.current) return;
+  //     const userSalt = userSaltRef.current;
+  //     const password = "@Campus8410";
+  //     const generatedKey = await deriveUserKey(password, userSalt);
 
-      if (generatedKey) {
-        setSessionKey(generatedKey.toString("hex"));
-      }
+  //     if (generatedKey) {
+  //       setSessionKey(generatedKey.toString("hex"));
+  //     }
 
-      const dataToEncrypt: PersistedSessionData = {
-        title: mockSession.title,
-        subtitle: mockSession.subtitle || undefined, // omit if null
-        messages: mockSession.messages, // consider truncating very old messages if needed
-        memoryStore: mockSession.memoryStore || undefined,
-        continuitySummary: mockSession.continuitySummary || undefined,
-        aggregatedAnalysis: mockSession.aggregatedAnalysis || undefined,
-        metadata: {
-          messageCount: mockSession.metadata.messageCount,
-          tokenCount: mockSession.metadata.tokenCount,
-          costUSD: mockSession.metadata.costUSD,
-          modelCode: mockSession.modelCode,
-        },
-      };
+  //     const dataToEncrypt: PersistedSessionData = {
+  //       title: mockSession.title,
+  //       subtitle: mockSession.subtitle || undefined, // omit if null
+  //       messages: mockSession.messages, // consider truncating very old messages if needed
+  //       memoryStore: mockSession.memoryStore || undefined,
+  //       continuitySummary: mockSession.continuitySummary || undefined,
+  //       aggregatedAnalysis: mockSession.aggregatedAnalysis || undefined,
+  //       metadata: {
+  //         messageCount: mockSession.metadata.messageCount,
+  //         tokenCount: mockSession.metadata.tokenCount,
+  //         costUSD: mockSession.metadata.costUSD,
+  //         modelCode: mockSession.modelCode,
+  //       },
+  //     };
 
-      const encryptedData = encryptSession(dataToEncrypt);
-      const createdSession = await createSession({
-        encryptedData: Array.from(encryptedData.encryptedData),
-        iv: Array.from(encryptedData.iv),
-        authTag: Array.from(encryptedData.authTag),
-        encAlg: encryptedData.encAlg,
-      });
+  //     const encryptedData = encryptSession(dataToEncrypt);
+  //     const createdSession = await createSession({
+  //       encryptedData: Array.from(encryptedData.encryptedData),
+  //       iv: Array.from(encryptedData.iv),
+  //       authTag: Array.from(encryptedData.authTag),
+  //       encAlg: encryptedData.encAlg,
+  //     });
 
-      if (createdSession) {
-        setSessionId(createdSession.id);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  //     if (createdSession) {
+  //       setSessionId(createdSession.id);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, []);
   const fetchSession = useCallback(async () => {
     try {
       setKeyPhrase();
@@ -97,7 +96,7 @@ export default function EncryptionTestRoute() {
   return (
     <main className="min-h-screen w-screen bg-background flex flex-col">
       <div className="flex-1 max-w-4xl bg-mir-bg-card/50 w-full backdrop-blur-sm backdrop-saturate-150 mx-auto">
-        <Button onClick={encryptAndPersistSession}>Test Encryption</Button>
+        {/* <Button onClick={encryptAndPersistSession}>Test Encryption</Button> */}
         <Button onClick={fetchSession}>Test Fetch</Button>
 
         <CodeView data={{ sessionId, session }} />
@@ -1332,7 +1331,7 @@ const mockSession: StoreSession = {
     ],
   },
   modelCode: "M1",
-  aiSuggestedTitle: true,
+  autoUpdateTitle: true,
   persistOnCloud: false,
   aggregatedAnalysis: {
     intensity: "high",

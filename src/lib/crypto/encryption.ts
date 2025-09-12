@@ -1,14 +1,8 @@
 // lib/crypto/session-encryption.ts
 import * as crypto from "crypto";
 import { promisify } from "util";
-import { Session as DbSession } from "@prisma/client";
 
-import {
-  Session as ClearSession,
-  EncryptedData,
-  PersistedSessionData,
-  sessionToPersistedSession,
-} from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { EncryptedData } from "@/lib/crypto/encryption.types";
 
 /* -------------------------------------------------------------------------- */
 /*  Types & Errors                                                             */
@@ -23,8 +17,6 @@ export class EncryptionError extends Error {
     this.name = "EncryptionError";
   }
 }
-
-export type SessionEncryptionResult = Pick<DbSession, "encryptedData" | "iv" | "authTag" | "encAlg">;
 
 /* -------------------------------------------------------------------------- */
 /*  Constants                                                                  */
@@ -86,7 +78,7 @@ export function needsAuthentication(): boolean {
  * Encrypt a ClearSession (bundle) into a DB-storable bundle.
  * Uses the current in-memory session key (stored as hex in sessionStorage).
  */
-export function encryptSession(clear: Partial<PersistedSessionData>): SessionEncryptionResult {
+export function encryptData(clear: object): EncryptedData {
   const keyHex = getSessionKey();
   if (!keyHex) throw new EncryptionError("No session key present - authentication required", "AUTH_REQUIRED");
 
@@ -177,63 +169,63 @@ export async function initializeUserEncryption(
 /**
  * Basic validate cycle - uses in-memory key; does not talk to server
  */
-export function validateSessionKey(): boolean {
-  const keyHex = getSessionKey();
-  if (!keyHex) return false;
+// export function validateSessionKey(): boolean {
+//   const keyHex = getSessionKey();
+//   if (!keyHex) return false;
 
-  try {
-    const dummy: ClearSession = {
-      id: "test",
-      title: "Test Session",
-      subtitle: undefined,
-      createdAt: new Date(),
-      updatedAt: undefined,
-      messages: [],
-      memoryStore: null,
-      continuitySummary: null,
-      aggregatedAnalysis: null,
-      analysisSnapshots: [],
-      modelCode: "M1",
-      persistOnCloud: false,
-      aiSuggestedTitle: false,
-      metadata: { tokenUsage: [], messageCount: 0, tokenCount: 0, costUSD: 0 },
-    };
+//   try {
+//     const dummy: ClearSession = {
+//       id: "test",
+//       title: "Test Session",
+//       subtitle: undefined,
+//       createdAt: new Date(),
+//       updatedAt: undefined,
+//       messages: [],
+//       memoryStore: null,
+//       continuitySummary: null,
+//       aggregatedAnalysis: null,
+//       analysisSnapshots: [],
+//       modelCode: "M1",
+//       persistOnCloud: false,
+//       autoUpdateTitle: false,
+//       metadata: { tokenUsage: [], messageCount: 0, tokenCount: 0, costUSD: 0 },
+//     };
 
-    const enc = encryptSession(sessionToPersistedSession(dummy));
-    const fakeDb = {
-      id: "test",
-      userId: "test",
-      encryptedData: enc.encryptedData,
-      iv: enc.iv,
-      authTag: enc.authTag,
-      encAlg: enc.encAlg,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as DbSession;
+//     const enc = encryptData(sessionToPersistedSession(dummy));
+//     const fakeDb = {
+//       id: "test",
+//       userId: "test",
+//       encryptedData: enc.encryptedData,
+//       iv: enc.iv,
+//       authTag: enc.authTag,
+//       encAlg: enc.encAlg,
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     } as DbSession;
 
-    const out = decryptData<DbSession, ClearSession>(fakeDb);
-    return out.title === dummy.title;
-  } catch {
-    return false;
-  }
-}
+//     const out = decryptData<DbSession, ClearSession>(fakeDb);
+//     return out.title === dummy.title;
+//   } catch {
+//     return false;
+//   }
+// }
 
 /* -------------------------------------------------------------------------- */
 /*  Safe wrappers                                                               */
 /* -------------------------------------------------------------------------- */
 
-export function safeEncryptSession(clear: PersistedSessionData): SessionEncryptionResult {
+export function safeEncrypt(data: object): EncryptedData {
   try {
-    return encryptSession(clear);
+    return encryptData(data);
   } catch (err) {
     if (err instanceof EncryptionError) throw err;
     throw new EncryptionError("Encryption failed", "ENCRYPTION_FAILED");
   }
 }
 
-export function safeDecryptSession(db: DbSession): PersistedSessionData {
+export function safeDecrypt<R>(data: EncryptedData): R {
   try {
-    return decryptData(db);
+    return decryptData(data);
   } catch (err) {
     if (err instanceof EncryptionError) throw err;
     throw new EncryptionError("Decryption failed", "DECRYPTION_FAILED");
@@ -243,7 +235,7 @@ export function safeDecryptSession(db: DbSession): PersistedSessionData {
 /* -------------------------------------------------------------------------- */
 /*  Security helpers                                                            */
 /* -------------------------------------------------------------------------- */
-
+// TODO: move to a hook
 export const FullSessionSecurity = {
   setupAutoLock(timeoutMinutes = 30): () => void {
     if (typeof window === "undefined") return () => {};

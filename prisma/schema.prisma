@@ -142,18 +142,22 @@ model Session {
   id String @id @default(uuid())
 
   // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  userId          String    @map("user_id")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Core session info (non-encrypted)
+  title           String // title of session
+  subtitle        String? // subtitle of session
+  modelCode       ModelCode @default(M1)
+  autoUpdateTitle Boolean   @default(false)
+  metadata        Json // additional metadata { messageCount :int, tokenCount: int, costUSD :float}
   // Encrypted session bundle
-  encryptedData Bytes  @map("encrypted_data") // ciphertext of full session object
-  iv            Bytes  @map("iv") // initialization vector
-  authTag       Bytes  @map("auth_tag") // GCM authentication tag
-  encAlg        String @default("AES-256-GCM") @map("enc_alg") // algorithm used
-
+  encryptedData   Bytes?    @map("encrypted_data") // ciphertext of full session object
+  iv              Bytes?    @map("iv") // initialization vector
+  authTag         Bytes?    @map("auth_tag") // GCM authentication tag
+  encAlg          String?   @default("AES-256-GCM") @map("enc_alg") // algorithm used
   // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@map("sessions")
 }
@@ -290,6 +294,12 @@ model Tester {
 // =========================
 // Enums
 // =========================
+
+enum ModelCode {
+  M1
+  M2
+  M3
+}
 
 enum PointsTransactionType {
   credit

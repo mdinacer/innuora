@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 import { AuthenticationError, AuthorizationError } from "@/errors/auth.errors";
-import { generateUserSalt } from "@/lib/crypto/  session-encryption";
+import { generateUserSalt } from "@/lib/crypto/encryption";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
