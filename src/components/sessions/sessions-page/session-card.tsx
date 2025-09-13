@@ -11,7 +11,7 @@ type SessionCardProps = {
 const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
   return (
     <Link
-      href={`/sessions/${session.id}`}
+      href={`/sessions/${session.obfuscatedId}`}
       className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-subtle transition hover:shadow-card cursor-pointer group"
     >
       <div className="flex items-start justify-between mb-4">

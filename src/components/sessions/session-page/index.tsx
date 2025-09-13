@@ -7,19 +7,18 @@ import { useTranslation } from "react-i18next";
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-import useFetchSession from "@/lib/ai/mirael-core/v2/open-chat/use-fetch-session";
+import CodeView from "@/components/code-view";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
   sessionId: string;
-  lastUpdatedAt?: Date | null;
 }
 
-const SessionPage: React.FC<Props> = ({ sessionId, lastUpdatedAt }) => {
+const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
-  const { loading, error } = useFetchSession({ sessionId, lastUpdatedAt });
+
   const {
     t,
     i18n: { language },
@@ -28,7 +27,6 @@ const SessionPage: React.FC<Props> = ({ sessionId, lastUpdatedAt }) => {
   const miraelChat = useChatController({
     locale: language as AppLocales,
     sessionId,
-    autoCreateSession: true,
   });
 
   const { processMessage, addMessage, resetSession } = miraelChat.actions;
@@ -89,32 +87,28 @@ const SessionPage: React.FC<Props> = ({ sessionId, lastUpdatedAt }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading) {
-    return <div>Loading</div>;
-  }
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   if (!hasHydrated || !session || !messages) {
     return null;
   }
 
   return (
-    <Container
-      title={session?.title ?? title}
-      subtitle={session?.subtitle ?? subtitle}
-      messages={messages}
-      isLoading={isProcessing}
-      renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-      onUserInput={processMessage}
-      welcomeMessage={welcomeMessage}
-      headerActions={
-        <>
-          <Menu disabled={!messages?.length} onAction={handleActions} />
-        </>
-      }
-    />
+    <>
+      <CodeView data={session} className=" absolute top-6 left-6" />
+      <Container
+        title={session?.title ?? title}
+        subtitle={session?.subtitle ?? subtitle}
+        messages={messages}
+        isLoading={isProcessing}
+        renderItem={(message, index) => <MessageBubble key={index} message={message} />}
+        onUserInput={processMessage}
+        welcomeMessage={welcomeMessage}
+        headerActions={
+          <>
+            <Menu disabled={!messages?.length} onAction={handleActions} />
+          </>
+        }
+      />
+    </>
   );
 };
 

@@ -1,20 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
 import useSessionInput from "@/lib/ai/mirael-core/v2/open-chat/use-process-input";
 import useSessionAnalysis from "@/lib/ai/mirael-core/v2/open-chat/use-session-analysis";
 import useSessionMemory from "@/lib/ai/mirael-core/v2/open-chat/use-session-memory";
 import { useChatSessionState } from "@/lib/ai/mirael-core/v2/open-chat/use-session.state";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+import { useEncryptedChatSessionStore } from "./stores/encrypted-chat-session.store";
 
 interface OpenChatProps {
   sessionId: string;
-  autoCreateSession?: boolean;
   locale?: AppLocales;
+  autoSaveSession?: boolean;
 }
 
-export function useChatController({ sessionId, autoCreateSession = false, locale = "en" }: OpenChatProps) {
+export function useChatController({ sessionId, locale = "en", autoSaveSession = true }: OpenChatProps) {
   const { hasHydrated, session, addMessage, addAnalysis, addTokenUsage, updateSession, resetSession } =
     useChatSessionState({
       sessionId,
@@ -24,7 +24,18 @@ export function useChatController({ sessionId, autoCreateSession = false, locale
   const messages: OpenChatMessage[] = useMemo(() => session?.messages || [], [session?.messages]);
   const { updateSessionMemory } = useSessionMemory({ sessionId });
   const { summarizeSession } = useSessionAnalysis({ sessionId, locale });
-  const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({ sessionId, locale });
+
+  const handleRoundComplete = useCallback(() => {
+    if (!autoSaveSession || !session) return;
+
+    useEncryptedChatSessionStore.getState().updateSession(sessionId, session);
+  }, [autoSaveSession, session, sessionId]);
+
+  const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({
+    sessionId,
+    locale,
+    onRoundComplete: handleRoundComplete,
+  });
 
   const processMessage = useCallback(
     async (message: string) => {
@@ -52,13 +63,6 @@ export function useChatController({ sessionId, autoCreateSession = false, locale
     },
     [appendAssistantMessage, appendUserMessage, processInput, session, updateSessionMemory]
   );
-
-  useEffect(() => {
-    if (autoCreateSession && hasHydrated && !session) {
-      useOpenChatSessionStore.getState().createSession(sessionId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasHydrated, session]);
 
   return {
     state: {

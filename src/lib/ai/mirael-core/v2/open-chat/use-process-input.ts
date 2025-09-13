@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 import { handleUserInput } from "@/lib/ai/mirael-core/v2/mirael-chat.action";
 import { useChatSessionState } from "@/lib/ai/mirael-core/v2/open-chat/use-session.state";
-import { generateMessageId } from "@/lib/chat/flow/generate-id";
 import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
 import { useUserDataStore } from "@/stores/user-data.store";
@@ -10,20 +9,14 @@ import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 const FALLBACK_MODEL = MODELS_CODES.M1;
 
-export default function useSessionInput({ sessionId, locale = "en" }: { sessionId: string; locale?: AppLocales }) {
-  const { session, addMessage, addAnalysis, addTokenUsage } = useChatSessionState({ sessionId });
+interface Props {
+  sessionId: string;
+  locale?: AppLocales;
+  onRoundComplete?: () => void;
+}
 
-  const appendMessage = useCallback(
-    (content: string, role: "user" | "assistant" = "user") => {
-      addMessage({
-        id: generateMessageId(`${role}-message-${sessionId}`),
-        role,
-        content,
-        timestamp: Date.now(),
-      });
-    },
-    [addMessage, sessionId]
-  );
+export default function useSessionInput({ sessionId, locale = "en", onRoundComplete }: Props) {
+  const { session, appendMessage, addAnalysis, addTokenUsage } = useChatSessionState({ sessionId });
 
   const appendUserMessage = useCallback((userInput: string) => appendMessage(userInput, "user"), [appendMessage]);
 
@@ -68,12 +61,14 @@ export default function useSessionInput({ sessionId, locale = "en" }: { sessionI
       if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
       if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
 
+      onRoundComplete?.();
+
       return {
         assistantMessage,
         shouldUpdateMemory: newAnalysis?.update_memory ?? false,
       };
     },
-    [addAnalysis, addTokenUsage, locale, session]
+    [addAnalysis, addTokenUsage, locale, onRoundComplete, session]
   );
 
   return { appendUserMessage, appendAssistantMessage, processInput };

@@ -8,6 +8,7 @@ import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 export type SessionOverview = {
   id: string;
+  obfuscatedId: string;
   title: string;
   subtitle: string | null;
   autoUpdateTitle: boolean;
@@ -56,7 +57,7 @@ export interface SessionMeta {
 }
 
 export const SessionMetadataSchema = z.object({
-  messageCount: z.number().optional(),
-  tokenCount: z.number().optional(),
-  costUSD: z.number().optional(),
+  messageCount: z.number().optional().default(0),
+  tokenCount: z.number().optional().default(0),
+  costUSD: z.number().optional().default(0),
 });
