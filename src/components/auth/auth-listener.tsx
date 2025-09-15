@@ -17,9 +17,9 @@ const AuthListener: React.FC = () => {
       } else if (event === "SIGNED_IN") {
         // handle sign in event
       } else if (event === "SIGNED_OUT") {
-        if (getSessionKey()) {
-          clearSessionKey();
-        }
+        // if (getSessionKey()) {
+        //   clearSessionKey();
+        // }
         useOpenChatSessionStore.persist.clearStorage();
 
         // handle sign out event

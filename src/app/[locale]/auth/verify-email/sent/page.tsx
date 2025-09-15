@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MailIcon } from "lucide-react";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
@@ -84,19 +85,19 @@ export default async function VerificationEmailSentRoute() {
               </svg>
               Resend email
             </button>
-            <a
+            <Link
               href="#"
               className="inline-flex justify-center items-center gap-2 rounded-2xl border border-mir-border-light px-6 py-3 font-semibold text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
             >
               Need help?
-            </a>
+            </Link>
           </div>
 
           <p className="text-sm text-mir-text-secondary">
             Didn't receive the email? Check your spam folder or
-            <a href="#" className="text-mir-bg-accent hover:underline">
+            <Link href="#" className="text-mir-bg-accent hover:underline">
               contact support
-            </a>
+            </Link>
             .
           </p>
         </div>
