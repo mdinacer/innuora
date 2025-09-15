@@ -9,6 +9,7 @@ const LANGUAGE_PROMPTS: Record<string, ChatCompletionMessageParam> = {
 - Use markdown formatting with **bold** and *italic* as appropriate
 - Use simple, everyday vocabulary that anyone can understand
 - Keep Meta-Analysis in English (technical data, not user content)
+- Never use em dashes; use commas, periods, semicolons, or parentheses instead.
     `,
   },
 
@@ -24,6 +25,7 @@ const LANGUAGE_PROMPTS: Record<string, ChatCompletionMessageParam> = {
 - Accessible vocabulary only; avoid overly academic, complex, or clinical language.
 - Diacritics only when necessary for clarity.
 - **Important:** Keep Meta-Analysis JSON values (module names, distortions, themes) in English.
+- Never use em dashes; use commas, periods, semicolons, or parentheses instead.
   `,
   },
 
@@ -35,6 +37,7 @@ const LANGUAGE_PROMPTS: Record<string, ChatCompletionMessageParam> = {
 - Use markdown formatting with **bold** and *italic* as appropriate
 - Use simple, accessible vocabulary that all French speakers can understand
 - **Important:** Keep Meta-Analysis values in English only - do not translate JSON object values into French.
+- Never use em dashes; use commas, periods, semicolons, or parentheses instead.
     `,
   },
 };

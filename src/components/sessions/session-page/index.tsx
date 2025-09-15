@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +8,7 @@ import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
+import LoadingComponent from "@/components/loading-component";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
@@ -74,20 +75,24 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     [resetSession, router]
   );
 
-  useEffect(() => {
-    const handler = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      console.log("Unloading session", sessionId);
-      return (event.returnValue = "Are you sure you want to leave?");
+  // useEffect(() => {
+  //   const handler = (event: BeforeUnloadEvent) => {
+  //     // event.preventDefault();
+  //     console.log("Unloading session", sessionId);
 
-      // Only sync data already stored locally
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //     //return (event.returnValue = "Are you sure you want to leave?");
 
-  if (!hasHydrated || !session || !messages) {
+  //     // Only sync data already stored locally
+  //   };
+  //   window.addEventListener("beforeunload", handler);
+  //   return () => window.removeEventListener("beforeunload", handler);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  if (!hasHydrated) {
+    return <LoadingComponent />;
+  }
+  if (!session || !messages) {
     return null;
   }
 

@@ -3,9 +3,21 @@
   "avatar-letter": "M",
   "back-to-mirael": "Back to Mirael",
   "signout": "Sign out",
+  "languages": {
+    "en": "English",
+    "fr": "French",
+    "ar": "Arabic"
+  },
   "actions": {
     "continue": "Continue",
     "showMoreWithCount": "Show {{count}} more",
-    "showLess": "Show less"
-  }
+    "showLess": "Show less",
+    "signout": "Sign out"
+  },
+  "session_zero": "No sessions",
+  "session_one": "session",
+  "session_other": "sessions",
+  "sessionWithCount_zero": "No sessions",
+  "sessionWithCount_one": "{{count}} session",
+  "sessionWithCount_other": "{{count}} sessions"
 }

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isAfter, parseISO } from "date-fns";
 
-import { getSessionById, getSessionsUpdateInfo } from "@/app/actions/session-actions";
+import { getSessionsUpdateInfo } from "@/app/actions/session-actions";
 import {
-  getUniqueObfuscatedId,
+  SessionChangeState,
   useEncryptedChatSessionStore,
 } from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
 
@@ -43,76 +43,23 @@ export default function useFetchSessions() {
   const isInitialRunRef = useRef(true);
   const processedUpdateInfo = useRef<string>("");
 
-  const addNewSession = useCallback(
-    async (sessionId: string) => {
-      // Prevent duplicate processing
-      if (processingIds.has(sessionId)) return;
-
-      setProcessingIds((prev) => new Set(prev).add(sessionId));
-
-      try {
-        const session = await getSessionById(sessionId);
-        if (!session) return;
-
-        // Get fresh store state to avoid stale closure issues
-        const currentStore = useEncryptedChatSessionStore.getState();
-
-        // Double-check the session doesn't already exist (race condition protection)
-        if (Object.values(currentStore.sessionIdMap).includes(sessionId)) {
-          return;
-        }
-
-        const obfuscatedId = getUniqueObfuscatedId(currentStore.sessionIdMap);
-        currentStore.setSession(obfuscatedId, session);
-      } catch (error) {
-        console.error("Error adding new session:", error);
-        setErrors((prev) => [...prev, `Failed to add session ${sessionId}`]);
-      } finally {
-        setProcessingIds((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(sessionId);
-          return newSet;
-        });
-      }
+  const sessionExists = useCallback(
+    (sessionId: string) => {
+      return !!reversedMap[sessionId];
     },
-    [processingIds]
+    [reversedMap]
   );
 
   const checkForUpdates = useCallback(
     (updateInfo: { id: string; updatedAt: Date }) => {
+      if (!sessionExists(updateInfo.id)) return false;
       const obfuscatedId = reversedMap[updateInfo.id];
       if (!obfuscatedId) return false;
 
       const localSession = sessions[obfuscatedId];
       return localSession && hasUpdates(updateInfo, localSession);
     },
-    [reversedMap, sessions]
-  );
-
-  const handleFetchAndUpdate = useCallback(
-    async (sessionId: string, obfuscatedId: string) => {
-      // Prevent duplicate processing
-      if (processingIds.has(sessionId)) return;
-
-      setProcessingIds((prev) => new Set(prev).add(sessionId));
-
-      try {
-        const data = await getSessionById(sessionId);
-        if (data) {
-          useEncryptedChatSessionStore.getState().setSession(obfuscatedId, data);
-        }
-      } catch (error) {
-        console.error("Error fetching and updating session:", error);
-        setErrors((prev) => [...prev, `Failed to update session ${sessionId}`]);
-      } finally {
-        setProcessingIds((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(sessionId);
-          return newSet;
-        });
-      }
-    },
-    [processingIds]
+    [reversedMap, sessionExists, sessions]
   );
 
   const handleFetchSessionUpdateInfo = useCallback(async () => {
@@ -120,7 +67,11 @@ export default function useFetchSessions() {
 
     setLoading(true);
     try {
-      const data = await getSessionsUpdateInfo();
+      const data: { id: string; updatedAt: Date }[] = await getSessionsUpdateInfo();
+      if (!data.length) return;
+      for (const item of data) {
+        useEncryptedChatSessionStore.getState().addOnlineSessionId(item.id);
+      }
       setUpdateInfo(data);
     } catch (error) {
       console.error("Error fetching sessions update info:", error);
@@ -129,6 +80,14 @@ export default function useFetchSessions() {
       setLoading(false);
     }
   }, [loading]);
+
+  const addChangesEntry = useCallback(async (sessionId: string, entry: SessionChangeState) => {
+    useEncryptedChatSessionStore.getState().setChangesMap((prev) => {
+      const newMap = { ...prev };
+      newMap[sessionId] = entry;
+      return newMap;
+    });
+  }, []);
 
   const handleUpdates = useCallback(async () => {
     if (updateInfo.length === 0 || loading) return;
@@ -145,19 +104,20 @@ export default function useFetchSessions() {
         // Skip if already processing this session
         if (processingIds.has(item.id)) continue;
 
-        const isNew = !Object.values(sessionIdMap).includes(item.id);
+        const obfuscatedId = reversedMap[item.id];
+        const isNew = !obfuscatedId;
+        const hasUpdates = checkForUpdates(item);
 
-        if (isNew) {
-          await addNewSession(item.id);
-        } else {
-          const needsUpdate = checkForUpdates(item);
-          if (needsUpdate) {
-            const obfuscatedId = reversedMap[item.id];
-            if (obfuscatedId) {
-              await handleFetchAndUpdate(item.id, obfuscatedId);
-            }
-          }
-        }
+        if (!isNew && !hasUpdates) continue;
+
+        const sessionChange: SessionChangeState = {
+          obfuscatedId,
+          state: isNew ? "new" : "modified",
+          updatedAt: item.updatedAt,
+        };
+
+        await addChangesEntry(item.id, sessionChange);
+        setProcessingIds((prev) => new Set(prev).add(item.id));
       }
 
       // Mark this batch as processed
@@ -169,16 +129,7 @@ export default function useFetchSessions() {
       isInitialRunRef.current = false;
       setLoading(false);
     }
-  }, [
-    addNewSession,
-    checkForUpdates,
-    handleFetchAndUpdate,
-    reversedMap,
-    sessionIdMap,
-    updateInfo,
-    loading,
-    processingIds,
-  ]);
+  }, [updateInfo, loading, processingIds, reversedMap, checkForUpdates, addChangesEntry]);
 
   // Fetch update info on initial hydration
   useEffect(() => {

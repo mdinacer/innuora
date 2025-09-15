@@ -39,25 +39,26 @@ export default async function RootLayout({
     return notFound();
   }
   const { resources } = await initTranslations(locale, i18nNamespaces);
+
   return (
     <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
       <body
         className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-mir-bg-primary`}
       >
         <AuthListener />
-        <BackgroundBeams className="hidden md:block" />
         <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <BackgroundBeams className="hidden md:block" />
             {children}
             <Toaster />
           </ThemeProvider>
-          {process.env.NODE_ENV === "production" && (
-            <>
-              <Analytics />
-              <SpeedInsights />
-            </>
-          )}
         </TranslationProvider>
+        {process.env.NODE_ENV === "production" && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

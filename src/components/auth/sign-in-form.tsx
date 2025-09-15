@@ -17,6 +17,7 @@ import { deriveUserKey, setSessionKey } from "@/lib/crypto/encryption";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
+import CheckboxField from "../input/checkbox-field";
 
 interface Props {
   className?: string;
@@ -40,6 +41,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
         placeholder: t("form.password.placeholder"),
       },
       forgot_password: t("form.forgot_password"),
+      remember: t("form.remember"),
       submit: t("form.submit"),
     },
     no_account: {
@@ -53,6 +55,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
     defaultValues: {
       email: "",
       password: "",
+      remember: false,
     },
   });
 
@@ -73,7 +76,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
           throw new Error("No encryption salt found in user metadata");
         }
         const generatedKey = await deriveUserKey(data.password, metadata.encryptionSalt);
-        setSessionKey(generatedKey.toString("hex"));
+        setSessionKey(generatedKey.toString("hex"), data.remember);
 
         router.push("/sessions");
       } catch (error: unknown) {
@@ -132,6 +135,8 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
             {/* <!-- Forgot Password --> */}
             <div className="text-right">
+              <CheckboxField name="remember" control={form.control} label={formFields.remember} />
+
               <Link href="/auth/forgot-password" className="text-sm text-mir-bg-accent hover:underline">
                 {formFields.forgot_password}
               </Link>

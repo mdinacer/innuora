@@ -23,8 +23,8 @@ export const encryptedDataToPayload = (result: EncryptedData): EncryptedDataPayl
 });
 
 export const EncryptedDataSchema = z.object({
-  encryptedData: z.array(z.number()).transform((arr) => new Uint8Array(arr)),
-  iv: z.array(z.number()).transform((arr) => new Uint8Array(arr)),
-  authTag: z.array(z.number()).transform((arr) => new Uint8Array(arr)),
+  encryptedData: z.instanceof(Uint8Array<ArrayBufferLike>),
+  iv: z.instanceof(Uint8Array<ArrayBufferLike>),
+  authTag: z.instanceof(Uint8Array<ArrayBufferLike>),
   encAlg: z.string(),
 });

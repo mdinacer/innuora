@@ -1,6 +1,7 @@
 // lib/crypto/session-encryption.ts
 import * as crypto from "crypto";
 import { promisify } from "util";
+import localforage from "localforage";
 
 import { EncryptedData } from "@/lib/crypto/encryption.types";
 
@@ -51,23 +52,54 @@ export function generateUserSalt(): string {
 /*  Session key (browser) management                                           */
 /* -------------------------------------------------------------------------- */
 
-export function getSessionKey(): string | null {
+export async function getSessionKey(): Promise<string | null> {
   if (typeof window === "undefined") return null;
-  return sessionStorage.getItem(SESSION_KEY);
+
+  // 1️⃣ Check sessionStorage first
+  const sessionKey = sessionStorage.getItem(SESSION_KEY);
+  if (sessionKey) return sessionKey;
+
+  // 2️⃣ Fallback to localforage (IndexedDB)
+  try {
+    const storedKey = await localforage.getItem<string>(SESSION_KEY);
+    return storedKey || null;
+  } catch (error) {
+    console.error("Failed to read session key from IndexedDB:", error);
+    return null;
+  }
 }
 
-export function setSessionKey(keyHex: string): void {
+export async function setSessionKey(keyHex: string, persist: boolean = false): Promise<void> {
   if (typeof window === "undefined") return;
+
+  // Always put in sessionStorage for fast access
   sessionStorage.setItem(SESSION_KEY, keyHex);
+
+  if (persist) {
+    try {
+      await localforage.setItem(SESSION_KEY, keyHex);
+    } catch (error) {
+      console.error("Failed to store session key in IndexedDB:", error);
+    }
+  }
 }
 
-export function clearSessionKey(): void {
+export async function clearSessionKey(): Promise<void> {
   if (typeof window === "undefined") return;
+
+  // Remove from sessionStorage
   sessionStorage.removeItem(SESSION_KEY);
+
+  // Remove from IndexedDB (localforage)
+  try {
+    await localforage.removeItem(SESSION_KEY);
+  } catch (error) {
+    console.error("Failed to remove session key from IndexedDB:", error);
+  }
 }
 
-export function needsAuthentication(): boolean {
-  return getSessionKey() === null;
+export async function needsAuthentication(): Promise<boolean> {
+  return (await getSessionKey()) === null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -78,8 +110,8 @@ export function needsAuthentication(): boolean {
  * Encrypt a ClearSession (bundle) into a DB-storable bundle.
  * Uses the current in-memory session key (stored as hex in sessionStorage).
  */
-export function encryptData(clear: object): EncryptedData {
-  const keyHex = getSessionKey();
+export async function encryptData(clear: object): Promise<EncryptedData> {
+  const keyHex = await getSessionKey();
   if (!keyHex) throw new EncryptionError("No session key present - authentication required", "AUTH_REQUIRED");
 
   const key = Buffer.from(keyHex, "hex");
@@ -111,8 +143,8 @@ export function encryptData(clear: object): EncryptedData {
  * Decrypt a DbSession row into a ClearSession
  * Throws EncryptionError on failure.
  */
-export function decryptData<T extends EncryptedData, R>(data: T): R {
-  const keyHex = getSessionKey();
+export async function decryptData<T extends EncryptedData, R>(data: T): Promise<R> {
+  const keyHex = await getSessionKey();
   if (!keyHex) throw new EncryptionError("No session key present - authentication required", "AUTH_REQUIRED");
 
   if (!data.encAlg || data.encAlg !== ALGORITHM) {
@@ -214,18 +246,18 @@ export async function initializeUserEncryption(
 /*  Safe wrappers                                                               */
 /* -------------------------------------------------------------------------- */
 
-export function safeEncrypt(data: object): EncryptedData {
+export async function safeEncrypt(data: object): Promise<EncryptedData> {
   try {
-    return encryptData(data);
+    return await encryptData(data);
   } catch (err) {
     if (err instanceof EncryptionError) throw err;
     throw new EncryptionError("Encryption failed", "ENCRYPTION_FAILED");
   }
 }
 
-export function safeDecrypt<R>(data: EncryptedData): R {
+export async function safeDecrypt<R>(data: EncryptedData): Promise<R> {
   try {
-    return decryptData(data);
+    return await decryptData(data);
   } catch (err) {
     if (err instanceof EncryptionError) throw err;
     throw new EncryptionError("Decryption failed", "DECRYPTION_FAILED");

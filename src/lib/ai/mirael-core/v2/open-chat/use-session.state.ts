@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
@@ -12,8 +12,10 @@ interface OpenChatProps {
 }
 
 export function useChatSessionState({ sessionId }: OpenChatProps) {
+  const [loaded, setLoaded] = useState(false);
   const hasHydrated = useEncryptedChatSessionStore((state) => state.hasHydrated);
   const currentSession = useActiveSessionStore((state) => state.currentSession);
+  const obfuscatedId = useActiveSessionStore((state) => state.obfuscatedId);
   const loadSession = useActiveSessionStore((state) => state.loadSession);
   const sessionExists = useEncryptedChatSessionStore((state) => state.sessionExists(sessionId));
 
@@ -40,16 +42,28 @@ export function useChatSessionState({ sessionId }: OpenChatProps) {
     useActiveSessionStore.getState().resetSession();
   }, []);
 
+  // const shouldLoadSession = useMemo(() => {
+  //   if (!hasHydrated) return false;
+  //   if (!sessionExists) return false;
+  //   if (sessionId !== currentSessionObfuscatedId) return true;
+  //   return false;
+  // }, [currentSessionObfuscatedId, hasHydrated, sessionExists, sessionId]);
+
   useEffect(() => {
-    if (hasHydrated && !currentSession && sessionExists) {
-      loadSession(sessionId);
-    }
-  }, [currentSession, hasHydrated, sessionExists, sessionId, loadSession]);
+    if (!hasHydrated) return;
+    const loadSession = async () => {
+      const isLoaded = await useActiveSessionStore.getState().loadSession(sessionId);
+      setLoaded(isLoaded);
+    };
+    loadSession();
+  }, [loadSession, sessionId, hasHydrated]);
 
   return {
     hasHydrated,
     session: currentSession,
     sessionExists,
+    obfuscatedId,
+    isReady: hasHydrated && loaded,
     addAnalysis,
     addMessage,
     addTokenUsage,

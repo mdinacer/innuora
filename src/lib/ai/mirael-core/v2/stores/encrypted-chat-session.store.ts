@@ -13,6 +13,65 @@ import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 
 const DEFAULT_MODEL_CODE = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE ?? MODELS_CODES.M1;
 
+function sessionToStorage(session: PrismaSession): Record<keyof PrismaSession, any> {
+  const storageSession = { ...session } as Record<keyof PrismaSession, any>;
+
+  // Only convert Uint8Array fields if all encryption fields are present
+  const hasEncryptedData = session.encryptedData && session.iv && session.authTag && session.encAlg;
+
+  if (!hasEncryptedData) {
+    storageSession.encryptedData = null;
+    storageSession.iv = null;
+    storageSession.authTag = null;
+    storageSession.encAlg = null;
+    return storageSession;
+  }
+
+  if (hasEncryptedData) {
+    if (storageSession.encryptedData instanceof Uint8Array) {
+      storageSession.encryptedData = Array.from(storageSession.encryptedData);
+    }
+    if (storageSession.iv instanceof Uint8Array) {
+      storageSession.iv = Array.from(storageSession.iv);
+    }
+    if (storageSession.authTag instanceof Uint8Array) {
+      storageSession.authTag = Array.from(storageSession.authTag);
+    }
+    // encAlg is already a string, no conversion needed
+  }
+
+  return storageSession;
+}
+
+// Helper function to convert storage data back to session
+function storageToSession(storageData: Record<string, any>): PrismaSession {
+  const session = { ...storageData } as PrismaSession;
+
+  // Only convert arrays back to Uint8Array if all encryption fields are present
+  const hasEncryptedData = storageData.encryptedData && storageData.iv && storageData.authTag && storageData.encAlg;
+
+  if (hasEncryptedData) {
+    if (Array.isArray(session.encryptedData)) {
+      session.encryptedData = new Uint8Array(session.encryptedData);
+    }
+    if (Array.isArray(session.iv)) {
+      session.iv = new Uint8Array(session.iv);
+    }
+    if (Array.isArray(session.authTag)) {
+      session.authTag = new Uint8Array(session.authTag);
+    }
+    // encAlg remains a string
+  } else {
+    // Ensure these fields are null if encryption data is incomplete
+    session.encryptedData = null;
+    session.iv = null;
+    session.authTag = null;
+    session.encAlg = null;
+  }
+
+  return session as PrismaSession;
+}
+
 const getObfuscatedId = () => nanoid(6);
 
 // Generate unique obfuscated ID that doesn't already exist
@@ -24,7 +83,9 @@ export const getUniqueObfuscatedId = (existingMap: Record<string, string>) => {
   return id;
 };
 
-function encryptSession(session: Partial<Session>): PrismaSession {
+export type SessionChangeState = { obfuscatedId?: string | null; state: "new" | "modified"; updatedAt: Date };
+
+async function encryptSession(session: Partial<Session>): Promise<PrismaSession> {
   const { messages = [], memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots, ...rest } = session;
   let sessionData: Partial<PrismaSession> = {
     ...rest,
@@ -44,7 +105,7 @@ function encryptSession(session: Partial<Session>): PrismaSession {
       ...(aggregatedAnalysis ? { aggregatedAnalysis } : {}),
       ...(analysisSnapshots ? { analysisSnapshots } : {}),
     };
-    const encryptedData: EncryptedData = safeEncrypt(dataToEncrypt);
+    const encryptedData: EncryptedData = await safeEncrypt(dataToEncrypt);
     sessionData = {
       ...sessionData,
       ...encryptedData,
@@ -54,7 +115,7 @@ function encryptSession(session: Partial<Session>): PrismaSession {
   return sessionData as PrismaSession;
 }
 
-function decryptSession(encryptedSession: PrismaSession): Session {
+async function decryptSession(encryptedSession: PrismaSession): Promise<Session> {
   let session: Session = {
     id: encryptedSession.id,
     title: encryptedSession.title,
@@ -80,14 +141,14 @@ function decryptSession(encryptedSession: PrismaSession): Session {
 
   if (parsedData.success) {
     const { data } = parsedData;
-    const decryptedData = safeDecrypt<Partial<Session>>({
+    const decryptedData = await safeDecrypt<Partial<Session>>({
       encryptedData: data.encryptedData,
       iv: data.iv,
       authTag: data.authTag,
       encAlg: data.encAlg,
     } as EncryptedData);
 
-    session = { ...session, ...decryptedData };
+    session = { ...session, ...decryptedData } as Session;
   }
 
   return session;
@@ -114,20 +175,35 @@ const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt"> = {
 
 interface EncryptedChatSessionStoreState extends PersistedStoreBaseProps {
   sessionIdMap: Record<string, string>; // obfuscatedId -> sessionId
+  onlineSessionIds: string[]; // Uses Session ID
+  sessionsChangesMap: Record<string, SessionChangeState>; //
   sessions: Record<string, PrismaSession>;
-  getSession: (obfuscatedId: string) => Session | null;
+  getSession: (obfuscatedId: string) => Promise<Session | null>;
+  getSessionObfuscatedId: (sessionId: string) => string | undefined;
   setSession: (obfuscatedId: string, session: PrismaSession) => void;
   updateSession: (obfuscatedId: string, session: Session) => void;
-  createSession: (data?: Partial<Session>) => string; // Return obfuscated ID
+  createSession: (data?: Partial<Session>) => Promise<string>; // Return obfuscated ID
   resetSession: (obfuscatedId: string) => void;
   setSessions: (sessions: PrismaSession[]) => void;
   sessionExists: (id: string) => boolean; // New method
+  addOnlineSessionId: (obfuscatedId: string) => void;
+  setChangesMap: (
+    changes:
+      | Record<string, SessionChangeState>
+      | ((prevMap: Record<string, SessionChangeState>) => Record<string, SessionChangeState>)
+  ) => void;
+  removeOnlineSessionId: (obfuscatedId: string) => void;
 }
 
-const initialState: Pick<EncryptedChatSessionStoreState, "sessionIdMap" | "sessions" | "hasHydrated"> = {
+const initialState: Pick<
+  EncryptedChatSessionStoreState,
+  "sessionIdMap" | "sessions" | "hasHydrated" | "onlineSessionIds" | "sessionsChangesMap"
+> = {
   sessionIdMap: {},
   sessions: {},
   hasHydrated: false,
+  sessionsChangesMap: {},
+  onlineSessionIds: [],
 };
 
 export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreState>()(
@@ -137,7 +213,25 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
 
       setHasHydrated: (value) => set({ hasHydrated: value }),
 
-      getSession: (obfuscatedId) => {
+      addOnlineSessionId: (obfuscatedId) => {
+        set(({ sessionIdMap, onlineSessionIds, ...rest }) => {
+          if (onlineSessionIds.includes(obfuscatedId)) {
+            return {};
+          }
+          return {
+            ...rest,
+            onlineSessionIds: [...onlineSessionIds, obfuscatedId],
+          };
+        });
+      },
+
+      removeOnlineSessionId: (id) => {
+        set((state) => ({
+          onlineSessionIds: state.onlineSessionIds.filter((sid) => sid !== id),
+        }));
+      },
+
+      getSession: async (obfuscatedId) => {
         const { sessionIdMap, sessions } = get();
         const sessionId = sessionIdMap[obfuscatedId];
         if (!sessionId) return null;
@@ -146,11 +240,16 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
         if (!encryptedSession) return null;
 
         try {
-          return decryptSession(encryptedSession);
+          return await decryptSession(encryptedSession);
         } catch (error) {
           console.error("Failed to decrypt session:", obfuscatedId, error);
           return null;
         }
+      },
+
+      getSessionObfuscatedId: (sessionId) => {
+        const { sessionIdMap } = get();
+        return Object.entries(sessionIdMap).find(([, id]) => id === sessionId)?.[0];
       },
 
       setSession: (obfuscatedId, session) =>
@@ -165,8 +264,7 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
           },
         })),
 
-      updateSession: (obfuscatedId, session) => {
-        console.log("Updating session encrypted:", obfuscatedId);
+      updateSession: async (obfuscatedId, session) => {
         const { sessionIdMap } = get();
         const sessionId = sessionIdMap[obfuscatedId];
         if (!sessionId) {
@@ -175,13 +273,11 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
         }
 
         try {
-          const encryptedSession = encryptSession({
+          const encryptedSession = await encryptSession({
             ...session,
             id: sessionId,
             updatedAt: new Date(),
           });
-
-          console.log("Updated session encrypted:", obfuscatedId, encryptedSession);
 
           set((state) => ({
             sessions: {
@@ -194,8 +290,8 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
         }
       },
 
-      createSession: (data = {}) => {
-        const { sessionIdMap, sessions } = get();
+      createSession: async (data = {}) => {
+        const { sessionIdMap } = get();
 
         // Generate IDs
         const sessionId = data?.id ?? crypto.randomUUID();
@@ -217,7 +313,7 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
         };
 
         try {
-          const encryptedSession = encryptSession(sessionData);
+          const encryptedSession = await encryptSession(sessionData);
 
           set((state) => ({
             sessionIdMap: {
@@ -276,7 +372,7 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
       },
 
       sessionExists: (id) => {
-        const { sessionIdMap, sessions } = get();
+        const { sessionIdMap } = get();
 
         // Check if it's an obfuscated ID (exists as key in sessionIdMap)
         if (sessionIdMap[id]) {
@@ -290,16 +386,43 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
 
         return false;
       },
+
+      setChangesMap: (changes) =>
+        set((state) => {
+          if (typeof changes === "function") {
+            // Functional update
+            return { sessionsChangesMap: changes(state.sessionsChangesMap) };
+          }
+          // Direct replacement / merge
+          return {
+            sessionsChangesMap: {
+              ...state.sessionsChangesMap,
+              ...changes,
+            },
+          };
+        }),
     }),
     {
       name: "encrypted-chat-session-store",
       storage: createJSONStorage(() => localforage),
       partialize: (state) => ({
         sessionIdMap: state.sessionIdMap,
-        sessions: state.sessions,
+        // sessions: state.sessions,
+        sessions: Object.fromEntries(
+          Object.entries(state.sessions).map(([key, session]) => [key, sessionToStorage(session)])
+        ),
       }),
+
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+        if (state.sessions) {
+          state.sessions = Object.fromEntries(
+            Object.entries(state.sessions).map(([key, storageData]) => [
+              key,
+              storageToSession(storageData as Record<string, any>),
+            ])
+          );
+        }
         state.setHasHydrated(true);
       },
     }

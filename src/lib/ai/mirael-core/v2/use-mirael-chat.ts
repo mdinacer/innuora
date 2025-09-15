@@ -4,9 +4,9 @@ import useSessionInput from "@/lib/ai/mirael-core/v2/open-chat/use-process-input
 import useSessionAnalysis from "@/lib/ai/mirael-core/v2/open-chat/use-session-analysis";
 import useSessionMemory from "@/lib/ai/mirael-core/v2/open-chat/use-session-memory";
 import { useChatSessionState } from "@/lib/ai/mirael-core/v2/open-chat/use-session.state";
+import { useEncryptedChatSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { useEncryptedChatSessionStore } from "./stores/encrypted-chat-session.store";
 
 interface OpenChatProps {
   sessionId: string;
@@ -15,10 +15,17 @@ interface OpenChatProps {
 }
 
 export function useChatController({ sessionId, locale = "en", autoSaveSession = true }: OpenChatProps) {
-  const { hasHydrated, session, addMessage, addAnalysis, addTokenUsage, updateSession, resetSession } =
-    useChatSessionState({
-      sessionId,
-    });
+  const {
+    isReady: hasHydrated,
+    session,
+    addMessage,
+    addAnalysis,
+    addTokenUsage,
+    updateSession,
+    resetSession,
+  } = useChatSessionState({
+    sessionId,
+  });
 
   const [isProcessing, setProcessing] = useState(false);
   const messages: OpenChatMessage[] = useMemo(() => session?.messages || [], [session?.messages]);
@@ -27,6 +34,7 @@ export function useChatController({ sessionId, locale = "en", autoSaveSession = 
 
   const handleRoundComplete = useCallback(() => {
     if (!autoSaveSession || !session) return;
+    console.log("Updating encrypted Session");
 
     useEncryptedChatSessionStore.getState().updateSession(sessionId, session);
   }, [autoSaveSession, session, sessionId]);

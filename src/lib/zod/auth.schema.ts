@@ -3,6 +3,7 @@ import { z } from "zod";
 export const SignInSchema = z.object({
   email: z.email(),
   password: z.string(),
+  remember: z.boolean().optional(),
 });
 
 export type SignInSchemaType = z.infer<typeof SignInSchema>;

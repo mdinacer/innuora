@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import Footer from "@/components/footer";
+import { GradualBlur } from "@/components/gradient-blur";
 import Header from "@/components/header";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -200,27 +201,39 @@ export default async function Home({
   };
   return (
     <main className="relative rtl:font-arabic-body pt-20 text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden  transition-all duration-300 ease-in text-mir-text-primary">
-      {/* <!-- Header --> */}
-      <Header
-        className="fixed top-0 standalone:pt-safe standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
-        locale={locale as AppLocales}
-        sideContent={
-          <div className="flex items-center gap-x-4 ltr:ml-5 rtl:mr-5">
-            <Link
-              href="#early-access"
-              className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
-            >
-              {actions.requestAccess}
-            </Link>
-            {/* <Link
+      <GradualBlur
+        target="page"
+        position="top"
+        height="5rem"
+        strength={2}
+        divCount={5}
+        curve="bezier"
+        exponential={true}
+        opacity={1}
+      >
+        {/* <!-- Header --> */}
+
+        <Header
+          className="fixed top-0 pointer-events-auto standalone:pt-safe standalone:inset-x-safe inset-x-0 bg-transparent"
+          locale={locale as AppLocales}
+          sideContent={
+            <div className="flex items-center gap-x-4 ltr:ml-5 rtl:mr-5">
+              <Link
+                href="#early-access"
+                className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+              >
+                {actions.requestAccess}
+              </Link>
+              {/* <Link
               href="#early-access"
               className="sm:inline-flex opacity-50 pointer-events-none cursor-not-allowed hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
             >
               {actions.testerSignIn}
             </Link> */}
-          </div>
-        }
-      />
+            </div>
+          }
+        />
+      </GradualBlur>
 
       {/* <!-- Hero --> */}
       <section className="max-w-5xl mx-auto px-6 py-16 text-center">
@@ -234,6 +247,7 @@ export default async function Home({
         >
           {hero.title}
         </h1>
+
         <p className="text-lg md:text-xl text-mir-text-secondary max-w-2xl mx-auto mb-8">{hero.subtitle}</p>
         <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5">
           <Link
@@ -371,6 +385,17 @@ export default async function Home({
           ))}
         </div>
       </section>
+      <GradualBlur
+        target="page"
+        position="bottom"
+        height="6rem"
+        strength={2}
+        divCount={5}
+        curve="bezier"
+        exponential={true}
+        opacity={1}
+      />
+
       {/* <!-- Footer --> */}
       <Footer locale={locale as AppLocales} />
       <div className="hidden fixed bottom-0 inset-x-0 standalone:block h-[env(safe-area-inset-bottom)] z-40  backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"></div>

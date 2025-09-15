@@ -1,84 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const LOCALES = [
-  {
-    label: "English",
-    abbreviation: "EN",
-    value: "en",
-  },
-  {
-    label: "العربية",
-    abbreviation: "AR",
-    value: "ar",
-  },
-  {
-    label: "Français",
-    abbreviation: "FR",
-    value: "fr",
-  },
+const getLanguages = (t: TFunction<"common", "languages">) => [
+  { label: t("en"), abbreviation: "EN", value: "en" },
+  { label: t("ar"), abbreviation: "AR", value: "ar" },
+  { label: t("fr"), abbreviation: "FR", value: "fr" },
 ];
 
 const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
+  const {
+    i18n: { language },
+    t,
+  } = useTranslation("common", { keyPrefix: "languages" });
   const [isSwitching, setIsSwitching] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
   const isMobile = useIsMobile();
 
-  const changeLanguage = (locale: AppLocales) => {
-    if (isSwitching) return;
-    setIsSwitching(true);
-    // Change i18next language
-    i18n.changeLanguage(locale);
+  const changeLanguage = useCallback(
+    async (locale: AppLocales) => {
+      if (isSwitching) return;
+      setIsSwitching(true);
 
-    // Update URL - remove current locale and add new one
-    const segments = pathname.split("/").filter(Boolean);
-    const currentLocale = segments[0];
+      try {
+        // Update URL with correct locale
+        const segments = pathname.split("/").filter(Boolean);
+        const currentLocale = segments[0];
 
-    let newPath = "";
-    if (["en", "ar", "fr"].includes(currentLocale)) {
-      // Replace current locale
-      segments[0] = locale;
-      newPath = `/${segments.join("/")}`;
-    } else {
-      // Add locale to path
-      newPath = `/${locale}${pathname}`;
-    }
+        let newPath = "";
+        if (["en", "ar", "fr"].includes(currentLocale)) {
+          segments[0] = locale;
+          newPath = `/${segments.join("/")}`;
+        } else {
+          newPath = `/${locale}${pathname}`;
+        }
 
-    router.push(newPath);
+        await router.push(newPath); // wait for navigation
+      } catch (err) {
+        console.error("Error switching language:", err);
+      } finally {
+        // Let React finish render cycle before clearing
+        setTimeout(() => setIsSwitching(false), 300);
+      }
+    },
+    [isSwitching, pathname, router]
+  );
 
-    setIsSwitching(false);
-  };
+  const languages = getLanguages(t);
 
   return (
-    <div className="grid grid-cols-3 gap-1 rounded-2xl border border-mir-border-light bg-mir-bg-card p-1">
-      {LOCALES.map((locale) => (
-        <button
-          key={locale.value}
-          disabled={i18n.language === locale.value || isSwitching}
-          onClick={() => changeLanguage(locale.value as AppLocales)}
-          className={cn(
-            "px-3 py-1.5 rtl:font-arabic  rtl:font-medium text-sm font-medium text-mir-text-secondary hover:text-mir-text-primary transition-all",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            {
-              "bg-mir-bg-accent text-white rounded-xl": locale.value === i18n.language,
-              "font-arabic font-semibold": locale.value === "ar",
-            }
-          )}
-        >
-          {isMobile ? locale.abbreviation : locale.label}
-        </button>
-      ))}
-    </div>
+    <>
+      {isSwitching && (
+        <div className="fixed inset-0 z-[900] flex items-center justify-center bg-mir-bg-primary/90 backdrop-blur-md animate-fade-in"></div>
+      )}
+
+      <div className="grid grid-cols-3 gap-1 rounded-2xl border border-mir-border-light/50 bg-mir-bg-card/50 p-1">
+        {languages.map((locale) => (
+          <button
+            key={locale.value}
+            disabled={language === locale.value || isSwitching}
+            onClick={() => changeLanguage(locale.value as AppLocales)}
+            className={cn(
+              "px-3 py-1.5 rtl:font-arabic rtl:font-medium text-sm font-medium text-mir-text-secondary hover:text-mir-text-primary transition-all",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              {
+                "bg-mir-bg-accent text-white rounded-xl": locale.value === language,
+              }
+            )}
+          >
+            {isMobile ? locale.abbreviation : locale.label}
+          </button>
+        ))}
+      </div>
+    </>
   );
 };
 

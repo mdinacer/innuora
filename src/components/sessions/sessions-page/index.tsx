@@ -2,14 +2,16 @@
 
 import React, { useMemo } from "react";
 
+import LoadingComponent from "@/components/loading-component";
 import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-empty-state";
 import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
+import NewSessionsLoader from "@/components/sessions/sessions-page/new-sessions-loader";
+import SessionCard from "@/components/sessions/sessions-page/session-card";
 import { SessionMetadataSchema, SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { useEncryptedChatSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
 import useFetchSessions from "@/lib/sessions/use-fetch-sessions";
 import { cn } from "@/lib/utils";
-import SessionCard from "./session-card";
 
 interface SessionsPageProps {
   className?: string;
@@ -37,17 +39,19 @@ const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
   }, [sessions]);
 
   if (!hasHydrated) {
-    return <div>Loading</div>;
+    return <LoadingComponent />;
   }
 
   return (
     <div className={cn("max-w-6xl mx-auto px-6 py-12", className)}>
       <SessionsPageHeader />
 
+      <NewSessionsLoader className="my-6" />
+
       {sessionsOverview.length > 0 ? (
         <>
           <SessionsPageActions />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" id="sessionsGrid">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2" id="sessionsGrid">
             {sessionsOverview.map((session, index) => (
               <SessionCard key={index} session={session} />
             ))}

@@ -36,7 +36,7 @@ function resetSessionData(session: Session): Session {
 interface ActiveSessionStoreState extends PersistedStoreBaseProps {
   obfuscatedId: string | null;
   currentSession: Session | null;
-  loadSession: (obfuscatedId: string) => void;
+  loadSession: (obfuscatedId: string) => Promise<boolean>;
   getSessionField: <K extends keyof Session>(key: K) => Session[K] | undefined;
   updateSession: (update: Partial<Session> | ((session: Session) => Session)) => void;
   resetSession: () => void;
@@ -64,7 +64,7 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>()(
 
       setHasHydrated: (value) => set({ hasHydrated: value }),
 
-      loadSession: (obfuscatedId) => {
+      loadSession: async (obfuscatedId) => {
         try {
           const encryptedStore = useEncryptedChatSessionStore.getState();
 
@@ -74,7 +74,7 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>()(
             return false;
           }
 
-          const session = encryptedStore.getSession(obfuscatedId);
+          const session = await encryptedStore.getSession(obfuscatedId);
 
           if (!session) {
             console.error("Session not found:", obfuscatedId);

@@ -89,7 +89,8 @@ export async function signUp(singUpData: SignUpSchemaType) {
 
 export async function signIn(signInData: SignInSchemaType) {
   const parsedData = SignInSchema.parse(signInData);
-  const supabase = await createClient();
+  const { remember } = parsedData;
+  const supabase = await createClient(remember);
   const { email, password } = parsedData;
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -100,11 +101,7 @@ export async function signIn(signInData: SignInSchemaType) {
   if (error) {
     console.error(error.code, error.message);
     throw error;
-    //redirect(`/auth/sign-in?error=${error.code}`);
   }
-
-  //redirect("/sessions");
-
   return data;
 }
 

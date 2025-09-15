@@ -445,40 +445,6 @@
       "title": "Aidez à façonner l'avenir de Mirael",
       "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
     },
-    "form": {
-      "email": {
-        "label": "Adresse e-mail",
-        "placeholder": "you@example.com",
-        "required": "L’e-mail est requis"
-      },
-      "occupation": {
-        "label": "Profession / Rôle",
-        "placeholder": "Ex: Ingénieure logicielle, Enseignante, Étudiante, etc.",
-        "helpText": "Cela nous aide à comprendre les perspectives et besoins des différentes utilisatrices."
-      },
-      "struggles": {
-        "label": "Défis généraux / Difficultés émotionnelles",
-        "placeholder": "Quelles difficultés émotionnelles ou situations de vie souhaitez-vous partager ? (Ex: stress au travail, relations personnelles, prise de décision, etc.)",
-        "helpText": "Partagez ce sur quoi vous aimeriez réfléchir ou recevoir du soutien. Cela nous aide à mieux comprendre vos besoins."
-      },
-      "coping": {
-        "label": "Mécanismes d’adaptation / Comment vous gérez le stress",
-        "placeholder": "Comment gérez-vous actuellement le stress ou les émotions difficiles ? (Ex: journal, sport, discussions avec des amies, méditation, etc.)",
-        "helpText": "Comprendre vos stratégies actuelles nous aide à créer des outils complémentaires adaptés."
-      },
-      "source": {
-        "label": "Comment avez-vous entendu parler de Mirael ?",
-        "placeholder": "Ex: Twitter, recommandation d’une amie, article de blog, etc.",
-        "helpText": "Cela nous permet de savoir quels moyens de communication sont les plus efficaces."
-      },
-      "notes": {
-        "label": "Commentaires / Notes supplémentaires",
-        "placeholder": "Y a-t-il autre chose que vous aimeriez que nous sachions sur votre intérêt pour Mirael ou vos retours sur les outils d’IA émotionnelle ?",
-        "helpText": "Partagez toute autre réflexion, question ou domaine spécifique sur lequel vous souhaitez vous concentrer lors du test."
-      },
-      "submitButton": "Envoyer la candidature",
-      "thankYouNote": "Merci pour votre intérêt à contribuer à façonner Mirael. Nous examinerons les candidatures et contacterons les participantes sélectionnées au fur et à mesure du programme. Rappelez-vous, Mirael n’est pas un service thérapeutique ou de crise."
-    },
     "messages": {
       "success": "Candidature envoyée",
       "pending": "Envoi en cours...",
@@ -515,6 +481,83 @@
       "follow": "Suivre les mises à jour",
       "contact": "Nous contacter",
       "back": "Retour à Mirael"
+    }
+  },
+  "loading": {
+    "title": "Préparation de Mirael",
+    "subtitle": "Configuration de votre miroir émotionnel",
+    "loadingMessage": "Cela ne prendra qu'un instant...",
+    "loadedMessage": "Prêt"
+  },
+  "error": {
+    "title": "Une erreur est survenue",
+    "description": "L'application a rencontré une erreur inattendue. Ne vous inquiétez pas – cela arrive parfois.",
+    "details": {
+      "unknown": "Erreur inconnue",
+      "messageFallback": "Une erreur inattendue s'est produite",
+      "idLabel": "ID de l'erreur : {{digest}}"
+    },
+    "actions": {
+      "tryAgain": "Réessayer",
+      "goHome": "Retour à l'accueil"
+    },
+    "helpText": "Si cette erreur persiste, veuillez contacter le support"
+  },
+  "sessions": {
+    "title": "Vos sessions",
+    "subtitle": "Réfléchissez, explorez et revisitez vos insights émotionnels.",
+    "searchPlaceholder": "Rechercher dans les sessions...",
+    "newSessionsPrompt": {
+      "title": "Nouvelles sessions disponibles",
+      "subtitle": "Ces mises à jour sont disponibles sur votre compte dans le cloud.",
+      "action": "Charger ({{item}})",
+      "loading": "Téléchargement en cours..."
+    },
+    "card": {
+      "cloud": "Enregistré en ligne",
+      "local": "Sur l'appareil",
+      "messages": "messages",
+      "hasUpdates": "mise à jour disponible",
+      "continue": "Continuer"
+    },
+    "form": {
+      "dialogButton": {
+        "create": "Créer la session",
+        "edit": "Modifier la session"
+      },
+      "title": {
+        "create": "Créer une nouvelle session",
+        "edit": "Modifier la session"
+      },
+      "subtitle": {
+        "create": "Définissez éventuellement un titre et un sous-titre pour votre session.",
+        "edit": "Mettez à jour le titre, le sous-titre ou le mode de stockage de la session."
+      },
+      "fields": {
+        "title": {
+          "label": "Titre de la session",
+          "placeholder": "Optionnel"
+        },
+        "subtitle": {
+          "label": "Sous-titre de la session",
+          "placeholder": "Optionnel"
+        },
+        "aiSuggestedTitle": {
+          "label": "Laissez Mirael proposer un titre et un sous-titre",
+          "description": "Mirael peut générer un titre et un sous-titre brefs et réfléchis pour cette session. Vous pouvez les modifier ensuite si vous le souhaitez."
+        },
+        "persistOnCloud": {
+          "label": "Stocker la session sur le cloud",
+          "description": "Vos données restent chiffrées sur cet appareil et sur le cloud. Activer cette option vous permet de reprendre votre session en toute sécurité depuis un autre appareil."
+        }
+      },
+      "actions": {
+        "submit": {
+          "create": "Créer la session",
+          "edit": "Enregistrer les modifications"
+        },
+        "cancel": "Annuler"
+      }
     }
   }
 }

@@ -35,7 +35,7 @@ interface Props {
 
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const [isOpen, setOpen] = useState(false);
-  const { t } = useTranslation("pages", { keyPrefix: "sessionForm" });
+  const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
@@ -131,10 +131,10 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] rounded-2xl bg-mir-bg-card">
           <Form {...form}>
-            <form onSubmit={handleSubmit(handleOnSubmit)} className="grid gap-4">
-              <DialogHeader>
-                <DialogTitle>{data.title}</DialogTitle>
-                <DialogDescription>{data.subtitle}</DialogDescription>
+            <form onSubmit={handleSubmit(handleOnSubmit)} className="grid gap-4 rtl:font-arabic-body">
+              <DialogHeader className="rtl:text-right">
+                <DialogTitle className="rtl:font-arabic">{data.title}</DialogTitle>
+                <DialogDescription className="rtl:text-base">{data.subtitle}</DialogDescription>
               </DialogHeader>
               <div className="grid gap-8 py-6">
                 <TextField
