@@ -10,7 +10,7 @@ export async function updateSession(request: NextRequest) {
   // First, handle i18n routing and get a response object
   const { pathname } = request.nextUrl;
 
-  const response = i18nRouter(request, { ...i18nConfig, prefixDefault: true });
+  const response = i18nRouter(request, i18nConfig);
 
   try {
     const supabase = createServerClient(

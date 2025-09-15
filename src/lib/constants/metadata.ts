@@ -25,7 +25,7 @@ export const METADATA: Metadata = {
   category: "health",
   metadataBase: new URL("https://www.mirael.life"),
   alternates: {
-    canonical: "/",
+    canonical: "/en",
     languages: {
       en: "/en",
       ar: "/ar",

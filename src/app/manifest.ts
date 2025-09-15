@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Mirael",
     description:
       "Mirael is a soft and emotionally intelligent space for high-functioning yet emotionally exhausted women to reconnect with themselves, gain clarity, and find gentle insight.",
-    start_url: "/",
+    start_url: "/en",
     background_color: "#000000",
     theme_color: "#000000",
     display: "standalone",
@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     id: "/",
     categories: ["health", "wellness", "lifestyle"],
-    lang: "en-US",
+    lang: "en",
     icons: [
       // iOS Icons
       {

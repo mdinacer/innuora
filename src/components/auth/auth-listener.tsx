@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
-import { clearSessionKey, getSessionKey } from "@/lib/crypto/encryption";
 import { createClient } from "@/lib/supabase/client";
 
 const AuthListener: React.FC = () => {
