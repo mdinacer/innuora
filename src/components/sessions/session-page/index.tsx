@@ -9,15 +9,15 @@ import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-c
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
 import LoadingComponent from "@/components/loading-component";
-import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
+import { useChatController } from "@/lib/ai/mirael-core/v2/use-chat-controller";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
-  sessionId: string;
+  obfuscatedSessionId: string;
 }
 
-const SessionPage: React.FC<Props> = ({ sessionId }) => {
+const SessionPage: React.FC<Props> = ({ obfuscatedSessionId }) => {
   const router = useRouter();
 
   const {
@@ -25,13 +25,13 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     i18n: { language },
   } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat" });
 
-  const miraelChat = useChatController({
+  const chatController = useChatController({
     locale: language as AppLocales,
-    sessionId,
+    sessionId: obfuscatedSessionId,
   });
 
-  const { processMessage, addMessage, resetSession } = miraelChat.actions;
-  const { hasHydrated, session, messages, isProcessing } = miraelChat.state;
+  const { processMessage, addMessage, resetSession } = chatController.actions;
+  const { hasHydrated, session, messages, isProcessing } = chatController.state;
 
   const { title, subtitle } = useMemo(
     () => ({

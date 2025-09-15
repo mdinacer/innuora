@@ -12,6 +12,7 @@ export type SessionOverview = {
   title: string;
   subtitle: string | null;
   autoUpdateTitle: boolean;
+  persistOnCloud: boolean;
   metadata: {
     messageCount: number;
     tokenCount: number;
@@ -27,7 +28,7 @@ export interface Session {
   subtitle?: string;
 
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt: Date;
 
   // Sensitive data
   messages: OpenChatMessage[];

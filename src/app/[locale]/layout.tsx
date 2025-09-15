@@ -45,14 +45,14 @@ export default async function RootLayout({
       <body
         className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-mir-bg-primary`}
       >
-        <AuthListener />
-        <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
+            <AuthListener />
             <BackgroundBeams className="hidden md:block" />
             {children}
             <Toaster />
-          </ThemeProvider>
-        </TranslationProvider>
+          </TranslationProvider>
+        </ThemeProvider>
         {process.env.NODE_ENV === "production" && (
           <>
             <Analytics />

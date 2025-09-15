@@ -63,6 +63,18 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
 
       onRoundComplete?.();
 
+      console.log(
+        JSON.stringify(
+          {
+            analysis: newAnalysis,
+            response: assistantMessage,
+            tokenUsage: { analysisUsage, responseUsage },
+          },
+          null,
+          2
+        )
+      );
+
       return {
         assistantMessage,
         shouldUpdateMemory: newAnalysis?.update_memory ?? false,

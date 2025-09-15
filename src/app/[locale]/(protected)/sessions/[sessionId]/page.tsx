@@ -13,7 +13,7 @@ export default async function SessionRoute({
   return (
     <main className="h-screen w-screen relative standalone:w-full standalone:h-full">
       <Suspense fallback={<LoadingComponent />}>
-        <SessionPage sessionId={sessionId} />
+        <SessionPage obfuscatedSessionId={sessionId} />
       </Suspense>
     </main>
   );

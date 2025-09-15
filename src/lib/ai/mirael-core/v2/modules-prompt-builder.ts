@@ -12,36 +12,34 @@ export class ModulesPromptBuilder {
     const moduleLines: string[] = [];
 
     if (core_module) {
-      const coreModuleInstructions = this.injectAnalysis(await this.getModuleInstructions(core_module), analysis);
-      moduleLines.push(`- Core: ${capitalize(core_module)}\nInstructions: ${coreModuleInstructions}`);
+      const instructions = this.injectAnalysis(await this.getModuleInstructions(core_module), analysis);
+      moduleLines.push(`${capitalize(core_module)}: ${instructions}`);
     }
 
     if (process_module) {
-      const processModuleInstructions = this.injectAnalysis(await this.getModuleInstructions(process_module), analysis);
-      moduleLines.push(`- Process: ${capitalize(process_module)}\nInstructions: ${processModuleInstructions}`);
+      const instructions = this.injectAnalysis(await this.getModuleInstructions(process_module), analysis);
+      moduleLines.push(`${capitalize(process_module)}: ${instructions}`);
     }
 
     if (utility_module) {
-      const utilityModuleInstructions = this.injectAnalysis(await this.getModuleInstructions(utility_module), analysis);
-      moduleLines.push(`- Utility: ${capitalize(utility_module)}\nInstructions: ${utilityModuleInstructions}`);
+      const instructions = this.injectAnalysis(await this.getModuleInstructions(utility_module), analysis);
+      moduleLines.push(`${capitalize(utility_module)}: ${instructions}`);
     }
 
     const generalInstructions = `
-General Instructions:
-- Output must be a single short paragraph (≤120 words). Only extend to two concise paragraphs if absolutely necessary.  
-- The core module drives the response. Process and utility modules act as subtle modifiers, never standalone sections.  
-- Reflect the user's words and emotions directly, showing you understand their inner experience.  
-- Highlight cognitive, emotional, or thematic patterns tied to the active modules.  
-- Suggest small, actionable next steps only if aligned with the user’s readiness.  
-- Keep tone and intensity calibrated to analysis (calm, moderate, or high).  
-- Maintain continuity with prior messages for a natural conversational flow.
+Response: Single paragraph ≤120 words. Core module drives response.
+- Reflect user's exact words and emotions
+- Apply active module guidance naturally
+- Offer one specific insight or question when appropriate
+- Maintain conversational flow and supportive tone
 `.trim();
 
-    const instructions = `Active Modules:\n${moduleLines.join("\n")}\n\n${generalInstructions}`;
+    const content =
+      moduleLines.length > 0 ? `${moduleLines.join("\n")}\n\n${generalInstructions}` : generalInstructions;
 
     return {
       role: "system",
-      content: instructions,
+      content,
     } as ChatCompletionMessageParam;
   }
   //   async buildModulesPrompt(analysis: StateAnalysis): Promise<ChatCompletionMessageParam> {

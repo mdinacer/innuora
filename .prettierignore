@@ -2,3 +2,6 @@
 /.next
 /out
 /build
+/artifacts
+/claude-analysis
+/mirael-agents

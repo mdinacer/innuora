@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import ChatUIThemeToggle from "@/components/chat-ui/chat-ui.theme-toggle";
 import { cn } from "@/lib/utils";
+import GlassSurface from "../glass-surface";
 
 interface Props {
   className?: string;
@@ -20,7 +21,10 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
     avatarLetter: t("avatar-letter", { defaultValue: "M" }),
   };
   return (
-    <div className={cn("chat-header", "p-6 pb-4 flex items-center justify-between relative z-[20]", className)}>
+    <div className={cn("chat-header", "p-6 pb-4  flex items-center justify-between relative z-[20]", className)}>
+      <div className="absolute inset-0 z-[-1]">
+        <GlassSurface width={"100%"} height={"100%"} borderRadius={0} />
+      </div>
       <div className={cn("header-left", "flex items-center gap-4")}>
         <div
           className={cn(

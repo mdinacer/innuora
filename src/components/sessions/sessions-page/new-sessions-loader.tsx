@@ -5,7 +5,7 @@ import { Session } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getSessionById } from "@/app/actions/session-actions";
+import { batchGetSessionsById, getSessionById } from "@/app/actions/session-actions";
 import {
   getUniqueObfuscatedId,
   useEncryptedChatSessionStore,
@@ -52,7 +52,8 @@ const NewSessionsLoader: React.FC<Props> = ({ className }) => {
     setLoadingStatus({ loading: true, loaded: false, error: null });
 
     try {
-      const sessions = (await Promise.all(newItems.map(({ id }) => getSessionById(id)))).filter(Boolean) as Session[];
+      const newItemsIds = newItems.map(({ id }) => id);
+      const sessions = await batchGetSessionsById(newItemsIds);
 
       if (sessions.length > 0) {
         const state = useEncryptedChatSessionStore.getState();

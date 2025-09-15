@@ -37,7 +37,6 @@ function sessionToStorage(session: PrismaSession): Record<keyof PrismaSession, a
     if (storageSession.authTag instanceof Uint8Array) {
       storageSession.authTag = Array.from(storageSession.authTag);
     }
-    // encAlg is already a string, no conversion needed
   }
 
   return storageSession;
@@ -50,6 +49,16 @@ function storageToSession(storageData: Record<string, any>): PrismaSession {
   // Only convert arrays back to Uint8Array if all encryption fields are present
   const hasEncryptedData = storageData.encryptedData && storageData.iv && storageData.authTag && storageData.encAlg;
 
+  if (!hasEncryptedData) {
+    return {
+      ...session,
+      encryptedData: null,
+      iv: null,
+      authTag: null,
+      encAlg: null,
+    };
+  }
+
   if (hasEncryptedData) {
     if (Array.isArray(session.encryptedData)) {
       session.encryptedData = new Uint8Array(session.encryptedData);
@@ -60,13 +69,6 @@ function storageToSession(storageData: Record<string, any>): PrismaSession {
     if (Array.isArray(session.authTag)) {
       session.authTag = new Uint8Array(session.authTag);
     }
-    // encAlg remains a string
-  } else {
-    // Ensure these fields are null if encryption data is incomplete
-    session.encryptedData = null;
-    session.iv = null;
-    session.authTag = null;
-    session.encAlg = null;
   }
 
   return session as PrismaSession;
@@ -134,7 +136,7 @@ async function decryptSession(encryptedSession: PrismaSession): Promise<Session>
       ? { ...SessionMetadataSchema.parse(encryptedSession.metadata), tokenUsage: [] }
       : { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] }) as SessionMeta,
     analysisSnapshots: [],
-    persistOnCloud: false, // Add default value
+    persistOnCloud: encryptedSession.persistOnCloud ?? false,
   };
 
   const parsedData = EncryptedDataSchema.safeParse(encryptedSession);
@@ -184,6 +186,7 @@ interface EncryptedChatSessionStoreState extends PersistedStoreBaseProps {
   updateSession: (obfuscatedId: string, session: Session) => void;
   createSession: (data?: Partial<Session>) => Promise<string>; // Return obfuscated ID
   resetSession: (obfuscatedId: string) => void;
+  removeSession: (obfuscatedId: string) => void;
   setSessions: (sessions: PrismaSession[]) => void;
   sessionExists: (id: string) => boolean; // New method
   addOnlineSessionId: (obfuscatedId: string) => void;
@@ -333,7 +336,7 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
         }
       },
 
-      resetSession: (obfuscatedId) => {
+      removeSession: (obfuscatedId) => {
         const { sessionIdMap } = get();
         const sessionId = sessionIdMap[obfuscatedId];
 
@@ -352,6 +355,39 @@ export const useEncryptedChatSessionStore = create<EncryptedChatSessionStoreStat
             sessionIdMap: restMappings,
           };
         });
+      },
+      resetSession: (obfuscatedId) => {
+        const { sessionIdMap } = get();
+        const sessionId = sessionIdMap[obfuscatedId];
+
+        if (!sessionId) {
+          console.error("Session not found for obfuscated ID:", obfuscatedId);
+          return;
+        }
+
+        const session = get().sessions[obfuscatedId];
+        if (!session) {
+          console.error("Session not found for obfuscated ID:", obfuscatedId);
+          return;
+        }
+
+        const now = new Date();
+        const emptySession: PrismaSession = {
+          ...session,
+          metadata: {
+            messagesCount: 0,
+            tokensCount: 0,
+            tokenUsage: [],
+            costUSD: 0,
+          },
+          encryptedData: null,
+          iv: null,
+          authTag: null,
+          encAlg: null,
+          updatedAt: now,
+        };
+
+        get().setSession(obfuscatedId, emptySession);
       },
 
       setSessions: (sessions) => {

@@ -4,17 +4,15 @@ import useSessionInput from "@/lib/ai/mirael-core/v2/open-chat/use-process-input
 import useSessionAnalysis from "@/lib/ai/mirael-core/v2/open-chat/use-session-analysis";
 import useSessionMemory from "@/lib/ai/mirael-core/v2/open-chat/use-session-memory";
 import { useChatSessionState } from "@/lib/ai/mirael-core/v2/open-chat/use-session.state";
-import { useEncryptedChatSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
-  sessionId: string;
+  sessionId: string; // Obfuscated Session ID
   locale?: AppLocales;
-  autoSaveSession?: boolean;
 }
 
-export function useChatController({ sessionId, locale = "en", autoSaveSession = true }: OpenChatProps) {
+export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
   const {
     isReady: hasHydrated,
     session,
@@ -23,6 +21,7 @@ export function useChatController({ sessionId, locale = "en", autoSaveSession = 
     addTokenUsage,
     updateSession,
     resetSession,
+    resetEncryptedSession,
   } = useChatSessionState({
     sessionId,
   });
@@ -32,12 +31,12 @@ export function useChatController({ sessionId, locale = "en", autoSaveSession = 
   const { updateSessionMemory } = useSessionMemory({ sessionId });
   const { summarizeSession } = useSessionAnalysis({ sessionId, locale });
 
+  // Auto-sync is now handled automatically by the session state
+  // No manual sync needed at round completion!
   const handleRoundComplete = useCallback(() => {
-    if (!autoSaveSession || !session) return;
-    console.log("Updating encrypted Session");
-
-    useEncryptedChatSessionStore.getState().updateSession(sessionId, session);
-  }, [autoSaveSession, session, sessionId]);
+    // Optional: Force a manual sync if needed for critical operations
+    // The auto-sync system handles this automatically now
+  }, []);
 
   const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({
     sessionId,
@@ -72,6 +71,11 @@ export function useChatController({ sessionId, locale = "en", autoSaveSession = 
     [appendAssistantMessage, appendUserMessage, processInput, session, updateSessionMemory]
   );
 
+  const handleSessionReset = useCallback(() => {
+    resetSession();
+    resetEncryptedSession();
+  }, [resetEncryptedSession, resetSession]);
+
   return {
     state: {
       hasHydrated,
@@ -84,7 +88,7 @@ export function useChatController({ sessionId, locale = "en", autoSaveSession = 
       addMessage,
       addAnalysis,
       addTokenUsage,
-      resetSession,
+      resetSession: handleSessionReset,
       updateSession,
       summarizeSession,
     },

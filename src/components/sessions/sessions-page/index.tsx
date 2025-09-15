@@ -30,6 +30,7 @@ const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
       title: session.title,
       subtitle: session.subtitle,
       autoUpdateTitle: session.autoUpdateTitle,
+      persistOnCloud: session.persistOnCloud ?? false,
       metadata: session.metadata
         ? SessionMetadataSchema.parse(session.metadata)
         : { messageCount: 0, tokenCount: 0, costUSD: 0 },

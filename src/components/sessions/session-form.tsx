@@ -21,9 +21,9 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { generateId } from "@/lib/chat/flow/generate-id";
+import { useAutoSyncSessionStore } from "@/lib/session-sync/auto-sync-hooks";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
 
 interface Props {
@@ -36,6 +36,7 @@ interface Props {
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
+  const autoSyncStore = useAutoSyncSessionStore();
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
@@ -86,7 +87,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const handleOnSubmit = useCallback(
     async (data: SessionCreate) => {
       const id = session?.id || generateId("Session");
-      const state = useOpenChatSessionStore.getState();
+      const state = autoSyncStore;
 
       const createLocalSession = (sessionData: Partial<Session>) => state.createSession(id, sessionData);
 
@@ -113,7 +114,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
 
       onSubmit?.(state.sessions[id]);
     },
-    [onSubmit, session]
+    [onSubmit, session, autoSyncStore]
   );
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>

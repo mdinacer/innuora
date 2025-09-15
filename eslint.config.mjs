@@ -3,7 +3,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
-import typescriptEslintEslintPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import prettier from "eslint-plugin-prettier";
@@ -19,7 +18,7 @@ const compat = new FlatCompat({
 export default [
   // Global ignores
   {
-    ignores: ["src/components/ui/**/*", "src/lib/generated/**/*", ".next/**", "node_modules/**"],
+    ignores: ["src/components/ui/**/*", "src/lib/generated/**/*", ".next/**", "node_modules/**", "artifacts"],
   },
 
   // Base configuration

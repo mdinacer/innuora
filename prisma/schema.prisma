@@ -149,6 +149,7 @@ model Session {
   subtitle        String? // subtitle of session
   modelCode       ModelCode @default(M1)
   autoUpdateTitle Boolean   @default(false)
+  persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
   metadata        Json // additional metadata { messageCount :int, tokenCount: int, costUSD :float}
   // Encrypted session bundle
   encryptedData   Bytes?    @map("encrypted_data") // ciphertext of full session object
