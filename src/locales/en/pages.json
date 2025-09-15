@@ -12,6 +12,7 @@
           "label": "Password",
           "placeholder": "Enter your password"
         },
+        "remember": "Remember me",
         "forgot_password": "Forgot your password?",
         "submit": "Sign in"
       },
@@ -439,45 +440,6 @@
     },
     "copyright": "© 2025 Mirael, Inc. All rights reserved."
   },
-  "sessionForm": {
-    "dialogButton": {
-      "create": "Create Session",
-      "edit": "Edit Session"
-    },
-    "title": {
-      "create": "Create New Session",
-      "edit": "Edit Session"
-    },
-    "subtitle": {
-      "create": "Optionally set a title and subtitle for your session.",
-      "edit": "Update the session title, subtitle, or storage mode."
-    },
-    "fields": {
-      "title": {
-        "label": "Session Title",
-        "placeholder": "Optional"
-      },
-      "subtitle": {
-        "label": "Session Subtitle",
-        "placeholder": "Optional"
-      },
-      "aiSuggestedTitle": {
-        "label": "Let Mirael suggest a title and subtitle",
-        "description": "Mirael can create a brief, reflective title and subtitle for this session. You can edit them afterward if you want."
-      },
-      "persistOnCloud": {
-        "label": "Store anonymized summary on the cloud",
-        "description": "Your chat messages always stay on this device. Enabling this allows a fully anonymized summary of this session to be stored on the cloud, so you can continue where you left off on another device."
-      }
-    },
-    "actions": {
-      "submit": {
-        "create": "Create Session",
-        "edit": "Save Changes"
-      },
-      "cancel": "Cancel"
-    }
-  },
   "advancedTester": {
     "hero": {
       "badge": "Advanced Testing",
@@ -554,6 +516,83 @@
       "follow": "Follow Updates",
       "contact": "Contact Us",
       "back": "Back to Mirael"
+    }
+  },
+  "loading": {
+    "title": "Preparing Mirael",
+    "subtitle": "Setting up your emotional mirror",
+    "loadingMessage": "This should only take a moment...",
+    "loadedMessage": "All set"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "The application encountered an unexpected error. Don't worry - these things happen sometimes.",
+    "details": {
+      "unknown": "Unknown Error",
+      "messageFallback": "An unexpected error occurred",
+      "idLabel": "Error ID: {{digest}}"
+    },
+    "actions": {
+      "tryAgain": "Try Again",
+      "goHome": "Go Home"
+    },
+    "helpText": "If this error persists, please contact support"
+  },
+  "sessions": {
+    "title": "Your Sessions",
+    "subtitle": "Reflect, explore, and revisit your emotional insights.",
+    "searchPlaceholder": "Search sessions...",
+    "newSessionsPrompt": {
+      "title": "New sessions available",
+      "subtitle": "These updates are available on your account in the cloud.",
+      "action": "Load ({{item}})",
+      "loading": "Downloading..."
+    },
+    "card": {
+      "cloud": "Saved Online",
+      "local": "On Device",
+      "messages": "messages",
+      "hasUpdates": "has updates",
+      "continue": "Continue"
+    },
+    "form": {
+      "dialogButton": {
+        "create": "Create Session",
+        "edit": "Edit Session"
+      },
+      "title": {
+        "create": "Create New Session",
+        "edit": "Edit Session"
+      },
+      "subtitle": {
+        "create": "Optionally set a title and subtitle for your session.",
+        "edit": "Update the session title, subtitle, or storage mode."
+      },
+      "fields": {
+        "title": {
+          "label": "Session Title",
+          "placeholder": "Optional"
+        },
+        "subtitle": {
+          "label": "Session Subtitle",
+          "placeholder": "Optional"
+        },
+        "aiSuggestedTitle": {
+          "label": "Let Mirael suggest a title and subtitle",
+          "description": "Mirael can create a brief, reflective title and subtitle for this session. You can edit them afterward if you want."
+        },
+        "persistOnCloud": {
+          "label": "Store session on the cloud",
+          "description": "Your data remain encrypted on this device and on the cloud. Enabling this allows you to securely continue your session from another device."
+        }
+      },
+      "actions": {
+        "submit": {
+          "create": "Create Session",
+          "edit": "Save Changes"
+        },
+        "cancel": "Cancel"
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 import { AuthenticationError, AuthorizationError } from "@/errors/auth.errors";
+import { generateUserSalt } from "@/lib/crypto/encryption";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
@@ -59,23 +60,28 @@ export async function signUp(singUpData: SignUpSchemaType) {
 
   const { email, password } = parsedData;
 
+  const salt = generateUserSalt();
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        encryptionSalt: salt,
+        ageConfirm: parsedData.ageConfirm,
+        termsAgree: parsedData.termsAgree,
+      },
+    },
   });
 
   if (error) {
     console.error(error.code, error.message);
     throw error;
-    //redirect(`/auth/sign-up?error=${error.code}`);
   }
-
-  console.log(JSON.stringify(data, null, 2));
 
   if (!data.user?.confirmation_sent_at) {
     console.error("no confirmation_sent_at");
     throw error;
-    //redirect(`/auth/sign-up?error=${error.code}`);
   }
 
   redirect("/auth/verify-email/sent");
@@ -83,7 +89,8 @@ export async function signUp(singUpData: SignUpSchemaType) {
 
 export async function signIn(signInData: SignInSchemaType) {
   const parsedData = SignInSchema.parse(signInData);
-  const supabase = await createClient();
+  const { remember } = parsedData;
+  const supabase = await createClient(remember);
   const { email, password } = parsedData;
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -91,15 +98,11 @@ export async function signIn(signInData: SignInSchemaType) {
     password,
   });
 
-  console.log(data);
-
   if (error) {
     console.error(error.code, error.message);
     throw error;
-    //redirect(`/auth/sign-in?error=${error.code}`);
   }
-
-  redirect("/sessions");
+  return data;
 }
 
 export async function signOut() {

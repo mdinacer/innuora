@@ -46,7 +46,6 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
       },
 
       createSession: (id, data = {}) => {
-        console.log("Creating session", id, data);
         const now = new Date();
         set((state) => {
           if (state.sessions[id]) return state;
@@ -182,6 +181,7 @@ export const useOpenChatSessionStore = create<OpenChatSessionStoreState>()(
       name: "open-chat-session-store",
       storage: createJSONStorage(() => localforage),
       partialize: (state) => ({ sessions: state.sessions }),
+
       onRehydrateStorage: () => (state) => {
         if (!state) return;
         state.setHasHydrated(true);

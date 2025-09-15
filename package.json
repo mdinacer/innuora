@@ -36,6 +36,7 @@
     "i18next-resources-to-backend": "^1.2.1",
     "localforage": "^1.10.0",
     "lucide-react": "^0.542.0",
+    "mathjs": "^14.7.0",
     "motion": "^12.23.12",
     "nanoid": "^5.1.5",
     "next": "15.5.2",

@@ -1,9 +1,9 @@
-import { StateAnalysis } from "../state-analysis/state-analysis.schema";
-import { CrisisLevel, EmotionalIntensity } from "../state-analysis/state-analysis.types";
-import { SessionAnalysis } from "./session-analysis.types";
+import { SessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.types";
+import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
+import { CrisisLevel, EmotionalIntensity } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.types";
 
 export function combineToSessionAnalysis(analyses: StateAnalysis[]): SessionAnalysis {
-  if (analyses.length === 0) {
+  if (!analyses || analyses.length === 0) {
     throw new Error("No analyses provided");
   }
 

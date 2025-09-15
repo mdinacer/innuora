@@ -1,5 +1,7 @@
 import { FileTextIcon, PlusIcon } from "lucide-react";
 
+import SessionForm from "../session-form";
+
 const SessionsEmptyState = () => {
   return (
     <div id="emptyState" className="text-center py-16 ">
@@ -10,10 +12,18 @@ const SessionsEmptyState = () => {
       <p className="text-mir-text-secondary mb-6 max-w-md mx-auto">
         Start your first reflection session to begin your journey of emotional clarity and self-discovery.
       </p>
-      <button className="inline-flex items-center gap-2 rounded-2xl bg-mir-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px]">
+      <SessionForm
+        trigger={
+          <button className="inline-flex items-center gap-2 rounded-2xl bg-mir-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px]">
+            <PlusIcon className="size-4" />
+            Start Reflecting
+          </button>
+        }
+      />
+      {/* <button className="inline-flex items-center gap-2 rounded-2xl bg-mir-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px]">
         <PlusIcon className="size-4" />
         Start Reflecting
-      </button>
+      </button> */}
     </div>
   );
 };

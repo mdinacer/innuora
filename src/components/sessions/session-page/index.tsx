@@ -1,22 +1,25 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
+import CodeView from "@/components/code-view";
+import LoadingComponent from "@/components/loading-component";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
   sessionId: string;
-  autoCreateSession?: boolean;
 }
 
-const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) => {
+const SessionPage: React.FC<Props> = ({ sessionId }) => {
+  const router = useRouter();
+
   const {
     t,
     i18n: { language },
@@ -25,7 +28,6 @@ const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) 
   const miraelChat = useChatController({
     locale: language as AppLocales,
     sessionId,
-    autoCreateSession: true,
   });
 
   const { processMessage, addMessage, resetSession } = miraelChat.actions;
@@ -62,42 +64,56 @@ const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) 
       switch (action) {
         case "reset":
           resetSession();
-
           break;
         case "end":
+          router.push("/sessions");
           break;
         case "export":
           break;
       }
     },
-    [resetSession]
+    [resetSession, router]
   );
 
-  useEffect(() => {
-    if (!autoCreateSession) return;
-    if (hasHydrated && !session) {
-      useOpenChatSessionStore.getState().createSession(sessionId);
-    }
-  }, [autoCreateSession, hasHydrated, session, sessionId]);
+  // useEffect(() => {
+  //   const handler = (event: BeforeUnloadEvent) => {
+  //     // event.preventDefault();
+  //     console.log("Unloading session", sessionId);
 
-  if (!hasHydrated || !session || !messages) {
+  //     //return (event.returnValue = "Are you sure you want to leave?");
+
+  //     // Only sync data already stored locally
+  //   };
+  //   window.addEventListener("beforeunload", handler);
+  //   return () => window.removeEventListener("beforeunload", handler);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  if (!hasHydrated) {
+    return <LoadingComponent />;
+  }
+  if (!session || !messages) {
     return null;
   }
+
   return (
-    <Container
-      title={session?.title ?? title}
-      subtitle={session?.subtitle ?? subtitle}
-      messages={messages}
-      isLoading={isProcessing}
-      renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-      onUserInput={processMessage}
-      welcomeMessage={welcomeMessage}
-      headerActions={
-        <>
-          <Menu disabled={!messages?.length} onAction={handleActions} />
-        </>
-      }
-    />
+    <>
+      <CodeView data={session} className=" absolute top-6 left-6" />
+      <Container
+        title={session?.title ?? title}
+        subtitle={session?.subtitle ?? subtitle}
+        messages={messages}
+        isLoading={isProcessing}
+        renderItem={(message, index) => <MessageBubble key={index} message={message} />}
+        onUserInput={processMessage}
+        welcomeMessage={welcomeMessage}
+        headerActions={
+          <>
+            <Menu disabled={!messages?.length} onAction={handleActions} />
+          </>
+        }
+      />
+    </>
   );
 };
 

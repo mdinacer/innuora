@@ -6,6 +6,9 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { createSession } from "@/app/actions/session-actions";
+import SwitchField from "@/components/input/switch-field";
+import TextField from "@/components/input/text-field";
 import {
   Dialog,
   DialogClose,
@@ -16,14 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
-import { Session } from "@/lib/ai/mirael-core/v1/open-chat-session.types";
+import { Form } from "@/components/ui/form";
+import { Separator } from "@/components/ui/separator";
+import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { generateId } from "@/lib/chat/flow/generate-id";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
-import SwitchField from "../input/switch-field";
-import TextField from "../input/text-field";
-import { Form } from "../ui/form";
-import { Separator } from "../ui/separator";
 
 interface Props {
   className?: string;
@@ -34,14 +35,14 @@ interface Props {
 
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const [isOpen, setOpen] = useState(false);
-  const { t } = useTranslation("pages", { keyPrefix: "sessionForm" });
+  const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
     defaultValues: {
       title: session?.title ?? "",
       subtitle: session?.subtitle ?? "",
-      aiSuggestedTitle: session?.aiSuggestedTitle ?? false,
+      autoUpdateTitle: session?.autoUpdateTitle ?? false,
       persistOnCloud: session?.persistOnCloud ?? false,
     },
   });
@@ -86,17 +87,30 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
     async (data: SessionCreate) => {
       const id = session?.id || generateId("Session");
       const state = useOpenChatSessionStore.getState();
+
+      const createLocalSession = (sessionData: Partial<Session>) => state.createSession(id, sessionData);
+
       if (session) {
         state.updateSession(id, (prev) => ({ ...prev, ...data }));
+      } else if (data.persistOnCloud) {
+        const result = await createSession(data);
+        if (result) {
+          createLocalSession({
+            title: result.title,
+            subtitle: result.subtitle || undefined,
+            autoUpdateTitle: result.autoUpdateTitle,
+            persistOnCloud: true,
+          });
+        }
       } else {
-        state.createSession(id, {
+        createLocalSession({
           title: data.title || generateId("Session"),
           subtitle: data.subtitle,
-          aiSuggestedTitle: data.aiSuggestedTitle,
+          autoUpdateTitle: data.autoUpdateTitle,
           persistOnCloud: data.persistOnCloud,
-        } as Partial<Session>);
+        });
       }
-      console.log(state.sessions[id]);
+
       onSubmit?.(state.sessions[id]);
     },
     [onSubmit, session]
@@ -117,10 +131,10 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] rounded-2xl bg-mir-bg-card">
           <Form {...form}>
-            <form onSubmit={handleSubmit(handleOnSubmit)} className="grid gap-4">
-              <DialogHeader>
-                <DialogTitle>{data.title}</DialogTitle>
-                <DialogDescription>{data.subtitle}</DialogDescription>
+            <form onSubmit={handleSubmit(handleOnSubmit)} className="grid gap-4 rtl:font-arabic-body">
+              <DialogHeader className="rtl:text-right">
+                <DialogTitle className="rtl:font-arabic">{data.title}</DialogTitle>
+                <DialogDescription className="rtl:text-base">{data.subtitle}</DialogDescription>
               </DialogHeader>
               <div className="grid gap-8 py-6">
                 <TextField
@@ -138,7 +152,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
                 <Separator />
                 <SwitchField
                   control={control}
-                  name="aiSuggestedTitle"
+                  name="autoUpdateTitle"
                   label={data.fields.aiSuggestedTitle.label}
                   description={data.fields.aiSuggestedTitle.description}
                 />

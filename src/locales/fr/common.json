@@ -2,9 +2,21 @@
   "app-name": "Mirael",
   "avatar-letter": "M",
   "back-to-mirael": "Retour vers Mirael",
+  "languages": {
+    "en": "Anglais",
+    "fr": "Français",
+    "ar": "Arabe"
+  },
   "actions": {
     "continue": "Continuer",
     "showMoreWithCount": "Afficher {{count}} de plus",
-    "showLess": "Afficher moins"
-  }
+    "showLess": "Afficher moins",
+    "signout": "Deconnexion"
+  },
+  "session_zero": "Aucune session",
+  "session_one": "session",
+  "session_other": "sessions",
+  "sessionWithCount_zero": "aucune session",
+  "sessionWithCount_one": "{{count}} session",
+  "sessionWithCount_other": "{{count}} sessions"
 }

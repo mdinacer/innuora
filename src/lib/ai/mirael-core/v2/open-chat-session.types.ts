@@ -1,8 +1,25 @@
+import z from "zod";
+
+import { SessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.types";
 import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { ModelCode } from "@/lib/constants/ai-models";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { SessionAnalysis } from "./session-analysis/session-analysis.types";
+
+export type SessionOverview = {
+  id: string;
+  obfuscatedId: string;
+  title: string;
+  subtitle: string | null;
+  autoUpdateTitle: boolean;
+  metadata: {
+    messageCount: number;
+    tokenCount: number;
+    costUSD: number;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export interface Session {
   id: string;
@@ -12,18 +29,17 @@ export interface Session {
   createdAt: Date;
   updatedAt?: Date;
 
+  // Sensitive data
   messages: OpenChatMessage[];
-
-  sessionMemory: string | null;
-  sessionSummary: SessionSummary | null;
-  sessionAnalysis: SessionAnalysis | null;
-  analysis: StateAnalysis[];
+  memoryStore: string | null; // a user memory store
+  continuitySummary: SessionSummary | null; // a session summary for continuity
+  aggregatedAnalysis: SessionAnalysis | null; // a combined analysis
+  analysisSnapshots: StateAnalysis[]; // an array of StateAnalysis
 
   modelCode: ModelCode;
-  persistOnCloud: boolean;
-  aiSuggestedTitle: boolean;
-
-  meta: SessionMeta;
+  persistOnCloud?: boolean;
+  autoUpdateTitle: boolean;
+  metadata: SessionMeta;
 }
 
 export interface SessionSummary {
@@ -37,5 +53,11 @@ export interface SessionMeta {
   messageCount: number;
   tokenCount: number;
   costUSD: number;
-  [key: string]: unknown; // more flexible than `any`
+  [key: string]: unknown;
 }
+
+export const SessionMetadataSchema = z.object({
+  messageCount: z.number().optional().default(0),
+  tokenCount: z.number().optional().default(0),
+  costUSD: z.number().optional().default(0),
+});

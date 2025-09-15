@@ -1,8 +1,10 @@
 import Link from "next/link";
 
+import { findCurrentUser } from "@/app/actions/auth-actions";
 import { ThemeToggle } from "@/components/chat-ui";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import SignoutButton from "./auth/signout-button";
 import LanguageSwitcher from "./language-switcher";
 
 interface Props {
@@ -13,10 +15,11 @@ interface Props {
 }
 
 export default async function Header({ middleContent, sideContent, className, locale = "en" }: Props) {
+  const authUser = await findCurrentUser();
   const { t } = await initTranslations(locale, ["common"]);
   return (
-    <header className={cn("border-b border-mir-border-light relative z-40", className)}>
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header className={cn("border-b border-mir-border-light/20 relative", className)}>
+      <div className="relative z-[200] max-w-6xl mx-auto px-6 py-4  flex items-center justify-between">
         <Link href="/" className="font-extrabold text-xl tracking-tight rtl:font-arabic rtl:text-2xl">
           {t("app-name", { defaultValue: "Mirael" })}
         </Link>
@@ -26,6 +29,7 @@ export default async function Header({ middleContent, sideContent, className, lo
           <LanguageSwitcher />
 
           {sideContent}
+          {authUser && <SignoutButton />}
           <ThemeToggle />
         </div>
       </div>
