@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 import { AuthenticationError, AuthorizationError } from "@/errors/auth.errors";
-import { generateUserSalt } from "@/lib/crypto/encryption";
+import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
@@ -54,20 +54,18 @@ export async function assertCurrentUserId(userId: string): Promise<void> {
   }
 }
 
-export async function signUp(singUpData: SignUpSchemaType) {
+export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: WrappedKeyPackage) {
   const parsedData = SignUpSchema.parse(singUpData);
   const supabase = await createClient();
 
   const { email, password } = parsedData;
-
-  const salt = generateUserSalt();
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        encryptionSalt: salt,
+        crypto: wrappedKeyPackage,
         ageConfirm: parsedData.ageConfirm,
         termsAgree: parsedData.termsAgree,
       },

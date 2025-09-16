@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -9,16 +9,22 @@ import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-c
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
 import LoadingComponent from "@/components/loading-component";
+import { InsufficientPointsWarning } from "@/components/points/insufficient-points-warning";
+import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-chat-controller";
 import { AppLocales } from "@/lib/i18n";
+import { usePoints } from "@/lib/points/simple-points";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
-  obfuscatedSessionId: string;
+  sessionId: string;
 }
 
-const SessionPage: React.FC<Props> = ({ obfuscatedSessionId }) => {
+const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
+  const [pointsError, setPointsError] = useState<{ error: string; cost?: number } | null>(null);
+  const { getBalance } = usePoints();
 
   const {
     t,
@@ -27,7 +33,7 @@ const SessionPage: React.FC<Props> = ({ obfuscatedSessionId }) => {
 
   const chatController = useChatController({
     locale: language as AppLocales,
-    sessionId: obfuscatedSessionId,
+    sessionId,
   });
 
   const { processMessage, addMessage, resetSession } = chatController.actions;
@@ -75,37 +81,69 @@ const SessionPage: React.FC<Props> = ({ obfuscatedSessionId }) => {
     [resetSession, router]
   );
 
-  // useEffect(() => {
-  //   const handler = (event: BeforeUnloadEvent) => {
-  //     // event.preventDefault();
-  //     console.log("Unloading session", sessionId);
+  const getDecryptedSession = useCallback(
+    async () => await useEncryptedSessionStore.getState().getSession(sessionId),
+    [sessionId]
+  );
 
-  //     //return (event.returnValue = "Are you sure you want to leave?");
+  const handleProcessMessage = useCallback(
+    async (message: string) => {
+      setPointsError(null); // Clear any previous errors
 
-  //     // Only sync data already stored locally
-  //   };
-  //   window.addEventListener("beforeunload", handler);
-  //   return () => window.removeEventListener("beforeunload", handler);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+      const result = await processMessage(message);
+
+      if (result?.error) {
+        if (result.error.includes("Insufficient points")) {
+          setPointsError({
+            error: result.error,
+            cost: result.cost,
+          });
+        } else {
+          // Handle other types of errors (could show a toast or other UI)
+          console.error("Message processing error:", result.error);
+        }
+        return;
+      }
+
+      // Message processed successfully
+      return result;
+    },
+    [processMessage]
+  );
 
   if (!hasHydrated) {
     return <LoadingComponent />;
   }
-  if (!session || !messages) {
-    return null;
+  if (!session) {
+    return <div>Session not found</div>;
   }
 
   return (
     <>
-      <CodeView data={session} className=" absolute top-6 left-6" />
+      <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
+      <CodeView
+        data={{ sessionId, session, encryptedSession: getDecryptedSession().then((session) => session) }}
+        className="absolute top-6 left-6 hover:z-50 "
+      />
+
+      {/* Points Error Warning */}
+      {/* {pointsError && (
+        <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
+          <InsufficientPointsWarning
+            requiredCost={pointsError.cost || 3}
+            availableBalance={getBalance()}
+            message={pointsError.error}
+          />
+        </div>
+      )} */}
+
       <Container
         title={session?.title ?? title}
         subtitle={session?.subtitle ?? subtitle}
         messages={messages}
         isLoading={isProcessing}
         renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-        onUserInput={processMessage}
+        onUserInput={handleProcessMessage}
         welcomeMessage={welcomeMessage}
         headerActions={
           <>

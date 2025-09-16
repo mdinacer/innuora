@@ -46,7 +46,7 @@ interface OpenChatContainerProps<T> extends React.HTMLAttributes<HTMLDivElement>
   headerActions?: React.ReactNode;
   welcomeMessage?: React.ReactNode;
   renderItem: (message: T, index: number) => React.ReactNode;
-  onUserInput?: (value: string) => Promise<void>;
+  onUserInput?: (value: string) => Promise<unknown>;
 }
 
 const ChatUIContainer = <T,>({
@@ -82,7 +82,12 @@ const ChatUIContainer = <T,>({
       )}
     >
       <DecorativeOrbs />
-      <Header title={title} subtitle={subtitle} headerActions={headerActions} className="absolute top-0 inset-x-0 " />
+      <Header
+        title={title}
+        subtitle={subtitle}
+        headerActions={headerActions}
+        className="absolute top-0 inset-x-0 bg-mir-bg-card/30 backdrop-blur-lg backdrop-saturate-150"
+      />
       <MessagesContainer ref={messagesContainerRef} className="pt-[120px] pb-[100px] flex flex-col">
         {welcomeMessage}
         {messages.map(renderItem)}

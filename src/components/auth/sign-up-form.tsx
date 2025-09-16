@@ -8,11 +8,12 @@ import { XCircleIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { signOut, signUp } from "@/app/actions/auth-actions";
+import { signUp } from "@/app/actions/auth-actions";
 import CheckboxField from "@/components/input/checkbox-field";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
+import { createAndWrapContentKeyForUser } from "@/lib/crypto/webcrypto-crypto";
 import { cn } from "@/lib/utils";
 import { SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
 
@@ -71,10 +72,10 @@ const SignUpForm: React.FC<Props> = ({}) => {
   const { isSubmitting } = form.formState;
 
   const handleOnSubmit = useCallback(async (data: SignUpSchemaType) => {
-    await signOut();
     setFormError(null);
     try {
-      await signUp(data);
+      const { wrappedPackage } = await createAndWrapContentKeyForUser(data.password);
+      await signUp(data, wrappedPackage);
     } catch (error: unknown) {
       if (error instanceof AuthError) {
         setFormError(error.message);

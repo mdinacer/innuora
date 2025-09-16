@@ -9,7 +9,7 @@ import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-pa
 import NewSessionsLoader from "@/components/sessions/sessions-page/new-sessions-loader";
 import SessionCard from "@/components/sessions/sessions-page/session-card";
 import { SessionMetadataSchema, SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { useEncryptedChatSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import useFetchSessions from "@/lib/sessions/use-fetch-sessions";
 import { cn } from "@/lib/utils";
 
@@ -19,8 +19,8 @@ interface SessionsPageProps {
 
 const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
   useFetchSessions();
-  const hasHydrated = useEncryptedChatSessionStore((state) => state.hasHydrated);
-  const sessions = useEncryptedChatSessionStore((state) => state.sessions);
+  const hasHydrated = useEncryptedSessionStore((state) => state.hasHydrated);
+  const sessions = useEncryptedSessionStore((state) => state.sessions);
 
   const sessionsOverview = useMemo(() => {
     if (Object.keys(sessions).length === 0) return [] as SessionOverview[];

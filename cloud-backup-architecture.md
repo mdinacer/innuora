@@ -7,12 +7,14 @@ Instead of confusing "sync" terminology, frame it as **backup with device contin
 ## User-Friendly Framing
 
 ### **Simple Message:**
+
 > 💾 **"Create a backup on the cloud"**  
 > ✨ **"Continue this conversation on any device"**
 
 ### **Clear Benefits:**
+
 - 📱➡️💻 **Switch devices** - Start on phone, continue on laptop
-- 🔒 **Safe backup** - Never lose important conversations  
+- 🔒 **Safe backup** - Never lose important conversations
 - 🌐 **Access anywhere** - Available when you need support
 - 🔐 **Always encrypted** - Your privacy is protected
 
@@ -25,7 +27,7 @@ const NewSessionDialog = () => (
   <Dialog>
     <DialogContent>
       <h2>Start a New Conversation</h2>
-      
+
       <div className="backup-option">
         <div className="option-card">
           <div className="icon">💾</div>
@@ -40,7 +42,7 @@ const NewSessionDialog = () => (
           </div>
           <Switch checked={backupEnabled} onChange={setBackupEnabled} />
         </div>
-        
+
         <div className="option-card">
           <div className="icon">📱</div>
           <div className="content">
@@ -65,7 +67,7 @@ const NewSessionDialog = () => (
 ```typescript
 const SessionBackupStatus = ({ session }: { session: Session }) => {
   const isBackedUp = session.persistOnCloud;
-  
+
   return (
     <div className="backup-status">
       {isBackedUp ? (
@@ -92,13 +94,13 @@ const BackupPrompt = ({ session, onBackup }: BackupPromptProps) => (
     <div className="prompt-content">
       <h4>💾 Create a backup of this conversation?</h4>
       <p>Continue this important discussion on any device</p>
-      
+
       <div className="benefits">
         <div>📱➡️💻 Switch between devices</div>
         <div>🔒 Secure & encrypted backup</div>
         <div>🌐 Access when you need support</div>
       </div>
-      
+
       <div className="actions">
         <Button variant="primary" onClick={onBackup}>
           Create Backup
@@ -118,19 +120,19 @@ const BackupPrompt = ({ session, onBackup }: BackupPromptProps) => (
 const BackupSettings = () => (
   <div className="backup-settings">
     <h3>Conversation Backups</h3>
-    
+
     <div className="stats">
       <StatCard>
         <div className="stat-number">{localCount}</div>
         <div className="stat-label">📱 Device only</div>
       </StatCard>
-      
+
       <StatCard>
         <div className="stat-number">{backedUpCount}</div>
         <div className="stat-label">💾 Backed up</div>
       </StatCard>
     </div>
-    
+
     <div className="settings">
       <SettingItem>
         <label>Default for new conversations</label>
@@ -140,10 +142,10 @@ const BackupSettings = () => (
           <option value="local">Keep on device only</option>
         </Select>
       </SettingItem>
-      
+
       <SettingItem>
         <label>Smart backup suggestions</label>
-        <Switch 
+        <Switch
           checked={smartSuggestions}
           onChange={setSmartSuggestions}
         />
@@ -177,7 +179,7 @@ const BackupSuggestion = () => (
     <div className="suggestion-content">
       <h4>This seems like an important conversation</h4>
       <p>Would you like to back it up so you can continue on other devices?</p>
-      
+
       <div className="suggestion-actions">
         <Button size="sm" onClick={handleBackup}>
           Yes, create backup
@@ -199,15 +201,15 @@ const BackupSuggestion = () => (
 interface Session {
   id: string;
   // ... existing fields
-  
+
   // Backup settings
   cloudBackup: {
     enabled: boolean;
     lastBackupAt?: Date;
-    backupStatus: 'none' | 'pending' | 'backed-up' | 'failed';
+    backupStatus: "none" | "pending" | "backed-up" | "failed";
     autoBackup: boolean;
   };
-  
+
   // Device continuity
   deviceAccess: {
     originalDevice: string;
@@ -225,34 +227,28 @@ export class CloudBackupService {
     try {
       // Encrypt session data
       const encrypted = await this.encryptForBackup(session);
-      
+
       // Upload to Supabase
-      const result = await supabase
-        .from('session_backups')
-        .insert({
-          session_id: session.id,
-          encrypted_data: encrypted.data,
-          encryption_metadata: encrypted.metadata,
-          device_id: this.getCurrentDeviceId(),
-          created_at: new Date().toISOString()
-        });
-      
+      const result = await supabase.from("session_backups").insert({
+        session_id: session.id,
+        encrypted_data: encrypted.data,
+        encryption_metadata: encrypted.metadata,
+        device_id: this.getCurrentDeviceId(),
+        created_at: new Date().toISOString(),
+      });
+
       return { success: true, backupId: result.data.id };
     } catch (error) {
       return { success: false, error };
     }
   }
-  
+
   async restoreFromBackup(sessionId: string): Promise<Session | null> {
     // Retrieve and decrypt backup from Supabase
-    const backup = await supabase
-      .from('session_backups')
-      .select('*')
-      .eq('session_id', sessionId)
-      .single();
-    
+    const backup = await supabase.from("session_backups").select("*").eq("session_id", sessionId).single();
+
     if (!backup.data) return null;
-    
+
     return await this.decryptBackup(backup.data);
   }
 }
@@ -265,20 +261,20 @@ export class SessionSyncManager {
   queueSync(sessionId: string, obfuscatedId: string, operation: string, data: Session): void {
     // Always sync locally (immediate)
     this.queueLocalSync(sessionId, obfuscatedId, operation, data);
-    
+
     // Backup to cloud if enabled
     if (data.cloudBackup.enabled) {
       this.queueCloudBackup(sessionId, operation, data);
     }
   }
-  
+
   private async queueCloudBackup(sessionId: string, operation: string, data: Session) {
     // Update backup with current session state
     await this.cloudBackupService.updateBackup(sessionId, data);
-    
+
     // Update backup status
     data.cloudBackup.lastBackupAt = new Date();
-    data.cloudBackup.backupStatus = 'backed-up';
+    data.cloudBackup.backupStatus = "backed-up";
   }
 }
 ```
@@ -286,6 +282,7 @@ export class SessionSyncManager {
 ## User Experience Flow
 
 ### **1. First Time User:**
+
 ```
 ┌─ Create conversation ─┐
 │                       │
@@ -297,6 +294,7 @@ export class SessionSyncManager {
 ```
 
 ### **2. Existing User with Important Conversation:**
+
 ```
 ┌─ After meaningful exchange ─┐
 │                             │
@@ -310,6 +308,7 @@ export class SessionSyncManager {
 ```
 
 ### **3. Cross-Device Access:**
+
 ```
 ┌─ On new device ─┐
 │                 │
@@ -325,16 +324,19 @@ export class SessionSyncManager {
 ## Benefits of This Approach:
 
 ### **Clear Mental Model:**
+
 - ✅ **"Backup"** is universally understood
 - ✅ **"Continue anywhere"** shows clear benefit
 - ✅ **No confusing "sync" terminology**
 
 ### **User Control:**
+
 - ✅ **Explicit choice** for each conversation
 - ✅ **Smart suggestions** for important conversations
 - ✅ **Easy to understand** privacy implications
 
 ### **Privacy Focused:**
+
 - ✅ **Device-only by default** for privacy
 - ✅ **Backup is optional** enhancement
 - ✅ **Always encrypted** in cloud storage

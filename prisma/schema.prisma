@@ -152,11 +152,7 @@ model Session {
   persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
   metadata        Json // additional metadata { messageCount :int, tokenCount: int, costUSD :float}
   // Encrypted session bundle
-  encryptedData   Bytes?    @map("encrypted_data") // ciphertext of full session object
-  iv              Bytes?    @map("iv") // initialization vector
-  authTag         Bytes?    @map("auth_tag") // GCM authentication tag
-  encAlg          String?   @default("AES-256-GCM") @map("enc_alg") // algorithm used
-  // Timestamps
+  encryptedData   Json?     @map("encrypted_data")
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 

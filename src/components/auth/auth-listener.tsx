@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { createClient } from "@/lib/supabase/client";
 
 const AuthListener: React.FC = () => {
@@ -10,7 +10,7 @@ const AuthListener: React.FC = () => {
   useEffect(() => {
     console.log("Auth listener mounted");
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === "INITIAL_SESSION") {
         // handle initial session
       } else if (event === "SIGNED_IN") {
@@ -19,7 +19,7 @@ const AuthListener: React.FC = () => {
         // if (getSessionKey()) {
         //   clearSessionKey();
         // }
-        useOpenChatSessionStore.persist.clearStorage();
+        useEncryptedSessionStore.persist.clearStorage();
 
         // handle sign out event
       } else if (event === "PASSWORD_RECOVERY") {
@@ -35,31 +35,6 @@ const AuthListener: React.FC = () => {
       listener.subscription.unsubscribe();
     };
   }, [supabase]);
-  //   useEffect(() => {
-  //     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-  //       console.log("Auth event:", event, session);
-  //       switch (event) {
-  //         case "SIGNED_IN":
-  //           if (session?.user) {
-  //             const metadata = session.user.user_metadata;
-  //             if (!metadata.encryptionSalt) {
-  //               throw new Error("No encryption salt found in user metadata");
-  //             }
-  //           }
-  //           break;
-  //         case "SIGNED_OUT":
-  //           console.log("Signed out");
-
-  //           if (getSessionKey()) clearSessionKey();
-  //           break;
-  //       }
-  //       onAuthChange?.(session);
-  //     });
-
-  //     return () => {
-  //       listener.subscription.unsubscribe();
-  //     };
-  //   }, [supabase, onAuthChange]);
 
   return null; // This component doesn't render anything
 };

@@ -7,14 +7,29 @@ import { SessionSummarySchema } from "@/lib/ai/mirael-core/v2/session-analysis/s
 import { combineToSessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.utils";
 import { parseJsonObject } from "@/lib/ai/shared/parse-json";
 import { AppLocales } from "@/lib/i18n";
+import { useSessionServices } from "@/lib/points/simple-points";
 
 export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessionId: string; locale?: AppLocales }) {
   const { session, addTokenUsage, updateSession } = useChatSessionState({ sessionId });
+  const { requestSessionAnalysis, canAffordService } = useSessionServices();
 
   const summarizeSession = useCallback(async () => {
     if (!session || !session.memoryStore || !session.analysisSnapshots.length) return;
 
+    // Check if user can afford session analysis
+    const affordabilityCheck = canAffordService("session_analysis");
+    if (!affordabilityCheck.canAfford) {
+      console.warn("Cannot afford session analysis:", affordabilityCheck.reason);
+      return { error: "Insufficient points for session analysis", cost: affordabilityCheck.cost };
+    }
+
     try {
+      // Consume points for session analysis
+      const pointsResult = await requestSessionAnalysis(sessionId);
+      if (!pointsResult.success) {
+        console.error("Failed to consume points for session analysis:", pointsResult.error);
+        return { error: pointsResult.error };
+      }
       const sessionAnalysis = combineToSessionAnalysis(session.analysisSnapshots);
       const result = await getSessionSummary(sessionAnalysis, session.memoryStore, locale);
 
@@ -57,10 +72,13 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
           subtitle: subtitle ?? prev.subtitle,
         }));
       }
+
+      return { success: true, pointsConsumed: pointsResult.cost };
     } catch (error) {
       console.error("Error generating session summary:", error);
+      return { error: "Failed to generate session summary" };
     }
-  }, [addTokenUsage, locale, session, updateSession]);
+  }, [addTokenUsage, locale, session, updateSession, canAffordService, requestSessionAnalysis, sessionId]);
 
   return {
     summarizeSession,

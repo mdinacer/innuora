@@ -66,10 +66,14 @@ export class StateAnalysisEngine {
     const distortionsSet: Set<string> = new Set();
 
     recent.forEach(({ themes, distortions }) => {
-      themes.forEach((theme) => {
-        themeCounts[theme] = (themeCounts[theme] || 0) + 1;
+      themes.forEach((themeObj) => {
+        const themeText = typeof themeObj === 'string' ? themeObj : themeObj.theme;
+        themeCounts[themeText] = (themeCounts[themeText] || 0) + 1;
       });
-      distortions.forEach((d) => distortionsSet.add(d));
+      distortions.forEach((distortion) => {
+        const distortionText = typeof distortion === 'string' ? distortion : distortion.type;
+        distortionsSet.add(distortionText);
+      });
     });
 
     const recurringThemes = Object.entries(themeCounts)

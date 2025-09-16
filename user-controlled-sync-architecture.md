@@ -9,6 +9,7 @@ Users should have **explicit control** over what gets synced to the cloud databa
 ## Recommended Architecture
 
 ### **1. Local-First Storage**
+
 ```typescript
 // All sessions start as local-only by default
 interface Session {
@@ -26,11 +27,12 @@ interface Session {
 ### **2. User-Controlled Sync Options**
 
 #### **Option A: Per-Session Control** (Most Granular)
+
 ```typescript
 // Each session can be individually controlled
 const SessionSyncControls = () => (
   <div className="sync-controls">
-    <Switch 
+    <Switch
       checked={session.persistOnCloud}
       onChange={handleToggleCloudSync}
       label="Sync this session to cloud"
@@ -43,6 +45,7 @@ const SessionSyncControls = () => (
 ```
 
 #### **Option B: Global User Preference** (Simpler)
+
 ```typescript
 // User sets global preference in settings
 interface UserSettings {
@@ -53,24 +56,26 @@ interface UserSettings {
 ```
 
 #### **Option C: Hybrid Approach** (Recommended)
+
 ```typescript
 // Global preference + per-session override
 const getSyncBehavior = (session: Session, userSettings: UserSettings) => {
-  if (userSettings.localOnlyMode) return 'local-only';
+  if (userSettings.localOnlyMode) return "local-only";
   if (session.syncSettings.cloudSyncEnabled !== undefined) {
-    return session.syncSettings.cloudSyncEnabled ? 'cloud-sync' : 'local-only';
+    return session.syncSettings.cloudSyncEnabled ? "cloud-sync" : "local-only";
   }
-  return userSettings.defaultSyncToCloud ? 'cloud-sync' : 'local-only';
+  return userSettings.defaultSyncToCloud ? "cloud-sync" : "local-only";
 };
 ```
 
 ### **3. Transparent Sync Status**
 
 #### **Visual Indicators**
+
 ```typescript
 const SyncStatusBadge = ({ session }: { session: Session }) => {
   const status = session.persistOnCloud ? 'cloud' : 'local';
-  
+
   return (
     <Badge variant={status === 'cloud' ? 'blue' : 'gray'}>
       {status === 'cloud' ? (
@@ -90,6 +95,7 @@ const SyncStatusBadge = ({ session }: { session: Session }) => {
 ```
 
 #### **User Dashboard**
+
 ```typescript
 const PrivacyDashboard = () => (
   <div className="privacy-dashboard">
@@ -99,7 +105,7 @@ const PrivacyDashboard = () => (
       <div>☁️ Cloud sessions: {cloudSessionCount}</div>
       <div>🔒 Private conversations stay on your device</div>
     </div>
-    
+
     <Button onClick={exportLocalData}>
       Export Local Data
     </Button>
@@ -110,6 +116,7 @@ const PrivacyDashboard = () => (
 ## Implementation Strategy
 
 ### **Phase 1: Current Sessions**
+
 For existing sessions, we should:
 
 1. **Default to local-only** for privacy
@@ -122,7 +129,7 @@ const SessionMigrationDialog = () => (
     <DialogContent>
       <h2>Control Your Data Privacy</h2>
       <p>You have {existingSessionCount} conversations. Choose how to handle them:</p>
-      
+
       <div className="options">
         <RadioGroup>
           <Radio value="local-only">
@@ -136,7 +143,7 @@ const SessionMigrationDialog = () => (
           </Radio>
         </RadioGroup>
       </div>
-      
+
       <p className="privacy-note">
         💡 You can always change these settings later for individual conversations
       </p>
@@ -146,17 +153,18 @@ const SessionMigrationDialog = () => (
 ```
 
 ### **Phase 2: New Sessions**
+
 ```typescript
 const NewSessionDialog = () => {
   const [syncToCloud, setSyncToCloud] = useState(userSettings.defaultSyncToCloud);
-  
+
   return (
     <Dialog>
       <DialogContent>
         <h2>New Conversation</h2>
-        
+
         <div className="sync-option">
-          <Switch 
+          <Switch
             checked={syncToCloud}
             onChange={setSyncToCloud}
           />
@@ -165,9 +173,9 @@ const NewSessionDialog = () => {
             <p className="text-sm">Access this conversation across your devices</p>
           </div>
         </div>
-        
+
         <div className="privacy-notice">
-          🔒 Your conversations are always encrypted. 
+          🔒 Your conversations are always encrypted.
           Local conversations never leave your device.
         </div>
       </DialogContent>
@@ -179,25 +187,26 @@ const NewSessionDialog = () => {
 ## Technical Implementation
 
 ### **Modified Auto-Sync System**
+
 ```typescript
 export class SessionSyncManager {
   queueSync(sessionId: string, obfuscatedId: string, operation: string, data: Session): void {
     // Always sync locally (encrypted store)
     this.queueLocalSync(sessionId, obfuscatedId, operation, data);
-    
+
     // Only sync to cloud if user has enabled it for this session
     if (data.persistOnCloud && data.syncSettings?.cloudSyncEnabled) {
       this.queueCloudSync(sessionId, operation, data);
     }
   }
-  
+
   private async queueCloudSync(sessionId: string, operation: string, data: Session) {
     // Sync to Supabase only when explicitly enabled
     await this.cloudSyncQueue.add({
       sessionId,
       operation,
       data,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 }
@@ -206,21 +215,25 @@ export class SessionSyncManager {
 ## Privacy Benefits
 
 ### **1. User Autonomy**
+
 - ✅ Users decide what's private vs synced
 - ✅ Can change sync settings anytime
 - ✅ Full control over their emotional data
 
 ### **2. Privacy by Design**
+
 - ✅ Local-first architecture
 - ✅ Explicit consent for cloud sync
 - ✅ No surprise data uploads
 
 ### **3. Compliance Ready**
+
 - ✅ GDPR compliant (explicit consent)
 - ✅ Right to data portability (export)
 - ✅ Right to deletion (local-only sessions)
 
 ### **4. Trust Building**
+
 - ✅ Transparent about data handling
 - ✅ Users see exactly what's synced
 - ✅ Privacy-focused design signals
@@ -228,6 +241,7 @@ export class SessionSyncManager {
 ## Recommendation
 
 **Use the Hybrid Approach** with:
+
 1. **Default to local-only** for new sessions
 2. **User chooses** cloud sync per session or globally
 3. **Clear migration dialog** for existing sessions

@@ -12,10 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import {
-  SessionChangeState,
-  useEncryptedChatSessionStore,
-} from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
+import { SessionChangeState, useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { AppLocales } from "@/lib/i18n";
 import { fnsLocalesMap } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
@@ -29,12 +26,18 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
     t,
     i18n: { language },
   } = useTranslation("pages", { keyPrefix: "sessions.card" });
-  const isOnCloud = useEncryptedChatSessionStore((state) => state.onlineSessionIds.includes(session.id));
-  const updatesData = useEncryptedChatSessionStore((state) => state.sessionsChangesMap[session.id]) as
+  //const getSessionObfuscatedId = useEncryptedSessionStore((state) => state.getSessionObfuscatedId);
+
+  const isOnCloud = useEncryptedSessionStore((state) => state.onlineSessionIds.includes(session.id));
+  const updatesData = useEncryptedSessionStore((state) => state.changesMap[session.id]) as
     | SessionChangeState
     | undefined;
 
   const fnsLocale = fnsLocalesMap[language as AppLocales];
+
+  // const obfuscatedId = useMemo(() => {
+  //   return getSessionObfuscatedId(session.id);
+  // }, [getSessionObfuscatedId, session.id]);
 
   const {
     cloud,
@@ -134,7 +137,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
       {/* Bottom actions */}
       <div className="min-h-1/5 p-6 pt-4 border-t border-mir-border-light/30 flex items-center justify-between">
         <Link
-          href={`/sessions/${session.obfuscatedId}`}
+          href={`/sessions/${session.id}`}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-mir-bg-accent text-white font-medium text-sm hover:shadow-[0_4px_20px] hover:shadow-black/10 hover:scale-105 transition-all"
           aria-label={`${continueText} to session`}
         >

@@ -1,11 +1,11 @@
 "use server";
 
-import { Prisma, Session } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { requireAdmin, requireCurrentUser } from "@/app/actions/auth-actions";
 import { SessionMetadataSchema, SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { EncryptedDataPayload } from "@/lib/crypto/encryption.types";
+import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
 import { prisma } from "@/lib/prisma";
 import { SessionCreate } from "@/lib/zod/session-create.schema";
 
@@ -58,19 +58,27 @@ export async function getSessionsUpdateInfo(): Promise<{ id: string; updatedAt: 
   });
 }
 
-export async function getSessionById(sessionId: string): Promise<Session | null> {
+export async function getSessionById(sessionId: string) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.findUnique({
+  const session = await prisma.session.findUnique({
     where: { id: sessionId, user: { authId: authUser.id } },
   });
+
+  if (!session) return null;
+
+  // Convert Uint8Arrays to plain arrays for serialization
+  return session;
 }
 
 export async function batchGetSessionsById(sessionIds: string[]) {
   const authUser = await requireCurrentUser();
-  return await prisma.session.findMany({
+  const sessions = await prisma.session.findMany({
     where: { id: { in: sessionIds }, user: { authId: authUser.id } },
   });
+
+  // Convert Uint8Arrays to plain arrays for serialization
+  return sessions;
 }
 
 export async function createSession(sessionCreateInput: SessionCreate) {
@@ -94,48 +102,20 @@ export async function createSession(sessionCreateInput: SessionCreate) {
   });
 }
 
-/**
- * Convert EncryptedDataPayload to database format
- */
-function payloadToEncryptionResult(payload: EncryptedDataPayload) {
-  return {
-    encryptedData: Buffer.from(payload.encryptedData),
-    iv: Buffer.from(payload.iv),
-    authTag: Buffer.from(payload.authTag),
-    encAlg: payload.encAlg,
-  };
-}
-
-export async function updateSessionEncryptedData(sessionId: string, data: EncryptedDataPayload) {
+export async function updateSessionEncryptedData(sessionId: string, data: EncryptedBlob) {
   const authUser = await requireCurrentUser();
 
   return await prisma.session.update({
     where: { id: sessionId, user: { authId: authUser.id } },
-    data: payloadToEncryptionResult(data),
+    data: { encryptedData: data },
   });
 }
-export async function updateSession(
-  sessionId: string,
-  data: Omit<Prisma.SessionUpdateWithoutUserInput, "encryptedData" | "iv" | "authTag" | "encAlg">,
-  encryptedData?: EncryptedDataPayload
-) {
+export async function updateSession(sessionId: string, data: Prisma.SessionUpdateWithoutUserInput) {
   const authUser = await requireCurrentUser();
-
-  const encryptedResult = encryptedData
-    ? payloadToEncryptionResult(encryptedData)
-    : {
-        encryptedData: null,
-        iv: null,
-        authTag: null,
-        encAlg: null,
-      };
 
   return await prisma.session.update({
     where: { id: sessionId, user: { authId: authUser.id } },
-    data: {
-      ...data,
-      ...encryptedResult,
-    },
+    data,
   });
 }
 

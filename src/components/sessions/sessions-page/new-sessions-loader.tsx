@@ -1,15 +1,11 @@
 "use client";
 
 import React, { useCallback, useMemo, useState } from "react";
-import { Session } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { batchGetSessionsById, getSessionById } from "@/app/actions/session-actions";
-import {
-  getUniqueObfuscatedId,
-  useEncryptedChatSessionStore,
-} from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
+import { batchGetSessionsById } from "@/app/actions/session-actions";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -27,7 +23,7 @@ const NewSessionsLoader: React.FC<Props> = ({ className }) => {
     loaded: false,
     error: null,
   });
-  const changesMap = useEncryptedChatSessionStore((state) => state.sessionsChangesMap);
+  const changesMap = useEncryptedSessionStore((state) => state.changesMap);
 
   const newItems = useMemo(
     () =>
@@ -56,10 +52,9 @@ const NewSessionsLoader: React.FC<Props> = ({ className }) => {
       const sessions = await batchGetSessionsById(newItemsIds);
 
       if (sessions.length > 0) {
-        const state = useEncryptedChatSessionStore.getState();
+        const state = useEncryptedSessionStore.getState();
         for (const session of sessions) {
-          const obfuscatedId = getUniqueObfuscatedId(state.sessionIdMap);
-          state.setSession(obfuscatedId, session);
+          state.setSession(session.id, session);
           state.setChangesMap((prevMap) => {
             const newMap = { ...prevMap };
             delete newMap[session.id];

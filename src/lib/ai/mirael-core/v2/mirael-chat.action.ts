@@ -57,7 +57,7 @@ async function buildConversationPrompts(
     throw new UserInputServiceError(`Unsupported locale: ${locale}`, "UNSUPPORTED_LOCALE");
   }
 
-  const toneInstruction = TonePrompt[analysis.intensity];
+  const toneInstruction = TonePrompt["therapist"][analysis.intensity];
   if (!toneInstruction) {
     throw new UserInputServiceError(`Unsupported intensity: ${analysis.intensity}`, "UNSUPPORTED_INTENSITY");
   }

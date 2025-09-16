@@ -1,11 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { isAfter, parseISO } from "date-fns";
 
 import { getSessionsUpdateInfo } from "@/app/actions/session-actions";
-import {
-  SessionChangeState,
-  useEncryptedChatSessionStore,
-} from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
+import { SessionChangeState, useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 
 function hasUpdates<T extends { updatedAt: Date | string }>(cloudSession: T, localSession: T) {
   const cloudDate =
@@ -15,51 +12,26 @@ function hasUpdates<T extends { updatedAt: Date | string }>(cloudSession: T, loc
   return isAfter(cloudDate, localDate);
 }
 
-function reverseMap<K extends string | number | symbol, V extends string | number | symbol>(
-  map: Record<K, V>
-): Record<V, K> {
-  const reversed = {} as Record<V, K>;
-
-  for (const key in map) {
-    const value = map[key];
-    reversed[value] = key;
-  }
-
-  return reversed;
-}
-
 export default function useFetchSessions() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [updateInfo, setUpdateInfo] = useState<{ id: string; updatedAt: Date }[]>([]);
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
-  const hasHydrated = useEncryptedChatSessionStore((state) => state.hasHydrated);
-  const sessions = useEncryptedChatSessionStore((state) => state.sessions);
-  const sessionIdMap = useEncryptedChatSessionStore((state) => state.sessionIdMap);
-
-  const reversedMap = useMemo(() => reverseMap(sessionIdMap), [sessionIdMap]);
+  const hasHydrated = useEncryptedSessionStore((state) => state.hasHydrated);
+  const sessions = useEncryptedSessionStore((state) => state.sessions);
 
   const isInitialRunRef = useRef(true);
   const processedUpdateInfo = useRef<string>("");
 
-  const sessionExists = useCallback(
-    (sessionId: string) => {
-      return !!reversedMap[sessionId];
-    },
-    [reversedMap]
-  );
-
   const checkForUpdates = useCallback(
     (updateInfo: { id: string; updatedAt: Date }) => {
-      if (!sessionExists(updateInfo.id)) return false;
-      const obfuscatedId = reversedMap[updateInfo.id];
-      if (!obfuscatedId) return false;
+      const localSession = sessions[updateInfo.id];
+      if (!localSession) return false;
 
-      const localSession = sessions[obfuscatedId];
       return localSession && hasUpdates(updateInfo, localSession);
     },
-    [reversedMap, sessionExists, sessions]
+    [sessions]
   );
 
   const handleFetchSessionUpdateInfo = useCallback(async () => {
@@ -70,7 +42,7 @@ export default function useFetchSessions() {
       const data: { id: string; updatedAt: Date }[] = await getSessionsUpdateInfo();
       if (!data.length) return;
       for (const item of data) {
-        useEncryptedChatSessionStore.getState().addOnlineSessionId(item.id);
+        useEncryptedSessionStore.getState().addOnlineSessionId(item.id);
       }
       setUpdateInfo(data);
     } catch (error) {
@@ -82,7 +54,7 @@ export default function useFetchSessions() {
   }, [loading]);
 
   const addChangesEntry = useCallback(async (sessionId: string, entry: SessionChangeState) => {
-    useEncryptedChatSessionStore.getState().setChangesMap((prev) => {
+    useEncryptedSessionStore.getState().setChangesMap((prev) => {
       const newMap = { ...prev };
       newMap[sessionId] = entry;
       return newMap;
@@ -104,14 +76,15 @@ export default function useFetchSessions() {
         // Skip if already processing this session
         if (processingIds.has(item.id)) continue;
 
-        const obfuscatedId = reversedMap[item.id];
-        const isNew = !obfuscatedId;
+        const session = sessions[item.id];
+
+        const isNew = !session;
         const hasUpdates = checkForUpdates(item);
 
         if (!isNew && !hasUpdates) continue;
 
         const sessionChange: SessionChangeState = {
-          obfuscatedId,
+          sessionId: session?.id,
           state: isNew ? "new" : "modified",
           updatedAt: item.updatedAt,
         };
@@ -129,7 +102,7 @@ export default function useFetchSessions() {
       isInitialRunRef.current = false;
       setLoading(false);
     }
-  }, [updateInfo, loading, processingIds, reversedMap, checkForUpdates, addChangesEntry]);
+  }, [updateInfo, loading, processingIds, sessions, checkForUpdates, addChangesEntry]);
 
   // Fetch update info on initial hydration
   useEffect(() => {

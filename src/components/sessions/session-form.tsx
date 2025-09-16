@@ -22,8 +22,9 @@ import {
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { generateId } from "@/lib/chat/flow/generate-id";
-import { useAutoSyncSessionStore } from "@/lib/session-sync/auto-sync-hooks";
+import { useSessionServices } from "@/lib/points/simple-points";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
 
 interface Props {
@@ -36,7 +37,8 @@ interface Props {
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
-  const autoSyncStore = useAutoSyncSessionStore();
+  const encryptedStore = useEncryptedSessionStore();
+  const { canAffordService, getServiceCost } = useSessionServices();
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
@@ -52,6 +54,10 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const { isSubmitting } = form.formState;
 
   const isEdit = !!session;
+
+  // Points service information
+  const sessionAnalysisCost = getServiceCost("session_analysis");
+  const canAffordAnalysis = canAffordService("session_analysis").canAfford;
 
   const data = useMemo(
     () => ({
@@ -69,7 +75,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         },
         aiSuggestedTitle: {
           label: t("fields.aiSuggestedTitle.label"),
-          description: t("fields.aiSuggestedTitle.description"),
+          description: `${t("fields.aiSuggestedTitle.description")} (Cost: $${(sessionAnalysisCost / 100).toFixed(2)}${!canAffordAnalysis ? " - Insufficient Points" : ""})`,
         },
         persistOnCloud: {
           label: t("fields.persistOnCloud.label"),
@@ -81,22 +87,26 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         cancel: t("actions.cancel"),
       },
     }),
-    [isEdit, t]
+    [isEdit, t, sessionAnalysisCost, canAffordAnalysis]
   );
 
   const handleOnSubmit = useCallback(
     async (data: SessionCreate) => {
       const id = session?.id || generateId("Session");
-      const state = autoSyncStore;
-
-      const createLocalSession = (sessionData: Partial<Session>) => state.createSession(id, sessionData);
 
       if (session) {
-        state.updateSession(id, (prev) => ({ ...prev, ...data }));
+        // Update existing session
+        const updatedSession = await encryptedStore.getSession(id);
+        if (updatedSession) {
+          await encryptedStore.updateSession(id, { ...updatedSession, ...data });
+        }
       } else if (data.persistOnCloud) {
+        // Create cloud session first
         const result = await createSession(data);
         if (result) {
-          createLocalSession({
+          // Create local encrypted session
+          await encryptedStore.createSession({
+            id: result.id,
             title: result.title,
             subtitle: result.subtitle || undefined,
             autoUpdateTitle: result.autoUpdateTitle,
@@ -104,7 +114,9 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
           });
         }
       } else {
-        createLocalSession({
+        // Create local-only session
+        await encryptedStore.createSession({
+          id,
           title: data.title || generateId("Session"),
           subtitle: data.subtitle,
           autoUpdateTitle: data.autoUpdateTitle,
@@ -112,9 +124,15 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         });
       }
 
-      onSubmit?.(state.sessions[id]);
+      // Get the updated session and call onSubmit
+      const updatedSession = await encryptedStore.getSession(id);
+      if (updatedSession) {
+        onSubmit?.(updatedSession);
+      }
+
+      setOpen(false);
     },
-    [onSubmit, session, autoSyncStore]
+    [onSubmit, session, encryptedStore]
   );
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>

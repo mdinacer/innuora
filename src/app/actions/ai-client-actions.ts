@@ -16,7 +16,7 @@ type RequestOptions = {
 
 const DEFAULT_AI_OPTIONS: RequestOptions = {
   stream: false,
-  max_tokens: 500,
+  max_tokens: 700,
   temperature: 0.6,
   top_p: 0.9,
 };

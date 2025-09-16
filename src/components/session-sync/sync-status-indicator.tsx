@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle, Clock, RefreshCw, Wifi, WifiOff } from "lucide-react";
 
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { useSessionSyncStatus } from "@/lib/session-sync/auto-sync-hooks";
+import { simpleSessionSync, SyncStatusDetailed } from "@/lib/session-sync/simple-sync";
 
 interface SyncStatusIndicatorProps {
   sessionId: string;
@@ -24,8 +24,25 @@ export function SyncStatusIndicator({
   className = "",
   showDetails = false,
 }: SyncStatusIndicatorProps) {
-  const { status, lastSyncTime, retry, manualSync } = useSessionSyncStatus(sessionId);
+  const [syncStatus, setSyncStatus] = useState<SyncStatusDetailed>({ local: "synced", cloud: "synced" });
+  const [lastSyncTimes, setLastSyncTimes] = useState<{ local: Date | null; cloud: Date | null }>({
+    local: null,
+    cloud: null,
+  });
   const [isOnline, setIsOnline] = useState(true);
+
+  // Poll sync status
+  useEffect(() => {
+    const updateStatus = () => {
+      setSyncStatus(simpleSessionSync.getSyncStatus(sessionId));
+      setLastSyncTimes(simpleSessionSync.getLastSyncTimes(sessionId));
+    };
+
+    updateStatus();
+    const interval = setInterval(updateStatus, 1000); // Update every second
+
+    return () => clearInterval(interval);
+  }, [sessionId]);
 
   // Monitor network status
   useEffect(() => {
@@ -46,54 +63,94 @@ export function SyncStatusIndicator({
       return <WifiOff className="h-4 w-4 text-gray-400" />;
     }
 
-    switch (status) {
-      case "synced":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "pending":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case "syncing":
-        return <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />;
-      case "error":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Wifi className="h-4 w-4 text-gray-400" />;
+    // Determine overall status priority: error > syncing > pending > synced
+    const localStatus = syncStatus.local;
+    const cloudStatus = syncStatus.cloud;
+
+    if (localStatus === "error" || cloudStatus === "error") {
+      return <AlertTriangle className="h-4 w-4 text-red-500" />;
     }
+    if (localStatus === "syncing" || cloudStatus === "syncing") {
+      return <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />;
+    }
+    if (localStatus === "pending" || cloudStatus === "pending") {
+      return <Clock className="h-4 w-4 text-yellow-500" />;
+    }
+    if (localStatus === "synced" && (cloudStatus === "synced" || cloudStatus === "disabled")) {
+      return <CheckCircle className="h-4 w-4 text-green-500" />;
+    }
+
+    return <Wifi className="h-4 w-4 text-gray-400" />;
   };
 
   const getStatusText = () => {
     if (!isOnline) return "Offline";
 
-    const isCloudBacked = session?.persistOnCloud;
+    const localStatus = syncStatus.local;
+    const cloudStatus = syncStatus.cloud;
+    const isCloudEnabled = session?.persistOnCloud;
 
-    switch (status) {
-      case "synced":
-        return isCloudBacked ? "Backed up to cloud" : "Local only";
-      case "pending":
-        return isCloudBacked ? "Backing up..." : "Syncing locally";
-      case "syncing":
-        return isCloudBacked ? "Backing up..." : "Syncing...";
-      case "error":
-        return isCloudBacked ? "Backup failed" : "Sync failed";
-      default:
-        return "Unknown";
+    // Handle error states first
+    if (localStatus === "error" && cloudStatus === "error") {
+      return "Sync failed";
     }
+    if (localStatus === "error") {
+      return "Local sync failed";
+    }
+    if (cloudStatus === "error") {
+      return "Cloud sync failed";
+    }
+
+    // Handle syncing states
+    if (localStatus === "syncing" && cloudStatus === "syncing") {
+      return "Syncing to cloud...";
+    }
+    if (localStatus === "syncing") {
+      return "Syncing locally...";
+    }
+    if (cloudStatus === "syncing") {
+      return "Backing up to cloud...";
+    }
+
+    // Handle pending states
+    if (localStatus === "pending" || cloudStatus === "pending") {
+      return isCloudEnabled ? "Pending sync..." : "Syncing locally...";
+    }
+
+    // Handle synced states
+    if (localStatus === "synced") {
+      if (cloudStatus === "synced") {
+        return "Backed up to cloud";
+      }
+      if (cloudStatus === "disabled" || !isCloudEnabled) {
+        return "Local only";
+      }
+    }
+
+    return "Unknown status";
   };
 
   const getStatusColor = () => {
     if (!isOnline) return "text-gray-500";
 
-    switch (status) {
-      case "synced":
-        return "text-green-600";
-      case "pending":
-        return "text-yellow-600";
-      case "syncing":
-        return "text-blue-600";
-      case "error":
-        return "text-red-600";
-      default:
-        return "text-gray-500";
+    const localStatus = syncStatus.local;
+    const cloudStatus = syncStatus.cloud;
+
+    // Priority: error > syncing > pending > synced
+    if (localStatus === "error" || cloudStatus === "error") {
+      return "text-red-600";
     }
+    if (localStatus === "syncing" || cloudStatus === "syncing") {
+      return "text-blue-600";
+    }
+    if (localStatus === "pending" || cloudStatus === "pending") {
+      return "text-yellow-600";
+    }
+    if (localStatus === "synced" && (cloudStatus === "synced" || cloudStatus === "disabled")) {
+      return "text-green-600";
+    }
+
+    return "text-gray-500";
   };
 
   const formatLastSync = (date: Date | null) => {
@@ -119,32 +176,61 @@ export function SyncStatusIndicator({
         <div className="flex flex-col">
           <span className={`text-sm font-medium ${getStatusColor()}`}>{getStatusText()}</span>
 
-          {lastSyncTime && <span className="text-xs text-gray-500">Last sync: {formatLastSync(lastSyncTime)}</span>}
+          {(lastSyncTimes.local || lastSyncTimes.cloud) && (
+            <div className="text-xs text-gray-500">
+              {lastSyncTimes.local && <div>Local: {formatLastSync(lastSyncTimes.local)}</div>}
+              {lastSyncTimes.cloud && <div>Cloud: {formatLastSync(lastSyncTimes.cloud)}</div>}
+            </div>
+          )}
         </div>
       )}
 
       {!showDetails && <span className={`text-sm ${getStatusColor()}`}>{getStatusText()}</span>}
 
       {/* Error recovery actions */}
-      {status === "error" && (
-        <button
-          onClick={retry}
-          className="ml-2 text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
-          title="Retry sync"
-        >
-          Retry
-        </button>
+      {(syncStatus.local === "error" || syncStatus.cloud === "error") && (
+        <div className="flex gap-1">
+          {syncStatus.local === "error" && (
+            <button
+              onClick={() => simpleSessionSync.retryFailedSync(sessionId, "local")}
+              className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+              title="Retry local sync"
+            >
+              Retry Local
+            </button>
+          )}
+          {syncStatus.cloud === "error" && (
+            <button
+              onClick={() => simpleSessionSync.retryFailedSync(sessionId, "cloud")}
+              className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+              title="Retry cloud sync"
+            >
+              Retry Cloud
+            </button>
+          )}
+        </div>
       )}
 
-      {/* Manual sync trigger */}
-      {status === "synced" && showDetails && (
-        <button
-          onClick={manualSync}
-          className="ml-2 text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
-          title="Force sync"
-        >
-          Sync
-        </button>
+      {/* Manual sync triggers */}
+      {syncStatus.local === "synced" && syncStatus.cloud !== "error" && showDetails && (
+        <div className="flex gap-1">
+          <button
+            onClick={() => simpleSessionSync.syncSessionLocal(sessionId)}
+            className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+            title="Force local sync"
+          >
+            Sync Local
+          </button>
+          {session?.persistOnCloud && (
+            <button
+              onClick={() => simpleSessionSync.syncSessionCloud(sessionId)}
+              className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+              title="Force cloud sync"
+            >
+              Sync Cloud
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 
 const PersistedStoreCleaner = () => {
   useEffect(() => {
     const handleExit = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       alert("Are you sure you want to leave?");
-      const options = useOpenChatSessionStore.persist.clearStorage();
+      const options = useEncryptedSessionStore.persist.clearStorage();
       console.log("Cleaning up persisted store", options);
       return (event.returnValue = "Are you sure you want to leave?");
     };

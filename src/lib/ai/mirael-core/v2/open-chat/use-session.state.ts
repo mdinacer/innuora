@@ -3,59 +3,64 @@ import { useCallback, useEffect, useState } from "react";
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
 import { useActiveSessionStore } from "@/lib/ai/mirael-core/v2/stores/active-session.store";
-import { useEncryptedChatSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-chat-session.store";
-import { sessionSyncManager } from "@/lib/session-sync/session-sync-manager";
+import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { simpleSessionSync } from "@/lib/session-sync/simple-sync";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
-  sessionId: string; // Obfuscated Session ID
+  sessionId: string;
 }
 
 export function useChatSessionState({ sessionId }: OpenChatProps) {
   const [loaded, setLoaded] = useState(false);
 
+  // Parse real session ID from obfuscated URL parameter
+
   // Subscribe only to state values we need to react to
   const currentSession = useActiveSessionStore((state) => state.currentSession);
-  const obfuscatedId = useActiveSessionStore((state) => state.obfuscatedId);
-  const activeHasHydrated = useActiveSessionStore((state) => state.hasHydrated);
 
-  const encryptedHasHydrated = useEncryptedChatSessionStore((state) => state.hasHydrated);
-  const sessionExists = useEncryptedChatSessionStore((state) => state.sessionExists);
+  const encryptedHasHydrated = useEncryptedSessionStore((state) => state.hasHydrated);
+  const sessionExists = useEncryptedSessionStore((state) => state.sessionExists);
 
   // Auto-sync logic integrated directly here
   const triggerSync = useCallback(() => {
-    if (currentSession && obfuscatedId) {
-      sessionSyncManager.queueSync(currentSession.id, obfuscatedId, "update", currentSession);
+    if (currentSession && sessionId) {
+      // Use local sync for frequent updates - cloud sync is debounced separately
+      simpleSessionSync.queueLocalSync(sessionId, "update", currentSession);
+      // Also queue cloud sync for sessions with persistOnCloud=true
+      simpleSessionSync.queueCloudSync(sessionId, "update");
     }
-  }, [currentSession, obfuscatedId]);
+  }, [currentSession, sessionId]);
 
-  // Load session on mount
+  // Load session on mount - always load from encrypted store (source of truth)
   useEffect(() => {
-    if (!encryptedHasHydrated || !activeHasHydrated) return;
+    if (!encryptedHasHydrated || !sessionId) return;
+
     const loadSessionAsync = async () => {
+      console.log("Loading session:", sessionId);
+      // Check if session already loaded in active store
+      if (currentSession?.id === sessionId) {
+        setLoaded(true);
+        return;
+      }
+
+      // Load from encrypted store using real session ID
       const isLoaded = await useActiveSessionStore.getState().loadSession(sessionId);
       setLoaded(isLoaded);
     };
+
     loadSessionAsync();
-  }, [sessionId, encryptedHasHydrated, activeHasHydrated]);
+  }, [sessionId, encryptedHasHydrated, currentSession?.id]);
 
-  // Wrapped actions with auto-sync
-  const addMessage = useCallback(
-    (message: OpenChatMessage) => {
-      useActiveSessionStore.getState().addMessage(message);
-      triggerSync();
-    },
-    [triggerSync]
-  );
+  // Message actions without auto-sync (sync happens at round completion)
+  const addMessage = useCallback((message: OpenChatMessage) => {
+    useActiveSessionStore.getState().addMessage(message);
+  }, []);
 
-  const appendMessage = useCallback(
-    (content: string, role: "user" | "assistant") => {
-      useActiveSessionStore.getState().appendMessage(content, role);
-      triggerSync();
-    },
-    [triggerSync]
-  );
+  const appendMessage = useCallback((content: string, role: "user" | "assistant") => {
+    useActiveSessionStore.getState().appendMessage(content, role);
+  }, []);
 
   const addAnalysis = useCallback(
     (analysis: StateAnalysis) => {
@@ -85,18 +90,18 @@ export function useChatSessionState({ sessionId }: OpenChatProps) {
     useActiveSessionStore.getState().resetSession();
 
     // Also reset in encrypted store
-    if (obfuscatedId) {
-      useEncryptedChatSessionStore.getState().resetSession(obfuscatedId);
+    if (sessionId) {
+      useEncryptedSessionStore.getState().resetSession(sessionId);
     }
-  }, [obfuscatedId]);
+  }, [sessionId]);
 
   return {
     // State
-    hasHydrated: encryptedHasHydrated && activeHasHydrated,
+    hasHydrated: encryptedHasHydrated, // Only encrypted store needs to be hydrated
     session: currentSession,
-    sessionExists: sessionExists(sessionId),
-    obfuscatedId,
-    isReady: encryptedHasHydrated && activeHasHydrated && loaded,
+    sessionExists: sessionId ? sessionExists(sessionId) : false,
+    sessionId,
+    isReady: encryptedHasHydrated && loaded, // Ready when encrypted store hydrated and session loaded
 
     // Auto-sync actions
     addMessage,
@@ -105,18 +110,31 @@ export function useChatSessionState({ sessionId }: OpenChatProps) {
     addTokenUsage,
     updateSession,
     resetSession,
-    resetEncryptedSession: () => useEncryptedChatSessionStore.getState().resetSession(sessionId),
+    resetEncryptedSession: () => sessionId && useEncryptedSessionStore.getState().resetSession(sessionId),
 
     // Session management
     loadSession: useActiveSessionStore.getState().loadSession,
 
-    // Sync status
+    // Sync status (updated for two-tier architecture)
     getSyncStatus: () => {
-      return currentSession ? sessionSyncManager.getSyncStatus(currentSession.id) : "synced";
+      return currentSession ? simpleSessionSync.getSyncStatus(currentSession.id) : { local: "synced", cloud: "synced" };
+    },
+    getLocalSyncStatus: () => {
+      return currentSession ? simpleSessionSync.getLocalSyncStatus(currentSession.id) : "synced";
+    },
+    getCloudSyncStatus: () => {
+      return currentSession ? simpleSessionSync.getCloudSyncStatus(currentSession.id) : "synced";
+    },
+    getLastSyncTimes: () => {
+      return currentSession ? simpleSessionSync.getLastSyncTimes(currentSession.id) : { local: null, cloud: null };
     },
     getLastSyncTime: () => {
-      return currentSession ? sessionSyncManager.getLastSyncTime(currentSession.id) : null;
+      return currentSession ? simpleSessionSync.getLastSyncTime(currentSession.id) : null;
     },
     manualSync: triggerSync,
+    manualLocalSync: () =>
+      currentSession ? simpleSessionSync.syncSessionLocal(currentSession.id) : Promise.resolve(false),
+    manualCloudSync: () =>
+      currentSession ? simpleSessionSync.syncSessionCloud(currentSession.id) : Promise.resolve(false),
   };
 }
