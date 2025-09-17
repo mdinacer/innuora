@@ -69,6 +69,16 @@ Reflect how this small action could offer insight or relief, while validating cu
 Keep it minimal—one step only, realistic and low-effort.
 Maintain a supportive, conversational tone; focus on curiosity rather than correction.
 `.trim(),
+
+  [SESSION_MODULES.VALUES_CLARIFICATION]: `
+Address disconnection from meaning and purpose:
+- **Values exploration**: What matters most to you as a person?
+- **Authentic moments**: When did you feel most like yourself?
+- **Micro-alignment**: One small way to honor your values this week
+- **Purpose vs pressure**: Distinguish authentic values from imposed expectations
+- **Agency building**: Focus on choices that reflect who you want to be
+Use {{themes}} and {{core_beliefs}} to guide exploration. Stay curious, not prescriptive.
+`.trim(),
 };
 
 export const CORE_MODULE_INSTRUCTIONS_FRIENDLY: Record<string, string> = {

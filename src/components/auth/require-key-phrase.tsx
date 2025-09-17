@@ -14,8 +14,6 @@ export default function RequireKeyPhrase() {
     async function verifyKeyPhrase() {
       const key = await getStoredContentKey();
 
-      console.log("Key:", key);
-
       if (!key) {
         // Clear any remaining session data
         await clearStoredContentKey();

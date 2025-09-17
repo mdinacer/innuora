@@ -3,7 +3,6 @@
 import { useTranslation } from "react-i18next";
 
 import ChatUIThemeToggle from "@/components/chat-ui/chat-ui.theme-toggle";
-import { PointsBalanceCompact } from "@/components/points/points-balance-display";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -43,7 +42,6 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
       </div>
       <div className={cn("header-actions ", "flex items-center gap-3")}>
         {headerActions}
-        {/* <PointsBalanceCompact /> */}
         <ChatUIThemeToggle />
       </div>
     </div>

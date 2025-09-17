@@ -1,5 +1,6 @@
 import { Session as PrismaSession } from "@prisma/client";
 import localforage from "localforage";
+import { nanoid } from "nanoid";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -7,94 +8,121 @@ import { Session, SessionMeta, SessionMetadataSchema } from "@/lib/ai/mirael-cor
 import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { EncryptedBlob, EncryptedBlobSchema } from "@/lib/crypto/webcrypto-crypto.types";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { errorManager } from "@/lib/errors/error-manager";
 import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 
 const DEFAULT_MODEL_CODE = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE ?? MODELS_CODES.M1;
 
-// Generate unique obfuscated ID that doesn't already exist
-// export const getUniqueObfuscatedId = (existingMap: Record<string, string>) => {
-//   let id;
-//   do {
-//     id = nanoid(6);
-//   } while (existingMap[id]);
-//   return id;
-// };
+// Generate unique public ID that doesn't already exist
+export const getUniqueId = (existingMap: Record<string, string>) => {
+  let id;
+  do {
+    id = nanoid(6);
+  } while (existingMap[id]);
+  return id;
+};
 
 export type SessionChangeState = { sessionId?: string | null; state: "new" | "modified"; updatedAt: Date };
 
-async function encryptSession(session: Partial<Session>): Promise<PrismaSession> {
-  const contentKey = await getStoredContentKey();
+export async function encryptSession(session: Partial<Session>): Promise<PrismaSession> {
+  return await errorManager.wrapOperation(
+    async () => {
+      const contentKey = await getStoredContentKey();
 
-  if (!contentKey) {
-    throw new Error("No content key found");
-  }
-  const { messages = [], memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots, ...rest } = session;
-  let sessionData: Partial<PrismaSession> = {
-    ...rest,
-    metadata: {
-      ...rest.metadata,
-      tokenUsage: [],
+      if (!contentKey) {
+        errorManager.handleError(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, new Error("No content key found"), {
+          operation: "encryptSession",
+          sessionId: session.id,
+        });
+      }
+      const { messages = [], memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots, ...rest } = session;
+      let sessionData: Partial<PrismaSession> = {
+        ...rest,
+        metadata: {
+          ...rest.metadata,
+          tokenUsage: [],
+        },
+      };
+
+      const hasData = messages?.length > 0;
+
+      if (hasData) {
+        const dataToEncrypt = {
+          messages,
+          ...(memoryStore ? { memoryStore } : {}),
+          ...(continuitySummary ? { continuitySummary } : {}),
+          ...(aggregatedAnalysis ? { aggregatedAnalysis } : {}),
+          ...(analysisSnapshots ? { analysisSnapshots } : {}),
+        };
+        const encryptedData: EncryptedBlob = await encryptObjectWithKey(dataToEncrypt, contentKey!);
+        sessionData = {
+          ...sessionData,
+          encryptedData,
+        };
+      }
+
+      return sessionData as PrismaSession;
     },
-  };
-
-  const hasData = messages?.length > 0;
-
-  if (hasData) {
-    const dataToEncrypt = {
-      messages,
-      ...(memoryStore ? { memoryStore } : {}),
-      ...(continuitySummary ? { continuitySummary } : {}),
-      ...(aggregatedAnalysis ? { aggregatedAnalysis } : {}),
-      ...(analysisSnapshots ? { analysisSnapshots } : {}),
-    };
-    const encryptedData: EncryptedBlob = await encryptObjectWithKey(dataToEncrypt, contentKey);
-    sessionData = {
-      ...sessionData,
-      encryptedData,
-    };
-  }
-
-  return sessionData as PrismaSession;
+    ERROR_CODES.SESSION_ENCRYPTION_FAILED,
+    { operation: "encryptSession", sessionId: session.id }
+  );
 }
 
-async function decryptSession(encryptedSession: PrismaSession): Promise<Session> {
-  const contentKey = await getStoredContentKey();
+export async function decryptSession(encryptedSession: PrismaSession): Promise<Session> {
+  return await errorManager.wrapOperation(
+    async () => {
+      const contentKey = await getStoredContentKey();
 
-  if (!contentKey) {
-    throw new Error("No content key found");
-  }
-  let session: Session = {
-    id: encryptedSession.id,
-    userId: encryptedSession.userId,
-    title: encryptedSession.title,
-    subtitle: encryptedSession.subtitle ?? "",
-    modelCode: encryptedSession.modelCode ?? DEFAULT_MODEL_CODE,
-    autoUpdateTitle: encryptedSession.autoUpdateTitle ?? false,
-    // Timestamps
-    createdAt: encryptedSession.createdAt,
-    updatedAt: encryptedSession.updatedAt,
-    //Sensitive data
-    messages: [],
-    memoryStore: null,
-    continuitySummary: null,
-    aggregatedAnalysis: null,
-    metadata: (encryptedSession.metadata
-      ? { ...SessionMetadataSchema.parse(encryptedSession.metadata), tokenUsage: [] }
-      : { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] }) as SessionMeta,
-    analysisSnapshots: [],
-    persistOnCloud: encryptedSession.persistOnCloud ?? false,
-  };
+      if (!contentKey) {
+        errorManager.handleError(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, new Error("No content key found"), {
+          operation: "decryptSession",
+          sessionId: encryptedSession.id,
+        });
+      }
+      let session: Session = {
+        id: encryptedSession.id,
+        userId: encryptedSession.userId,
+        title: encryptedSession.title,
+        subtitle: encryptedSession.subtitle ?? "",
+        modelCode: encryptedSession.modelCode ?? DEFAULT_MODEL_CODE,
+        autoUpdateTitle: encryptedSession.autoUpdateTitle ?? false,
+        // Timestamps
+        createdAt: encryptedSession.createdAt,
+        updatedAt: encryptedSession.updatedAt,
+        //Sensitive data
+        messages: [],
+        memoryStore: null,
+        continuitySummary: null,
+        aggregatedAnalysis: null,
+        metadata: (encryptedSession.metadata
+          ? { ...SessionMetadataSchema.parse(encryptedSession.metadata), tokenUsage: [] }
+          : { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] }) as SessionMeta,
+        analysisSnapshots: [],
+        persistOnCloud: encryptedSession.persistOnCloud ?? false,
+      };
 
-  const parsedData = EncryptedBlobSchema.safeParse(encryptedSession);
+      const decryptedData = await decryptObjectWithKey<Partial<Session>>(
+        encryptedSession.encryptedData as EncryptedBlob,
+        contentKey!
+      );
 
-  if (parsedData.success) {
-    const { data } = parsedData;
-    const decryptedData = await decryptObjectWithKey<Partial<Session>>(data, contentKey);
+      const parsedData = EncryptedBlobSchema.safeParse(encryptedSession.encryptedData);
 
-    session = { ...session, ...decryptedData } as Session;
-  }
+      session = { ...session, ...decryptedData } as Session;
 
-  return session;
+      if (parsedData.success) {
+        const { data } = parsedData;
+        const decryptedData = await decryptObjectWithKey<Partial<Session>>(data, contentKey!);
+
+        session = { ...session, ...decryptedData } as Session;
+      }
+
+      return session;
+    },
+    ERROR_CODES.SESSION_DECRYPTION_FAILED,
+    { operation: "decryptSession", sessionId: encryptedSession.id }
+  );
 }
 
 const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt"> = {
@@ -123,7 +151,10 @@ interface EncryptedChatSessionStoreState extends PersistedStoreBaseProps {
   onlineSessionIds: string[]; // Uses real Session IDs
   changesMap: Record<string, SessionChangeState>; //
   sessions: Record<string, PrismaSession>; // Now keyed by real session ID
+  publicIdMap: Record<string, string>; // publicId => sessionId
   getSession: (sessionId: string) => Promise<Session | null>;
+  getSessionPublicId: (sessionId: string) => string | undefined;
+  addSession: (session: PrismaSession) => void;
   setSession: (sessionId: string, session: PrismaSession) => void;
   updateSession: (sessionId: string, session: Session) => void;
   createSession: (data?: Partial<Session>) => Promise<string>; // Return real session ID
@@ -138,17 +169,17 @@ interface EncryptedChatSessionStoreState extends PersistedStoreBaseProps {
       | ((prevMap: Record<string, SessionChangeState>) => Record<string, SessionChangeState>)
   ) => void;
   removeOnlineSessionId: (sessionId: string) => void;
-  // Migration helper
 }
 
 const initialState: Pick<
   EncryptedChatSessionStoreState,
-  "sessions" | "hasHydrated" | "onlineSessionIds" | "changesMap"
+  "sessions" | "hasHydrated" | "onlineSessionIds" | "changesMap" | "publicIdMap"
 > = {
   sessions: {},
   hasHydrated: false,
   changesMap: {},
   onlineSessionIds: [],
+  publicIdMap: {},
 };
 
 export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()(
@@ -184,16 +215,41 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
         try {
           return await decryptSession(encryptedSession);
         } catch (error) {
-          console.error("Failed to decrypt session:", sessionId, error);
-          return null;
+          // Log error but return null for graceful handling
+          errorManager.handleError(ERROR_CODES.SESSION_DECRYPTION_FAILED, error, {
+            operation: "getSession",
+            sessionId,
+          });
+          throw new Error("Unreachable");
         }
       },
 
-      setSession: (obfuscatedId, session) => {
+      getSessionPublicId: (sessionId) => {
+        const { publicIdMap } = get();
+        return Object.keys(publicIdMap).find((k) => publicIdMap[k] === sessionId);
+      },
+      addSession: (session) => {
+        const publicId = getUniqueId(get().publicIdMap);
         set((state) => ({
           sessions: {
             ...state.sessions,
             [session.id]: session,
+          },
+          publicIdMap: {
+            ...state.publicIdMap,
+            [publicId]: session.id,
+          },
+        }));
+      },
+      setSession: (publicId, session) => {
+        set((state) => ({
+          sessions: {
+            ...state.sessions,
+            [session.id]: session,
+          },
+          publicIdMap: {
+            ...state.publicIdMap,
+            [publicId]: session.id,
           },
         }));
       },
@@ -201,11 +257,11 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
       updateSession: async (sessionId, session) => {
         const { sessions } = get();
         if (!sessions[sessionId]) {
-          console.error("Session not found:", sessionId);
-          return;
+          errorManager.handleError(ERROR_CODES.SESSION_NOT_FOUND, new Error("Session not found"), {
+            operation: "updateSession",
+            sessionId,
+          });
         }
-
-        console.log("Updating session:", sessionId, session);
 
         try {
           const encryptedSession = await encryptSession({
@@ -214,10 +270,6 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
             updatedAt: new Date(),
           });
 
-          const testDecryptedSession = await decryptSession(encryptedSession);
-
-          console.log("Decrypted session:", testDecryptedSession);
-
           set((state) => ({
             sessions: {
               ...state.sessions,
@@ -225,20 +277,23 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
             },
           }));
         } catch (error) {
-          console.error("Failed to encrypt session:", sessionId, error);
+          errorManager.handleError(ERROR_CODES.SESSION_UPDATE_FAILED, error, { operation: "updateSession", sessionId });
         }
       },
 
       createSession: async (data = {}) => {
-        const { sessions } = get();
+        const { sessions, publicIdMap } = get();
 
         // Generate real session ID
         const sessionId = data?.id ?? crypto.randomUUID();
+        const publicId = getUniqueId(publicIdMap);
 
         // Check if session ID already exists
         if (sessions[sessionId]) {
-          console.error("Session with this ID already exists", sessionId);
-          throw new Error("Session already exists");
+          errorManager.handleError(ERROR_CODES.SESSION_CREATE_FAILED, new Error("Session already exists"), {
+            operation: "createSession",
+            sessionId,
+          });
         }
 
         const now = new Date();
@@ -258,41 +313,47 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
               ...state.sessions,
               [sessionId]: encryptedSession,
             },
+            publicIdMap: {
+              ...state.publicIdMap,
+              [publicId]: sessionId,
+            },
           }));
 
           return sessionId;
         } catch (error) {
-          console.error("Failed to create session:", error);
-          throw error;
+          errorManager.handleError(ERROR_CODES.SESSION_CREATE_FAILED, error, { operation: "createSession", sessionId });
+          throw new Error("Unreachable");
         }
       },
 
       removeSession: (sessionId) => {
-        const { sessions } = get();
+        const { sessions, getSessionPublicId } = get();
 
         if (!sessions[sessionId]) {
-          console.error("Session not found:", sessionId);
+          console.warn("Attempted to remove non-existent session:", sessionId);
           return;
         }
 
-        // Remove from session ID mapper
-
         set((state) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { [sessionId]: removedSession, ...restSessions } = state.sessions;
-          const newMap = { ...state.changesMap };
-          if (newMap[sessionId]) {
-            delete newMap[sessionId];
+          const { [sessionId]: _, ...restSessions } = state.sessions;
+
+          // Clean up publicIdMap
+          const publicId = getSessionPublicId(sessionId);
+          const newPublicIdMap = { ...state.publicIdMap };
+          if (publicId) {
+            delete newPublicIdMap[publicId];
           }
+
+          // Clean up changesMap
           const newChangesMap = { ...state.changesMap };
-          if (newChangesMap[sessionId]) {
-            delete newChangesMap[sessionId];
-          }
+          delete newChangesMap[sessionId];
 
           return {
             sessions: restSessions,
-            onlineSessionIds: state.onlineSessionIds.filter((id) => id !== sessionId),
+            publicIdMap: newPublicIdMap,
             changesMap: newChangesMap,
+            onlineSessionIds: state.onlineSessionIds.filter((id) => id !== sessionId),
           };
         });
       },
@@ -302,7 +363,7 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
         const session = sessions[sessionId];
 
         if (!session) {
-          console.error("Session not found:", sessionId);
+          console.warn("Attempted to reset non-existent session:", sessionId);
           return;
         }
 
@@ -323,21 +384,21 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
       },
 
       setSessions: (sessions) => {
-        //const { sessionIdMap } = get();
-        // Clear existing data and set new sessions keyed by real ID
+        // Build fresh state, do not reuse old maps
         const newSessions: Record<string, PrismaSession> = {};
-        //const newIdMap: Record<string, string> = {};
+        const newPublicIdMap: Record<string, string> = {};
 
         sessions.forEach((session) => {
-          //const obfuscatedId = getUniqueObfuscatedId(sessionIdMap);
-          // Ensure obfuscated mapping exists
-          //newIdMap[obfuscatedId] = session.id;
+          const publicId = getUniqueId(newPublicIdMap);
+          newPublicIdMap[publicId] = session.id;
           newSessions[session.id] = session;
         });
 
         set({
           sessions: newSessions,
-          //sessionIdMap: newIdMap,
+          publicIdMap: newPublicIdMap,
+          onlineSessionIds: [], // optional: clear stale online IDs
+          changesMap: {}, // optional: clear changes if you want clean reset
         });
       },
 
@@ -365,7 +426,7 @@ export const useEncryptedSessionStore = create<EncryptedChatSessionStoreState>()
       name: "encrypted-chat-session-store-v2", // Changed name for clean migration
       storage: createJSONStorage(() => localforage),
       partialize: (state) => ({
-        //sessionIdMap: state.sessionIdMap,
+        publicIdMap: state.publicIdMap,
         sessions: state.sessions,
       }),
 

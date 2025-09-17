@@ -67,11 +67,11 @@ export class StateAnalysisEngine {
 
     recent.forEach(({ themes, distortions }) => {
       themes.forEach((themeObj) => {
-        const themeText = typeof themeObj === 'string' ? themeObj : themeObj.theme;
+        const themeText = typeof themeObj === "string" ? themeObj : themeObj.theme;
         themeCounts[themeText] = (themeCounts[themeText] || 0) + 1;
       });
       distortions.forEach((distortion) => {
-        const distortionText = typeof distortion === 'string' ? distortion : distortion.type;
+        const distortionText = typeof distortion === "string" ? distortion : distortion.type;
         distortionsSet.add(distortionText);
       });
     });

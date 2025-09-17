@@ -1,6 +1,8 @@
 import localforage from "localforage";
 
 import { EncryptedBlob, WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { errorManager } from "@/lib/errors/error-manager";
 
 /* webcrypto-crypto.ts
    Wrapped-key only (AES-GCM content + AES-KW wrapping)
@@ -14,7 +16,15 @@ const SESSION_KEY = "MCK";
 const subtle = (globalThis as any).crypto?.subtle;
 
 function ensureSubtle(): SubtleCrypto {
-  if (!subtle) throw new Error("Web Crypto (crypto.subtle) not available in runtime.");
+  if (!subtle) {
+    errorManager.handleError(
+      ERROR_CODES.CRYPTO_WEBCRYPTO_UNAVAILABLE,
+      new Error("Web Crypto (crypto.subtle) not available in runtime."),
+      {
+        operation: "ensureSubtle",
+      }
+    );
+  }
   return subtle as SubtleCrypto;
 }
 
@@ -54,35 +64,47 @@ export async function deriveWrappingKeyFromPassword(
   saltB64: string,
   iterations = 600_000
 ): Promise<CryptoKey> {
-  const s = ensureSubtle();
-  const enc = new TextEncoder();
-  const passwordBytes = enc.encode(password);
-  const salt = new Uint8Array(base64ToArrayBuffer(saltB64));
+  return await errorManager.wrapOperation(
+    async () => {
+      const s = ensureSubtle();
+      const enc = new TextEncoder();
+      const passwordBytes = enc.encode(password);
+      const salt = new Uint8Array(base64ToArrayBuffer(saltB64));
 
-  const baseKey = await s.importKey("raw", passwordBytes, { name: "PBKDF2" }, false, ["deriveKey"]);
+      const baseKey = await s.importKey("raw", passwordBytes, { name: "PBKDF2" }, false, ["deriveKey"]);
 
-  const wrappingKey = await s.deriveKey(
-    {
-      name: "PBKDF2",
-      salt,
-      iterations,
-      hash: "SHA-256",
+      const wrappingKey = await s.deriveKey(
+        {
+          name: "PBKDF2",
+          salt,
+          iterations,
+          hash: "SHA-256",
+        },
+        baseKey,
+        { name: "AES-KW", length: 256 },
+        false, // non-extractable
+        ["wrapKey", "unwrapKey"]
+      );
+
+      return wrappingKey;
     },
-    baseKey,
-    { name: "AES-KW", length: 256 },
-    false, // non-extractable
-    ["wrapKey", "unwrapKey"]
+    ERROR_CODES.CRYPTO_KEY_DERIVATION_FAILED,
+    { operation: "deriveWrappingKeyFromPassword", metadata: { iterations } }
   );
-
-  return wrappingKey;
 }
 
 /* ---------- Content key management (AES-GCM) ---------- */
 
 /** Generate a fresh AES-GCM content key (extractable so we can wrap/export if needed). */
 export async function generateContentKey(): Promise<CryptoKey> {
-  const s = ensureSubtle();
-  return s.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+  return await errorManager.wrapOperation(
+    async () => {
+      const s = ensureSubtle();
+      return s.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+    },
+    ERROR_CODES.CRYPTO_KEY_GENERATION_FAILED,
+    { operation: "generateContentKey" }
+  );
 }
 
 /** Export a symmetric key to base64 (raw). Use sparingly: exporting increases exposure. */
@@ -110,51 +132,70 @@ export async function wrapContentKeyWithPassword(
   password: string,
   iterations = 600_000
 ): Promise<WrappedKeyPackage> {
-  const s = ensureSubtle();
-  const salt = getRandomBytes(16);
-  const saltB64 = arrayBufferToBase64(salt.buffer);
+  return await errorManager.wrapOperation(
+    async () => {
+      const s = ensureSubtle();
+      const salt = getRandomBytes(16);
+      const saltB64 = arrayBufferToBase64(salt.buffer);
 
-  const wrappingKey = await deriveWrappingKeyFromPassword(password, saltB64, iterations);
+      const wrappingKey = await deriveWrappingKeyFromPassword(password, saltB64, iterations);
 
-  // wrapKey returns ArrayBuffer
-  const wrapped = await s.wrapKey("raw", contentKey, wrappingKey, { name: "AES-KW" });
-  const wrappedB64 = arrayBufferToBase64(wrapped);
+      // wrapKey returns ArrayBuffer
+      const wrapped = await s.wrapKey("raw", contentKey, wrappingKey, { name: "AES-KW" });
+      const wrappedB64 = arrayBufferToBase64(wrapped);
 
-  return {
-    version: 1,
-    kdf: "PBKDF2",
-    hash: "SHA-256",
-    iterations,
-    salt: saltB64,
-    wrappedKey: wrappedB64,
-  };
+      return {
+        version: 1,
+        kdf: "PBKDF2",
+        hash: "SHA-256",
+        iterations,
+        salt: saltB64,
+        wrappedKey: wrappedB64,
+      };
+    },
+    ERROR_CODES.CRYPTO_KEY_WRAP_FAILED,
+    { operation: "wrapContentKeyWithPassword", metadata: { iterations } }
+  );
 }
 
 /**
  * Unwrap a WrappedKeyPackage using the provided password. Returns the AES-GCM contentKey.
  */
 export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, password: string): Promise<CryptoKey> {
-  const s = ensureSubtle();
+  return await errorManager.wrapOperation(
+    async () => {
+      const s = ensureSubtle();
 
-  if (pkg.kdf !== "PBKDF2" || pkg.hash !== "SHA-256") {
-    throw new Error("Unsupported KDF/hash in wrapped key package.");
-  }
+      if (pkg.kdf !== "PBKDF2" || pkg.hash !== "SHA-256") {
+        errorManager.handleError(
+          ERROR_CODES.CRYPTO_INVALID_KEY_PACKAGE,
+          new Error("Unsupported KDF/hash in wrapped key package."),
+          {
+            operation: "unwrapContentKeyWithPassword",
+            metadata: { kdf: pkg.kdf, hash: pkg.hash },
+          }
+        );
+      }
 
-  const wrappingKey = await deriveWrappingKeyFromPassword(password, pkg.salt, pkg.iterations);
-  const wrappedBuf = base64ToArrayBuffer(pkg.wrappedKey);
+      const wrappingKey = await deriveWrappingKeyFromPassword(password, pkg.salt, pkg.iterations);
+      const wrappedBuf = base64ToArrayBuffer(pkg.wrappedKey);
 
-  // unwrapKey to AES-GCM content key
-  const contentKey = await s.unwrapKey(
-    "raw",
-    wrappedBuf,
-    wrappingKey,
-    { name: "AES-KW" },
-    { name: "AES-GCM", length: 256 },
-    true, // extractable true if you want to export for remember-me flows; false to harden
-    ["encrypt", "decrypt"]
+      // unwrapKey to AES-GCM content key
+      const contentKey = await s.unwrapKey(
+        "raw",
+        wrappedBuf,
+        wrappingKey,
+        { name: "AES-KW" },
+        { name: "AES-GCM", length: 256 },
+        true, // extractable true if you want to export for remember-me flows; false to harden
+        ["encrypt", "decrypt"]
+      );
+
+      return contentKey;
+    },
+    ERROR_CODES.CRYPTO_KEY_UNWRAP_FAILED,
+    { operation: "unwrapContentKeyWithPassword", metadata: { iterations: pkg.iterations } }
   );
-
-  return contentKey;
 }
 
 /* ---------- Encrypt / Decrypt using contentKey (AES-GCM) ---------- */
@@ -164,36 +205,60 @@ export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, passw
  * Returns an EncryptedBlob (JSON-serializable): { iv, ciphertext }.
  */
 export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): Promise<EncryptedBlob> {
-  const json = JSON.stringify(data);
-  const pt = new TextEncoder().encode(json);
-  const iv = new Uint8Array(getRandomBytes(12).buffer);
-  const cipherBuffer = await subtle.encrypt({ name: "AES-GCM", iv }, contentKey, pt);
-  return {
-    version: 1,
-    alg: "AES-GCM",
-    iv: arrayBufferToBase64(iv.buffer),
-    ciphertext: arrayBufferToBase64(cipherBuffer),
-  };
+  return await errorManager.wrapOperation(
+    async () => {
+      const json = JSON.stringify(data);
+      const pt = new TextEncoder().encode(json);
+      const iv = new Uint8Array(getRandomBytes(12).buffer);
+      const cipherBuffer = await subtle.encrypt({ name: "AES-GCM", iv }, contentKey, pt);
+      return {
+        version: 1,
+        alg: "AES-GCM",
+        iv: arrayBufferToBase64(iv.buffer),
+        ciphertext: arrayBufferToBase64(cipherBuffer),
+      };
+    },
+    ERROR_CODES.CRYPTO_ENCRYPTION_FAILED,
+    { operation: "encryptObjectWithKey" }
+  );
 }
 
 /**
  * Decrypt an EncryptedBlob using a contentKey and parse JSON back into T.
  */
 export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: CryptoKey): Promise<T> {
-  const s = ensureSubtle();
-  if (!blob.iv || !blob.ciphertext) throw new Error("Malformed encrypted blob.");
-  const iv = new Uint8Array(base64ToArrayBuffer(blob.iv));
-  const ct = base64ToArrayBuffer(blob.ciphertext);
+  return await errorManager.wrapOperation(
+    async () => {
+      const s = ensureSubtle();
+      if (!blob.iv || !blob.ciphertext) {
+        errorManager.handleError(ERROR_CODES.CRYPTO_MALFORMED_DATA, new Error("Malformed encrypted blob."), {
+          operation: "decryptObjectWithKey",
+        });
+      }
+      const iv = new Uint8Array(base64ToArrayBuffer(blob.iv));
+      const ct = base64ToArrayBuffer(blob.ciphertext);
 
-  let plainBuf: ArrayBuffer;
-  try {
-    plainBuf = await s.decrypt({ name: "AES-GCM", iv }, contentKey, ct);
-  } catch {
-    throw new Error("Decryption failed: invalid key or corrupted payload.");
-  }
+      let plainBuf: ArrayBuffer;
+      try {
+        plainBuf = await s.decrypt({ name: "AES-GCM", iv }, contentKey, ct);
+      } catch (error) {
+        errorManager.handleError(
+          ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
+          new Error("Decryption failed: invalid key or corrupted payload."),
+          {
+            operation: "decryptObjectWithKey",
+            metadata: { originalError: error instanceof Error ? error.message : String(error) },
+          }
+        );
+        throw new Error("Unreachable");
+      }
 
-  const json = new TextDecoder().decode(plainBuf);
-  return JSON.parse(json) as T;
+      const json = new TextDecoder().decode(plainBuf);
+      return JSON.parse(json) as T;
+    },
+    ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
+    { operation: "decryptObjectWithKey" }
+  );
 }
 
 /* ---------- High-level convenience flows ---------- */
@@ -221,32 +286,46 @@ export async function recoverContentKeyFromWrapped(pkg: WrappedKeyPackage, passw
  * Retrieve the stored content key (base64 string) from sessionStorage or IndexedDB.
  */
 export async function getStoredContentKey(): Promise<CryptoKey | null> {
-  if (typeof window === "undefined") return null;
+  try {
+    if (typeof window === "undefined") return null;
 
-  let keyB64: string | null = sessionStorage.getItem(SESSION_KEY);
-  if (!keyB64) keyB64 = await localforage.getItem(SESSION_KEY);
+    let keyB64: string | null = sessionStorage.getItem(SESSION_KEY);
+    if (!keyB64) keyB64 = await localforage.getItem(SESSION_KEY);
 
-  if (!keyB64) return null;
+    if (!keyB64) return null;
 
-  return importRawKeyFromBase64(keyB64);
+    return importRawKeyFromBase64(keyB64);
+  } catch (error) {
+    // Log but don't throw - return null to indicate key not available
+    errorManager.handleError(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, error, {
+      operation: "getStoredContentKey",
+    });
+    throw new Error("Unreachable");
+  }
 }
 
 /**
  * Store the content key (base64) in sessionStorage or IndexedDB depending on persist flag.
  */
 export async function storeContentKey(key: CryptoKey, persist: boolean = false): Promise<void> {
-  // Export CryptoKey to base64
-  const keyB64 = await exportKeyToBase64(key);
+  return await errorManager.wrapOperation(
+    async () => {
+      // Export CryptoKey to base64
+      const keyB64 = await exportKeyToBase64(key);
 
-  if (typeof window === "undefined") return;
+      if (typeof window === "undefined") return;
 
-  if (persist) {
-    // store in IndexedDB via localforage
-    await localforage.setItem(SESSION_KEY, keyB64);
-  } else {
-    // store in sessionStorage
-    sessionStorage.setItem(SESSION_KEY, keyB64);
-  }
+      if (persist) {
+        // store in IndexedDB via localforage
+        await localforage.setItem(SESSION_KEY, keyB64);
+      } else {
+        // store in sessionStorage
+        sessionStorage.setItem(SESSION_KEY, keyB64);
+      }
+    },
+    ERROR_CODES.CRYPTO_KEY_STORAGE_FAILED,
+    { operation: "storeContentKey", metadata: { persist } }
+  );
 }
 
 /**

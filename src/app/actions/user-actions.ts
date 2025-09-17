@@ -3,38 +3,45 @@
 import { User as AppUser, Prisma, ThemeMode } from "@prisma/client";
 import { User as AuthUser } from "@supabase/supabase-js";
 
-import { UserCreationError, UserDeletionError, UserNotFoundError, UserUpdateError } from "@/errors/user.errors";
+import { ERROR_CODES, errorManager } from "@/lib/errors";
 import { prisma } from "@/lib/prisma";
 import { UserWithRelations } from "@/types/user.types";
 import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";
 
 // Core user functions
 export async function getUserById(authUserId: string): Promise<AppUser | null> {
-  try {
-    await assertCurrentUserId(authUserId);
+  await assertCurrentUserId(authUserId);
 
-    const user = await prisma.user.findUnique({
-      where: { authId: authUserId },
-    });
-
-    return user;
-  } catch (error) {
-    console.error(`Error fetching user with ID ${authUserId}:`, error);
-    throw error;
-  }
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.user.findUnique({
+        where: { authId: authUserId },
+      }),
+    ERROR_CODES.SERVER_ERROR, // Database error only - null result is fine
+    {
+      operation: "getUserById",
+      userId: authUserId,
+    }
+  );
 }
 export async function getUserWithRelationsById(authUserId: string): Promise<UserWithRelations | null> {
   await assertCurrentUserId(authUserId);
 
-  const userWithRelations = await prisma.user.findUnique({
-    where: { authId: authUserId },
-    include: {
-      profile: true,
-      config: true,
-    },
-  });
-
-  return userWithRelations;
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.user.findUnique({
+        where: { authId: authUserId },
+        include: {
+          profile: true,
+          config: true,
+        },
+      }),
+    ERROR_CODES.SERVER_ERROR,
+    {
+      operation: "getUserWithRelationsById",
+      userId: authUserId,
+    }
+  );
 }
 
 export async function getCurrentUser(): Promise<AppUser> {
@@ -42,10 +49,13 @@ export async function getCurrentUser(): Promise<AppUser> {
   const user = await getUserById(currentAuthUser.id);
 
   if (!user) {
-    throw new UserNotFoundError(currentAuthUser.id);
+    errorManager.handleError(ERROR_CODES.USER_NOT_FOUND, new Error("Current user not found in database"), {
+      operation: "getCurrentUser",
+      userId: currentAuthUser.id,
+    });
   }
 
-  return user;
+  return user!; // Non-null assertion since handleError throws
 }
 
 export async function getCurrentUserWithRelations(): Promise<UserWithRelations> {
@@ -53,126 +63,116 @@ export async function getCurrentUserWithRelations(): Promise<UserWithRelations> 
   const userWithRelations = await getUserWithRelationsById(currentAuthUser.id);
 
   if (!userWithRelations) {
-    throw new UserNotFoundError(currentAuthUser.id);
+    errorManager.handleError(
+      ERROR_CODES.USER_NOT_FOUND,
+      new Error("Current user with relations not found in database"),
+      {
+        operation: "getCurrentUserWithRelations",
+        userId: currentAuthUser.id,
+      }
+    );
   }
 
-  return userWithRelations;
+  return userWithRelations!; // Non-null assertion since handleError throws
 }
 
 export async function createUserWithDefaults(authUserId: string): Promise<UserWithRelations> {
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        authId: authUserId,
-        config: {
-          create: {
-            autoSave: false,
-            theme: ThemeMode.light,
-            locale: "en",
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.user.create({
+        data: {
+          authId: authUserId,
+          config: {
+            create: {
+              autoSave: false,
+              theme: ThemeMode.light,
+              locale: "en",
+            },
+          },
+          profile: {
+            create: {},
           },
         },
-        profile: {
-          create: {},
+        include: {
+          config: true,
+          profile: true,
         },
-      },
-      include: {
-        config: true,
-        profile: true,
-      },
-    });
-
-    return newUser;
-  } catch (error) {
-    console.error(`Error creating user with auth ID ${authUserId}:`, error);
-    throw new UserCreationError(`Unable to create user with auth ID ${authUserId}`, error);
-  }
+      }),
+    ERROR_CODES.USER_CREATE_FAILED,
+    {
+      operation: "createUserWithDefaults",
+      userId: authUserId,
+    }
+  );
 }
 
 export async function findOrCreateUser(authUserId: string): Promise<UserWithRelations> {
-  try {
-    const existingUser = await getUserWithRelationsById(authUserId);
+  const existingUser = await getUserWithRelationsById(authUserId);
 
-    if (existingUser) {
-      return existingUser;
-    }
-
-    return await createUserWithDefaults(authUserId);
-  } catch (error) {
-    if (error instanceof UserNotFoundError) {
-      return await createUserWithDefaults(authUserId);
-    }
-    console.error(`Error in findOrCreateUser for auth ID ${authUserId}:`, error);
-    throw error;
+  if (existingUser) {
+    return existingUser;
   }
+
+  return await createUserWithDefaults(authUserId);
 }
 
 export async function updateUserById(
   authUserId: string,
   userData: Partial<Prisma.UserUpdateInput>
 ): Promise<UserWithRelations> {
-  try {
-    await assertCurrentUserId(authUserId);
+  await assertCurrentUserId(authUserId);
 
-    const updatedUser = await prisma.user.update({
-      where: { authId: authUserId },
-      data: userData,
-      include: { profile: true, config: true },
-    });
-
-    return updatedUser;
-  } catch (error) {
-    console.error(`Error updating user with auth ID ${authUserId}:`, error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
-      throw new UserNotFoundError(authUserId);
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.user.update({
+        where: { authId: authUserId },
+        data: userData,
+        include: { profile: true, config: true },
+      }),
+    ERROR_CODES.USER_UPDATE_FAILED,
+    {
+      operation: "updateUserById",
+      userId: authUserId,
+      metadata: { updateFields: Object.keys(userData) },
     }
-    throw new UserUpdateError("Failed to update user", error);
-  }
+  );
 }
 
 export async function updateCurrentUser(userData: Partial<Prisma.UserUpdateInput>): Promise<UserWithRelations> {
-  try {
-    const currentAuthUser = await requireCurrentUser();
-    return await updateUserById(currentAuthUser.id, userData);
-  } catch (error) {
-    console.error("Error updating current user:", error);
-    throw error;
-  }
+  const currentAuthUser = await requireCurrentUser();
+  return await updateUserById(currentAuthUser.id, userData);
 }
 
 export async function deleteUserById(authUserId: string): Promise<boolean> {
-  try {
-    await assertCurrentUserId(authUserId);
+  await assertCurrentUserId(authUserId);
 
-    const deletedUser = await prisma.user.delete({
-      where: { authId: authUserId },
-    });
-
-    return !!deletedUser;
-  } catch (error) {
-    console.error(`Error deleting user with auth ID ${authUserId}:`, error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
-      throw new UserNotFoundError(authUserId);
+  const deletedUser = await errorManager.wrapOperation(
+    () =>
+      prisma.user.delete({
+        where: { authId: authUserId },
+      }),
+    ERROR_CODES.USER_DELETE_FAILED,
+    {
+      operation: "deleteUserById",
+      userId: authUserId,
     }
-    throw new UserDeletionError("Failed to delete user", error);
-  }
+  );
+
+  return !!deletedUser;
 }
 
 export async function deleteCurrentUser(): Promise<boolean> {
-  try {
-    const currentAuthUser = await requireCurrentUser();
-    return await deleteUserById(currentAuthUser.id);
-  } catch (error) {
-    console.error("Error deleting current user:", error);
-    throw error;
-  }
+  const currentAuthUser = await requireCurrentUser();
+  return await deleteUserById(currentAuthUser.id);
 }
 
 export async function checkUserExists(authUserId: string): Promise<boolean> {
   try {
     const user = await getUserById(authUserId);
     return !!user;
-  } catch (error) {
-    console.error(`Error checking if user exists with auth ID ${authUserId}:`, error);
+  } catch {
+    // For this function, we want to return false on any error (including access denied)
+    // since it's a simple existence check
     return false;
   }
 }

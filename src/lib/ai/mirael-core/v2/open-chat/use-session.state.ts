@@ -38,7 +38,6 @@ export function useChatSessionState({ sessionId }: OpenChatProps) {
     if (!encryptedHasHydrated || !sessionId) return;
 
     const loadSessionAsync = async () => {
-      console.log("Loading session:", sessionId);
       // Check if session already loaded in active store
       if (currentSession?.id === sessionId) {
         setLoaded(true);

@@ -49,7 +49,7 @@ CBT Analysis for module selection (Burns framework):
 DISTORTIONS: all-or-nothing, overgeneralization, mental_filter, discounting_positives, jumping_conclusions, magnification_minimization, emotional_reasoning, should_statements, labeling, personalization, blame
 
 MODULES:
-CORE: cognitive, core_beliefs, crisis, reframing, shoulds, behavioral_activation, mindfulness, values
+CORE: cognitive, core_beliefs, crisis, reframing, shoulds, behavioral_activation, mindfulness, values_clarification
 PROCESS: overwhelm, resistance_overwhelm, resistance_pushback, validate
 UTILITY: guidance, pattern, psychoeducation
 

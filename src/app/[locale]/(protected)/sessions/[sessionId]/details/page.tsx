@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 
 import LoadingComponent from "@/components/loading-component";
-import SessionPage from "@/components/sessions/session-page";
+import SessionDetailsPage from "@/components/sessions/session-page/session-details";
 import SessionLoader from "@/components/sessions/session-page/session-loader";
 
-export default async function SessionRoute({
+export default async function SessionDetailsRoute({
   params,
 }: Readonly<{
   params: Promise<{ sessionId: string }>;
@@ -14,7 +14,8 @@ export default async function SessionRoute({
   return (
     <main className="h-screen w-screen relative standalone:w-full standalone:h-full">
       <Suspense fallback={<LoadingComponent />}>
-        <SessionLoader publicId={sessionId} content={SessionPage} />
+        {/* <SessionPage sessionId={sessionId} /> */}
+        <SessionLoader publicId={sessionId} content={SessionDetailsPage} />
       </Suspense>
     </main>
   );

@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 import { requireAdmin, requireCurrentUser } from "@/app/actions/auth-actions";
 import { SessionMetadataSchema, SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
+import { ERROR_CODES, errorManager } from "@/lib/errors";
 import { prisma } from "@/lib/prisma";
 import { SessionCreate } from "@/lib/zod/session-create.schema";
 
@@ -84,39 +85,66 @@ export async function batchGetSessionsById(sessionIds: string[]) {
 export async function createSession(sessionCreateInput: SessionCreate) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.create({
-    data: {
-      title: sessionCreateInput.title || `New Session ${nanoid(6)}`,
-      subtitle: sessionCreateInput.subtitle || null,
-      autoUpdateTitle: sessionCreateInput.autoUpdateTitle || false,
-      persistOnCloud: sessionCreateInput.persistOnCloud || false,
-      metadata: {
-        messageCount: 0,
-        tokenCount: 0,
-        costUSD: 0,
-      },
-      user: {
-        connect: { authId: authUser.id },
-      },
-    },
-  });
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.session.create({
+        data: {
+          title: sessionCreateInput.title || `New Session ${nanoid(6)}`,
+          subtitle: sessionCreateInput.subtitle || null,
+          autoUpdateTitle: sessionCreateInput.autoUpdateTitle || false,
+          persistOnCloud: sessionCreateInput.persistOnCloud || false,
+          metadata: {
+            messageCount: 0,
+            tokenCount: 0,
+            costUSD: 0,
+          },
+          user: {
+            connect: { authId: authUser.id },
+          },
+        },
+      }),
+    ERROR_CODES.SESSION_CREATE_FAILED,
+    {
+      userId: authUser.id,
+      operation: "createSession",
+      metadata: { title: sessionCreateInput.title },
+    }
+  );
 }
 
 export async function updateSessionEncryptedData(sessionId: string, data: EncryptedBlob) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.update({
-    where: { id: sessionId, user: { authId: authUser.id } },
-    data: { encryptedData: data },
-  });
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.session.update({
+        where: { id: sessionId, user: { authId: authUser.id } },
+        data: { encryptedData: data },
+      }),
+    ERROR_CODES.SESSION_UPDATE_FAILED,
+    {
+      userId: authUser.id,
+      sessionId,
+      operation: "updateSessionEncryptedData",
+    }
+  );
 }
 export async function updateSession(sessionId: string, data: Prisma.SessionUpdateWithoutUserInput) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.update({
-    where: { id: sessionId, user: { authId: authUser.id } },
-    data,
-  });
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.session.update({
+        where: { id: sessionId, user: { authId: authUser.id } },
+        data,
+      }),
+    ERROR_CODES.SESSION_UPDATE_FAILED,
+    {
+      userId: authUser.id,
+      sessionId,
+      operation: "updateSession",
+    }
+  );
 }
 
 export async function updateSessionMetadata(
@@ -125,28 +153,57 @@ export async function updateSessionMetadata(
 ) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.update({
-    where: { id: sessionId, user: { authId: authUser.id } },
-    data: { metadata },
-  });
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.session.update({
+        where: { id: sessionId, user: { authId: authUser.id } },
+        data: { metadata },
+      }),
+    ERROR_CODES.SESSION_UPDATE_FAILED,
+    {
+      userId: authUser.id,
+      sessionId,
+      operation: "updateSessionMetadata",
+      metadata: { messageCount: metadata.messageCount, tokenCount: metadata.tokenCount },
+    }
+  );
 }
 
 export async function updateSessionTitle(sessionId: string, title: string, subtitle?: string) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.update({
-    where: { id: sessionId, user: { authId: authUser.id } },
-    data: {
-      title,
-      ...(subtitle !== undefined && { subtitle }),
-    },
-  });
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.session.update({
+        where: { id: sessionId, user: { authId: authUser.id } },
+        data: {
+          title,
+          ...(subtitle !== undefined && { subtitle }),
+        },
+      }),
+    ERROR_CODES.SESSION_UPDATE_FAILED,
+    {
+      userId: authUser.id,
+      sessionId,
+      operation: "updateSessionTitle",
+      metadata: { title, subtitle },
+    }
+  );
 }
 
 export async function deleteSession(sessionId: string) {
   const authUser = await requireCurrentUser();
 
-  return await prisma.session.delete({
-    where: { id: sessionId, user: { authId: authUser.id } },
-  });
+  return await errorManager.wrapOperation(
+    () =>
+      prisma.session.delete({
+        where: { id: sessionId, user: { authId: authUser.id } },
+      }),
+    ERROR_CODES.SESSION_DELETE_FAILED,
+    {
+      userId: authUser.id,
+      sessionId,
+      operation: "deleteSession",
+    }
+  );
 }

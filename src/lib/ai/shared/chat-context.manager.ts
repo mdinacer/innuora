@@ -19,12 +19,13 @@ export class ChatContextManager {
       role: "system",
       content: `
 ## Conversation History (for context only)
-- This is background memory, not for direct quoting.
+- This is background memory; do not quote directly.
 - Maintain continuity, emotional flow, and awareness of prior patterns.
-- Do not summarize or restate this history.
-- Use it only to sound consistent, connected, and human.
+- Integrate prior user and AI turns naturally to make the conversation feel connected.
+- Avoid summarizing or restating the history.
+- Use this context only to inform your style, tone, and continuity, not for new advice.
 ${formattedMessages}
-      `.trim(),
+  `.trim(),
     };
   }
 

@@ -19,15 +19,37 @@ export type WrappedKeyPackage = {
 };
 
 export type EncryptedBlob = {
-  version: 1;
+  version: number; // 1
   alg: "AES-GCM";
   iv: string; // base64
   ciphertext: string; // base64 (ciphertext + auth tag)
 };
 
+// export const EncryptedBlobSchema = z.object({
+//   version: z.number().int().positive(),
+//   alg: z.literal("AES-GCM"),
+//   iv: z.string().min(1), // base64 string
+//   ciphertext: z.string().min(1), // base64 string (ciphertext + auth tag)
+// });
+
+const base64Regex = /^[A-Za-z0-9+/]+={0,2}$/;
+
 export const EncryptedBlobSchema = z.object({
-  version: z.literal(1),
+  version: z.literal(1), // enforce current version, makes migrations safer later
   alg: z.literal("AES-GCM"),
-  iv: z.string().min(1), // base64 string
-  ciphertext: z.string().min(1), // base64 string (ciphertext + auth tag)
+  iv: z
+    .string()
+    .regex(base64Regex, "IV must be base64-encoded")
+    .refine(
+      (val) => {
+        try {
+          const bytes = Uint8Array.from(atob(val), (c) => c.charCodeAt(0));
+          return bytes.length === 12; // AES-GCM IV = 96 bits
+        } catch {
+          return false;
+        }
+      },
+      { message: "IV must decode to 12 bytes" }
+    ),
+  ciphertext: z.string().regex(base64Regex, "Ciphertext must be base64-encoded"),
 });

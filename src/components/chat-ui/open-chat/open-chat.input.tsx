@@ -4,8 +4,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SendIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { MessageCostEstimator } from "@/components/points/message-cost-estimator";
-import { usePoints } from "@/lib/points/simple-points";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -16,7 +14,6 @@ interface Props {
 
 const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
   const { t } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.input" });
-  const { canAffordService } = usePoints();
 
   const { label, placeholder, actionTitle } = useMemo(
     () => ({
@@ -30,14 +27,9 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = useCallback(() => {
-    const affordabilityCheck = canAffordService("basic_message");
-    if (!affordabilityCheck) {
-      // Could show an error toast here, but for now just prevent sending
-      return;
-    }
     onSendMessage(inputValue);
     setInputValue("");
-  }, [inputValue, onSendMessage, canAffordService]);
+  }, [inputValue, onSendMessage]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -55,13 +47,10 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
     inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
   }, [inputValue]);
 
-  const canAfford = canAffordService("basic_message");
-  const isDisabled = inputValue.length === 0 || isLoading || !canAfford;
+  const isDisabled = inputValue.length === 0 || isLoading;
 
   return (
     <div className={cn("p-6 pt-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
-      {/* Cost Estimator */}
-      <MessageCostEstimator message={inputValue} className="mb-2 px-4" />
       <div
         className={cn(
           "flex gap-3 items-center",

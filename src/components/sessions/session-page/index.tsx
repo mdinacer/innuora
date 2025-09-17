@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -9,12 +9,10 @@ import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-c
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
 import LoadingComponent from "@/components/loading-component";
-import { InsufficientPointsWarning } from "@/components/points/insufficient-points-warning";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
 import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { useChatController } from "@/lib/ai/mirael-core/v2/use-chat-controller";
 import { AppLocales } from "@/lib/i18n";
-import { usePoints } from "@/lib/points/simple-points";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
@@ -23,8 +21,6 @@ interface Props {
 
 const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
-  const [pointsError, setPointsError] = useState<{ error: string; cost?: number } | null>(null);
-  const { getBalance } = usePoints();
 
   const {
     t,
@@ -88,22 +84,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   const handleProcessMessage = useCallback(
     async (message: string) => {
-      setPointsError(null); // Clear any previous errors
-
       const result = await processMessage(message);
-
-      if (result?.error) {
-        if (result.error.includes("Insufficient points")) {
-          setPointsError({
-            error: result.error,
-            cost: result.cost,
-          });
-        } else {
-          // Handle other types of errors (could show a toast or other UI)
-          console.error("Message processing error:", result.error);
-        }
-        return;
-      }
 
       // Message processed successfully
       return result;

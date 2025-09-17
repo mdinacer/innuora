@@ -54,7 +54,7 @@ const NewSessionsLoader: React.FC<Props> = ({ className }) => {
       if (sessions.length > 0) {
         const state = useEncryptedSessionStore.getState();
         for (const session of sessions) {
-          state.setSession(session.id, session);
+          state.addSession(session);
           state.setChangesMap((prevMap) => {
             const newMap = { ...prevMap };
             delete newMap[session.id];

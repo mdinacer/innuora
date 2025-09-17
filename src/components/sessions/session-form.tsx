@@ -24,7 +24,6 @@ import { Separator } from "@/components/ui/separator";
 import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { generateId } from "@/lib/chat/flow/generate-id";
-import { useSessionServices } from "@/lib/points/simple-points";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
 
 interface Props {
@@ -38,7 +37,6 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
   const encryptedStore = useEncryptedSessionStore();
-  const { canAffordService, getServiceCost } = useSessionServices();
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
@@ -54,10 +52,6 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
   const { isSubmitting } = form.formState;
 
   const isEdit = !!session;
-
-  // Points service information
-  const sessionAnalysisCost = getServiceCost("session_analysis");
-  const canAffordAnalysis = canAffordService("session_analysis").canAfford;
 
   const data = useMemo(
     () => ({
@@ -75,7 +69,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         },
         aiSuggestedTitle: {
           label: t("fields.aiSuggestedTitle.label"),
-          description: `${t("fields.aiSuggestedTitle.description")} (Cost: $${(sessionAnalysisCost / 100).toFixed(2)}${!canAffordAnalysis ? " - Insufficient Points" : ""})`,
+          description: t("fields.aiSuggestedTitle.description"),
         },
         persistOnCloud: {
           label: t("fields.persistOnCloud.label"),
@@ -87,7 +81,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
         cancel: t("actions.cancel"),
       },
     }),
-    [isEdit, t, sessionAnalysisCost, canAffordAnalysis]
+    [isEdit, t]
   );
 
   const handleOnSubmit = useCallback(

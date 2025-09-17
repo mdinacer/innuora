@@ -73,9 +73,9 @@ const SignInForm: React.FC<Props> = ({ className }) => {
           client.auth.setSession(session);
         }
 
-        const metadata = user.user_metadata;
+        const metadata = user?.user_metadata;
 
-        const parsedCryptoData = WrappedKeyPackageSchema.safeParse(metadata.crypto);
+        const parsedCryptoData = WrappedKeyPackageSchema.safeParse(metadata?.crypto);
         if (parsedCryptoData.success) {
           const cryptoMeta = parsedCryptoData.data; // use parsed data
           const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, data.password);

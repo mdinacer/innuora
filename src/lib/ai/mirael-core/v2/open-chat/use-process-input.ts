@@ -78,6 +78,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
       return {
         assistantMessage,
         shouldUpdateMemory: newAnalysis?.update_memory ?? false,
+        tokenUsage: { analysisUsage, responseUsage },
       };
     },
     [addAnalysis, addTokenUsage, locale, onRoundComplete, session]

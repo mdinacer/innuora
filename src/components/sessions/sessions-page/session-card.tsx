@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -26,7 +26,6 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
     t,
     i18n: { language },
   } = useTranslation("pages", { keyPrefix: "sessions.card" });
-  //const getSessionObfuscatedId = useEncryptedSessionStore((state) => state.getSessionObfuscatedId);
 
   const isOnCloud = useEncryptedSessionStore((state) => state.onlineSessionIds.includes(session.id));
   const updatesData = useEncryptedSessionStore((state) => state.changesMap[session.id]) as
@@ -35,9 +34,9 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
 
   const fnsLocale = fnsLocalesMap[language as AppLocales];
 
-  // const obfuscatedId = useMemo(() => {
-  //   return getSessionObfuscatedId(session.id);
-  // }, [getSessionObfuscatedId, session.id]);
+  const publicId = useMemo(() => {
+    return useEncryptedSessionStore.getState().getSessionPublicId(session.id);
+  }, [session.id]);
 
   const {
     cloud,
@@ -107,7 +106,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
           </div>
 
           <Link
-            href={`/sessions/${session.id}/details`}
+            href={`/sessions/${publicId}/details`}
             className="inline-flex aspect-square items-center border border-transparent gap-x-2 text-sm p-1 rounded-lg hover:bg-mir-bg-input hover:border-mir-border-light text-mir-text-secondary hover:text-mir-bg-accent"
             aria-label={`${continueText} details`}
           >
@@ -137,7 +136,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
       {/* Bottom actions */}
       <div className="min-h-1/5 p-6 pt-4 border-t border-mir-border-light/30 flex items-center justify-between">
         <Link
-          href={`/sessions/${session.id}`}
+          href={`/sessions/${publicId || session.id}`}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-mir-bg-accent text-white font-medium text-sm hover:shadow-[0_4px_20px] hover:shadow-black/10 hover:scale-105 transition-all"
           aria-label={`${continueText} to session`}
         >

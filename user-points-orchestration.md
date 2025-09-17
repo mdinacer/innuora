@@ -17,11 +17,13 @@ Points serve as the unified currency for all AI interactions, replacing direct m
 ### Point Sources
 
 #### 1. **Initial Welcome Bonus**
+
 ```typescript
 const WELCOME_BONUS = 1000; // 1000 points = $10 value
 ```
 
 #### 2. **Subscription Tiers**
+
 ```typescript
 interface SubscriptionTier {
   name: "Free" | "Essential" | "Premium" | "Professional";
@@ -35,30 +37,31 @@ const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     name: "Free",
     monthlyPoints: 200, // $2 monthly allowance
     pointsPerUSD: 100,
-    features: ["Basic conversations", "Limited sessions"]
+    features: ["Basic conversations", "Limited sessions"],
   },
   {
-    name: "Essential", 
+    name: "Essential",
     monthlyPoints: 1000, // $10 monthly allowance
     pointsPerUSD: 110, // 10% bonus
-    features: ["Unlimited sessions", "Advanced analysis", "Priority support"]
+    features: ["Unlimited sessions", "Advanced analysis", "Priority support"],
   },
   {
     name: "Premium",
     monthlyPoints: 2500, // $25 monthly allowance
     pointsPerUSD: 120, // 20% bonus
-    features: ["All models", "Export features", "Advanced insights"]
+    features: ["All models", "Export features", "Advanced insights"],
   },
   {
     name: "Professional",
     monthlyPoints: 5000, // $50 monthly allowance
     pointsPerUSD: 130, // 30% bonus
-    features: ["Team features", "API access", "Priority processing"]
-  }
+    features: ["Team features", "API access", "Priority processing"],
+  },
 ];
 ```
 
 #### 3. **Point Purchases**
+
 ```typescript
 interface PointPackage {
   points: number;
@@ -72,11 +75,12 @@ const POINT_PACKAGES: PointPackage[] = [
   { points: 1200, priceUSD: 9.99, bonusPercent: 20, popular: true },
   { points: 2600, priceUSD: 19.99, bonusPercent: 30 },
   { points: 5500, priceUSD: 39.99, bonusPercent: 37.5 },
-  { points: 12000, priceUSD: 79.99, bonusPercent: 50 }
+  { points: 12000, priceUSD: 79.99, bonusPercent: 50 },
 ];
 ```
 
 #### 4. **Engagement Rewards**
+
 ```typescript
 interface EngagementReward {
   action: string;
@@ -90,36 +94,37 @@ const ENGAGEMENT_REWARDS: EngagementReward[] = [
     action: "daily_checkin",
     points: 10,
     dailyLimit: 1,
-    description: "Daily check-in bonus"
+    description: "Daily check-in bonus",
   },
   {
     action: "complete_session",
     points: 25,
     dailyLimit: 3,
-    description: "Complete a meaningful conversation"
+    description: "Complete a meaningful conversation",
   },
   {
     action: "first_weekly_session",
     points: 50,
     dailyLimit: 1,
-    description: "First session of the week"
+    description: "First session of the week",
   },
   {
     action: "referral_signup",
     points: 500,
-    description: "Friend signs up using your referral"
+    description: "Friend signs up using your referral",
   },
   {
     action: "feedback_submitted",
     points: 100,
-    description: "Submit detailed feedback"
-  }
+    description: "Submit detailed feedback",
+  },
 ];
 ```
 
 ### Point Consumption
 
 #### 1. **Model-Based Pricing**
+
 ```typescript
 interface ModelPricing {
   modelCode: string;
@@ -128,8 +133,8 @@ interface ModelPricing {
   pointsPerOutputToken: number;
   features: {
     analysis: number; // Additional points for state analysis
-    memory: number;   // Points for memory storage
-    export: number;   // Points for session export
+    memory: number; // Points for memory storage
+    export: number; // Points for session export
   };
 }
 
@@ -139,26 +144,27 @@ const MODEL_PRICING: ModelPricing[] = [
     basePointsPerMessage: 2,
     pointsPerInputToken: 0.0015,
     pointsPerOutputToken: 0.006,
-    features: { analysis: 5, memory: 1, export: 10 }
+    features: { analysis: 5, memory: 1, export: 10 },
   },
   {
     modelCode: "M2", // GPT-4o
     basePointsPerMessage: 10,
     pointsPerInputToken: 0.025,
     pointsPerOutputToken: 0.1,
-    features: { analysis: 15, memory: 3, export: 20 }
+    features: { analysis: 15, memory: 3, export: 20 },
   },
   {
     modelCode: "M3", // Claude-3.5-Sonnet
     basePointsPerMessage: 8,
     pointsPerInputToken: 0.03,
     pointsPerOutputToken: 0.15,
-    features: { analysis: 12, memory: 2, export: 15 }
-  }
+    features: { analysis: 12, memory: 2, export: 15 },
+  },
 ];
 ```
 
 #### 2. **Feature-Based Charges**
+
 ```typescript
 interface FeatureCost {
   feature: string;
@@ -170,23 +176,23 @@ const FEATURE_COSTS: FeatureCost[] = [
   {
     feature: "session_analysis",
     points: 25,
-    description: "Detailed cognitive analysis of session"
+    description: "Detailed cognitive analysis of session",
   },
   {
     feature: "export_pdf",
     points: 50,
-    description: "Export session as formatted PDF"
+    description: "Export session as formatted PDF",
   },
   {
     feature: "cloud_backup",
     points: 5,
-    description: "Store session in cloud (one-time per session)"
+    description: "Store session in cloud (one-time per session)",
   },
   {
     feature: "priority_processing",
     points: 20,
-    description: "Skip queue for faster responses"
-  }
+    description: "Skip queue for faster responses",
+  },
 ];
 ```
 
@@ -204,7 +210,7 @@ CREATE TABLE user_points (
   lifetime_spent INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   CONSTRAINT positive_balance CHECK (balance >= 0)
 );
 
@@ -219,7 +225,7 @@ CREATE TABLE points_transactions (
   reference_id UUID, -- Links to session, purchase, etc.
   metadata JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   CONSTRAINT non_zero_amount CHECK (amount != 0)
 );
 
@@ -248,7 +254,7 @@ CREATE TABLE user_engagement (
   count INTEGER NOT NULL DEFAULT 1,
   metadata JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   UNIQUE(user_id, action, date)
 );
 ```
@@ -258,43 +264,38 @@ CREATE TABLE user_engagement (
 ```typescript
 // Points Service - Core business logic
 export class PointsService {
-  
   async getUserBalance(userId: string): Promise<number> {
-    const result = await supabase
-      .from('user_points')
-      .select('balance')
-      .eq('user_id', userId)
-      .single();
-    
+    const result = await supabase.from("user_points").select("balance").eq("user_id", userId).single();
+
     return result.data?.balance || 0;
   }
 
   async deductPoints(
-    userId: string, 
-    amount: number, 
-    source: string, 
+    userId: string,
+    amount: number,
+    source: string,
     referenceId?: string,
     metadata?: any
   ): Promise<{ success: boolean; newBalance: number }> {
     const currentBalance = await this.getUserBalance(userId);
-    
+
     if (currentBalance < amount) {
       throw new InsufficientPointsError(`Insufficient points. Required: ${amount}, Available: ${currentBalance}`);
     }
 
     const newBalance = currentBalance - amount;
-    
+
     // Update balance and log transaction atomically
-    const { error } = await supabase.rpc('deduct_user_points', {
+    const { error } = await supabase.rpc("deduct_user_points", {
       p_user_id: userId,
       p_amount: amount,
       p_source: source,
       p_reference_id: referenceId,
-      p_metadata: metadata
+      p_metadata: metadata,
     });
 
     if (error) throw error;
-    
+
     return { success: true, newBalance };
   }
 
@@ -305,16 +306,16 @@ export class PointsService {
     referenceId?: string,
     metadata?: any
   ): Promise<{ newBalance: number }> {
-    const { error } = await supabase.rpc('add_user_points', {
+    const { error } = await supabase.rpc("add_user_points", {
       p_user_id: userId,
       p_amount: amount,
       p_source: source,
       p_reference_id: referenceId,
-      p_metadata: metadata
+      p_metadata: metadata,
     });
 
     if (error) throw error;
-    
+
     const newBalance = await this.getUserBalance(userId);
     return { newBalance };
   }
@@ -325,7 +326,7 @@ export class PointsService {
     outputTokens: number,
     features: string[] = []
   ): Promise<number> {
-    const pricing = MODEL_PRICING.find(p => p.modelCode === modelCode);
+    const pricing = MODEL_PRICING.find((p) => p.modelCode === modelCode);
     if (!pricing) throw new Error(`Unknown model: ${modelCode}`);
 
     let cost = pricing.basePointsPerMessage;
@@ -334,7 +335,7 @@ export class PointsService {
 
     // Add feature costs
     for (const feature of features) {
-      const featureCost = FEATURE_COSTS.find(f => f.feature === feature);
+      const featureCost = FEATURE_COSTS.find((f) => f.feature === feature);
       if (featureCost) {
         cost += featureCost.points;
       }
@@ -350,12 +351,12 @@ interface PointsStoreState {
   isLoading: boolean;
   transactions: PointsTransaction[];
   subscription: UserSubscription | null;
-  
+
   // Actions
   loadBalance: () => Promise<void>;
   loadTransactions: (limit?: number) => Promise<void>;
   loadSubscription: () => Promise<void>;
-  
+
   // Real-time updates
   subscribeToUpdates: () => void;
   unsubscribeFromUpdates: () => void;
@@ -374,7 +375,7 @@ export const usePointsStore = create<PointsStoreState>()(
         const balance = await pointsService.getUserBalance(getCurrentUserId());
         set({ balance, isLoading: false });
       } catch (error) {
-        console.error('Failed to load balance:', error);
+        console.error("Failed to load balance:", error);
         set({ isLoading: false });
       }
     },
@@ -382,22 +383,26 @@ export const usePointsStore = create<PointsStoreState>()(
     subscribeToUpdates: () => {
       const userId = getCurrentUserId();
       const subscription = supabase
-        .channel('points_updates')
-        .on('postgres_changes', {
-          event: '*',
-          schema: 'public',
-          table: 'user_points',
-          filter: `user_id=eq.${userId}`
-        }, (payload) => {
-          if (payload.new && 'balance' in payload.new) {
-            set({ balance: payload.new.balance });
+        .channel("points_updates")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "user_points",
+            filter: `user_id=eq.${userId}`,
+          },
+          (payload) => {
+            if (payload.new && "balance" in payload.new) {
+              set({ balance: payload.new.balance });
+            }
           }
-        })
+        )
         .subscribe();
-      
+
       // Store subscription for cleanup
       set({ realtimeSubscription: subscription });
-    }
+    },
   }))
 );
 ```
@@ -412,12 +417,11 @@ export class ChatController {
   async processMessage(
     content: string,
     sessionId: string,
-    modelCode: string = 'M1'
+    modelCode: string = "M1"
   ): Promise<{ response: string; pointsUsed: number }> {
-    
     // Pre-calculate cost estimate
     const estimatedCost = await this.estimateMessageCost(content, modelCode);
-    
+
     // Check if user has sufficient points
     const userBalance = await this.pointsService.getUserBalance(this.userId);
     if (userBalance < estimatedCost) {
@@ -440,23 +444,17 @@ export class ChatController {
     );
 
     // Deduct points
-    await this.pointsService.deductPoints(
-      this.userId,
-      actualCost,
-      'ai_usage',
-      sessionId,
-      {
-        modelCode,
-        inputTokens: aiResponse.usage.inputTokens,
-        outputTokens: aiResponse.usage.outputTokens,
-        processingTime,
-        featuresUsed: aiResponse.featuresUsed
-      }
-    );
+    await this.pointsService.deductPoints(this.userId, actualCost, "ai_usage", sessionId, {
+      modelCode,
+      inputTokens: aiResponse.usage.inputTokens,
+      outputTokens: aiResponse.usage.outputTokens,
+      processingTime,
+      featuresUsed: aiResponse.featuresUsed,
+    });
 
     return {
       response: aiResponse.content,
-      pointsUsed: actualCost
+      pointsUsed: actualCost,
     };
   }
 
@@ -464,12 +462,8 @@ export class ChatController {
     // Rough estimation based on content length
     const estimatedInputTokens = Math.ceil(content.length / 4); // Rough token estimate
     const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 1.5); // Conservative estimate
-    
-    return await this.pointsService.calculateMessageCost(
-      modelCode,
-      estimatedInputTokens,
-      estimatedOutputTokens
-    );
+
+    return await this.pointsService.calculateMessageCost(modelCode, estimatedInputTokens, estimatedOutputTokens);
   }
 }
 ```
@@ -497,7 +491,7 @@ export const PointsBalance: React.FC = () => {
           </span>
         )}
       </div>
-      
+
       <div className="balance-value text-sm text-gray-600">
         ≈ ${(balance / 100).toFixed(2)} value
       </div>
@@ -580,37 +574,37 @@ interface Achievement {
   icon: string;
   points: number;
   criteria: {
-    type: 'session_count' | 'points_spent' | 'consecutive_days' | 'feature_usage';
+    type: "session_count" | "points_spent" | "consecutive_days" | "feature_usage";
     threshold: number;
-    timeframe?: 'daily' | 'weekly' | 'monthly' | 'all_time';
+    timeframe?: "daily" | "weekly" | "monthly" | "all_time";
   };
 }
 
 const ACHIEVEMENTS: Achievement[] = [
   {
-    id: 'first_steps',
-    name: 'First Steps',
-    description: 'Complete your first conversation',
-    icon: '🌱',
+    id: "first_steps",
+    name: "First Steps",
+    description: "Complete your first conversation",
+    icon: "🌱",
     points: 50,
-    criteria: { type: 'session_count', threshold: 1 }
+    criteria: { type: "session_count", threshold: 1 },
   },
   {
-    id: 'dedicated_user',
-    name: 'Dedicated User',
-    description: 'Use Mirael for 7 consecutive days',
-    icon: '🔥',
+    id: "dedicated_user",
+    name: "Dedicated User",
+    description: "Use Mirael for 7 consecutive days",
+    icon: "🔥",
     points: 200,
-    criteria: { type: 'consecutive_days', threshold: 7 }
+    criteria: { type: "consecutive_days", threshold: 7 },
   },
   {
-    id: 'power_user',
-    name: 'Power User',
-    description: 'Complete 50 sessions',
-    icon: '⚡',
+    id: "power_user",
+    name: "Power User",
+    description: "Complete 50 sessions",
+    icon: "⚡",
     points: 500,
-    criteria: { type: 'session_count', threshold: 50, timeframe: 'all_time' }
-  }
+    criteria: { type: "session_count", threshold: 50, timeframe: "all_time" },
+  },
 ];
 ```
 
@@ -619,7 +613,7 @@ const ACHIEVEMENTS: Achievement[] = [
 ```typescript
 interface ReferralProgram {
   referrerBonus: number; // Points for successful referral
-  refereeBonus: number;  // Points for new user
+  refereeBonus: number; // Points for new user
   tierMultipliers: Record<string, number>; // Bonus based on subscription tier
 }
 
@@ -627,50 +621,52 @@ const REFERRAL_PROGRAM: ReferralProgram = {
   referrerBonus: 500,
   refereeBonus: 250,
   tierMultipliers: {
-    'Free': 1,
-    'Essential': 1.5,
-    'Premium': 2,
-    'Professional': 3
-  }
+    Free: 1,
+    Essential: 1.5,
+    Premium: 2,
+    Professional: 3,
+  },
 };
 ```
 
 ## Security & Fraud Prevention
 
 ### Rate Limiting
+
 ```typescript
 const RATE_LIMITS = {
   pointPurchase: {
     maxPerDay: 50000, // Max points purchasable per day
-    maxPerHour: 10000
+    maxPerHour: 10000,
   },
   engagement: {
     maxDailyCheckins: 1,
     maxSessionRewards: 3,
-    cooldownBetweenActions: 60000 // 1 minute
-  }
+    cooldownBetweenActions: 60000, // 1 minute
+  },
 };
 ```
 
 ### Abuse Detection
+
 ```typescript
 interface AbuseDetectionRule {
   pattern: string;
   threshold: number;
-  action: 'warn' | 'limit' | 'suspend';
+  action: "warn" | "limit" | "suspend";
 }
 
 const ABUSE_RULES: AbuseDetectionRule[] = [
   {
-    pattern: 'rapid_session_creation',
+    pattern: "rapid_session_creation",
     threshold: 10, // 10 sessions per hour
-    action: 'limit'
+    action: "limit",
   },
   {
-    pattern: 'suspicious_referrals',
+    pattern: "suspicious_referrals",
     threshold: 5, // 5 referrals from same IP
-    action: 'warn'
-  }
+    action: "warn",
+  },
 ];
 ```
 
@@ -684,17 +680,17 @@ interface PointsAnalytics {
   pointsSold: number;
   revenue: number;
   averageTransactionSize: number;
-  
+
   // Engagement Metrics
   dailyActiveUsers: number;
   pointsEarnedFromEngagement: number;
   achievementCompletionRate: number;
-  
+
   // Consumption Metrics
   pointsSpentOnAI: number;
   averageSessionCost: number;
   modelUsageDistribution: Record<string, number>;
-  
+
   // Retention Metrics
   pointsRetentionRate: number; // Users who return after earning points
   subscriptionUpgradeRate: number;
@@ -704,30 +700,35 @@ interface PointsAnalytics {
 ## Implementation Phases
 
 ### Phase 1: Core Infrastructure (Week 1-2)
+
 - [ ] Database schema setup
 - [ ] Basic PointsService implementation
 - [ ] User balance tracking
 - [ ] Simple point deduction for AI usage
 
 ### Phase 2: UI Integration (Week 3-4)
+
 - [ ] Points balance display
 - [ ] Cost estimation in chat
 - [ ] Insufficient points warnings
 - [ ] Basic points purchase flow
 
 ### Phase 3: Engagement Features (Week 5-6)
+
 - [ ] Daily check-in rewards
 - [ ] Session completion bonuses
 - [ ] Achievement system
 - [ ] Referral program
 
 ### Phase 4: Advanced Features (Week 7-8)
+
 - [ ] Subscription integration
 - [ ] Advanced analytics dashboard
 - [ ] Fraud detection
 - [ ] Performance optimization
 
 ### Phase 5: Optimization & Polish (Week 9-10)
+
 - [ ] A/B testing framework
 - [ ] Advanced gamification
 - [ ] Customer support tools
@@ -736,17 +737,20 @@ interface PointsAnalytics {
 ## Success Metrics
 
 ### Technical Success
+
 - **99.9% uptime** for points transactions
 - **<100ms response time** for balance queries
 - **Zero point loss** incidents
 
 ### Business Success
+
 - **20% increase** in user engagement
 - **15% subscription upgrade rate** from free users
 - **$50 average monthly points spending** per active user
 - **4.5+ star rating** on points system usability
 
 ### User Experience Success
+
 - **<3 seconds** for cost calculation
 - **Clear cost transparency** before each interaction
 - **Intuitive points earning** mechanisms
