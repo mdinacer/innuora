@@ -8,6 +8,7 @@ import { ERROR_CODES, errorManager, mapSupabaseAuthError } from "@/lib/errors";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
+import { logAction } from "./audit-actions";
 
 export async function findCurrentUser() {
   const supabase = await createClient();
@@ -100,6 +101,11 @@ export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: W
     });
   }
 
+  // Log successful signup
+  if (data.user) {
+    await logAction(data.user.id, "signup", `User registered: ${email}`);
+  }
+
   redirect("/auth/verify-email/sent");
 }
 
@@ -120,10 +126,25 @@ export async function signIn(signInData: SignInSchemaType) {
       metadata: { email: email.toLowerCase(), remember },
     });
   }
+
+  // Log successful signin
+  if (data.user) {
+    await logAction(data.user.id, "signin", `User logged in: ${email}`);
+  }
+
   return data;
 }
 
 export async function signOut() {
   const supabase = await createClient();
+  
+  // Get current user before signing out
+  const currentUser = await findCurrentUser();
+  
   await supabase.auth.signOut();
+  
+  // Log signout
+  if (currentUser) {
+    await logAction(currentUser.id, "signout", "User logged out");
+  }
 }

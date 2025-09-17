@@ -25,15 +25,18 @@ import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
 import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
 import { generateId } from "@/lib/chat/flow/generate-id";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
+import TextareaField from "../input/textarea-field";
+import { Button } from "../mir-ui/button";
 
 interface Props {
   className?: string;
   session?: Session;
   trigger?: React.ReactNode;
-  onSubmit?: (session: Session) => void;
+  onSubmit?: (session: SessionCreate) => void;
+  onSubmitted?: (session: Session) => void;
 }
 
-const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
+const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted }) => {
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
   const encryptedStore = useEncryptedSessionStore();
@@ -86,6 +89,10 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
 
   const handleOnSubmit = useCallback(
     async (data: SessionCreate) => {
+      if (onSubmit) {
+        onSubmit(data);
+        return;
+      }
       const id = session?.id || generateId("Session");
 
       if (session) {
@@ -121,12 +128,12 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
       // Get the updated session and call onSubmit
       const updatedSession = await encryptedStore.getSession(id);
       if (updatedSession) {
-        onSubmit?.(updatedSession);
+        onSubmitted?.(updatedSession);
       }
 
       setOpen(false);
     },
-    [onSubmit, session, encryptedStore]
+    [onSubmit, session, encryptedStore, onSubmitted]
   );
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -156,7 +163,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
                   label={data.fields.title.label}
                   placeholder={data.fields.title.placeholder}
                 />
-                <TextField
+                <TextareaField
                   control={control}
                   name="subtitle"
                   label={data.fields.subtitle.label}
@@ -170,33 +177,35 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit }) => {
                   description={data.fields.aiSuggestedTitle.description}
                 />
 
-                <SwitchField
-                  control={control}
-                  name="persistOnCloud"
-                  label={data.fields.persistOnCloud.label}
-                  description={data.fields.persistOnCloud.description}
-                />
+                {!isEdit && (
+                  <SwitchField
+                    control={control}
+                    name="persistOnCloud"
+                    label={data.fields.persistOnCloud.label}
+                    description={data.fields.persistOnCloud.description}
+                  />
+                )}
               </div>
               <DialogFooter>
                 <DialogClose asChild>
                   {/* <Button variant="outline">{data.actions.cancel}</Button> */}
-                  <button
+                  <Button type="button" disabled={isSubmitting} variant="outline">
+                    {data.actions.cancel}
+                  </Button>
+                  {/* <button
                     type="button"
                     disabled={isSubmitting}
                     className="inline-flex items-center gap-2 rounded-2xl bg-mir-bg-card border border-mir-border-light px-6 py-3 font-semibold text-white shadow transition-all"
                   >
                     {data.actions.cancel}
-                  </button>
+                  </button> */}
                 </DialogClose>
                 {/* <Button type="submit">{data.actions.submit}</Button> */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-mir-bg-accent px-6 py-3 font-semibold text-white shadow transition-all"
-                >
+
+                <Button type="submit" disabled={isSubmitting} variant="primary">
                   {isSubmitting && <Loader2Icon className="size-4 animate-spin" />}
                   {data.actions.submit}
-                </button>
+                </Button>
               </DialogFooter>
             </form>
           </Form>

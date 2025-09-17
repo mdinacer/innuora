@@ -156,7 +156,7 @@ interface EncryptedChatSessionStoreState extends PersistedStoreBaseProps {
   getSessionPublicId: (sessionId: string) => string | undefined;
   addSession: (session: PrismaSession) => void;
   setSession: (sessionId: string, session: PrismaSession) => void;
-  updateSession: (sessionId: string, session: Session) => void;
+  updateSession: (sessionId: string, session: Session) => Promise<void>;
   createSession: (data?: Partial<Session>) => Promise<string>; // Return real session ID
   resetSession: (sessionId: string) => void;
   removeSession: (sessionId: string) => void;
