@@ -1,16 +1,20 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { StateAnalysis, StateAnalysisSchema } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
-import { AnalysisContext, AnalysisContextItem } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.types";
+import {
+  AnalysisContext,
+  AnalysisContextItem,
+  TherapeuticAnalysis,
+  TherapeuticAnalysisSchema,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 
-export class StateAnalysisEngine {
-  safeParseStateAnalysis(aiResponse: string): StateAnalysis | null {
+export class TherapeuticAnalysisEngine {
+  safeParseTherapeuticAnalysis(aiResponse: string): TherapeuticAnalysis | null {
     try {
       const parsedJSON = parseJsonObject(aiResponse);
-      const parsedAnalysisResult = StateAnalysisSchema.safeParse(parsedJSON);
+      const parsedAnalysisResult = TherapeuticAnalysisSchema.safeParse(parsedJSON);
       if (!parsedAnalysisResult.success) {
-        console.error("StateAnalysis validation failed:", parsedAnalysisResult.error);
+        console.error("TherapeuticAnalysis validation failed:", parsedAnalysisResult.error);
         return null;
       }
       return parsedAnalysisResult.data;
@@ -20,7 +24,7 @@ export class StateAnalysisEngine {
     }
   }
 
-  getAnalysisContextPrompt(userInput: string, prevData: StateAnalysis[]): ChatCompletionMessageParam {
+  getAnalysisContextPrompt(userInput: string, prevData: TherapeuticAnalysis[]): ChatCompletionMessageParam {
     console.log("prevData", prevData);
     return prevData.length === 0
       ? {
@@ -46,7 +50,7 @@ export class StateAnalysisEngine {
         } as ChatCompletionMessageParam);
   }
 
-  private getAnalysisContext(prevData: StateAnalysis[]): AnalysisContext {
+  private getAnalysisContext(prevData: TherapeuticAnalysis[]): AnalysisContext {
     if (!prevData || prevData.length === 0) {
       return { recentAnalyses: [], recurringThemes: [], distortions: [] };
     }

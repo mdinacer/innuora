@@ -2,7 +2,7 @@ import { Suspense } from "react";
 
 import LoadingComponent from "@/components/loading-component";
 import SessionDetailsPage from "@/components/sessions/session-details";
-import SessionDecrypt from "@/components/sessions/session-page/session-decryptor";
+import SessionDecrypt from "@/domains/encrypted-session/components/session-decryptor";
 
 export default async function SessionDetailsRoute({
   params,

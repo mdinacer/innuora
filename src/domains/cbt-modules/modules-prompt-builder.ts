@@ -1,12 +1,12 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/lib/ai/mirael-core/v2/modules";
-import { StateAnalysis } from "@/lib/ai/mirael-core/v2/state-analysis/state-analysis.schema";
-import { IN_SCOPE_CHALLENGES, OUT_OF_SCOPE_CHALLENGES, SessionModule } from "@/lib/ai/shared/session-modules";
+import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/domains/cbt-modules";
+import { IN_SCOPE_CHALLENGES, OUT_OF_SCOPE_CHALLENGES, SessionModule } from "@/domains/cbt-modules/constants";
+import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { capitalize } from "@/lib/utils/capitalize-word";
 
 export class ModulesPromptBuilder {
-  async buildModulesPrompt(analysis: StateAnalysis): Promise<ChatCompletionMessageParam> {
+  async buildModulesPrompt(analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
     const { core_module, process_module, utility_module } = analysis;
 
     const moduleLines: string[] = [];
@@ -47,7 +47,7 @@ Response: Single paragraph ≤120 words. Core module drives response.
     return await MODULES_INSTRUCTIONS_MAP_ASYNC[module]();
   }
 
-  async buildModuleSection(module: SessionModule, analysis: StateAnalysis): Promise<ChatCompletionMessageParam> {
+  async buildModuleSection(module: SessionModule, analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
     const instructions = await MODULES_INSTRUCTIONS_MAP_ASYNC[module]();
     const injectedInstructions = this.injectAnalysis(instructions, analysis);
 
@@ -57,7 +57,7 @@ Response: Single paragraph ≤120 words. Core module drives response.
     };
   }
 
-  private injectAnalysis(template: string, analysis: StateAnalysis): string {
+  private injectAnalysis(template: string, analysis: TherapeuticAnalysis): string {
     return template
       .replace(/{{CRISIS}}/g, analysis.crisis ?? "none")
       .replace(/{{INTENSITY}}/g, analysis.intensity ?? "medium")
@@ -72,27 +72,27 @@ Response: Single paragraph ≤120 words. Core module drives response.
       .replace(/{{OUT_OF_SCOPE_CHALLENGES}}/g, OUT_OF_SCOPE_CHALLENGES.join("\n- "));
   }
 
-  private formatDistortions(distortions: StateAnalysis["distortions"]): string {
+  private formatDistortions(distortions: TherapeuticAnalysis["distortions"]): string {
     if (!distortions?.length) return "none";
     return distortions.map((d) => `${d.type}(${d.severity})`).join(", ");
   }
 
-  private formatThemes(themes: StateAnalysis["themes"]): string {
+  private formatThemes(themes: TherapeuticAnalysis["themes"]): string {
     if (!themes?.length) return "none";
     return themes.map((t) => `${t.theme}(${t.frequency})`).join(", ");
   }
 
-  private formatCoreBeliefs(beliefs: StateAnalysis["core_beliefs"]): string {
+  private formatCoreBeliefs(beliefs: TherapeuticAnalysis["core_beliefs"]): string {
     if (!beliefs?.length) return "none";
     return beliefs.map((b) => `"${b.belief}"`).join(", ");
   }
 
-  private formatSilentRules(rules: StateAnalysis["silent_rules"]): string {
+  private formatSilentRules(rules: TherapeuticAnalysis["silent_rules"]): string {
     if (!rules?.length) return "none";
     return rules.map((r) => `"${r.rule}"(${r.rigidity})`).join(", ");
   }
 
-  private formatBehavioralPatterns(patterns: StateAnalysis["behavioral_patterns"]): string {
+  private formatBehavioralPatterns(patterns: TherapeuticAnalysis["behavioral_patterns"]): string {
     if (!patterns?.length) return "none";
     return patterns.map((p) => `${p.type}(${p.severity})`).join(", ");
   }

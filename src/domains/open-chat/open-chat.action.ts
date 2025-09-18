@@ -1,0 +1,177 @@
+"use server";
+
+import { Profile } from "@prisma/client";
+import { ChatCompletionMessageParam } from "openai/resources";
+
+import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
+import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
+import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
+import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
+import { ModulesPromptBuilder } from "@/domains/cbt-modules/modules-prompt-builder";
+import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
+import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
+import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
+import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { errorManager } from "@/lib/errors/error-manager";
+import { AppLocales } from "@/lib/i18n";
+import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
+import { OpenChatMessage } from "@/types/open-chat-message.types";
+
+interface HandleUserInputResult {
+  analysis: TherapeuticAnalysis | null;
+  response: string;
+  tokenUsage: {
+    analysisUsage: ModelTokenUsage | null;
+    responseUsage: ModelTokenUsage | null;
+  };
+  cost: number;
+}
+
+/**
+ * Builds the conversation prompts based on analysis and context
+ */
+async function buildConversationPrompts(
+  userInput: string,
+  analysis: TherapeuticAnalysis,
+  messages: OpenChatMessage[],
+  profile: Profile | null,
+  prevMemory: string | null,
+  locale: AppLocales
+): Promise<ChatCompletionMessageParam[]> {
+  // Initialize services - can be done in parallel
+  const [modulesPromptBuilder, messagesManager] = await Promise.all([
+    Promise.resolve(new ModulesPromptBuilder()),
+    Promise.resolve(new ChatContextManager()),
+  ]);
+
+  // Build prompts - some can be done in parallel
+  const [modulesPrompt, chatHistoryPrompt] = await Promise.all([
+    modulesPromptBuilder.buildModulesPrompt(analysis),
+    Promise.resolve(messagesManager.buildChatHistoryPrompt(messages)),
+  ]);
+
+  // Get language and tone prompts (synchronous lookups)
+  const languagePrompt = LanguagePrompt[locale];
+  if (!languagePrompt) {
+    errorManager.handleError(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
+      operation: "buildConversationPrompts",
+      metadata: { locale },
+    });
+  }
+
+  const toneInstruction = TonePrompt["friendly"][analysis.intensity];
+  if (!toneInstruction) {
+    errorManager.handleError(
+      ERROR_CODES.CHAT_UNSUPPORTED_INTENSITY,
+      new Error(`Unsupported intensity: ${analysis.intensity}`),
+      {
+        operation: "buildConversationPrompts",
+        metadata: { intensity: analysis.intensity },
+      }
+    );
+  }
+
+  const profileContextPrompt = profile ? buildUserProfilePrompt(profile) : "";
+
+  let memoryPrompt: ChatCompletionMessageParam | null = null;
+
+  if (analysis.recall_memory && prevMemory) {
+    const instructions = SESSION_MEMORY_REFERENCE_INSTRUCTIONS.replace("{{session_memory}}", prevMemory);
+    memoryPrompt = {
+      role: "assistant",
+      content: instructions,
+    } as ChatCompletionMessageParam;
+  }
+
+  const fullPersonaPrompt: ChatCompletionMessageParam = {
+    role: "system",
+    content: MIRAEL_PERSONA_PROMPT_INSTRUCTIONS.replace("{{TONE_DESCRIPTION}}", toneInstruction || "").replace(
+      "{{LANGUAGE_RULES}}",
+      (languagePrompt?.content as string | undefined) ?? ""
+    ),
+  };
+
+  // Compose prompts efficiently
+  return [
+    SecurityProtocolPrompt,
+    fullPersonaPrompt,
+    ...(profileContextPrompt ? [profileContextPrompt] : []),
+    modulesPrompt,
+    ...(chatHistoryPrompt ? [chatHistoryPrompt] : []),
+    ...(memoryPrompt ? [memoryPrompt] : []),
+    { role: "user", content: userInput.trim() },
+  ];
+}
+
+/**
+ * Handles complete user input processing including analysis and response generation
+ */
+export async function handleUserInput(
+  userInput: string,
+  prevAnalysis: TherapeuticAnalysis[] = [],
+  messages: OpenChatMessage[] = [],
+  profile: Profile | null,
+  prevMemory: string | null,
+  locale: AppLocales = "en",
+  modelCode: ModelCode = MODELS_CODES.M1
+): Promise<HandleUserInputResult> {
+  return await errorManager.wrapOperation(
+    async () => {
+      // Early validation
+      if (!userInput?.trim()) {
+        errorManager.handleError(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
+          operation: "handleUserInput",
+        });
+      }
+
+      const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
+      if (!aiModel) {
+        errorManager.handleError(
+          ERROR_CODES.CHAT_UNSUPPORTED_MODEL,
+          new Error(`Unsupported model code: ${modelCode}`),
+          {
+            operation: "handleUserInput",
+            metadata: { modelCode },
+          }
+        );
+      }
+
+      // Step 1: Analyze user input
+      const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel);
+      const { analysis, modelTokenUsage: analysisUsage } = analysisResult;
+
+      // Step 2: Build conversation prompts
+      const conversationPrompts = await buildConversationPrompts(
+        userInput,
+        analysis,
+        messages,
+        profile,
+        prevMemory,
+        locale
+      );
+
+      // Step 3: Generate AI response
+      const miraelResponse = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
+
+      // Step 4: Calculate total cost
+      const totalCost = (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0);
+
+      return {
+        analysis,
+        response: miraelResponse.message,
+        tokenUsage: {
+          analysisUsage,
+          responseUsage: miraelResponse.modelTokenUsage,
+        },
+        cost: totalCost,
+      };
+    },
+    ERROR_CODES.CHAT_RESPONSE_FAILED,
+    {
+      operation: "handleUserInput",
+      metadata: { modelCode, locale, messageCount: messages.length },
+    }
+  );
+}

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 
 import LoadingComponent from "@/components/loading-component";
 import SessionPage from "@/components/sessions/session-page";
-import SessionLoader from "@/components/sessions/session-page/session-loader";
+import SessionLoader from "@/domains/encrypted-session/components/session-loader";
 
 export default async function SessionRoute({
   params,

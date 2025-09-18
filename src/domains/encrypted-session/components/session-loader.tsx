@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 
 import LoadingComponent from "@/components/loading-component";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 
 interface Props {
   publicId: string;
@@ -11,9 +11,9 @@ interface Props {
 }
 
 const SessionLoader: React.FC<Props> = ({ publicId, content: Content }) => {
-  const hasHydrated = useEncryptedSessionStore((state) => state.hasHydrated);
+  const hasHydrated = useSessionStore((state) => state.hasHydrated);
 
-  const sessionId = useMemo(() => useEncryptedSessionStore.getState().publicIdMap[publicId], [publicId]);
+  const sessionId = useSessionStore((state) => state.publicIdMap[publicId]);
 
   if (!hasHydrated) {
     return <LoadingComponent />;

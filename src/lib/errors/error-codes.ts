@@ -27,6 +27,7 @@ export const ERROR_CODES = {
   SESSION_NOT_FOUND: "errors:session.not_found",
   SESSION_ACCESS_DENIED: "errors:session.access_denied",
   SESSION_CREATE_FAILED: "errors:session.create_failed",
+  SESSION_READ_FAILED: "errors:session.read_failed",
   SESSION_UPDATE_FAILED: "errors:session.update_failed",
   SESSION_DELETE_FAILED: "errors:session.delete_failed",
   SESSION_SYNC_FAILED: "errors:session.sync_failed",

@@ -13,8 +13,8 @@ import {
   getSessionSummary,
 } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.action";
 import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
-import { parseJsonObject } from "@/lib/ai/shared/parse-json";
 import { AppLocales, FNS_LOCALES_MAP } from "@/lib/i18n";
+import { parseJsonObject } from "@/lib/utils/parse-json";
 
 interface Props {
   className?: string;

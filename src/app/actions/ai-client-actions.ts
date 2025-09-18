@@ -2,11 +2,11 @@
 
 import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 
-import { calculateCost } from "@/lib/ai/shared/cost-estimation";
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { errorManager } from "@/lib/errors/error-manager";
 import openai from "@/lib/openai";
+import { calculateCost } from "@/lib/utils/cost-estimation";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 
 type RequestOptions = {

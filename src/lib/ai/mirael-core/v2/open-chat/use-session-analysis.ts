@@ -5,8 +5,8 @@ import { useChatSessionState } from "@/lib/ai/mirael-core/v2/open-chat/use-sessi
 import { getSessionSummary } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.action";
 import { SessionSummarySchema } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.types";
 import { combineToSessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.utils";
-import { parseJsonObject } from "@/lib/ai/shared/parse-json";
 import { AppLocales } from "@/lib/i18n";
+import { parseJsonObject } from "@/lib/utils/parse-json";
 
 export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessionId: string; locale?: AppLocales }) {
   const { session, addTokenUsage, updateSession } = useChatSessionState({ sessionId });
