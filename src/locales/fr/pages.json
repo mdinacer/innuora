@@ -1,4 +1,16 @@
 {
+  "advancedTester": {
+    "hero": {
+      "badge": "Programme de Test Exclusif",
+      "title": "Aidez à façonner l'avenir de Mirael",
+      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
+    },
+    "messages": {
+      "success": "Candidature envoyée",
+      "pending": "Envoi en cours...",
+      "error": "Échec de l’envoi"
+    }
+  },
   "auth": {
     "sign-in": {
       "title": "Bon retour",
@@ -162,6 +174,20 @@
         "buttonText": "Commencer la session"
       }
     }
+  },
+  "error": {
+    "title": "Une erreur est survenue",
+    "description": "L'application a rencontré une erreur inattendue. Ne vous inquiétez pas – cela arrive parfois.",
+    "details": {
+      "unknown": "Erreur inconnue",
+      "messageFallback": "Une erreur inattendue s'est produite",
+      "idLabel": "ID de l'erreur : {{digest}}"
+    },
+    "actions": {
+      "tryAgain": "Réessayer",
+      "goHome": "Retour à l'accueil"
+    },
+    "helpText": "Si cette erreur persiste, veuillez contacter le support"
   },
   "homepage": {
     "actions": {
@@ -422,35 +448,6 @@
       ]
     }
   },
-  "policies_footer": {
-    "disclaimer": {
-      "label": "Important : ",
-      "message": "Mirael n’est pas un service de santé mentale ou de crise. Si vous êtes en situation de crise, veuillez contacter les services d’urgence locaux."
-    },
-    "questions": "Des questions concernant cette page {{currentPage}} ?",
-    "contact_email": "Contactez-nous à ",
-    "links": {
-      "eula": "Contrat de licence utilisateur final",
-      "privacy": "Politique de confidentialité",
-      "terms": "Conditions d’utilisation",
-      "contact": "Contact",
-      "help": "Aide",
-      "support": "Support"
-    },
-    "copyright": "© 2025 Mirael, Inc. Tous droits réservés."
-  },
-  "advancedTester": {
-    "hero": {
-      "badge": "Programme de Test Exclusif",
-      "title": "Aidez à façonner l'avenir de Mirael",
-      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
-    },
-    "messages": {
-      "success": "Candidature envoyée",
-      "pending": "Envoi en cours...",
-      "error": "Échec de l’envoi"
-    }
-  },
   "joinSuccess": {
     "badge": "Candidature envoyée",
     "title": "Merci de nous avoir rejoints",
@@ -489,19 +486,22 @@
     "loadingMessage": "Cela ne prendra qu'un instant...",
     "loadedMessage": "Prêt"
   },
-  "error": {
-    "title": "Une erreur est survenue",
-    "description": "L'application a rencontré une erreur inattendue. Ne vous inquiétez pas – cela arrive parfois.",
-    "details": {
-      "unknown": "Erreur inconnue",
-      "messageFallback": "Une erreur inattendue s'est produite",
-      "idLabel": "ID de l'erreur : {{digest}}"
+  "policies_footer": {
+    "disclaimer": {
+      "label": "Important : ",
+      "message": "Mirael n’est pas un service de santé mentale ou de crise. Si vous êtes en situation de crise, veuillez contacter les services d’urgence locaux."
     },
-    "actions": {
-      "tryAgain": "Réessayer",
-      "goHome": "Retour à l'accueil"
+    "questions": "Des questions concernant cette page {{currentPage}} ?",
+    "contact_email": "Contactez-nous à ",
+    "links": {
+      "eula": "Contrat de licence utilisateur final",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d’utilisation",
+      "contact": "Contact",
+      "help": "Aide",
+      "support": "Support"
     },
-    "helpText": "Si cette erreur persiste, veuillez contacter le support"
+    "copyright": "© 2025 Mirael, Inc. Tous droits réservés."
   },
   "sessions": {
     "title": "Vos sessions",

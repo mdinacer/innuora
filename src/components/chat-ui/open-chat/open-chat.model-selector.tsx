@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ModelCode, MODELS_CODES } from "@/lib/constants/ai-models";
+import { ModelCode, MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { cn } from "@/lib/utils";
 
 type ModelType = "standard" | "professional";

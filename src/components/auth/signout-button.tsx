@@ -6,7 +6,7 @@ import { LogOutIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { clearSessionKey } from "@/lib/crypto/encryption";
+import { clearStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { createClient } from "@/lib/supabase/client";
 
 interface Props {
@@ -18,7 +18,7 @@ const SignoutButton: React.FC<Props> = ({ scope = "global" }) => {
   const { t } = useTranslation("common", { keyPrefix: "actions" });
   const handleSignout = useCallback(async () => {
     const supabase = createClient();
-    await clearSessionKey();
+    await clearStoredContentKey();
     await supabase.auth.signOut({ scope });
     sessionStorage.clear();
     router.push("/auth/sign-in");

@@ -24,7 +24,11 @@ const SwitchField = <T extends FieldValues>({ control, name, label, description 
             {description && <FormDescription className="rtl:text-base">{description}</FormDescription>}
           </div>
           <FormControl>
-            <Switch checked={field.value} onCheckedChange={field.onChange} />
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              className="data-[state=checked]:bg-mir-bg-accent"
+            />
           </FormControl>
         </FormItem>
       )}

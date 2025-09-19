@@ -2,15 +2,13 @@ import { redirect } from "next/navigation";
 import { type NextRequest } from "next/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 
+import { mapSupabaseAuthError } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = searchParams.get("next") ?? "/";
-
-  console.log(token_hash, type, next);
 
   if (token_hash && type) {
     const supabase = await createClient();
@@ -19,15 +17,16 @@ export async function GET(request: NextRequest) {
       type,
       token_hash,
     });
+
     if (!error) {
       redirect("/auth/verify-email/result?status=success");
     } else {
-      console.error(error);
-      redirect(`/auth/verify-email/result?status=error&error=${encodeURIComponent(error.message)}`);
+      console.error("Email verification failed:", error.message);
+      const errorCode = mapSupabaseAuthError(error);
+      redirect(`/auth/verify-email/result?status=error&errorCode=${encodeURIComponent(errorCode)}`);
     }
   }
 
-  // redirect the user to an error page with some instructions
-  // TODO: create Redirect for for global error
-  redirect("/");
+  // Redirect to error page if missing required parameters
+  redirect("/auth/verify-email/result?status=error&errorCode=errors:auth.email_verification_failed");
 }

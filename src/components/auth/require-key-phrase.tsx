@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { clearSessionKey, getSessionKey } from "@/lib/crypto/encryption";
+import { clearStoredContentKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RequireKeyPhrase() {
@@ -12,13 +12,14 @@ export default function RequireKeyPhrase() {
 
   useEffect(() => {
     async function verifyKeyPhrase() {
-      const key = await getSessionKey();
+      const key = await getStoredContentKey();
 
       if (!key) {
         // Clear any remaining session data
-        await clearSessionKey();
+        await clearStoredContentKey();
         await supabase.auth.signOut();
 
+        console.log("No key found, redirecting to login");
         // Redirect to login
         router.replace("/auth");
       }

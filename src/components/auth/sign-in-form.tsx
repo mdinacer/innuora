@@ -10,14 +10,15 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { signIn } from "@/app/actions/auth-actions";
+import CheckboxField from "@/components/input/checkbox-field";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
-import { deriveUserKey, setSessionKey } from "@/lib/crypto/encryption";
+import { recoverContentKeyFromWrapped, storeContentKey } from "@/lib/crypto/webcrypto-crypto";
+import { WrappedKeyPackageSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
-import CheckboxField from "../input/checkbox-field";
 
 interface Props {
   className?: string;
@@ -61,7 +62,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
   const { isSubmitting } = form.formState;
 
-  const handleOnSubmit = useCallback(
+  const handleSignIn = useCallback(
     async (data: SignInSchemaType) => {
       setFormError(null);
       try {
@@ -71,12 +72,17 @@ const SignInForm: React.FC<Props> = ({ className }) => {
           const client = createClient();
           client.auth.setSession(session);
         }
-        const metadata = user.user_metadata;
-        if (!metadata.encryptionSalt) {
-          throw new Error("No encryption salt found in user metadata");
+
+        const metadata = user?.user_metadata;
+
+        const parsedCryptoData = WrappedKeyPackageSchema.safeParse(metadata?.crypto);
+        if (parsedCryptoData.success) {
+          const cryptoMeta = parsedCryptoData.data; // use parsed data
+          const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, data.password);
+          storeContentKey(contentKey, data.remember);
+        } else {
+          console.warn("Crypto metadata invalid", parsedCryptoData.error);
         }
-        const generatedKey = await deriveUserKey(data.password, metadata.encryptionSalt);
-        setSessionKey(generatedKey.toString("hex"), data.remember);
 
         router.push("/sessions");
       } catch (error: unknown) {
@@ -114,7 +120,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
       {/* <!-- Sign In Form --> */}
       <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleOnSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSignIn)} className="space-y-6">
             {/* <!-- Email Field --> */}
             <TextField
               control={form.control}

@@ -20,7 +20,7 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
     avatarLetter: t("avatar-letter", { defaultValue: "M" }),
   };
   return (
-    <div className={cn("chat-header", "p-6 pb-4 flex items-center justify-between relative z-[20]", className)}>
+    <div className={cn("chat-header", "p-6 pb-4  flex items-center justify-between relative z-[20]", className)}>
       <div className={cn("header-left", "flex items-center gap-4")}>
         <div
           className={cn(
