@@ -16,27 +16,56 @@ type Conversation = {
 };
 
 export const metadata: Metadata = {
-  title: "Mirael — Emotional AI Companion for Clarity and Burnout Recovery",
+  title: "Free AI Therapist App - Mental Health Support for Women | Mirael",
   description:
-    "Mirael helps high-functioning women gain emotional clarity, reflect on overwhelm, and receive actionable insights to manage stress, perfectionism, and burnout.",
+    "Free AI therapist providing instant mental health support for women. Get therapy-like conversations for burnout recovery, anxiety help, and emotional wellness. Best alternative to expensive therapy with complete privacy.",
   keywords: [
-    "Mirael",
-    "emotional AI companion",
-    "burnout recovery",
-    "stress management",
-    "perfectionism support",
-    "high-functioning women",
-    "emotional reflection",
-    "self-awareness",
-    "CBT inspired AI",
-    "personal growth",
-    "AI companion for emotional clarity",
-    "reflective emotional AI",
-    "high-functioning women stress support",
-    "burnout recovery AI",
-    "perfectionism support app",
-    "emotional awareness tool",
-    "self-reflection AI",
+    // Primary high-volume keywords
+    "AI therapist",
+    "AI therapy app",
+    "mental health AI",
+    "therapy chatbot",
+    "emotional support AI",
+    "AI counselor free",
+
+    // Burnout keywords (high search volume)
+    "burnout recovery app",
+    "burnout help online",
+    "workplace burnout solutions",
+    "emotional burnout recovery",
+    "prevent burnout app",
+
+    // Mental health keywords
+    "anxiety help app",
+    "depression support app",
+    "mental health support",
+    "therapy alternative",
+    "online therapy free",
+    "self therapy app",
+
+    // Women-focused high-volume terms
+    "mental health for women",
+    "women burnout support",
+    "working women stress app",
+    "female mental health",
+
+    // Therapy approach keywords
+    "CBT app free",
+    "cognitive behavioral therapy app",
+    "mindfulness therapy app",
+    "self help therapy",
+
+    // Perfectionism keywords
+    "perfectionism therapy",
+    "perfectionist burnout help",
+    "overachiever stress relief",
+
+    // Long-tail competitive keywords
+    "best AI therapy app",
+    "free mental health AI",
+    "AI emotional support app",
+    "therapy app for women",
+    "burnout recovery for women",
   ],
   openGraph: {
     title: "Mirael — Emotional AI Companion for High-Functioning Women",
@@ -199,8 +228,66 @@ export default async function Home({
       }[],
     },
   };
+  // Structured data for SEO
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Mirael",
+    url: "https://www.mirael.life",
+    logo: "https://www.mirael.life/assets/icons/ios/512.png",
+    description: "AI companion for emotional clarity, self-reflection, and burnout recovery",
+    foundingDate: "2024",
+    founder: {
+      "@type": "Person",
+      name: "Abdenasser Mohammedi",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "support@mirael.life",
+      contactType: "customer support",
+    },
+    sameAs: ["https://twitter.com/miraelapp"],
+  };
+
+  const webAppJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Mirael",
+    url: "https://www.mirael.life",
+    description: "AI companion for emotional clarity and burnout recovery for high-functioning women",
+    applicationCategory: "HealthApplication",
+    operatingSystem: "Web",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Organization",
+      name: "Mirael",
+    },
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <main className="relative rtl:font-arabic-body pt-20 text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden  transition-all duration-300 ease-in text-mir-text-primary">
+      {/* Structured Data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+
       <GradualBlur
         target="page"
         position="top"

@@ -1,7 +1,35 @@
+import { Metadata } from "next";
 import Link from "next/link";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
 import initTranslations, { AppLocales } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - Mirael",
+  description:
+    "Learn how Mirael protects your privacy and handles your data with our comprehensive privacy policy. Zero-knowledge encryption ensures your conversations remain private.",
+  keywords: [
+    "Mirael privacy policy",
+    "data protection",
+    "privacy rights",
+    "zero-knowledge encryption",
+    "emotional AI privacy",
+    "user data security",
+    "GDPR compliance",
+  ],
+  alternates: {
+    canonical: "https://www.mirael.life/en/privacy",
+    languages: {
+      en: "https://www.mirael.life/en/privacy",
+      fr: "https://www.mirael.life/fr/privacy",
+      ar: "https://www.mirael.life/ar/privacy",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default async function PrivacyPolicyRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;

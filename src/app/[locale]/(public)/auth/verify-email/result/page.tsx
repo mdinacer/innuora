@@ -1,5 +1,15 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { CheckIcon, HomeIcon, RefreshCwIcon, XCircleIcon } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Email Verification Result - Mirael",
+  description: "Your email verification status for your Mirael account.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function EmailValidationResultRoute({
   searchParams,

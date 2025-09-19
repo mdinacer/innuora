@@ -1,6 +1,34 @@
+import { Metadata } from "next";
+
 import PoliciesFooter from "@/components/policies/policies.footer";
 import appConfig from "@/constants/app-config/constants";
 import initTranslations, { AppLocales } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  title: "End User License Agreement (EULA) - Mirael",
+  description:
+    "Read Mirael's End User License Agreement (EULA) to understand the licensing terms for using our emotional AI companion application.",
+  keywords: [
+    "Mirael EULA",
+    "end user license agreement",
+    "software license",
+    "app licensing",
+    "user license terms",
+    "emotional AI license",
+  ],
+  alternates: {
+    canonical: "https://www.mirael.life/en/eula",
+    languages: {
+      en: "https://www.mirael.life/en/eula",
+      fr: "https://www.mirael.life/fr/eula",
+      ar: "https://www.mirael.life/ar/eula",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export const dynamic = "force-static";
 export default async function EULARoute({ params }: { params: Promise<{ locale: string }> }) {

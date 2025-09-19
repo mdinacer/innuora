@@ -1,22 +1,64 @@
 import { Metadata } from "next";
 
 export const METADATA: Metadata = {
-  title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
+  title: "Mirael — Free AI Therapist & Mental Health Support for Women",
   description:
-    "Mirael is an emotionally intelligent AI designed for high-functioning women navigating burnout, perfectionism, and emotional overwhelm. It reflects your emotions, highlights silent rules and cognitive distortions, and guides you toward clarity and actionable self-insight.",
+    "Free AI therapist and emotional support for high-functioning women facing burnout, anxiety, and perfectionism. Get instant therapy-like conversations, CBT-inspired insights, and personalized mental health support. Alternative to expensive therapy with complete privacy.",
   keywords: [
+    // High-volume primary keywords
+    "AI therapist",
+    "AI therapy app",
+    "emotional support AI",
+    "mental health AI",
+    "AI counselor",
+    "therapy chatbot",
+    "AI mental health app",
+    "emotional wellness app",
+
+    // Burnout & stress keywords (high search volume)
+    "burnout recovery app",
+    "burnout help",
+    "stress management app",
+    "workplace burnout",
+    "emotional burnout",
+    "prevent burnout",
+    "burnout symptoms",
+
+    // Mental health keywords
+    "anxiety help",
+    "depression support",
+    "mental health support",
+    "emotional support",
+    "therapy alternative",
+    "online therapy",
+    "self therapy",
+    "mental wellness",
+
+    // Women-focused keywords
+    "mental health for women",
+    "women burnout",
+    "working women stress",
+    "female burnout",
+    "women emotional health",
+
+    // CBT & therapy approaches
+    "CBT app",
+    "cognitive behavioral therapy",
+    "self help therapy",
+    "mindfulness app",
+    "meditation app",
+    "reflection app",
+
+    // Perfectionism keywords
+    "perfectionism help",
+    "perfectionist burnout",
+    "overachiever stress",
+    "high achiever burnout",
+
+    // Branded terms
     "Mirael",
     "AI emotional companion",
     "emotional clarity",
-    "burnout recovery",
-    "perfectionism support",
-    "self-awareness",
-    "CBT inspired AI",
-    "emotional reflection",
-    "stress management",
-    "personal growth",
-    "mental wellbeing",
-    "high-functioning women",
   ],
 
   applicationName: "Mirael",

@@ -1,5 +1,15 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { CircleAlertIcon, MailIcon, RefreshCcwIcon } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Resend Verification Email - Mirael",
+  description: "Request a new email verification link for your Mirael account.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function EmailValidationResendRoute() {
   return (

@@ -1,4 +1,23 @@
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Reset Password - Mirael",
+  description: "Reset your Mirael account password to regain access to your emotional clarity journey.",
+  keywords: ["Mirael password reset", "forgot password", "account recovery", "reset login", "emotional AI access"],
+  alternates: {
+    canonical: "https://www.mirael.life/en/auth/password-reset",
+    languages: {
+      en: "https://www.mirael.life/en/auth/password-reset",
+      fr: "https://www.mirael.life/fr/auth/password-reset",
+      ar: "https://www.mirael.life/ar/auth/password-reset",
+    },
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function ResetPasswordRoute() {
   return (

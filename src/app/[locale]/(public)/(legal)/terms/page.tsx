@@ -1,8 +1,35 @@
+import { Metadata } from "next";
 import Link from "next/link";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
 import appConfig from "@/constants/app-config/constants";
 import initTranslations, { AppLocales } from "@/lib/i18n";
+
+export const metadata: Metadata = {
+  title: "Terms of Use - Mirael",
+  description:
+    "Read Mirael's Terms of Use to understand your rights and responsibilities when using our emotional AI companion platform.",
+  keywords: [
+    "Mirael terms of use",
+    "terms and conditions",
+    "user agreement",
+    "legal terms",
+    "emotional AI terms",
+    "app terms",
+  ],
+  alternates: {
+    canonical: "https://www.mirael.life/en/terms",
+    languages: {
+      en: "https://www.mirael.life/en/terms",
+      fr: "https://www.mirael.life/fr/terms",
+      ar: "https://www.mirael.life/ar/terms",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default async function TermsOfUseRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;

@@ -1,8 +1,18 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { MailIcon } from "lucide-react";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Check Your Email - Mirael",
+  description: "We've sent a verification email to complete your Mirael account setup.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function VerificationEmailSentRoute() {
   const user = await findCurrentUser();
