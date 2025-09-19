@@ -284,7 +284,7 @@ export default async function Home({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <GradualBlur
+      {/* <GradualBlur
         target="page"
         position="top"
         height="5rem"
@@ -294,8 +294,6 @@ export default async function Home({
         exponential={true}
         opacity={1}
       >
-        {/* <!-- Header --> */}
-
         <Header
           className="fixed top-0 pointer-events-auto standalone:pt-safe standalone:inset-x-safe inset-x-0 bg-transparent"
           locale={locale as AppLocales}
@@ -307,16 +305,10 @@ export default async function Home({
               >
                 {actions.requestAccess}
               </Link>
-              {/* <Link
-              href="#early-access"
-              className="sm:inline-flex opacity-50 pointer-events-none cursor-not-allowed hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
-            >
-              {actions.testerSignIn}
-            </Link> */}
             </div>
           }
         />
-      </GradualBlur>
+      </GradualBlur> */}
 
       {/* <!-- Hero --> */}
       <section className="max-w-5xl mx-auto px-6 py-16 text-center">
@@ -468,20 +460,8 @@ export default async function Home({
           ))}
         </div>
       </section>
-      <GradualBlur
-        target="page"
-        position="bottom"
-        height="6rem"
-        strength={2}
-        divCount={5}
-        curve="bezier"
-        exponential={true}
-        opacity={1}
-      />
 
       {/* <!-- Footer --> */}
-      <Footer locale={locale as AppLocales} />
-      <div className="hidden fixed bottom-0 inset-x-0 standalone:block h-[env(safe-area-inset-bottom)] z-40  backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"></div>
     </main>
   );
 }
