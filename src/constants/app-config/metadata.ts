@@ -1,64 +1,61 @@
 import { Metadata } from "next";
 
 export const METADATA: Metadata = {
-  title: "Mirael — Free AI Therapist & Mental Health Support for Women",
+  title: "Mirael — AI Emotional Companion for High-Functioning Women",
   description:
-    "Free AI therapist and emotional support for high-functioning women facing burnout, anxiety, and perfectionism. Get instant therapy-like conversations, CBT-inspired insights, and personalized mental health support. Alternative to expensive therapy with complete privacy.",
+    "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Get clarity through emotionally attuned conversations that reflect patterns, challenge cognitive distortions, and help you understand what's beneath the surface.",
   keywords: [
-    // High-volume primary keywords
-    "AI therapist",
-    "AI therapy app",
-    "emotional support AI",
-    "mental health AI",
-    "AI counselor",
-    "therapy chatbot",
-    "AI mental health app",
-    "emotional wellness app",
+    // Primary keywords - core problems Mirael solves
+    "emotional burnout support",
+    "women burnout recovery",
+    "high-functioning women support", 
+    "emotional overwhelm relief",
+    "perfectionist burnout help",
+    "emotional exhaustion support",
+    "cognitive distortions help",
+    "emotional clarity app",
+    "women emotional wellness",
+    "overachiever stress relief",
 
-    // Burnout & stress keywords (high search volume)
-    "burnout recovery app",
-    "burnout help",
-    "stress management app",
-    "workplace burnout",
-    "emotional burnout",
-    "prevent burnout",
-    "burnout symptoms",
+    // Secondary keywords - specific features & benefits  
+    "safe space for women online",
+    "emotional mirror app",
+    "emotional reflection tool",
+    "support for overwhelmed women",
+    "silent rules therapy", 
+    "emotional patterns recognition",
+    "self-criticism help",
+    "internal pressure relief",
+    "emotional validation app",
+    "working women emotional support",
 
-    // Mental health keywords
-    "anxiety help",
-    "depression support",
-    "mental health support",
-    "emotional support",
-    "therapy alternative",
-    "online therapy",
-    "self therapy",
-    "mental wellness",
-
-    // Women-focused keywords
-    "mental health for women",
-    "women burnout",
-    "working women stress",
-    "female burnout",
-    "women emotional health",
-
-    // CBT & therapy approaches
-    "CBT app",
-    "cognitive behavioral therapy",
-    "self help therapy",
-    "mindfulness app",
-    "meditation app",
-    "reflection app",
-
-    // Perfectionism keywords
-    "perfectionism help",
-    "perfectionist burnout",
-    "overachiever stress",
-    "high achiever burnout",
-
-    // Branded terms
-    "Mirael",
+    // Branding keywords - what Mirael is
     "AI emotional companion",
-    "emotional clarity",
+    "digital emotional support", 
+    "emotional companion for women",
+    "compassionate AI support",
+    "emotional awareness tool",
+    "emotional insight companion",
+    "gentle emotional guidance",
+    "emotional safe space app",
+    "emotional wellness companion",
+
+    // Long-tail problem-focused keywords
+    "app for emotionally exhausted women",
+    "support for high-functioning anxiety",
+    "emotional burnout recovery for women", 
+    "help with perfectionist tendencies",
+    "emotional overwhelm support app",
+    "cognitive distortion awareness tool",
+    "safe space for emotional reflection",
+    "support for women carrying expectations",
+    "emotional clarity for working women",
+    "help with silent emotional rules",
+
+    // Core identity
+    "Mirael",
+    "emotional companion",
+    "women emotional clarity",
   ],
 
   applicationName: "Mirael",

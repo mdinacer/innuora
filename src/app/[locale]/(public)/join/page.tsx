@@ -8,18 +8,20 @@ import JoinPageSuccess from "@/components/tester/join-page-success";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Join Free AI Therapist Beta - Mental Health Support App | Mirael",
+  title: "Join Beta - AI Emotional Companion for Women | Mirael", 
   description:
-    "Get early access to free AI therapist and mental health support app. Join the beta program for women seeking burnout recovery, anxiety help, and emotional wellness support.",
+    "Get early access to Mirael, the AI emotional companion for high-functioning women. Join the beta program for burnout recovery, emotional clarity, and overwhelm support.",
   keywords: [
-    "free AI therapist beta",
-    "mental health app beta",
-    "AI therapy app early access",
-    "free therapy app",
-    "women mental health app",
-    "burnout recovery app beta",
-    "anxiety help app",
-    "emotional support AI beta",
+    "emotional burnout support beta",
+    "women burnout recovery app beta", 
+    "high-functioning women support beta",
+    "AI emotional companion beta",
+    "emotional overwhelm relief beta",
+    "perfectionist burnout help beta",
+    "safe space for women beta",
+    "emotional clarity app beta",
+    "support for overwhelmed women beta",
+    "emotional companion for women beta",
   ],
   alternates: {
     canonical: "https://mirael.life/en/join",

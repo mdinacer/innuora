@@ -3,24 +3,22 @@ import { Metadata } from "next";
 import SignUpForm from "@/components/auth/sign-up-form";
 
 export const metadata: Metadata = {
-  title: "Sign Up Free - AI Therapist & Mental Health Support | Mirael",
+  title: "Create Account - AI Emotional Companion for Women | Mirael",
   description:
-    "Create your free account to access AI therapist and mental health support. Join thousands of women getting burnout recovery, anxiety help, and emotional wellness support.",
+    "Create your free account to access your AI emotional companion. Join high-functioning women gaining emotional clarity, pattern recognition, and overwhelm support.",
   keywords: [
-    "AI therapist free signup",
-    "free AI therapy app",
-    "mental health AI registration",
-    "therapy chatbot sign up",
-    "free emotional support AI",
-    "AI counselor create account",
-    "burnout recovery app signup",
-    "mental health app registration",
-    "therapy alternative signup",
-    "women mental health app",
-    "CBT app registration",
-    "anxiety help app signup",
+    "emotional burnout support signup",
+    "women burnout recovery app signup",
+    "high-functioning women support registration",
+    "emotional overwhelm relief signup",
+    "perfectionist burnout help signup",
+    "AI emotional companion signup",
+    "safe space for women signup",
+    "emotional clarity app registration",
+    "support for overwhelmed women signup",
+    "emotional companion for women signup",
     "Mirael sign up",
-    "emotional AI companion",
+    "women emotional wellness registration",
   ],
   alternates: {
     canonical: "https://www.mirael.life/en/auth/sign-up",
