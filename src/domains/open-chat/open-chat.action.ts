@@ -4,6 +4,7 @@ import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
+import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
 import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
@@ -12,7 +13,6 @@ import { ChatContextManager } from "@/domains/chat-context/chat-context.manager"
 import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/lib/constants/ai-models";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { errorManager } from "@/lib/errors/error-manager";
 import { AppLocales } from "@/lib/i18n";

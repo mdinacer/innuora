@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 
+import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { handleUserInput } from "@/domains/open-chat/open-chat.action";
-import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
 import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";

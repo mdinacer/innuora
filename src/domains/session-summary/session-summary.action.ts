@@ -3,13 +3,13 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
+import { GPT_3_5_TURBO_MODEL } from "@/domains/ai-conversation/ai-models";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import {
   MIRAEL_CHAT_SUMMARY_INSTRUCTIONS,
   SESSION_ADVANCED_SUMMARY_INSTRUCTIONS,
 } from "@/domains/session-summary/session-summary.prompt";
 import { formatChatMessages } from "@/domains/session-summary/session-summary.utils";
-import { GPT_3_5_TURBO_MODEL } from "@/lib/constants/ai-models";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 

@@ -3,9 +3,9 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
+import { GPT_3_5_TURBO_MODEL } from "@/domains/ai-conversation/ai-models";
 import CHAT_MEMORY_BUILD_INSTRUCTIONS from "@/domains/session-memory/session-memory.prompt";
 import { formatUserInputForMemory } from "@/domains/session-memory/session-memory.utils";
-import { GPT_3_5_TURBO_MODEL } from "@/lib/constants/ai-models";
 
 export async function generateSessionMemory(userInput: string) {
   if (!userInput) {

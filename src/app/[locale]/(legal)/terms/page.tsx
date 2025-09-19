@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
-import appConfig from "@/lib/constants/app-config";
+import appConfig from "@/constants/app-config/constants";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export default async function TermsOfUseRoute({ params }: { params: Promise<{ locale: string }> }) {

@@ -24,8 +24,6 @@ export const createDefaultSessionFlowState = (): SessionFlowState => ({
   hasStarted: false,
   hasEnded: false,
   logs: [],
-  reflections: [],
-  chatSummary: null,
   lastAccessedAt: null,
 });
 

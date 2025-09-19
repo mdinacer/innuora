@@ -4,9 +4,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { useSessionFlowStore } from "../stores/session-flow.store";
-import { SessionFlowActionResult, SessionFlowError, SessionFlowState } from "../types/session-flow-state.types";
-import { createSessionFlowError } from "../utils/session-flow-validation";
+import { useSessionFlowStore } from "@/domains/session-flow/stores/session-flow.store";
+import { SessionFlowActionResult, SessionFlowState } from "@/domains/session-flow/types/session-flow-state.types";
+import { createSessionFlowError } from "@/domains/session-flow/utils/session-flow-validation";
 
 export interface UseSessionFlowStateOptions {
   sessionId: string;
@@ -29,11 +29,10 @@ export function useSessionFlowState({ sessionId, autoCreate = false }: UseSessio
     updateSession,
     setCurrentStepId,
     setInputValues,
-    setChatSummary,
     markStarted,
     markEnded,
     addLog,
-    addReflection,
+
     setError,
     clearError,
   } = useSessionFlowStore();
@@ -324,13 +323,11 @@ export function useSessionFlowState({ sessionId, autoCreate = false }: UseSessio
     updateSession: safeUpdateSession,
     setCurrentStepId: safeSetCurrentStepId,
     setInputValues: safeSetInputValues,
-    setChatSummary: (summary: string | null) => setChatSummary(sessionId, summary),
     markStarted: safeMarkStarted,
     markEnded: safeMarkEnded,
 
     // Utility actions
     addLog: (message: string) => addLog(sessionId, message),
-    addReflection: (reflection: string) => addReflection(sessionId, reflection),
     clearError: () => clearError(sessionId),
   };
 }

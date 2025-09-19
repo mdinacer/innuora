@@ -1,8 +1,8 @@
 import z from "zod";
 
+import { ModelCode } from "@/domains/ai-conversation/ai-models";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { ModelCode } from "@/lib/constants/ai-models";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 

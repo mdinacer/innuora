@@ -41,7 +41,6 @@ interface SessionFlowStoreState {
     sessionId: string,
     inputValues: Record<string, any> | ((prev: Record<string, any>) => Record<string, any>)
   ) => void;
-  setChatSummary: (sessionId: string, summary: string | null) => void;
   markStarted: (sessionId: string) => void;
   markEnded: (sessionId: string) => void;
 
@@ -188,13 +187,6 @@ export const useSessionFlowStore = create<SessionFlowStoreState>()(
             inputValues: sanitizeInputValues(newInputValues),
           };
         });
-      },
-
-      setChatSummary: (sessionId, summary) => {
-        get().updateSession(sessionId, (prev) => ({
-          ...prev,
-          chatSummary: summary,
-        }));
       },
 
       markStarted: (sessionId) => {

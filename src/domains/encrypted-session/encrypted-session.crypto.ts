@@ -1,7 +1,7 @@
 import { Session as PrismaSession } from "@prisma/client";
 
+import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
-import { MODELS_CODES } from "@/lib/constants/ai-models";
 import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { EncryptedBlob, EncryptedBlobSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";

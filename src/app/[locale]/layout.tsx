@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-import { geistMono, geistSans, tajawal, zain } from "@/lib/fonts";
+import { geistMono, geistSans, METADATA, tajawal, VIEWPORT, zain } from "@/constants/app-config";
 
 import "../globals.css";
 
@@ -14,8 +14,6 @@ import { BackgroundBeams } from "@/components/background-beams";
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { METADATA } from "@/lib/constants/metadata";
-import { VIEWPORT } from "@/lib/constants/viewport-config";
 import initTranslations, { i18nNamespaces } from "@/lib/i18n";
 import i18nConfig from "@/lib/i18n/config";
 
