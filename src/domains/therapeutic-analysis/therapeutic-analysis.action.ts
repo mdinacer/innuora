@@ -20,6 +20,7 @@ export async function analyzeUserInput(
         logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
           operation: "therapeutic_analysis_analyze_user_input",
         });
+        throw new Error("Unreachable");
       }
 
       const therapeuticAnalysisEngine = new TherapeuticAnalysisEngine();
@@ -40,6 +41,7 @@ export async function analyzeUserInput(
             metadata: { model: model.apiPath },
           }
         );
+        throw new Error("Unreachable");
       }
 
       return { analysis, modelTokenUsage };
@@ -47,10 +49,10 @@ export async function analyzeUserInput(
     ERROR_CODES.CHAT_ANALYSIS_FAILED,
     {
       operation: "therapeutic_analysis_analyze_user_input",
-      metadata: { 
-        model: model.apiPath, 
+      metadata: {
+        model: model.apiPath,
         prevDataLength: prevData.length,
-        inputLength: userInput?.length || 0
+        inputLength: userInput?.length || 0,
       },
     },
     "Therapeutic analysis completed successfully"

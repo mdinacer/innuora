@@ -14,8 +14,8 @@ import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { logger } from "@/lib/logging/unified-logger";
 import { AppLocales } from "@/lib/i18n";
+import { logger } from "@/lib/logging/unified-logger";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -128,14 +128,10 @@ export async function handleUserInput(
 
       const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
       if (!aiModel) {
-        logger.logErrorAndThrow(
-          ERROR_CODES.CHAT_UNSUPPORTED_MODEL,
-          new Error(`Unsupported model code: ${modelCode}`),
-          {
-            operation: "open_chat_handle_user_input",
-            metadata: { modelCode },
-          }
-        );
+        logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
+          operation: "open_chat_handle_user_input",
+          metadata: { modelCode },
+        });
       }
 
       // Step 1: Analyze user input
@@ -171,11 +167,11 @@ export async function handleUserInput(
     ERROR_CODES.CHAT_RESPONSE_FAILED,
     {
       operation: "open_chat_handle_user_input",
-      metadata: { 
-        modelCode, 
-        locale, 
+      metadata: {
+        modelCode,
+        locale,
         messageCount: messages.length,
-        inputLength: userInput?.length || 0
+        inputLength: userInput?.length || 0,
       },
     },
     "Open chat conversation processed successfully"

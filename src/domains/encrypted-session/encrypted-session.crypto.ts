@@ -17,6 +17,7 @@ async function requireContentKey(operation: string, sessionId?: string) {
       operation,
       sessionId,
     });
+    throw new Error("Unreachable");
   }
   return contentKey;
 }
@@ -50,13 +51,13 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
       return sessionData as PrismaSession;
     },
     ERROR_CODES.SESSION_ENCRYPTION_FAILED,
-    { 
-      operation: "crypto_encrypt_session", 
+    {
+      operation: "crypto_encrypt_session",
       sessionId: session.id,
       metadata: {
-        hasMessages: messages.length > 0,
-        messageCount: messages.length
-      }
+        // hasMessages: messages.length > 0,
+        // messageCount: messages.length,
+      },
     },
     "Session encrypted successfully"
   );
@@ -102,12 +103,12 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
       return session;
     },
     ERROR_CODES.SESSION_DECRYPTION_FAILED,
-    { 
-      operation: "crypto_decrypt_session", 
+    {
+      operation: "crypto_decrypt_session",
       sessionId: encryptedSession.id,
       metadata: {
-        hasEncryptedData: !!encryptedSession.encryptedData
-      }
+        hasEncryptedData: !!encryptedSession.encryptedData,
+      },
     },
     "Session decrypted successfully"
   );

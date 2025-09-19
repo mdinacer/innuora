@@ -89,10 +89,10 @@ export async function createSession(sessionCreateInput: SessionCreate) {
     {
       userId: authUser.id,
       operation: "encrypted_session_create",
-      metadata: { 
+      metadata: {
         title: sessionTitle,
         autoUpdateTitle: sessionCreateInput.autoUpdateTitle,
-        persistOnCloud: sessionCreateInput.persistOnCloud
+        persistOnCloud: sessionCreateInput.persistOnCloud,
       },
     },
     `Encrypted session created: ${sessionTitle}`
@@ -116,9 +116,9 @@ export async function addSession(sessionCreateInput: Prisma.SessionCreateWithout
     {
       userId: authUser.id,
       operation: "encrypted_session_add",
-      metadata: { 
+      metadata: {
         title: sessionCreateInput.title,
-        hasEncryptedData: !!sessionCreateInput.encryptedData
+        hasEncryptedData: !!sessionCreateInput.encryptedData,
       },
     },
     `Encrypted session added: ${sessionCreateInput.title}`
@@ -141,8 +141,8 @@ export async function updateSession(sessionId: string, data: Prisma.SessionUpdat
       operation: "encrypted_session_update",
       metadata: {
         fieldsUpdated: Object.keys(data),
-        hasEncryptedData: 'encryptedData' in data
-      }
+        hasEncryptedData: "encryptedData" in data,
+      },
     },
     "Encrypted session updated"
   );
@@ -175,8 +175,8 @@ export async function deleteSession(sessionId: string) {
       sessionId,
       operation: "encrypted_session_delete",
       metadata: {
-        action: "delete_encrypted_session"
-      }
+        action: "delete_encrypted_session",
+      },
     },
     "Encrypted session deleted"
   );

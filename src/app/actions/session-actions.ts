@@ -121,10 +121,10 @@ export async function createSession(sessionCreateInput: SessionCreate) {
     {
       userId: authUser.id,
       operation: "session_create",
-      metadata: { 
+      metadata: {
         title: sessionTitle,
         autoUpdateTitle: sessionCreateInput.autoUpdateTitle,
-        persistOnCloud: sessionCreateInput.persistOnCloud
+        persistOnCloud: sessionCreateInput.persistOnCloud,
       },
     },
     `Session created: ${sessionTitle}`
@@ -147,9 +147,9 @@ export async function pushSession(sessionCreateInput: Prisma.SessionCreateWithou
     {
       userId: authUser.id,
       operation: "session_push",
-      metadata: { 
+      metadata: {
         title: sessionCreateInput.title,
-        hasEncryptedData: !!sessionCreateInput.encryptedData
+        hasEncryptedData: !!sessionCreateInput.encryptedData,
       },
     },
     `Session pushed: ${sessionCreateInput.title}`
@@ -171,8 +171,8 @@ export async function updateSessionEncryptedData(sessionId: string, data: Encryp
       sessionId,
       operation: "session_update_encrypted_data",
       metadata: {
-        dataSize: data.length
-      }
+        // dataSize: data.length,
+      },
     },
     "Session encrypted data updated"
   );
@@ -193,9 +193,9 @@ export async function updateSession(sessionId: string, data: Prisma.SessionUpdat
       operation: "session_update",
       metadata: {
         fieldsUpdated: Object.keys(data),
-        hasTitle: 'title' in data,
-        hasMetadata: 'metadata' in data
-      }
+        hasTitle: "title" in data,
+        hasMetadata: "metadata" in data,
+      },
     },
     "Session updated"
   );
@@ -218,11 +218,11 @@ export async function updateSessionMetadata(
       userId: authUser.id,
       sessionId,
       operation: "session_update_metadata",
-      metadata: { 
-        messageCount: metadata.messageCount, 
+      metadata: {
+        messageCount: metadata.messageCount,
         tokenCount: metadata.tokenCount,
         costUSD: metadata.costUSD,
-        hasTokenUsage: !!metadata.tokenUsage
+        hasTokenUsage: !!metadata.tokenUsage,
       },
     },
     "Session metadata updated"
@@ -246,10 +246,10 @@ export async function updateSessionTitle(sessionId: string, title: string, subti
       userId: authUser.id,
       sessionId,
       operation: "session_update_title",
-      metadata: { 
-        newTitle: title, 
+      metadata: {
+        newTitle: title,
         newSubtitle: subtitle,
-        hasSubtitle: subtitle !== undefined
+        hasSubtitle: subtitle !== undefined,
       },
     },
     `Session title updated: ${title}`
@@ -283,8 +283,8 @@ export async function deleteSession(sessionId: string) {
       sessionId,
       operation: "session_delete",
       metadata: {
-        action: "delete_session"
-      }
+        action: "delete_session",
+      },
     },
     "Session deleted"
   );

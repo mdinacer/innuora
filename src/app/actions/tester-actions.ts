@@ -20,7 +20,7 @@ export async function findTesterByEmail(email: string) {
 
 export async function createTester(data: Prisma.TesterCreateInput, redirectUrl: string) {
   const admin = await requireAdmin();
-  
+
   const tester = await logger.wrapOperation(
     () => prisma.tester.create({ data }),
     ERROR_CODES.TESTER_CREATE_FAILED,
@@ -30,8 +30,8 @@ export async function createTester(data: Prisma.TesterCreateInput, redirectUrl: 
       metadata: {
         testerEmail: data.email,
         adminRole: admin.role,
-        action: "create_tester"
-      }
+        action: "create_tester",
+      },
     },
     `Admin created tester: ${data.email}`
   );
@@ -45,19 +45,19 @@ export async function createTester(data: Prisma.TesterCreateInput, redirectUrl: 
 
 export async function updateTester(id: string, data: Prisma.TesterUpdateInput) {
   const admin = await requireAdmin();
-  
+
   return await logger.wrapOperation(
     async () => {
       // Get current tester info for audit
       const currentTester = await prisma.tester.findUnique({
         where: { id },
-        select: { email: true, status: true }
+        select: { email: true, accepted: true },
       });
-      
+
       if (!currentTester) {
         throw new Error(`Tester not found: ${id}`);
       }
-      
+
       return await prisma.tester.update({ where: { id }, data });
     },
     ERROR_CODES.TESTER_UPDATE_FAILED,
@@ -68,8 +68,8 @@ export async function updateTester(id: string, data: Prisma.TesterUpdateInput) {
         testerId: id,
         updateFields: Object.keys(data),
         adminRole: admin.role,
-        action: "update_tester"
-      }
+        action: "update_tester",
+      },
     },
     "Admin updated tester"
   );
@@ -77,18 +77,18 @@ export async function updateTester(id: string, data: Prisma.TesterUpdateInput) {
 
 export async function acceptUser(id: string) {
   const admin = await requireAdmin();
-  
+
   return await logger.wrapOperation(
     async () => {
       const tester = await prisma.tester.findUnique({
         where: { id },
-        select: { email: true, accepted: true }
+        select: { email: true, accepted: true },
       });
-      
+
       if (!tester) {
         throw new Error(`Tester not found: ${id}`);
       }
-      
+
       return await prisma.tester.update({ where: { id }, data: { accepted: true } });
     },
     ERROR_CODES.TESTER_UPDATE_FAILED,
@@ -98,8 +98,8 @@ export async function acceptUser(id: string) {
       metadata: {
         testerId: id,
         adminRole: admin.role,
-        action: "accept_tester"
-      }
+        action: "accept_tester",
+      },
     },
     "Admin accepted tester application"
   );
@@ -107,19 +107,19 @@ export async function acceptUser(id: string) {
 
 export async function deleteTester(id: string) {
   const admin = await requireAdmin();
-  
+
   return await logger.wrapOperation(
     async () => {
       // Get tester info before deletion for audit
       const tester = await prisma.tester.findUnique({
         where: { id },
-        select: { id: true, email: true, status: true, accepted: true }
+        select: { id: true, email: true, accepted: true },
       });
-      
+
       if (!tester) {
         throw new Error(`Tester not found: ${id}`);
       }
-      
+
       await prisma.tester.delete({ where: { id } });
       return tester;
     },
@@ -130,8 +130,8 @@ export async function deleteTester(id: string) {
       metadata: {
         testerId: id,
         adminRole: admin.role,
-        action: "delete_tester"
-      }
+        action: "delete_tester",
+      },
     },
     "Admin deleted tester account"
   );
@@ -139,16 +139,16 @@ export async function deleteTester(id: string) {
 
 export async function deleteAllTesters() {
   const admin = await requireAdmin();
-  
+
   return await logger.wrapOperation(
     async () => {
       // Get count for audit
       const count = await prisma.tester.count();
-      
+
       if (count === 0) {
         return { count: 0 };
       }
-      
+
       const result = await prisma.tester.deleteMany();
       return { count: result.count };
     },
@@ -158,8 +158,8 @@ export async function deleteAllTesters() {
       operation: "admin_delete_all_testers",
       metadata: {
         adminRole: admin.role,
-        action: "bulk_delete_testers"
-      }
+        action: "bulk_delete_testers",
+      },
     },
     "Admin deleted all tester accounts"
   );

@@ -22,27 +22,27 @@ import { logger } from "@/lib/logging/unified-logger";
 await logger.logSuccess("User login successful", {
   operation: "user_login",
   userId: user.authId,
-  metadata: { method: "email", ip: req.ip }
+  metadata: { method: "email", ip: req.ip },
 });
 
 // Error logging with throwing
 logger.logErrorAndThrow(ERROR_CODES.AUTH_FAILED, error, {
   operation: "user_authentication",
   userId: user.authId,
-  metadata: { attempt: 3 }
+  metadata: { attempt: 3 },
 });
 
 // Warnings (non-critical issues)
 await logger.logWarning("API rate limit approaching", {
   operation: "api_rate_monitoring",
   userId: user.authId,
-  metadata: { current: 90, limit: 100 }
+  metadata: { current: 90, limit: 100 },
 });
 
 // General information
 await logger.logInfo("System maintenance completed", {
   operation: "system_maintenance",
-  metadata: { duration: "30 minutes" }
+  metadata: { duration: "30 minutes" },
 });
 ```
 
@@ -56,7 +56,7 @@ const session = await logger.wrapOperation(
   {
     operation: "session_create",
     userId: user.authId,
-    metadata: { title: sessionData.title }
+    metadata: { title: sessionData.title },
   },
   "Session created successfully"
 );
@@ -72,7 +72,7 @@ operation VARCHAR(100)  -- Clean operation name (e.g., "user_signup")
 level LogLevel          -- INFO | WARN | ERROR | AUDIT
 message TEXT            -- Human-readable message
 
--- Context fields  
+-- Context fields
 userId VARCHAR(255)     -- Optional user reference (authId)
 sessionId VARCHAR(255)  -- Session correlation
 errorCode VARCHAR(50)   -- Structured error codes
@@ -92,7 +92,7 @@ ENABLE_LOGGING=true
 ENABLE_DB_LOGGING=false
 
 # Production - database persistence
-NODE_ENV=production  
+NODE_ENV=production
 ENABLE_LOGGING=false
 ENABLE_DB_LOGGING=true
 ```
@@ -100,31 +100,34 @@ ENABLE_DB_LOGGING=true
 ## Querying Logs
 
 ### Find Error Logs
+
 ```typescript
 const errors = await prisma.auditLog.findMany({
-  where: { level: 'ERROR' },
-  orderBy: { createdAt: 'desc' }
+  where: { level: "ERROR" },
+  orderBy: { createdAt: "desc" },
 });
 ```
 
 ### Find User Activity
+
 ```typescript
 const userActivity = await prisma.auditLog.findMany({
-  where: { 
+  where: {
     userId: user.authId,
-    level: 'AUDIT'
+    level: "AUDIT",
   },
-  orderBy: { createdAt: 'desc' }
+  orderBy: { createdAt: "desc" },
 });
 ```
 
 ### Find Session Issues
+
 ```typescript
 const sessionErrors = await prisma.auditLog.findMany({
   where: {
-    operation: { startsWith: 'session_' },
-    level: 'ERROR'
-  }
+    operation: { startsWith: "session_" },
+    level: "ERROR",
+  },
 });
 ```
 
@@ -140,6 +143,7 @@ Use snake_case with descriptive prefixes:
 ## Migration from Old System
 
 The unified logger replaces both:
+
 - `logAction()` calls → `logger.logSuccess()` or `logger.wrapOperation()`
 - `errorManager.handleError()` → `logger.logErrorAndThrow()`
 - `errorManager.wrapOperation()` → `logger.wrapOperation()`

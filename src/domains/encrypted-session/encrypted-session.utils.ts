@@ -65,9 +65,9 @@ export async function createStoreSession(data: Partial<Session>, state?: Session
 
     return sessionId;
   } catch (error) {
-    logger.logErrorAndThrow(ERROR_CODES.SESSION_CREATE_FAILED, error, { 
-      operation: "encrypted_session_utils_create_store_session", 
-      sessionId 
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_CREATE_FAILED, error, {
+      operation: "encrypted_session_utils_create_store_session",
+      sessionId,
     });
   }
 }
@@ -89,6 +89,7 @@ export async function updateStoreSession(sessionId: string, session: Session, st
       operation: "encrypted_session_utils_update_store_session",
       sessionId,
     });
+    throw new Error("Unreachable");
   }
 
   try {
@@ -100,9 +101,9 @@ export async function updateStoreSession(sessionId: string, session: Session, st
 
     storeState.setSession(publicId, encryptedSession);
   } catch (error) {
-    logger.logErrorAndThrow(ERROR_CODES.SESSION_UPDATE_FAILED, error, { 
-      operation: "encrypted_session_utils_update_store_session", 
-      sessionId 
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_UPDATE_FAILED, error, {
+      operation: "encrypted_session_utils_update_store_session",
+      sessionId,
     });
   }
 }
@@ -121,5 +122,6 @@ export async function getDecryptedStoreSession(sessionId: string, state?: Sessio
       operation: "encrypted_session_utils_get_decrypted_store_session",
       sessionId,
     });
+    throw new Error("Unreachable");
   }
 }

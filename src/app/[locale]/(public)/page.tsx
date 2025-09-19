@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "emotional burnout support",
     "women burnout recovery",
     "high-functioning women support",
-    "emotional overwhelm relief", 
+    "emotional overwhelm relief",
     "perfectionist burnout help",
     "emotional exhaustion support",
     "cognitive distortions help",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 
     // Secondary - Specific features & benefits
     "safe space for women online",
-    "emotional mirror app", 
+    "emotional mirror app",
     "emotional reflection tool",
     "support for overwhelmed women",
     "silent rules therapy",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     // What Mirael uniquely provides
     "AI emotional companion",
     "digital emotional support",
-    "emotional companion for women", 
+    "emotional companion for women",
     "compassionate AI support",
     "emotional awareness tool",
     "gentle emotional guidance",

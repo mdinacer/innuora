@@ -8,7 +8,7 @@ export const METADATA: Metadata = {
     // Primary keywords - core problems Mirael solves
     "emotional burnout support",
     "women burnout recovery",
-    "high-functioning women support", 
+    "high-functioning women support",
     "emotional overwhelm relief",
     "perfectionist burnout help",
     "emotional exhaustion support",
@@ -17,12 +17,12 @@ export const METADATA: Metadata = {
     "women emotional wellness",
     "overachiever stress relief",
 
-    // Secondary keywords - specific features & benefits  
+    // Secondary keywords - specific features & benefits
     "safe space for women online",
     "emotional mirror app",
     "emotional reflection tool",
     "support for overwhelmed women",
-    "silent rules therapy", 
+    "silent rules therapy",
     "emotional patterns recognition",
     "self-criticism help",
     "internal pressure relief",
@@ -31,7 +31,7 @@ export const METADATA: Metadata = {
 
     // Branding keywords - what Mirael is
     "AI emotional companion",
-    "digital emotional support", 
+    "digital emotional support",
     "emotional companion for women",
     "compassionate AI support",
     "emotional awareness tool",
@@ -43,7 +43,7 @@ export const METADATA: Metadata = {
     // Long-tail problem-focused keywords
     "app for emotionally exhausted women",
     "support for high-functioning anxiety",
-    "emotional burnout recovery for women", 
+    "emotional burnout recovery for women",
     "help with perfectionist tendencies",
     "emotional overwhelm support app",
     "cognitive distortion awareness tool",

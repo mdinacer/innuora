@@ -35,8 +35,8 @@ export function AuditLogsViewer() {
   const loadAuditLogs = async () => {
     setLoading(true);
     try {
-      const result = await getAuditLogs(currentPage);
-      setData(result);
+      // const result = await getAuditLogs(currentPage);
+      // setData(result);
     } catch (error) {
       console.error("Failed to load audit logs:", error);
     } finally {

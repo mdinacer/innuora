@@ -1,19 +1,17 @@
 /**
  * Unified Logging System - Simple, Efficient, Non-Overengineered
- * 
+ *
  * Combines audit logging and error management into one system.
  * Handles both success operations (audit) and failures (errors).
  */
 
-import { prisma } from "@/lib/prisma";
-import { ERROR_CODES, ErrorCode } from "@/lib/errors/error-codes";
-import { AppError } from "@/lib/errors/app-error";
-
 // Import Prisma types for LogLevel enum
+
 import { LogLevel } from "@prisma/client";
 
-// Type alias for convenience
-type LogLevelType = LogLevel;
+import { AppError } from "@/lib/errors/app-error";
+import { ErrorCode } from "@/lib/errors/error-codes";
+import { prisma } from "@/lib/prisma";
 
 // Operation context for logging
 interface LogContext {
@@ -40,8 +38,8 @@ class UnifiedLogger {
   private shouldPersist: boolean;
 
   constructor() {
-    this.shouldLog = process.env.NODE_ENV === 'development' || process.env.ENABLE_LOGGING === 'true';
-    this.shouldPersist = process.env.NODE_ENV === 'production' || process.env.ENABLE_DB_LOGGING === 'true';
+    this.shouldLog = process.env.NODE_ENV === "development" || process.env.ENABLE_LOGGING === "true";
+    this.shouldPersist = process.env.NODE_ENV === "production" || process.env.ENABLE_DB_LOGGING === "true";
   }
 
   /**
@@ -112,12 +110,12 @@ class UnifiedLogger {
   ): Promise<T> {
     try {
       const result = await operation();
-      
+
       // Log successful operation if message provided
       if (successMessage) {
         await this.logSuccess(successMessage, context);
       }
-      
+
       return result;
     } catch (error) {
       this.logErrorAndThrow(errorCode, error, context);
@@ -135,9 +133,9 @@ class UnifiedLogger {
 
     // Persist to database in production (audit and errors only)
     if (this.shouldPersist && (entry.level === LogLevel.AUDIT || entry.level === LogLevel.ERROR)) {
-      await this.persistLog(entry).catch(error => {
+      await this.persistLog(entry).catch((error) => {
         // Fallback: don't break operations if logging fails
-        console.error('Failed to persist log:', error);
+        console.error("Failed to persist log:", error);
       });
     }
 
@@ -150,7 +148,7 @@ class UnifiedLogger {
    */
   private consoleLog(entry: LogEntry): void {
     const { level, message, context, errorCode, error } = entry;
-    
+
     const logData = {
       level,
       message,
@@ -164,17 +162,17 @@ class UnifiedLogger {
 
     switch (level) {
       case LogLevel.ERROR:
-        console.error('🔴 ERROR:', logData);
+        console.error("🔴 ERROR:", logData);
         break;
       case LogLevel.WARN:
-        console.warn('🟡 WARNING:', logData);
+        console.warn("🟡 WARNING:", logData);
         break;
       case LogLevel.AUDIT:
-        console.info('📋 AUDIT:', logData);
+        console.info("📋 AUDIT:", logData);
         break;
       case LogLevel.INFO:
       default:
-        console.log('📝 INFO:', logData);
+        console.log("📝 INFO:", logData);
     }
   }
 
@@ -189,21 +187,21 @@ class UnifiedLogger {
           operation: entry.context.operation,
           level: entry.level,
           message: entry.message,
-          
+
           // Context fields
           userId: entry.context.userId || null,
           sessionId: entry.context.sessionId || null,
           errorCode: entry.errorCode || null,
           userAgent: entry.context.userAgent || null,
           ipAddress: entry.context.ip || null,
-          
+
           // Additional metadata (cleaned of duplicates)
-          metadata: entry.context.metadata || null,
+          metadata: (entry.context.metadata as Record<string, string>) || null,
         },
       });
     } catch (error) {
       // Fallback: don't break operations if audit logging fails
-      console.error('Failed to create audit log:', error);
+      console.error("Failed to create audit log:", error);
     }
   }
 
@@ -216,9 +214,9 @@ class UnifiedLogger {
     // - LogRocket for user sessions
     // - DataDog for metrics
     // - Custom webhook for Slack/Discord alerts
-    
+
     // For now, just placeholder
-    if (entry.level === LogLevel.ERROR && process.env.NODE_ENV === 'production') {
+    if (entry.level === LogLevel.ERROR && process.env.NODE_ENV === "production") {
       // Could send to Sentry, webhook, etc.
     }
   }

@@ -106,8 +106,8 @@ export async function createUserWithDefaults(authUserId: string): Promise<UserWi
       metadata: {
         defaultTheme: ThemeMode.light,
         defaultLocale: "en",
-        autoSave: false
-      }
+        autoSave: false,
+      },
     },
     "User created with default settings"
   );
@@ -140,9 +140,9 @@ export async function updateUserById(
     {
       operation: "user_update_by_id",
       userId: authUserId,
-      metadata: { 
+      metadata: {
         updateFields: Object.keys(userData),
-        fieldsCount: Object.keys(userData).length
+        fieldsCount: Object.keys(userData).length,
       },
     },
     "User profile updated"
@@ -162,7 +162,7 @@ export async function deleteUserById(authUserId: string): Promise<boolean> {
       // Get user info before deletion for audit
       const user = await prisma.user.findUnique({
         where: { authId: authUserId },
-        select: { id: true, authId: true, createdAt: true }
+        select: { id: true, authId: true, createdAt: true },
       });
 
       if (!user) {
@@ -180,8 +180,8 @@ export async function deleteUserById(authUserId: string): Promise<boolean> {
       operation: "user_delete_by_id",
       userId: authUserId,
       metadata: {
-        action: "delete_user_account"
-      }
+        action: "delete_user_account",
+      },
     },
     "User account deleted"
   );

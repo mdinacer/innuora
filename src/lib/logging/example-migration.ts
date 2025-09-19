@@ -1,6 +1,6 @@
 /**
  * Example Migration: auth-actions.ts
- * 
+ *
  * Shows before/after of migrating from separate audit/error systems
  * to the unified logger.
  */
@@ -40,12 +40,15 @@ export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: W
 
 // ===== AFTER (Unified Logger) =====
 
-import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
-import { ERROR_CODES, mapSupabaseAuthError } from "@/lib/errors";
-import { logger } from "@/lib/logging/unified-logger";
-import { SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+
+import { requireAdmin } from "@/app/actions/auth-actions";
+import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
+import { ERROR_CODES } from "@/lib/errors";
+import { logger } from "@/lib/logging/unified-logger";
+import { createClient } from "@/lib/supabase/server";
+import { SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
+import { prisma } from "../prisma";
 
 export async function signUpUnified(singUpData: SignUpSchemaType, wrappedKeyPackage?: WrappedKeyPackage) {
   const parsedData = SignUpSchema.parse(singUpData);
@@ -53,7 +56,7 @@ export async function signUpUnified(singUpData: SignUpSchemaType, wrappedKeyPack
   const { email, password } = parsedData;
 
   // Use unified logger with wrapOperation for cleaner code
-  const { data } = await logger.wrapOperation(
+  await logger.wrapOperation(
     async () => {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -80,12 +83,12 @@ export async function signUpUnified(singUpData: SignUpSchemaType, wrappedKeyPack
     ERROR_CODES.AUTH_SIGNUP_FAILED, // Single error code for signup failures
     {
       operation: "user_signup",
-      metadata: { 
+      metadata: {
         email: email.toLowerCase(),
         hasKeyPackage: !!wrappedKeyPackage,
         ageConfirmed: parsedData.ageConfirm,
-        termsAccepted: parsedData.termsAgree
-      }
+        termsAccepted: parsedData.termsAgree,
+      },
     },
     `User signup completed: ${email}` // Auto-logs success with audit trail
   );
@@ -106,15 +109,15 @@ export async function deleteTester(testerId: string) {
 // AFTER: Full audit trail for admin operations
 export async function deleteTesterUnified(testerId: string) {
   const admin = await requireAdmin();
-  
+
   return await logger.wrapOperation(
     async () => {
       // Get tester info before deletion for audit
-      const tester = await prisma.tester.findUnique({ 
+      const tester = await prisma.tester.findUnique({
         where: { id: testerId },
-        select: { id: true, email: true, status: true }
+        select: { id: true, email: true, accepted: true },
       });
-      
+
       if (!tester) {
         throw new Error(`Tester not found: ${testerId}`);
       }
@@ -125,12 +128,12 @@ export async function deleteTesterUnified(testerId: string) {
     ERROR_CODES.TESTER_DELETE_FAILED,
     {
       userId: admin.id,
-      operation: "admin_delete_tester", 
-      metadata: { 
+      operation: "admin_delete_tester",
+      metadata: {
         testerId,
         adminRole: admin.role,
-        action: "delete_tester"
-      }
+        action: "delete_tester",
+      },
     },
     "Admin deleted tester account" // Creates audit trail
   );

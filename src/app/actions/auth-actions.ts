@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
-import { ERROR_CODES, mapSupabaseAuthError } from "@/lib/errors";
+import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
@@ -27,12 +27,14 @@ export async function requireCurrentUser(): Promise<User> {
 
   if (error) {
     logger.logErrorAndThrow(ERROR_CODES.AUTH_SESSION_EXPIRED, error, { operation: "require_current_user" });
+    throw new Error("Unreachable");
   }
 
   if (!data.user) {
     logger.logErrorAndThrow(ERROR_CODES.AUTH_SESSION_EXPIRED, new Error("No user found in session"), {
       operation: "require_current_user",
     });
+    throw new Error("Unreachable");
   }
 
   return data.user!; // Non-null assertion since logErrorAndThrow throws
@@ -48,6 +50,7 @@ export async function requireAdmin() {
       operation: "require_admin",
       metadata: { userRole: user?.role || "none" },
     });
+    throw new Error("Unreachable");
   }
   return user!; // Non-null assertion since logErrorAndThrow throws if unauthorized
 }
@@ -58,6 +61,7 @@ export async function assertCurrentUserId(userId: string): Promise<void> {
       operation: "assert_current_user_id",
       metadata: { providedUserId: userId },
     });
+    throw new Error("Unreachable");
   }
   const currentUser = await requireCurrentUser();
   if (userId !== currentUser.id) {
@@ -66,6 +70,7 @@ export async function assertCurrentUserId(userId: string): Promise<void> {
       operation: "assert_current_user_id",
       metadata: { requestedUserId: userId },
     });
+    throw new Error("Unreachable");
   }
 }
 
@@ -74,7 +79,7 @@ export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: W
   const supabase = await createClient();
   const { email, password } = parsedData;
 
-  const { data } = await logger.wrapOperation(
+  await logger.wrapOperation(
     async () => {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -106,8 +111,8 @@ export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: W
         email: email.toLowerCase(),
         hasKeyPackage: !!wrappedKeyPackage,
         ageConfirmed: parsedData.ageConfirm,
-        termsAccepted: parsedData.termsAgree
-      }
+        termsAccepted: parsedData.termsAgree,
+      },
     },
     `User signup completed: ${email}`
   );
@@ -139,8 +144,8 @@ export async function signIn(signInData: SignInSchemaType) {
       userId: email, // Use email as temp identifier
       metadata: {
         email: email.toLowerCase(),
-        remember
-      }
+        remember,
+      },
     },
     `User signed in: ${email}`
   );
@@ -159,8 +164,8 @@ export async function signOut() {
       operation: "user_signout",
       userId: currentUser?.id,
       metadata: {
-        sessionValid: !!currentUser
-      }
+        sessionValid: !!currentUser,
+      },
     },
     "User signed out successfully"
   );
