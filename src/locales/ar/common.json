@@ -1,10 +1,28 @@
 {
-  "app-name": "ميراييل",
-  "avatar-letter": "م",
-  "back-to-mirael": "العودة إلى ميراييل",
   "actions": {
     "continue": "متابعة",
     "showMoreWithCount": "عرض {{count}} إضافية",
-    "showLess": "عرض أقل"
-  }
+    "showLess": "عرض أقل",
+    "signout": "تسجيل الخروج"
+  },
+  "app-name": "ميراييل",
+  "avatar-letter": "م",
+  "back-to-mirael": "العودة إلى ميراييل",
+  "languages": {
+    "en": "الإنجليزية",
+    "fr": "الفرنسية",
+    "ar": "العربية"
+  },
+  "sessionWithCount_few": "{{count}} جلسات",
+  "sessionWithCount_many": "{{count}} جلسة",
+  "sessionWithCount_one": "جلسة واحدة",
+  "sessionWithCount_other": "{{count}} جلسة",
+  "sessionWithCount_two": "جلستان",
+  "sessionWithCount_zero": "لا توجد جلسات",
+  "session_few": "جلسات",
+  "session_many": "جلسة",
+  "session_one": "جلسة واحدة",
+  "session_other": "جلسة",
+  "session_two": "جلستان",
+  "session_zero": "لا توجد جلسات"
 }

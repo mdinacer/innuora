@@ -1,35 +1,39 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v1/open-chat-session.store";
-import { useChatController } from "@/lib/ai/mirael-core/v2/use-mirael-chat";
+import CodeView from "@/components/code-view";
+import LoadingComponent from "@/components/loading-component";
+import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
+import { getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
   sessionId: string;
-  autoCreateSession?: boolean;
 }
 
-const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) => {
+const SessionPage: React.FC<Props> = ({ sessionId }) => {
+  const router = useRouter();
+
   const {
     t,
     i18n: { language },
   } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat" });
 
-  const miraelChat = useChatController({
+  const chatController = useChatController({
     locale: language as AppLocales,
     sessionId,
-    autoCreateSession: true,
   });
 
-  const { processMessage, addMessage, resetSession } = miraelChat.actions;
-  const { hasHydrated, session, messages, isProcessing } = miraelChat.state;
+  const { processMessage, addMessage, resetSession } = chatController.actions;
+  const { hasHydrated, session, messages, isProcessing } = chatController.state;
 
   const { title, subtitle } = useMemo(
     () => ({
@@ -62,42 +66,70 @@ const SessionPage: React.FC<Props> = ({ sessionId, autoCreateSession = false }) 
       switch (action) {
         case "reset":
           resetSession();
-
           break;
         case "end":
+          router.push("/sessions");
           break;
         case "export":
           break;
       }
     },
-    [resetSession]
+    [resetSession, router]
   );
 
-  useEffect(() => {
-    if (!autoCreateSession) return;
-    if (hasHydrated && !session) {
-      useOpenChatSessionStore.getState().createSession(sessionId);
-    }
-  }, [autoCreateSession, hasHydrated, session, sessionId]);
+  const getDecryptedSession = useCallback(async () => await getDecryptedStoreSession(sessionId), [sessionId]);
 
-  if (!hasHydrated || !session || !messages) {
-    return null;
+  const handleProcessMessage = useCallback(
+    async (message: string) => {
+      const result = await processMessage(message);
+
+      // Message processed successfully
+      return result;
+    },
+    [processMessage]
+  );
+
+  if (!hasHydrated) {
+    return <LoadingComponent />;
   }
+  if (!session) {
+    return <div>Session not found</div>;
+  }
+
   return (
-    <Container
-      title={session?.title ?? title}
-      subtitle={session?.subtitle ?? subtitle}
-      messages={messages}
-      isLoading={isProcessing}
-      renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-      onUserInput={processMessage}
-      welcomeMessage={welcomeMessage}
-      headerActions={
-        <>
-          <Menu disabled={!messages?.length} onAction={handleActions} />
-        </>
-      }
-    />
+    <>
+      <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
+      <CodeView
+        data={{ sessionId, session, encryptedSession: getDecryptedSession().then((session) => session) }}
+        className="absolute top-6 left-6 hover:z-50 "
+      />
+
+      {/* Points Error Warning */}
+      {/* {pointsError && (
+        <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
+          <InsufficientPointsWarning
+            requiredCost={pointsError.cost || 3}
+            availableBalance={getBalance()}
+            message={pointsError.error}
+          />
+        </div>
+      )} */}
+
+      <Container
+        title={session?.title ?? title}
+        subtitle={session?.subtitle ?? subtitle}
+        messages={messages}
+        isLoading={isProcessing}
+        renderItem={(message, index) => <MessageBubble key={index} message={message} />}
+        onUserInput={handleProcessMessage}
+        welcomeMessage={welcomeMessage}
+        headerActions={
+          <>
+            <Menu disabled={!messages?.length} onAction={handleActions} />
+          </>
+        }
+      />
+    </>
   );
 };
 

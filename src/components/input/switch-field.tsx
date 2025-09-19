@@ -18,13 +18,17 @@ const SwitchField = <T extends FieldValues>({ control, name, label, description 
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+        <FormItem className="flex flex-row items-center justify-between rounded-lg shrink-0 border p-4 shadow-sm">
           <div className="space-y-0.5">
-            <FormLabel>{label}</FormLabel>
-            {description && <FormDescription>{description}</FormDescription>}
+            <FormLabel className="rtl:text-lg rtl:mb-1">{label}</FormLabel>
+            {description && <FormDescription className="rtl:text-base">{description}</FormDescription>}
           </div>
           <FormControl>
-            <Switch checked={field.value} onCheckedChange={field.onChange} />
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              className="data-[state=checked]:bg-mir-bg-accent"
+            />
           </FormControl>
         </FormItem>
       )}

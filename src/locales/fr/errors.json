@@ -1,0 +1,72 @@
+{
+  "ai": {
+    "request_failed": "Service IA temporairement indisponible. Veuillez réessayer plus tard",
+    "empty_response": "Le service IA n'a renvoyé aucune réponse. Veuillez réessayer",
+    "network_error": "Impossible de se connecter au service IA. Vérifiez votre connexion",
+    "openai_error": "Erreur du service OpenAI. Veuillez réessayer plus tard",
+    "openrouter_error": "Erreur du service IA. Veuillez réessayer plus tard",
+    "invalid_model": "Erreur de configuration du modèle IA",
+    "invalid_prompts": "Format de saisie invalide",
+    "retry_exhausted": "Service IA temporairement indisponible. Veuillez réessayer plus tard",
+    "unsupported_vendor": "Fournisseur de service IA non supporté"
+  },
+  "auth": {
+    "signin_failed": "Email ou mot de passe invalide",
+    "signup_failed": "Impossible de créer le compte. Veuillez réessayer",
+    "email_verification_failed": "Échec de la vérification de l'email. Veuillez réessayer",
+    "password_requirements": "Le mot de passe doit contenir au moins 12 caractères avec majuscules, minuscules, chiffre et caractère spécial",
+    "email_invalid": "Veuillez entrer une adresse email valide",
+    "rate_limited": "Trop de tentatives. Veuillez réessayer dans quelques minutes",
+    "unauthorized": "Vous n'avez pas la permission d'accéder à cette ressource",
+    "session_expired": "Votre session a expiré. Veuillez vous reconnecter",
+    "account_not_confirmed": "Veuillez vérifier votre email et confirmer votre compte",
+    "password_mismatch": "Les mots de passe ne correspondent pas",
+    "age_confirmation_required": "Vous devez confirmer que vous avez au moins 18 ans",
+    "terms_agreement_required": "Vous devez accepter les termes et conditions"
+  },
+  "chat": {
+    "analysis_failed": "Impossible d'analyser votre message. Veuillez réessayer",
+    "invalid_input": "Veuillez entrer un message valide",
+    "unsupported_locale": "Langue non supportée",
+    "unsupported_intensity": "Niveau d'intensité non supporté",
+    "unsupported_model": "Modèle IA non supporté",
+    "prompt_build_failed": "Impossible de traiter votre demande. Veuillez réessayer",
+    "response_failed": "Impossible de générer une réponse. Veuillez réessayer"
+  },
+  "crypto": {
+    "encryption_failed": "Échec du chiffrement des données. Veuillez réessayer",
+    "decryption_failed": "Échec du déchiffrement des données. Votre phrase clé pourrait être incorrecte",
+    "key_generation_failed": "Échec de la génération de la clé de chiffrement",
+    "key_derivation_failed": "Échec de la dérivation de la clé de chiffrement depuis votre phrase clé",
+    "key_wrap_failed": "Échec de la sécurisation de votre clé de chiffrement",
+    "key_unwrap_failed": "Échec de l'accès à votre clé de chiffrement. Vérifiez votre phrase clé",
+    "key_storage_failed": "Échec du stockage de la clé de chiffrement",
+    "key_retrieval_failed": "Échec de la récupération de la clé de chiffrement",
+    "invalid_key_package": "Format de clé de chiffrement invalide",
+    "webcrypto_unavailable": "Le chiffrement n'est pas disponible dans votre navigateur",
+    "malformed_data": "Données chiffrées corrompues ou invalides"
+  },
+  "general": {
+    "network_error": "Erreur réseau. Veuillez vérifier votre connexion",
+    "server_error": "Une erreur s'est produite. Veuillez réessayer plus tard",
+    "validation_failed": "Veuillez vérifier votre saisie et réessayer",
+    "unknown_error": "Une erreur inattendue s'est produite"
+  },
+  "session": {
+    "not_found": "Session introuvable",
+    "access_denied": "Vous n'avez pas la permission d'accéder à cette session",
+    "create_failed": "Échec de la création de la session",
+    "update_failed": "Échec de la mise à jour de la session",
+    "delete_failed": "Échec de la suppression de la session",
+    "sync_failed": "Échec de la synchronisation des données de session",
+    "encryption_failed": "Échec du chiffrement des données de session",
+    "decryption_failed": "Échec du déchiffrement des données de session",
+    "save_failed": "Échec de la sauvegarde de la session"
+  },
+  "user": {
+    "not_found": "Utilisateur introuvable",
+    "create_failed": "Échec de la création du compte utilisateur",
+    "update_failed": "Échec de la mise à jour du profil utilisateur",
+    "delete_failed": "Échec de la suppression du compte utilisateur"
+  }
+}

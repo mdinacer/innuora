@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthError } from "@supabase/supabase-js";
 import { XCircleIcon } from "lucide-react";
@@ -9,9 +10,13 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { signIn } from "@/app/actions/auth-actions";
+import CheckboxField from "@/components/input/checkbox-field";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
+import { recoverContentKeyFromWrapped, storeContentKey } from "@/lib/crypto/webcrypto-crypto";
+import { WrappedKeyPackageSchema } from "@/lib/crypto/webcrypto-crypto.types";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
 
@@ -20,6 +25,7 @@ interface Props {
 }
 
 const SignInForm: React.FC<Props> = ({ className }) => {
+  const router = useRouter();
   const { t } = useTranslation("pages", { keyPrefix: "auth.sign-in" });
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -36,6 +42,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
         placeholder: t("form.password.placeholder"),
       },
       forgot_password: t("form.forgot_password"),
+      remember: t("form.remember"),
       submit: t("form.submit"),
     },
     no_account: {
@@ -49,21 +56,43 @@ const SignInForm: React.FC<Props> = ({ className }) => {
     defaultValues: {
       email: "",
       password: "",
+      remember: false,
     },
   });
 
   const { isSubmitting } = form.formState;
 
-  const handleOnSubmit = useCallback(async (data: SignInSchemaType) => {
-    setFormError(null);
-    try {
-      await signIn(data);
-    } catch (error: unknown) {
-      if (error instanceof AuthError) {
-        setFormError(error.message);
+  const handleSignIn = useCallback(
+    async (data: SignInSchemaType) => {
+      setFormError(null);
+      try {
+        const { user, session } = await signIn(data);
+
+        if (session) {
+          const client = createClient();
+          client.auth.setSession(session);
+        }
+
+        const metadata = user?.user_metadata;
+
+        const parsedCryptoData = WrappedKeyPackageSchema.safeParse(metadata?.crypto);
+        if (parsedCryptoData.success) {
+          const cryptoMeta = parsedCryptoData.data; // use parsed data
+          const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, data.password);
+          storeContentKey(contentKey, data.remember);
+        } else {
+          console.warn("Crypto metadata invalid", parsedCryptoData.error);
+        }
+
+        router.push("/sessions");
+      } catch (error: unknown) {
+        if (error instanceof AuthError) {
+          setFormError(error.message);
+        }
       }
-    }
-  }, []);
+    },
+    [router]
+  );
 
   return (
     <div className={cn("w-full max-w-md", className)}>
@@ -91,7 +120,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
       {/* <!-- Sign In Form --> */}
       <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleOnSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSignIn)} className="space-y-6">
             {/* <!-- Email Field --> */}
             <TextField
               control={form.control}
@@ -112,6 +141,8 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
             {/* <!-- Forgot Password --> */}
             <div className="text-right">
+              <CheckboxField name="remember" control={form.control} label={formFields.remember} />
+
               <Link href="/auth/forgot-password" className="text-sm text-mir-bg-accent hover:underline">
                 {formFields.forgot_password}
               </Link>

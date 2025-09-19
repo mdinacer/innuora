@@ -47,15 +47,17 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
     inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
   }, [inputValue]);
 
+  const isDisabled = inputValue.length === 0 || isLoading;
+
   return (
-    <div className={cn("p-6 pt-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150  ", className)}>
+    <div className={cn("p-6 pt-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
       <div
         className={cn(
           "flex gap-3 items-center",
           "bg-mir-bg-input",
           "rounded-3xl p-1",
           "transition-all duration-300 ease-in-out",
-          "focus-within:bg-mir-border-light ",
+          "focus-within:bg-mir-border-light",
           "rtl:pl-4 ltr:pr-4"
         )}
       >
@@ -75,7 +77,7 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
         />
         <button
           onClick={handleSendMessage}
-          disabled={inputValue.length === 0 || isLoading}
+          disabled={isDisabled}
           type="button"
           aria-label={actionTitle}
           title={actionTitle}

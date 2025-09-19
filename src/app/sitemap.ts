@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { Languages } from "next/dist/lib/metadata/types/alternative-urls-types";
 
 const baseUrl = "https://mirael.life";
 
@@ -25,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ...Object.fromEntries(locales.filter((l) => l !== locale).map((l) => [l, `${baseUrl}/${l}${route.path}`])),
           "x-default": `${baseUrl}/en${route.path}`,
-        },
+        } as Languages<string>,
       },
     }))
   );

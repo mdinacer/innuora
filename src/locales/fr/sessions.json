@@ -1,349 +1,349 @@
 {
-    "onboarding": {
-        "id": "onboarding",
-        "title": "Bienvenue sur Mirael",
-        "subtitle": "Un espace doux pour commencer",
-        "initialStepId": "welcome",
-        "steps": [
+  "onboarding": {
+    "id": "onboarding",
+    "title": "Bienvenue sur Mirael",
+    "subtitle": "Un espace doux pour commencer",
+    "initialStepId": "welcome",
+    "steps": [
+      {
+        "id": "welcome",
+        "content": {
+          "title": "Tu es ici",
+          "subtitle": "Et cela compte déjà",
+          "paragraphs": [
+            "Dans un monde qui te demande de *tout tenir ensemble*, le simple fait d’arriver ici est déjà réel. **Mirael n’est pas un outil de productivité. Il n’est pas là pour t’optimiser.** C’est un espace où tu peux **laisser tomber le rôle**, où tu n’as pas besoin de faire semblant d’aller *« bien ».* Ce que tu partages reste ici : **aucun suivi, aucun jeu de données, aucune intention cachée.** Tu n’es pas une liste de tâches. Tu es une personne qui revient à quelque chose de *vrai en elle.*"
+          ],
+          "buttonText": "Entrer dans le calme"
+        }
+      },
+      {
+        "id": "what_to_expect",
+        "content": {
+          "title": "À quoi t’attendre",
+          "subtitle": "Un début en douceur",
+          "paragraphs": [
+            "**Ce n’est ni un quiz ni un test. Rien à prouver ici.** Nous allons commencer par nommer ce qui semble *lourd, bruyant ou caché.* Chaque étape est une invitation à tourner ton regard vers l’intérieur, non pas pour impressionner, mais simplement pour *remarquer.*"
+          ],
+          "buttonText": "Commençons"
+        }
+      },
+      {
+        "id": "display_name",
+        "content": {
+          "label": "Quel nom te semble le plus juste en ce moment ?",
+          "placeholder": "Ton surnom ou nom choisi",
+          "hint": "Pour ton confort et ta confidentialité, nous recommandons d’utiliser un surnom ou un nom qui te semble sûr et vrai, plutôt que ton nom légal. Choisis ce qui te ressemble le plus *ici et maintenant.*"
+        }
+      },
+      {
+        "id": "age_group",
+        "content": {
+          "label": "Où en es-tu dans ta vie en ce moment ?",
+          "hint": "Ce sont de larges repères, pas des cases. Choisis simplement celui qui se rapproche le plus.",
+          "options": [
             {
-                "id": "welcome",
-                "content": {
-                    "title": "Tu es ici",
-                    "subtitle": "Et cela compte déjà",
-                    "paragraphs": [
-                        "Dans un monde qui te demande de *tout tenir ensemble*, le simple fait d’arriver ici est déjà réel. **Mirael n’est pas un outil de productivité. Il n’est pas là pour t’optimiser.** C’est un espace où tu peux **laisser tomber le rôle**, où tu n’as pas besoin de faire semblant d’aller *« bien ».* Ce que tu partages reste ici : **aucun suivi, aucun jeu de données, aucune intention cachée.** Tu n’es pas une liste de tâches. Tu es une personne qui revient à quelque chose de *vrai en elle.*"
-                    ],
-                    "buttonText": "Entrer dans le calme"
-                }
+              "label": "18-24 · Début de l’âge adulte",
+              "value": "Age18_24"
             },
             {
-                "id": "what_to_expect",
-                "content": {
-                    "title": "À quoi t’attendre",
-                    "subtitle": "Un début en douceur",
-                    "paragraphs": [
-                        "**Ce n’est ni un quiz ni un test. Rien à prouver ici.** Nous allons commencer par nommer ce qui semble *lourd, bruyant ou caché.* Chaque étape est une invitation à tourner ton regard vers l’intérieur, non pas pour impressionner, mais simplement pour *remarquer.*"
-                    ],
-                    "buttonText": "Commençons"
-                }
+              "label": "25-34 · Années de croissance",
+              "value": "Age25_34"
             },
             {
-                "id": "display_name",
-                "content": {
-                    "label": "Quel nom te semble le plus juste en ce moment ?",
-                    "placeholder": "Ton surnom ou nom choisi",
-                    "hint": "Pour ton confort et ta confidentialité, nous recommandons d’utiliser un surnom ou un nom qui te semble sûr et vrai, plutôt que ton nom légal. Choisis ce qui te ressemble le plus *ici et maintenant.*"
-                }
+              "label": "35-44 · En plein élan",
+              "value": "Age35_44"
             },
             {
-                "id": "age_group",
-                "content": {
-                    "label": "Où en es-tu dans ta vie en ce moment ?",
-                    "hint": "Ce sont de larges repères, pas des cases. Choisis simplement celui qui se rapproche le plus.",
-                    "options": [
-                        {
-                            "label": "18-24 · Début de l’âge adulte",
-                            "value": "Age18_24"
-                        },
-                        {
-                            "label": "25-34 · Années de croissance",
-                            "value": "Age25_34"
-                        },
-                        {
-                            "label": "35-44 · En plein élan",
-                            "value": "Age35_44"
-                        },
-                        {
-                            "label": "45-54 · Phase expérimentée",
-                            "value": "Age45_54"
-                        },
-                        {
-                            "label": "55+ · Évolution sereine",
-                            "value": "Age55_plus"
-                        }
-                    ]
-                }
+              "label": "45-54 · Phase expérimentée",
+              "value": "Age45_54"
             },
             {
-                "id": "self_connection_intro",
-                "content": {
-                    "title": "Perdre le lien n’est pas être perdu·e",
-                    "subtitle": "Un retour calme vers l’intérieur",
-                    "paragraphs": [
-                        "**La plupart d’entre nous apprennent à *jouer un rôle* bien avant d’apprendre à *ressentir*.** Ici, il ne s’agit pas d’avoir la bonne réponse. Il s’agit de nommer ce qui est réel. Tu n’as pas besoin de performer ici. Tu peux à nouveau te rencontrer toi-même."
-                    ],
-                    "buttonText": "Commencer"
-                }
-            },
-            {
-                "id": "identity_connection",
-                "content": {
-                    "hint": "Il n’y a pas de bonne réponse. Remarque simplement ce qui se rapproche le plus aujourd’hui.",
-                    "label": "À quel point te sens-tu connecté·e à toi-même ces derniers temps ?",
-                    "options": [
-                        {
-                            "label": "Je me sens moi-même",
-                            "value": "authentic",
-                            "description": "Présent·e et vrai·e."
-                        },
-                        {
-                            "label": "Je suis entre deux",
-                            "value": "conflicted",
-                            "description": "Parfois moi, parfois dans le rôle."
-                        },
-                        {
-                            "label": "Je me sens distant·e",
-                            "value": "disconnected",
-                            "description": "En surface, pas en profondeur."
-                        },
-                        {
-                            "label": "Je me sens perdu·e",
-                            "value": "lost",
-                            "description": "Difficile de me reconnaître."
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "pressure_intro",
-                "content": {
-                    "title": "La pression d’être quelqu’un",
-                    "subtitle": "Et le silence en dessous",
-                    "paragraphs": [
-                        "Pour beaucoup de femmes, la pression n’est pas bruyante. Elle est discrète. Elle se cache dans des rôles que nous n’avons jamais choisis. Tu n’as pas besoin de l’expliquer. Tu as seulement besoin de nommer ce qui t’a façonné·e, même si ce n’est pas encore clair. *Il ne s’agit pas de blâmer. Il s’agit de vérité.*"
-                    ],
-                    "buttonText": "Je sais ce que c’est"
-                }
-            },
-            {
-                "id": "social_pressure",
-                "content": {
-                    "hint": "La pression ne crie pas toujours. Parfois, ce sont ces façons silencieuses de t’adapter, de te rétrécir ou de disparaître pour garder la paix.",
-                    "label": "Où ressens-tu la pression la plus forte ?",
-                    "options": [
-                        {
-                            "label": "Famille",
-                            "value": "family",
-                            "description": "Préserver l’harmonie, quel qu’en soit le prix."
-                        },
-                        {
-                            "label": "Amis ou pairs",
-                            "value": "friends",
-                            "description": "Être facile à aimer, même si cela sonne faux."
-                        },
-                        {
-                            "label": "Travail ou études",
-                            "value": "work_or_school",
-                            "description": "Toujours performer et livrer."
-                        },
-                        {
-                            "label": "Relations amoureuses",
-                            "value": "romantic",
-                            "description": "Être désirable ou sans besoins."
-                        },
-                        {
-                            "label": "Espaces de foi ou culturels",
-                            "value": "cultural_or_religious",
-                            "description": "Cacher une partie de moi pour répondre aux attentes."
-                        },
-                        {
-                            "label": "Moi-même",
-                            "value": "self",
-                            "description": "Exiger trop et ne jamais me sentir assez."
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "emotional_weight_intro",
-                "content": {
-                    "title": "Ce que tu portes en toi",
-                    "subtitle": "Les émotions que personne ne voit",
-                    "paragraphs": [
-                        "Certaines émotions restent en arrière-plan, invisibles mais lourdes tout de même. Tu n’as pas besoin d’expliquer. Nommer ce qui est proche suffit. _C’est ton espace pour ressentir sans devoir réparer._"
-                    ],
-                    "buttonText": "Je veux les nommer"
-                }
-            },
-            {
-                "id": "emotional_concerns",
-                "content": {
-                    "hint": "Ces émotions ne se voient pas toujours à l’extérieur, mais elles sont présentes depuis un moment. Nomme simplement ce qui est vrai — inutile d’expliquer.",
-                    "label": "Quelles émotions te semblent les plus présentes ces derniers temps ?",
-                    "options": [
-                        {
-                            "label": "Anxiété ou surcharge",
-                            "value": "anxiety",
-                            "description": "Une tension ou une inquiétude constante."
-                        },
-                        {
-                            "label": "Faible estime de soi",
-                            "value": "self_worth",
-                            "description": "La sensation de ne pas être assez."
-                        },
-                        {
-                            "label": "Ruminations",
-                            "value": "overthinking",
-                            "description": "Boucles de doutes et de remises en question."
-                        },
-                        {
-                            "label": "Solitude",
-                            "value": "loneliness",
-                            "description": "Me sentir invisible, même entouré·e."
-                        },
-                        {
-                            "label": "Épuisement",
-                            "value": "burnout",
-                            "description": "Tourner à vide, tout en continuant malgré tout."
-                        },
-                        {
-                            "label": "Sauts d’humeur",
-                            "value": "mood_swings",
-                            "description": "Émotions qui montent et s’effondrent rapidement."
-                        },
-                        {
-                            "label": "Confusion identitaire",
-                            "value": "identity_crisis",
-                            "description": "Ne pas savoir qui je suis derrière les rôles."
-                        },
-                        {
-                            "label": "Autre / incertain·e",
-                            "value": "other",
-                            "description": "Si rien ne correspond, c’est normal aussi."
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "coping_intro",
-                "content": {
-                    "title": "Tes façons de faire face",
-                    "subtitle": "Même survivre peut épuiser",
-                    "paragraphs": [
-                        "Parfois, ton corps et ton esprit réagissent avant même que tu t’en rendes compte : te retirer, forcer, ou te couper. **Ces mécanismes ne sont pas des échecs.** Ils se sont construits pour te protéger. *Ici, tu peux simplement nommer ce qui apparaît quand la vie devient lourde.*"
-                    ],
-                    "buttonText": "Je suis prêt·e à le nommer"
-                }
-            },
-            {
-                "id": "coping_mechanism",
-                "content": {
-                    "hint": "Quand les choses deviennent difficiles, ton corps et ton esprit réagissent de façons qui t’ont autrefois protégé·e, même si elles te coûtent aujourd’hui.",
-                    "label": "Quand c’est dur, que fais-tu le plus souvent ?",
-                    "options": [
-                        {
-                            "label": "Je me coupe de mes émotions",
-                            "value": "shutdown",
-                            "description": "Je deviens engourdi·e ou distant·e pour me protéger."
-                        },
-                        {
-                            "label": "Je deviens autocritique",
-                            "value": "self_critical",
-                            "description": "Je me tourne contre moi en pensant que je devrais être plus fort·e."
-                        },
-                        {
-                            "label": "Je continue et je fais bonne figure",
-                            "value": "push_through",
-                            "description": "Je souris à l’extérieur en ignorant mes besoins."
-                        },
-                        {
-                            "label": "Je me laisse déborder ou réagir vivement",
-                            "value": "overwhelmed",
-                            "description": "Mes émotions s’emballent rapidement et deviennent difficiles à contenir."
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "aspiration_intro",
-                "content": {
-                    "title": "Ce que tu aimerais ressentir",
-                    "subtitle": "Un murmure sous le bruit",
-                    "paragraphs": [
-                        "Sous l’épuisement, la pression ou l’engourdissement, il y a quelque chose dont tu as secrètement soif. **Il ne s’agit pas d’objectifs.** Il s’agit d’un ressenti qui manque depuis trop longtemps. *Laisse ton cœur répondre, pas ta tête.*"
-                    ],
-                    "buttonText": "J’écoute à l’intérieur"
-                }
-            },
-            {
-                "id": "emotional_aspirations",
-                "content": {
-                    "hint": "Quel ressenti te manque en silence ? Il ne s’agit pas d’objectifs. C’est ce que ton cœur souhaite retrouver.",
-                    "label": "Qu’aimerais-tu ressentir davantage, au plus profond de toi ?",
-                    "options": [
-                        {
-                            "label": "Clarté",
-                            "value": "clarity",
-                            "description": "Comprendre ce que je ressens et m’entendre clairement."
-                        },
-                        {
-                            "label": "Calme",
-                            "value": "calm",
-                            "description": "Me sentir moins tendu·e, moins pressé·e, plus en paix."
-                        },
-                        {
-                            "label": "Confiance",
-                            "value": "confidence",
-                            "description": "Croire en mes choix, mes intuitions et ma voix."
-                        },
-                        {
-                            "label": "Bienveillance envers moi-même",
-                            "value": "self_compassion",
-                            "description": "Me rencontrer avec gentillesse au lieu de jugement."
-                        },
-                        {
-                            "label": "Connexion",
-                            "value": "connection",
-                            "description": "Me sentir vu·e, entendu·e et soutenu·e — par moi-même ou par d’autres."
-                        },
-                        {
-                            "label": "Direction ou sens",
-                            "value": "direction",
-                            "description": "Aller vers ce qui compte, pas seulement tenir le coup."
-                        },
-                        {
-                            "label": "Je ne sais pas",
-                            "value": "not_sure",
-                            "description": "Découvrir ce dont j’ai besoin, même si je ne le sais pas encore."
-                        }
-                    ]
-                }
-            },
-            {
-                "id": "confirm_inputs",
-                "content": {
-                    "prompt": "Veux-tu continuer avec ce que tu as partagé, ou recommencer ?",
-                    "primary": {
-                        "label": "Continuer"
-                    },
-                    "secondary": {
-                        "label": "Recommencer"
-                    }
-                }
-            },
-            {
-                "id": "reset_onboarding_flow",
-                "content": {
-                    "title": "Redémarrer l’accueil",
-                    "message": "Réinitialisation de ta progression et retour au début..."
-                }
-            },
-            {
-                "id": "sync_before_reflection",
-                "content": {
-                    "title": "Enregistrement en cours",
-                    "message": "Mise à jour de ta session..."
-                }
-            },
-            {
-                "id": "end",
-                "content": {
-                    "title": "Un pas de plus vers toi-même",
-                    "message": "**Merci d’avoir accepté d’être vue ici.** Prends une respiration lente. Nommer ces morceaux est déjà un mouvement vers plus de clarté.",
-                    "primaryAction": "Commencer avec Mirael",
-                    "secondaryAction": "Continuer comme invitée"
-                }
+              "label": "55+ · Évolution sereine",
+              "value": "Age55_plus"
             }
-        ]
-    }
+          ]
+        }
+      },
+      {
+        "id": "self_connection_intro",
+        "content": {
+          "title": "Perdre le lien n’est pas être perdu·e",
+          "subtitle": "Un retour calme vers l’intérieur",
+          "paragraphs": [
+            "**La plupart d’entre nous apprennent à *jouer un rôle* bien avant d’apprendre à *ressentir*.** Ici, il ne s’agit pas d’avoir la bonne réponse. Il s’agit de nommer ce qui est réel. Tu n’as pas besoin de performer ici. Tu peux à nouveau te rencontrer toi-même."
+          ],
+          "buttonText": "Commencer"
+        }
+      },
+      {
+        "id": "identity_connection",
+        "content": {
+          "hint": "Il n’y a pas de bonne réponse. Remarque simplement ce qui se rapproche le plus aujourd’hui.",
+          "label": "À quel point te sens-tu connecté·e à toi-même ces derniers temps ?",
+          "options": [
+            {
+              "label": "Je me sens moi-même",
+              "value": "authentic",
+              "description": "Présent·e et vrai·e."
+            },
+            {
+              "label": "Je suis entre deux",
+              "value": "conflicted",
+              "description": "Parfois moi, parfois dans le rôle."
+            },
+            {
+              "label": "Je me sens distant·e",
+              "value": "disconnected",
+              "description": "En surface, pas en profondeur."
+            },
+            {
+              "label": "Je me sens perdu·e",
+              "value": "lost",
+              "description": "Difficile de me reconnaître."
+            }
+          ]
+        }
+      },
+      {
+        "id": "pressure_intro",
+        "content": {
+          "title": "La pression d’être quelqu’un",
+          "subtitle": "Et le silence en dessous",
+          "paragraphs": [
+            "Pour beaucoup de femmes, la pression n’est pas bruyante. Elle est discrète. Elle se cache dans des rôles que nous n’avons jamais choisis. Tu n’as pas besoin de l’expliquer. Tu as seulement besoin de nommer ce qui t’a façonné·e, même si ce n’est pas encore clair. *Il ne s’agit pas de blâmer. Il s’agit de vérité.*"
+          ],
+          "buttonText": "Je sais ce que c’est"
+        }
+      },
+      {
+        "id": "social_pressure",
+        "content": {
+          "hint": "La pression ne crie pas toujours. Parfois, ce sont ces façons silencieuses de t’adapter, de te rétrécir ou de disparaître pour garder la paix.",
+          "label": "Où ressens-tu la pression la plus forte ?",
+          "options": [
+            {
+              "label": "Famille",
+              "value": "family",
+              "description": "Préserver l’harmonie, quel qu’en soit le prix."
+            },
+            {
+              "label": "Amis ou pairs",
+              "value": "friends",
+              "description": "Être facile à aimer, même si cela sonne faux."
+            },
+            {
+              "label": "Travail ou études",
+              "value": "work_or_school",
+              "description": "Toujours performer et livrer."
+            },
+            {
+              "label": "Relations amoureuses",
+              "value": "romantic",
+              "description": "Être désirable ou sans besoins."
+            },
+            {
+              "label": "Espaces de foi ou culturels",
+              "value": "cultural_or_religious",
+              "description": "Cacher une partie de moi pour répondre aux attentes."
+            },
+            {
+              "label": "Moi-même",
+              "value": "self",
+              "description": "Exiger trop et ne jamais me sentir assez."
+            }
+          ]
+        }
+      },
+      {
+        "id": "emotional_weight_intro",
+        "content": {
+          "title": "Ce que tu portes en toi",
+          "subtitle": "Les émotions que personne ne voit",
+          "paragraphs": [
+            "Certaines émotions restent en arrière-plan, invisibles mais lourdes tout de même. Tu n’as pas besoin d’expliquer. Nommer ce qui est proche suffit. _C’est ton espace pour ressentir sans devoir réparer._"
+          ],
+          "buttonText": "Je veux les nommer"
+        }
+      },
+      {
+        "id": "emotional_concerns",
+        "content": {
+          "hint": "Ces émotions ne se voient pas toujours à l’extérieur, mais elles sont présentes depuis un moment. Nomme simplement ce qui est vrai — inutile d’expliquer.",
+          "label": "Quelles émotions te semblent les plus présentes ces derniers temps ?",
+          "options": [
+            {
+              "label": "Anxiété ou surcharge",
+              "value": "anxiety",
+              "description": "Une tension ou une inquiétude constante."
+            },
+            {
+              "label": "Faible estime de soi",
+              "value": "self_worth",
+              "description": "La sensation de ne pas être assez."
+            },
+            {
+              "label": "Ruminations",
+              "value": "overthinking",
+              "description": "Boucles de doutes et de remises en question."
+            },
+            {
+              "label": "Solitude",
+              "value": "loneliness",
+              "description": "Me sentir invisible, même entouré·e."
+            },
+            {
+              "label": "Épuisement",
+              "value": "burnout",
+              "description": "Tourner à vide, tout en continuant malgré tout."
+            },
+            {
+              "label": "Sauts d’humeur",
+              "value": "mood_swings",
+              "description": "Émotions qui montent et s’effondrent rapidement."
+            },
+            {
+              "label": "Confusion identitaire",
+              "value": "identity_crisis",
+              "description": "Ne pas savoir qui je suis derrière les rôles."
+            },
+            {
+              "label": "Autre / incertain·e",
+              "value": "other",
+              "description": "Si rien ne correspond, c’est normal aussi."
+            }
+          ]
+        }
+      },
+      {
+        "id": "coping_intro",
+        "content": {
+          "title": "Tes façons de faire face",
+          "subtitle": "Même survivre peut épuiser",
+          "paragraphs": [
+            "Parfois, ton corps et ton esprit réagissent avant même que tu t’en rendes compte : te retirer, forcer, ou te couper. **Ces mécanismes ne sont pas des échecs.** Ils se sont construits pour te protéger. *Ici, tu peux simplement nommer ce qui apparaît quand la vie devient lourde.*"
+          ],
+          "buttonText": "Je suis prêt·e à le nommer"
+        }
+      },
+      {
+        "id": "coping_mechanism",
+        "content": {
+          "hint": "Quand les choses deviennent difficiles, ton corps et ton esprit réagissent de façons qui t’ont autrefois protégé·e, même si elles te coûtent aujourd’hui.",
+          "label": "Quand c’est dur, que fais-tu le plus souvent ?",
+          "options": [
+            {
+              "label": "Je me coupe de mes émotions",
+              "value": "shutdown",
+              "description": "Je deviens engourdi·e ou distant·e pour me protéger."
+            },
+            {
+              "label": "Je deviens autocritique",
+              "value": "self_critical",
+              "description": "Je me tourne contre moi en pensant que je devrais être plus fort·e."
+            },
+            {
+              "label": "Je continue et je fais bonne figure",
+              "value": "push_through",
+              "description": "Je souris à l’extérieur en ignorant mes besoins."
+            },
+            {
+              "label": "Je me laisse déborder ou réagir vivement",
+              "value": "overwhelmed",
+              "description": "Mes émotions s’emballent rapidement et deviennent difficiles à contenir."
+            }
+          ]
+        }
+      },
+      {
+        "id": "aspiration_intro",
+        "content": {
+          "title": "Ce que tu aimerais ressentir",
+          "subtitle": "Un murmure sous le bruit",
+          "paragraphs": [
+            "Sous l’épuisement, la pression ou l’engourdissement, il y a quelque chose dont tu as secrètement soif. **Il ne s’agit pas d’objectifs.** Il s’agit d’un ressenti qui manque depuis trop longtemps. *Laisse ton cœur répondre, pas ta tête.*"
+          ],
+          "buttonText": "J’écoute à l’intérieur"
+        }
+      },
+      {
+        "id": "emotional_aspirations",
+        "content": {
+          "hint": "Quel ressenti te manque en silence ? Il ne s’agit pas d’objectifs. C’est ce que ton cœur souhaite retrouver.",
+          "label": "Qu’aimerais-tu ressentir davantage, au plus profond de toi ?",
+          "options": [
+            {
+              "label": "Clarté",
+              "value": "clarity",
+              "description": "Comprendre ce que je ressens et m’entendre clairement."
+            },
+            {
+              "label": "Calme",
+              "value": "calm",
+              "description": "Me sentir moins tendu·e, moins pressé·e, plus en paix."
+            },
+            {
+              "label": "Confiance",
+              "value": "confidence",
+              "description": "Croire en mes choix, mes intuitions et ma voix."
+            },
+            {
+              "label": "Bienveillance envers moi-même",
+              "value": "self_compassion",
+              "description": "Me rencontrer avec gentillesse au lieu de jugement."
+            },
+            {
+              "label": "Connexion",
+              "value": "connection",
+              "description": "Me sentir vu·e, entendu·e et soutenu·e — par moi-même ou par d’autres."
+            },
+            {
+              "label": "Direction ou sens",
+              "value": "direction",
+              "description": "Aller vers ce qui compte, pas seulement tenir le coup."
+            },
+            {
+              "label": "Je ne sais pas",
+              "value": "not_sure",
+              "description": "Découvrir ce dont j’ai besoin, même si je ne le sais pas encore."
+            }
+          ]
+        }
+      },
+      {
+        "id": "confirm_inputs",
+        "content": {
+          "prompt": "Veux-tu continuer avec ce que tu as partagé, ou recommencer ?",
+          "primary": {
+            "label": "Continuer"
+          },
+          "secondary": {
+            "label": "Recommencer"
+          }
+        }
+      },
+      {
+        "id": "reset_onboarding_flow",
+        "content": {
+          "title": "Redémarrer l’accueil",
+          "message": "Réinitialisation de ta progression et retour au début..."
+        }
+      },
+      {
+        "id": "sync_before_reflection",
+        "content": {
+          "title": "Enregistrement en cours",
+          "message": "Mise à jour de ta session..."
+        }
+      },
+      {
+        "id": "end",
+        "content": {
+          "title": "Un pas de plus vers toi-même",
+          "message": "**Merci d’avoir accepté d’être vue ici.** Prends une respiration lente. Nommer ces morceaux est déjà un mouvement vers plus de clarté.",
+          "primaryAction": "Commencer avec Mirael",
+          "secondaryAction": "Continuer comme invitée"
+        }
+      }
+    ]
+  }
 }

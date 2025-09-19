@@ -2,30 +2,56 @@
 
 import React, { useMemo } from "react";
 
+import LoadingComponent from "@/components/loading-component";
 import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-empty-state";
 import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
-import { useOpenChatSessionStore } from "@/lib/ai/mirael-core/v2/open-chat-session.store";
+import SessionsCloudState from "@/components/sessions/sessions-page/cloud-sessoins-state";
+import SessionCard from "@/components/sessions/sessions-page/session-card";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
-import SessionCard from "./session-card";
 
 interface SessionsPageProps {
   className?: string;
 }
 
 const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
-  const sessions = useOpenChatSessionStore((state) => state.sessions);
+  const hasHydrated = useSessionStore((state) => state.hasHydrated);
+  const sessions = useSessionStore((state) => state.sessions);
 
-  const sessionsArray = useMemo(() => Object.values(sessions), [sessions]);
+  const sessionsOverview = useMemo(() => {
+    if (Object.keys(sessions).length === 0) return [] as SessionOverview[];
+    return Object.entries(sessions).map(([id, session]) => ({
+      id: session.id,
+      obfuscatedId: id,
+      title: session.title,
+      subtitle: session.subtitle,
+      autoUpdateTitle: session.autoUpdateTitle,
+      persistOnCloud: session.persistOnCloud ?? false,
+      metadata: session.metadata
+        ? SessionMetadataSchema.parse(session.metadata)
+        : { messageCount: 0, tokenCount: 0, costUSD: 0 },
+      createdAt: session.createdAt,
+      updatedAt: session.updatedAt,
+    }));
+  }, [sessions]);
+
+  if (!hasHydrated) {
+    return <LoadingComponent />;
+  }
+
   return (
-    <div className={cn("max-w-6xl mx-auto px-6 py-12", className)}>
+    <div className={cn("max-w-6xl mx-auto px-6 py-12 flex flex-col", className)}>
       <SessionsPageHeader />
 
-      {sessionsArray.length > 0 ? (
+      <SessionsCloudState className="my-6" />
+
+      {sessionsOverview.length > 0 ? (
         <>
           <SessionsPageActions />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" id="sessionsGrid">
-            {sessionsArray.map((session, index) => (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2" id="sessionsGrid">
+            {sessionsOverview.map((session, index) => (
               <SessionCard key={index} session={session} />
             ))}
           </div>

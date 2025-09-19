@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mirael - Internal Development
 
-## Getting Started
+**AI-Powered Therapeutic Chat Platform**
 
-First, run the development server:
+Internal development repository for Mirael - a Next.js 15 application providing personalized therapeutic conversations using Cognitive Behavioral Therapy (CBT) methodologies.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📋 Project Info
+
+- **Environment**: Development/Internal
+- **Framework**: Next.js 15 (App Router)
+- **Database**: Supabase (PostgreSQL)
+- **Deployment**: Vercel
+- **Team Access**: Internal only
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Access to team environment variables
+- Supabase account credentials
+
+### Local Development Setup
+
+1. **Clone and install**
+
+   ```bash
+   npm install
+   ```
+
+2. **Environment setup**
+
+   ```bash
+   cp .env.example .env.local
+   # Ask team lead for environment variables
+   ```
+
+3. **Database setup**
+
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+4. **Start development**
+   ```bash
+   npm run dev
+   ```
+
+## 📁 Project Structure
+
+```
+src/
+├── app/          # Next.js routes
+├── components/   # UI components
+├── lib/          # Business logic
+├── stores/       # State management
+└── locales/      # Translations (EN/AR/FR)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Detailed structure**: See [PROJECT_MODULES_ANALYSIS.md](./PROJECT_MODULES_ANALYSIS.md)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Development Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run lint         # Run ESLint
+npm run db:studio    # Open Prisma Studio
+```
 
-## Learn More
+## 🔧 Key Technologies
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js 15** - App Router, React 18, TypeScript
+- **Supabase** - Database, Auth, Edge Functions
+- **AI**: OpenAI + OpenRouter APIs
+- **State**: Zustand with persistence
+- **UI**: Tailwind CSS + Radix UI
+- **Security**: WebCrypto encryption
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 Development Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Core Modules
 
-## Deploy on Vercel
+- **Authentication**: Supabase auth with role-based access
+- **AI Chat**: CBT-focused therapeutic conversations
+- **Session Management**: Encrypted session storage and sync
+- **Internationalization**: EN/AR/FR with RTL support
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Important Files
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/lib/ai/mirael-core/v2/` - Core AI/CBT engine
+- `src/lib/crypto/` - Client-side encryption
+- `src/app/actions/` - Server actions
+- `prisma/schema.prisma` - Database schema
+
+### Environment Variables Needed
+
+Ask team lead for:
+
+- Database credentials
+- Supabase keys
+- OpenAI/OpenRouter API keys
+- Encryption keys
+
+## 🔄 Deployment
+
+**Staging**: Auto-deploy from `develop` branch  
+**Production**: Manual deploy from `main` branch
+
+Environment variables are managed in Vercel dashboard.
+
+---
+
+**Internal Development Repository**  
+_For team use only_

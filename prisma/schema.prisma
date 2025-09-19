@@ -27,6 +27,9 @@ model User {
   status         UserAccountStatus? @default(active)
   isOnboarded    Boolean            @default(false)
 
+  // Encryption salt (safe to persist)
+  encryptionSalt String? @map("encryption_salt") // Base64 encoded salt for key derivation
+
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -139,20 +142,19 @@ model Session {
   id String @id @default(uuid())
 
   // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Encrypted artifacts
-  summary  Bytes? @map("summary")
-  analysis Bytes? @map("analysis") // Last three analyses
-
-  // Crypto metadata
-  keyId  String? @map("key_id")
-  encAlg String? @map("enc_alg")
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  userId          String    @map("user_id")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Core session info (non-encrypted)
+  title           String // title of session
+  subtitle        String? // subtitle of session
+  modelCode       ModelCode @default(M1)
+  autoUpdateTitle Boolean   @default(false)
+  persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
+  metadata        Json // additional metadata { messageCount :int, tokenCount: int, costUSD :float}
+  // Encrypted session bundle
+  encryptedData   Json?     @map("encrypted_data")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@map("sessions")
 }
@@ -289,6 +291,12 @@ model Tester {
 // =========================
 // Enums
 // =========================
+
+enum ModelCode {
+  M1
+  M2
+  M3
+}
 
 enum PointsTransactionType {
   credit

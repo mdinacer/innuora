@@ -13,6 +13,7 @@ export const APP_NAMESPACES = {
   NS_PAGES: "pages",
   NS_LEGAL: "legal",
   NS_SESSIONS: "sessions",
+  NS_ERRORS: "errors",
 } as const;
 
 export type AppNamespace = (typeof APP_NAMESPACES)[keyof typeof APP_NAMESPACES];

@@ -4,9 +4,13 @@ import { i18nRouter } from "next-i18n-router";
 
 import i18nConfig from "@/lib/i18n/config";
 
+const protectedRoutes = ["/sessions"]; // add all protected paths here
+
 export async function updateSession(request: NextRequest) {
   // First, handle i18n routing and get a response object
-  const response = i18nRouter(request, { ...i18nConfig, prefixDefault: true });
+  const { pathname } = request.nextUrl;
+
+  const response = i18nRouter(request, i18nConfig);
 
   try {
     const supabase = createServerClient(
@@ -32,8 +36,11 @@ export async function updateSession(request: NextRequest) {
       error,
     } = await supabase.auth.getUser();
 
+    // Check if the request is for a protected route
+    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+
     // Handle protected routes
-    if (request.nextUrl.pathname.startsWith("/protected") && (!user || error)) {
+    if (isProtected && (!user || error)) {
       const signInUrl = new URL("auth/sign-in", request.url);
       // Preserve the locale in the redirect
       if (response instanceof NextResponse && response.headers.get("x-pathname")) {
@@ -57,14 +64,3 @@ export async function updateSession(request: NextRequest) {
     return response; // fallback on i18nRouter response if Supabase fails
   }
 }
-
-// Configure which paths the middleware should run on
-
-export const config = {
-  matcher: [
-    // Skip all internal paths (_next, _static, etc.)
-    // Skip all API routes
-    // Skip root favicon.ico
-    "/((?!_next|_static|_vercel|api|favicon.ico).*)",
-  ],
-};

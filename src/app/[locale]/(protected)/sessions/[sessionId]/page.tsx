@@ -1,6 +1,8 @@
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
+import LoadingComponent from "@/components/loading-component";
 import SessionPage from "@/components/sessions/session-page";
+import SessionLoader from "@/domains/encrypted-session/components/session-loader";
 
 export default async function SessionRoute({
   params,
@@ -9,13 +11,11 @@ export default async function SessionRoute({
 }>) {
   const { sessionId } = await params;
 
-  if (!sessionId) {
-    redirect("/sessions");
-  }
-
   return (
     <main className="h-screen w-screen relative standalone:w-full standalone:h-full">
-      <SessionPage sessionId={sessionId} />
+      <Suspense fallback={<LoadingComponent />}>
+        <SessionLoader publicId={sessionId} content={SessionPage} />
+      </Suspense>
     </main>
   );
 }

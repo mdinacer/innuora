@@ -1,17 +1,33 @@
 import { z } from "zod";
 
+import { ERROR_CODES } from "@/lib/errors";
+
 export const SignInSchema = z.object({
-  email: z.email(),
+  email: z
+    .string()
+    .email({ message: ERROR_CODES.AUTH_EMAIL_INVALID })
+    .max(254)
+    .transform((val) => val.toLowerCase().trim()),
   password: z.string(),
+  remember: z.boolean().optional(),
 });
 
 export type SignInSchemaType = z.infer<typeof SignInSchema>;
 
 export const SignUpSchema = z
   .object({
-    email: z.email(),
-    password: z.string().min(6),
-    confirmPassword: z.string().min(6),
+    email: z
+      .string()
+      .email({ message: ERROR_CODES.AUTH_EMAIL_INVALID })
+      .max(254)
+      .transform((val) => val.toLowerCase().trim()),
+    password: z
+      .string()
+      .min(12, { message: ERROR_CODES.AUTH_PASSWORD_REQUIREMENTS })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, {
+        message: ERROR_CODES.AUTH_PASSWORD_REQUIREMENTS,
+      }),
+    confirmPassword: z.string(),
     ageConfirm: z.boolean(),
     termsAgree: z.boolean(),
   })
@@ -20,7 +36,7 @@ export const SignUpSchema = z
       ctx.addIssue({
         path: ["confirmPassword"],
         code: "custom",
-        message: "Passwords do not match",
+        message: ERROR_CODES.AUTH_PASSWORD_MISMATCH,
       });
     }
 
@@ -28,7 +44,7 @@ export const SignUpSchema = z
       ctx.addIssue({
         path: ["ageConfirm"],
         code: "custom",
-        message: "You must confirm that you are at least 18 years old",
+        message: ERROR_CODES.AUTH_AGE_CONFIRMATION_REQUIRED,
       });
     }
 
@@ -36,7 +52,7 @@ export const SignUpSchema = z
       ctx.addIssue({
         path: ["termsAgree"],
         code: "custom",
-        message: "You must agree to the terms and conditions",
+        message: ERROR_CODES.AUTH_TERMS_AGREEMENT_REQUIRED,
       });
     }
   });

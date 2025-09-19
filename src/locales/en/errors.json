@@ -1,0 +1,72 @@
+{
+  "ai": {
+    "request_failed": "AI service is currently unavailable. Please try again later",
+    "empty_response": "AI service returned no response. Please try again",
+    "network_error": "Unable to connect to AI service. Please check your connection",
+    "openai_error": "OpenAI service error. Please try again later",
+    "openrouter_error": "AI service error. Please try again later",
+    "invalid_model": "AI model configuration error",
+    "invalid_prompts": "Invalid input format",
+    "retry_exhausted": "AI service is temporarily unavailable. Please try again later",
+    "unsupported_vendor": "Unsupported AI service provider"
+  },
+  "auth": {
+    "signin_failed": "Invalid email or password",
+    "signup_failed": "Unable to create account. Please try again",
+    "email_verification_failed": "Email verification failed. Please try again",
+    "password_requirements": "Password must be at least 12 characters with uppercase, lowercase, number and special character",
+    "email_invalid": "Please enter a valid email address",
+    "rate_limited": "Too many attempts. Please try again in a few minutes",
+    "unauthorized": "You don't have permission to access this resource",
+    "session_expired": "Your session has expired. Please sign in again",
+    "account_not_confirmed": "Please check your email and confirm your account",
+    "password_mismatch": "Passwords do not match",
+    "age_confirmation_required": "You must confirm that you are at least 18 years old",
+    "terms_agreement_required": "You must agree to the terms and conditions"
+  },
+  "chat": {
+    "analysis_failed": "Unable to analyze your message. Please try again",
+    "invalid_input": "Please enter a valid message",
+    "unsupported_locale": "Language not supported",
+    "unsupported_intensity": "Intensity level not supported",
+    "unsupported_model": "AI model not supported",
+    "prompt_build_failed": "Unable to process your request. Please try again",
+    "response_failed": "Unable to generate response. Please try again"
+  },
+  "crypto": {
+    "encryption_failed": "Failed to encrypt data. Please try again",
+    "decryption_failed": "Failed to decrypt data. Your key phrase may be incorrect",
+    "key_generation_failed": "Failed to generate encryption key",
+    "key_derivation_failed": "Failed to derive encryption key from your key phrase",
+    "key_wrap_failed": "Failed to secure your encryption key",
+    "key_unwrap_failed": "Failed to access your encryption key. Please check your key phrase",
+    "key_storage_failed": "Failed to store encryption key",
+    "key_retrieval_failed": "Failed to retrieve encryption key",
+    "invalid_key_package": "Invalid encryption key format",
+    "webcrypto_unavailable": "Encryption is not available in your browser",
+    "malformed_data": "Encrypted data is corrupted or invalid"
+  },
+  "general": {
+    "network_error": "Network error. Please check your connection",
+    "server_error": "Something went wrong. Please try again later",
+    "validation_failed": "Please check your input and try again",
+    "unknown_error": "An unexpected error occurred"
+  },
+  "session": {
+    "not_found": "Session not found",
+    "access_denied": "You don't have permission to access this session",
+    "create_failed": "Failed to create session",
+    "update_failed": "Failed to update session",
+    "delete_failed": "Failed to delete session",
+    "sync_failed": "Failed to sync session data",
+    "encryption_failed": "Failed to encrypt session data",
+    "decryption_failed": "Failed to decrypt session data",
+    "save_failed": "Failed to save session"
+  },
+  "user": {
+    "not_found": "User not found",
+    "create_failed": "Failed to create user account",
+    "update_failed": "Failed to update user profile",
+    "delete_failed": "Failed to delete user account"
+  }
+}

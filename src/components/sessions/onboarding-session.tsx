@@ -2,17 +2,16 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { Profile } from "@prisma/client";
 import { useTranslation } from "react-i18next";
 
-import { updateCurrentUser } from "@/app/actions/user-actions";
 import { Container } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import FlowChatMessageRenderer from "@/components/chat-ui/flow-chat/flow-chat.message-renderer";
-import { SESSIONS_IDS } from "@/lib/constants/sessions/sessions.props";
-import useFlowStepController from "@/lib/sessions/use-flow-step-controller";
-import useSessionOrchestrator from "@/lib/sessions/use-session-orchestrator";
+import { SESSIONS_IDS } from "@/domains/session-flow/constants/sessions.props";
+import { useSessionFlowOrchestrator } from "@/domains/session-flow/hooks/use-session-flow-orchestrator";
+import useFlowStepController from "@/domains/session-flow/hooks/use-session-flow-step-controller";
 import { cn } from "@/lib/utils";
-import { userProfileSchema } from "@/lib/zod/user-profile-schema";
 import { useUserDataStore } from "@/stores/user-data.store";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
 import { SessionFlow } from "@/types/flow-session.types";
@@ -41,24 +40,35 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
     session,
     handleUserInput,
     moveToNext,
-    moveToStep,
+    moveToStep: jumpToStep,
     processUserSelection,
     resetSession,
     startFlow,
-  } = useSessionOrchestrator({
+  } = useSessionFlowOrchestrator({
     sessionFlow,
-    autoStart: false,
-    initStores: true,
+    autoStart: true,
+    initializeStores: true,
+  });
+
+  useFlowStepController({
+    sessionFlow,
+    options: {
+      autoCreateMessages: true,
+    },
   });
 
   const handleFlowEndAction = useCallback(
     (actionType: "primary" | "secondary") => {
       if (actionType === "primary") {
+        const inputValues = session?.inputValues || {};
+        console.log("inputValues", inputValues);
+
+        setProfile(inputValues as Profile);
         router.replace("/sessions");
         resetSession();
       }
     },
-    [resetSession, router]
+    [resetSession, router, session?.inputValues, setProfile]
   );
 
   const renderMessage = useCallback(
@@ -72,60 +82,28 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
           onFlowEnd={handleFlowEndAction}
           actions={{
             moveToNextStep: moveToNext,
-            moveToStep,
+            moveToStep: jumpToStep,
             onUserInput: handleUserInput,
             onUserSelect: processUserSelection,
           }}
         />
       );
     },
-    [handleFlowEndAction, handleUserInput, moveToNext, moveToStep, processUserSelection, session?.currentStepId]
+    [handleFlowEndAction, handleUserInput, moveToNext, jumpToStep, processUserSelection, session?.currentStepId]
   );
 
   const welcomeMessageContent = useMemo(() => {
-    if (session?.isFlowStarted) return null;
+    if (session?.hasStarted) return null;
     const data = t("hero", { returnObjects: true, defaultValue: "" }) as FlowChatHeroProps | undefined;
 
     if (!data) return null;
     return <FlowChatHeroCard data={data} onStartSession={startFlow} />;
-  }, [session?.isFlowStarted, startFlow, t]);
+  }, [session?.hasStarted, startFlow, t]);
 
   useEffect(() => {
     resetSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
-
-  const handleSyncData = useCallback(
-    async (data: Record<string, unknown>) => {
-      try {
-        const parsedData = userProfileSchema.safeParse(data);
-
-        if (!parsedData.success) {
-          throw parsedData.error;
-        }
-
-        const updates = await updateCurrentUser({
-          isOnboarded: true,
-          profile: {
-            update: parsedData.data,
-          },
-        });
-
-        setProfile(updates.profile);
-        console.log("Synced data:", updates);
-      } catch (error) {
-        console.error("Error syncing data:", error);
-      }
-    },
-    [setProfile]
-  );
-
-  useFlowStepController({
-    sessionFlow,
-    callbacks: {
-      onSyncData: (args) => handleSyncData(args || {}),
-    },
-  });
 
   if (sessionFlow.id !== SESSIONS_IDS.ONBOARDING_SESSION) {
     throw new Error(`Invalid session id: ${sessionFlow.id}`);
