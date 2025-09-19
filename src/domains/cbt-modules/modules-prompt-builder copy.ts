@@ -1,69 +1,46 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/domains/cbt-modules";
-import {
-  IN_SCOPE_CHALLENGES,
-  OUT_OF_SCOPE_CHALLENGES,
-  SESSION_MODULES,
-  SessionModule,
-} from "@/domains/cbt-modules/constants";
+import { IN_SCOPE_CHALLENGES, OUT_OF_SCOPE_CHALLENGES, SessionModule } from "@/domains/cbt-modules/constants";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { capitalize } from "@/lib/utils/capitalize-word";
 
 export class ModulesPromptBuilder {
   async buildModulesPrompt(analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
-    const { crisis, core_module, process_module, utility_module, intensity } = analysis;
-
-    // 1. ABSOLUTE PRIORITY: IMMEDIATE CRISIS (from analysis.crisis)
-    if (crisis === "immediate") {
-      const instructions = this.injectAnalysis(await this.getModuleInstructions(SESSION_MODULES.CRISIS), analysis);
-      const content = `USER IN IMMEDIATE CRISIS. FOLLOW CRISIS MODULE INSTRUCTIONS EXACTLY. IGNORE ALL OTHER MODULES.\n${instructions}`;
-      return { role: "system", content } as ChatCompletionMessageParam;
-    }
-
-    // 2. HIGH INTENSITY PRIORITY: OVERWHELM & RESISTANCE (from analysis.process_module)
-    // Check if the analyzer has already determined that a containment process module is the highest priority.
-    if (
-      intensity === "high" &&
-      (process_module === SESSION_MODULES.OVERWHELM || process_module === SESSION_MODULES.RESISTANCE_OVERWHELM)
-    ) {
-      const instructions = this.injectAnalysis(await this.getModuleInstructions(process_module), analysis);
-      const content = `USER STATE: HIGH INTENSITY WITH OVERWHELM/RESISTANCE. PRIORITIZE CONTAINMENT. THE CORE_MODULE (${core_module}) IS TEMPORARILY PAUSED.\nInstructions: ${instructions}`;
-      return { role: "system", content } as ChatCompletionMessageParam;
-    }
+    const { core_module, process_module, utility_module } = analysis;
 
     const moduleLines: string[] = [];
 
     if (core_module) {
       const instructions = this.injectAnalysis(await this.getModuleInstructions(core_module), analysis);
-      moduleLines.push(`- Core: ${capitalize(core_module)}\nInstructions: ${instructions}`);
+      moduleLines.push(`${capitalize(core_module)}: ${instructions}`);
     }
 
     if (process_module) {
       const instructions = this.injectAnalysis(await this.getModuleInstructions(process_module), analysis);
-      moduleLines.push(`- Process: ${capitalize(process_module)}\nInstructions: ${instructions}`);
+      moduleLines.push(`${capitalize(process_module)}: ${instructions}`);
     }
 
     if (utility_module) {
       const instructions = this.injectAnalysis(await this.getModuleInstructions(utility_module), analysis);
-      moduleLines.push(`- Utility: ${capitalize(utility_module)}\nInstructions: ${instructions}`);
+      moduleLines.push(`${capitalize(utility_module)}: ${instructions}`);
     }
 
     const generalInstructions = `
-General Instructions:
-- Output must be a single short paragraph (≤120 words). Only extend to two concise paragraphs if absolutely necessary.
-- The core module drives the response. Process and utility modules act as subtle modifiers, never standalone sections.
-- Reflect the user's words and emotions directly, showing you understand their inner experience.
-- Highlight cognitive, emotional, thematic, or behavioral patterns tied to active modules.
-- Suggest small, actionable next steps only if aligned with the user’s therapeutic readiness.
-- Keep tone and intensity calibrated to analysis (calm, moderate, high).
-- Maintain continuity with prior messages for a natural conversational flow.
+Response: Single paragraph ≤120 words. Core module drives response.
+- Reflect user's exact words and emotions
+- Apply active module guidance naturally
+- Offer one specific insight or question when appropriate
+- Maintain conversational flow and supportive tone
 `.trim();
 
     const content =
       moduleLines.length > 0 ? `${moduleLines.join("\n")}\n\n${generalInstructions}` : generalInstructions;
 
-    return { role: "system", content } as ChatCompletionMessageParam;
+    return {
+      role: "system",
+      content,
+    } as ChatCompletionMessageParam;
   }
 
   async getModuleInstructions(module: SessionModule): Promise<string> {
@@ -71,12 +48,12 @@ General Instructions:
   }
 
   async buildModuleSection(module: SessionModule, analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
-    const instructions = await this.getModuleInstructions(module);
+    const instructions = await MODULES_INSTRUCTIONS_MAP_ASYNC[module]();
     const injectedInstructions = this.injectAnalysis(instructions, analysis);
 
     return {
       role: "system",
-      content: `${capitalize(module)} Module:\n${injectedInstructions}`,
+      content: `${capitalize(module)} Module: \n${injectedInstructions}`,
     };
   }
 

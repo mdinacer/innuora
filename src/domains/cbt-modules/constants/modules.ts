@@ -16,4 +16,5 @@ export const SESSION_MODULES = {
   SHOULDS: "shoulds", // Silent Rules & Shoulds
   VALIDATE: "validate", // Emotional validation
   VALUES_CLARIFICATION: "values_clarification", // Meaning-Making & Agency Building
+  PATTERN_WHY: "pattern_why",
 } as const;

@@ -38,7 +38,9 @@ async function buildConversationPrompts(
   messages: OpenChatMessage[],
   profile: Profile | null,
   prevMemory: string | null,
-  locale: AppLocales
+  locale: AppLocales,
+  userId?: string,
+  sessionId?: string
 ): Promise<ChatCompletionMessageParam[]> {
   // Initialize services - can be done in parallel
   const [modulesPromptBuilder, messagesManager] = await Promise.all([
@@ -57,6 +59,8 @@ async function buildConversationPrompts(
   if (!languagePrompt) {
     logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
       operation: "open_chat_build_conversation_prompts",
+      userId,
+      sessionId,
       metadata: { locale },
     });
   }
@@ -68,6 +72,8 @@ async function buildConversationPrompts(
       new Error(`Unsupported intensity: ${analysis.intensity}`),
       {
         operation: "open_chat_build_conversation_prompts",
+        userId,
+        sessionId,
         metadata: { intensity: analysis.intensity },
       }
     );
@@ -115,7 +121,9 @@ export async function handleUserInput(
   profile: Profile | null,
   prevMemory: string | null,
   locale: AppLocales = "en",
-  modelCode: ModelCode = MODELS_CODES.M1
+  modelCode: ModelCode = MODELS_CODES.M1,
+  userId?: string,
+  sessionId?: string
 ): Promise<HandleUserInputResult> {
   return await logger.wrapOperation(
     async () => {
@@ -123,6 +131,8 @@ export async function handleUserInput(
       if (!userInput?.trim()) {
         logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
           operation: "open_chat_handle_user_input",
+          userId,
+          sessionId,
         });
       }
 
@@ -130,12 +140,14 @@ export async function handleUserInput(
       if (!aiModel) {
         logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
           operation: "open_chat_handle_user_input",
+          userId,
+          sessionId,
           metadata: { modelCode },
         });
       }
 
       // Step 1: Analyze user input
-      const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel);
+      const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel, userId, sessionId);
       const { analysis, modelTokenUsage: analysisUsage } = analysisResult;
 
       // Step 2: Build conversation prompts
@@ -145,7 +157,9 @@ export async function handleUserInput(
         messages,
         profile,
         prevMemory,
-        locale
+        locale,
+        userId,
+        sessionId
       );
 
       // Step 3: Generate AI response
@@ -167,6 +181,8 @@ export async function handleUserInput(
     ERROR_CODES.CHAT_RESPONSE_FAILED,
     {
       operation: "open_chat_handle_user_input",
+      userId,
+      sessionId,
       metadata: {
         modelCode,
         locale,

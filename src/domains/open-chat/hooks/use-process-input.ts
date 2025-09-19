@@ -56,7 +56,9 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           userProfile,
           session.memoryStore,
           locale,
-          session?.modelCode ?? FALLBACK_MODEL
+          session?.modelCode ?? FALLBACK_MODEL,
+          userProfile?.userId, // userId
+          sessionId // sessionId
         );
 
         if (!result) {
@@ -112,7 +114,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         setIsProcessing(false);
       }
     },
-    [addAnalysis, addTokenUsage, locale, onRoundComplete, session]
+    [addAnalysis, addTokenUsage, locale, onRoundComplete, session, sessionId]
   );
 
   return {

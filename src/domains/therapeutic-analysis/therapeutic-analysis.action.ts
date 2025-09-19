@@ -12,13 +12,17 @@ import { AnalysisResult } from "@/types/analysis-result";
 export async function analyzeUserInput(
   userInput: string,
   prevData: TherapeuticAnalysis[] = [],
-  model: AiModel
+  model: AiModel,
+  userId?: string,
+  sessionId?: string
 ): Promise<AnalysisResult> {
   return await logger.wrapOperation<AnalysisResult>(
     async () => {
       if (!userInput?.trim()) {
         logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
           operation: "therapeutic_analysis_analyze_user_input",
+          userId,
+          sessionId,
         });
         throw new Error("Unreachable");
       }
@@ -38,6 +42,8 @@ export async function analyzeUserInput(
           new Error("Failed to parse state analysis from AI response"),
           {
             operation: "therapeutic_analysis_analyze_user_input",
+            userId,
+            sessionId,
             metadata: { model: model.apiPath },
           }
         );
@@ -49,6 +55,8 @@ export async function analyzeUserInput(
     ERROR_CODES.CHAT_ANALYSIS_FAILED,
     {
       operation: "therapeutic_analysis_analyze_user_input",
+      userId,
+      sessionId,
       metadata: {
         model: model.apiPath,
         prevDataLength: prevData.length,

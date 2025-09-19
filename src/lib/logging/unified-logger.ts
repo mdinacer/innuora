@@ -196,7 +196,7 @@ class UnifiedLogger {
           ipAddress: entry.context.ip || null,
 
           // Additional metadata (cleaned of duplicates)
-          metadata: (entry.context.metadata as Record<string, string>) || null,
+          metadata: entry.context.metadata ?? undefined,
         },
       });
     } catch (error) {
