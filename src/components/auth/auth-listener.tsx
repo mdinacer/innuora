@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { createClient } from "@/lib/supabase/client";
 
 const AuthListener: React.FC = () => {
@@ -19,7 +19,7 @@ const AuthListener: React.FC = () => {
         // if (getSessionKey()) {
         //   clearSessionKey();
         // }
-        useEncryptedSessionStore.persist.clearStorage();
+        useSessionStore.persist.clearStorage();
 
         // handle sign out event
       } else if (event === "PASSWORD_RECOVERY") {

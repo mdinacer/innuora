@@ -137,12 +137,12 @@ export async function signIn(signInData: SignInSchemaType) {
 
 export async function signOut() {
   const supabase = await createClient();
-  
+
   // Get current user before signing out
   const currentUser = await findCurrentUser();
-  
+
   await supabase.auth.signOut();
-  
+
   // Log signout
   if (currentUser) {
     await logAction(currentUser.id, "signout", "User logged out");

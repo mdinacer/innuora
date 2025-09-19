@@ -6,11 +6,10 @@ import LoadingComponent from "@/components/loading-component";
 import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-empty-state";
 import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
-import NewSessionsLoader from "@/components/sessions/sessions-page/new-sessions-loader";
+import SessionsCloudState from "@/components/sessions/sessions-page/cloud-sessoins-state";
 import SessionCard from "@/components/sessions/sessions-page/session-card";
-import { SessionMetadataSchema, SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
-import useFetchSessions from "@/lib/sessions/use-fetch-sessions";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 
 interface SessionsPageProps {
@@ -18,9 +17,8 @@ interface SessionsPageProps {
 }
 
 const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
-  useFetchSessions();
-  const hasHydrated = useEncryptedSessionStore((state) => state.hasHydrated);
-  const sessions = useEncryptedSessionStore((state) => state.sessions);
+  const hasHydrated = useSessionStore((state) => state.hasHydrated);
+  const sessions = useSessionStore((state) => state.sessions);
 
   const sessionsOverview = useMemo(() => {
     if (Object.keys(sessions).length === 0) return [] as SessionOverview[];
@@ -44,10 +42,10 @@ const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
   }
 
   return (
-    <div className={cn("max-w-6xl mx-auto px-6 py-12", className)}>
+    <div className={cn("max-w-6xl mx-auto px-6 py-12 flex flex-col", className)}>
       <SessionsPageHeader />
 
-      <NewSessionsLoader className="my-6" />
+      <SessionsCloudState className="my-6" />
 
       {sessionsOverview.length > 0 ? (
         <>

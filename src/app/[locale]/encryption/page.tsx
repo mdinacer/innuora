@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 
 import CodeView from "@/components/code-view";
 import { Button } from "@/components/ui/button";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { Session } from "@/domains/open-chat/open-chat.types";
 import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
 

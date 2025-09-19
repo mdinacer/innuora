@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { getAuditLogs } from "@/app/actions/audit-actions";
 
@@ -27,13 +27,9 @@ interface AuditLogsData {
 }
 
 export function AuditLogsViewer() {
-  const [data, setData] = useState<AuditLogsData | null>(null);
+  const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    loadAuditLogs();
-  }, [currentPage]);
 
   const loadAuditLogs = async () => {
     setLoading(true);
@@ -46,6 +42,10 @@ export function AuditLogsViewer() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadAuditLogs();
+  }, [currentPage]);
 
   if (loading) {
     return (
@@ -75,9 +75,7 @@ export function AuditLogsViewer() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Audit Logs</h2>
-        <div className="text-sm text-gray-500">
-          Total: {data.total} logs
-        </div>
+        <div className="text-sm text-gray-500">Total: {data.total} logs</div>
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -85,42 +83,26 @@ export function AuditLogsViewer() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Time
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  User
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Action
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Details
-                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {data.logs.map((log) => (
+              {data.logs.map((log: AuditLog) => (
                 <tr key={log.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-900">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{new Date(log.createdAt).toLocaleString()}</td>
                   <td className="px-4 py-3 text-sm">
                     <div>
                       <div className="font-medium text-gray-900">
                         {log.user?.profile?.displayName || log.user?.authId || "Unknown"}
                       </div>
-                      <div className="text-gray-500 text-xs">
-                        {log.user?.role}
-                      </div>
+                      <div className="text-gray-500 text-xs">{log.user?.role}</div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                    {log.action}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">
-                    {log.metadata?.details || ""}
-                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{log.action}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500">{log.metadata?.details || ""}</td>
                 </tr>
               ))}
             </tbody>

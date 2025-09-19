@@ -5,12 +5,14 @@ This is the optimized and consolidated version of the chat UI system, replacing 
 ## Architecture
 
 ### Clean Separation
+
 - **shared/**: Common components used by both chat modes
 - **flow-chat/**: Guided therapeutic conversation components
 - **open-chat/**: Free-form conversation components
 - **types/**: Shared TypeScript types
 
 ### Key Improvements
+
 - ✅ **No Code Duplication**: Single configurable ChatContainer
 - ✅ **Complete Implementation**: Flow chat is fully functional
 - ✅ **Clean Types**: Centralized type definitions
@@ -19,8 +21,9 @@ This is the optimized and consolidated version of the chat UI system, replacing 
 ## Usage
 
 ### Flow Chat (Guided)
+
 ```tsx
-import { FlowChat } from '@/components/chat-interface';
+import { FlowChat } from "@/components/chat-interface";
 
 <FlowChat
   session={session}
@@ -30,33 +33,26 @@ import { FlowChat } from '@/components/chat-interface';
   onFlowEnd={handleFlowEnd}
   onMoveToNextStep={handleNextStep}
   onMoveToStep={handleMoveToStep}
-/>
+/>;
 ```
 
 ### Open Chat (Free-form)
-```tsx
-import { OpenChat } from '@/components/chat-interface';
 
-<OpenChat
-  session={session}
-  messages={messages}
-  onSendMessage={handleSendMessage}
-  isLoading={isLoading}
-/>
+```tsx
+import { OpenChat } from "@/components/chat-interface";
+
+<OpenChat session={session} messages={messages} onSendMessage={handleSendMessage} isLoading={isLoading} />;
 ```
 
 ### Shared Components
+
 ```tsx
-import { 
-  ChatContainer, 
-  MessageBubble, 
-  ChatInput 
-} from '@/components/chat-interface';
+import { ChatContainer, ChatInput, MessageBubble } from "@/components/chat-interface";
 
 // Build custom chat interfaces
 <ChatContainer mode="open" session={session}>
   <MessageBubble role="user">Hello!</MessageBubble>
-</ChatContainer>
+</ChatContainer>;
 ```
 
 ## Benefits

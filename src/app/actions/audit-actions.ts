@@ -7,11 +7,7 @@ import { prisma } from "@/lib/prisma";
  * Log an action to the audit trail
  * Simple function that just records what happened
  */
-export async function logAction(
-  userId: string,
-  action: string,
-  details?: string
-): Promise<void> {
+export async function logAction(userId: string, action: string, details?: string): Promise<void> {
   try {
     await prisma.auditLog.create({
       data: {

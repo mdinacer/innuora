@@ -1,4 +1,4 @@
-import { SESSION_MODULES } from "@/lib/ai/shared/session-modules";
+import { SESSION_MODULES } from "@/domains/cbt-modules/constants";
 
 const UTILITY_MODULE_INSTRUCTIONS = {
   [SESSION_MODULES.GUIDANCE]: `

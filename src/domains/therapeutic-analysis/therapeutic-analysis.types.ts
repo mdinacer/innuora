@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { SESSION_MODULES, SessionModule } from "@/lib/ai/shared/session-modules";
+import { SESSION_MODULES, SessionModule } from "@/domains/cbt-modules/constants";
 
 // === Maps and Types ===
 export const USER_STATE_MAP = {

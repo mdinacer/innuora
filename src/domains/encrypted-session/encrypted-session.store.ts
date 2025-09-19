@@ -7,7 +7,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { getUniqueId } from "@/domains/encrypted-session/encrypted-session.utils";
 import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 
-interface SessionsStoreState extends PersistedStoreBaseProps {
+export interface SessionsStoreState extends PersistedStoreBaseProps {
   sessions: Record<string, PrismaSession>;
   publicIdMap: Record<string, string>; // publicId -> sessionId
   sessionIdMap: Record<string, string>; // sessionId -> publicId

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { useActiveSessionStore } from "@/domains/active-session/active-session.store";
+import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { sessionSynchronizer } from "@/domains/session-sync";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { decryptSession } from "@/lib/crypto/session-crypto";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 

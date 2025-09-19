@@ -5,10 +5,10 @@ import { ChartBarIcon } from "lucide-react";
 import { Badge } from "@/components/mir-ui/badge";
 import { Button } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { SessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.types";
-import { combineToSessionAnalysis } from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.utils";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { Session } from "@/domains/open-chat/open-chat.types";
+import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
+import { combineToSessionAnalysis } from "@/domains/session-analysis/session-analysis.utils";
 
 interface Props {
   className?: string;
@@ -30,7 +30,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
 
     const analysis = combineToSessionAnalysis(session.analysisSnapshots);
 
-    await useEncryptedSessionStore.getState().updateSession(session.id, { ...session, aggregatedAnalysis: analysis });
+    await updateStoreSession(session.id, { ...session, aggregatedAnalysis: analysis });
 
     setAggregatedAnalysis(analysis);
   }, [session]);

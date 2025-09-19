@@ -1,14 +1,16 @@
 # Mirael Project - Functional Modules Analysis
 
 ## Project Overview
+
 Mirael is a sophisticated AI-powered mental health and therapeutic chat application built with Next.js 15, focusing on Cognitive Behavioral Therapy (CBT) methodologies. The application features advanced encryption, session management, and multilingual support.
 
 ## 🏗️ Core Functional Modules
 
 ### 1. **Authentication & User Management**
+
 - **Location**: `src/app/actions/auth-actions.ts`, `src/components/auth/`
 - **Description**: Supabase-based auth with email verification, user profiles, and admin controls
-- **Key Features**: 
+- **Key Features**:
   - Sign-up/sign-in with email verification
   - Role-based access control (user/admin)
   - User profile management with demographics
@@ -16,6 +18,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `signUp()`, `signIn()`, `signOut()`, `requireCurrentUser()`, `requireAdmin()`
 
 ### 2. **AI/Chat System (Mirael Core)**
+
 - **Location**: `src/lib/ai/mirael-core/v2/`, `src/app/actions/ai-client-actions.ts`
 - **Description**: Advanced therapeutic AI with CBT modules and psychological analysis
 - **Key Features**:
@@ -34,6 +37,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `handleUserInput()`, `analyzeUserInput()`, `SendPromptsToAi()`
 
 ### 3. **Session Management**
+
 - **Location**: `src/app/actions/session-actions.ts`, `src/components/sessions/`
 - **Description**: Therapeutic conversation session lifecycle management
 - **Key Features**:
@@ -44,6 +48,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `createSession()`, `updateSession()`, `deleteSession()`, `listSessionsByUser()`
 
 ### 4. **Data Encryption & Security**
+
 - **Location**: `src/lib/crypto/webcrypto-crypto.ts`
 - **Description**: Client-side encryption for sensitive therapeutic data
 - **Key Features**:
@@ -55,6 +60,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `deriveWrappingKeyFromPassword()`, `encryptObjectWithKey()`, `decryptObjectWithKey()`
 
 ### 5. **Session Synchronization**
+
 - **Location**: `src/lib/session-sync/simple-sync.ts`, `src/components/session-sync/`
 - **Description**: Intelligent local/cloud sync with user consent
 - **Key Features**:
@@ -66,6 +72,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `queueLocalSync()`, `queueCloudSync()`, `syncSessionBoth()`
 
 ### 6. **Internationalization (i18n)**
+
 - **Location**: `src/lib/i18n/`, `src/locales/`
 - **Description**: Multi-language support (EN/AR/FR) with RTL
 - **Key Features**:
@@ -76,6 +83,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `initTranslations()`, language switching components
 
 ### 7. **Error Handling & Monitoring**
+
 - **Location**: `src/lib/errors/`
 - **Description**: Comprehensive error management with structured codes
 - **Key Features**:
@@ -86,6 +94,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 - **Key Functions**: `errorManager.handleError()`, `errorManager.wrapOperation()`
 
 ### 8. **State Management**
+
 - **Location**: `src/stores/`, `src/lib/ai/mirael-core/v2/stores/`
 - **Description**: Zustand-based application state management
 - **Key Features**:
@@ -96,6 +105,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
   - **Persisted Store Base**: Common persistence patterns
 
 ### 9. **UI Component System**
+
 - **Location**: `src/components/`
 - **Description**: Design system with specialized chat interfaces
 - **Key Features**:
@@ -107,6 +117,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
   - **Form Components**: Reusable form inputs with validation
 
 ### 10. **Database Layer**
+
 - **Location**: `prisma/schema.prisma`, `src/lib/prisma.ts`
 - **Description**: PostgreSQL database with Prisma ORM
 - **Key Features**:
@@ -117,6 +128,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
   - **Feature Flags**: User-specific feature toggles
 
 ### 11. **Legal & Compliance**
+
 - **Location**: `src/app/[locale]/(legal)/`
 - **Description**: Multi-language legal documents and compliance
 - **Key Features**:
@@ -128,6 +140,7 @@ Mirael is a sophisticated AI-powered mental health and therapeutic chat applicat
 ## 📁 Current vs Suggested Folder Structure
 
 ### Current Structure
+
 ```
 src/
 ├── app/                    # Next.js App Router
@@ -140,6 +153,7 @@ src/
 ```
 
 ### 🎯 Suggested Improved Structure (React/Next.js Standard)
+
 ```
 src/
 ├── app/                          # Next.js App Router (keep as-is)
@@ -178,30 +192,35 @@ src/
 ## 🎯 Benefits of New Structure
 
 ### 1. **React/Next.js Standard Compliance**
+
 - **Familiar**: Follows established React/Next.js conventions
 - **Onboarding**: New developers immediately understand the structure
 - **Tooling**: Better IDE support and community tooling compatibility
 - **Documentation**: Aligns with official Next.js documentation
 
 ### 2. **Improved Organization Within Standard Folders**
+
 - **Components**: Organized by feature area instead of flat structure
 - **Lib**: Better categorization of utilities and business logic
 - **Hooks**: Dedicated folder for custom React hooks (standard practice)
 - **Types**: Centralized TypeScript definitions
 
 ### 3. **Clear Separation by Responsibility**
+
 - **UI Layer**: `components/` - Pure presentation components
 - **Business Logic**: `lib/` - Core application logic
 - **State Management**: `stores/` - Zustand stores
 - **Integration Layer**: `hooks/` - React integration hooks
 
 ### 4. **Scalability Within Standard Structure**
+
 - Easy to add new feature areas within existing folders
 - Clear import paths: `@/components/auth/`, `@/lib/sessions/`
 - Standard React patterns for hooks and components
 - Maintainable without breaking conventions
 
 ### 5. **Developer Experience**
+
 - **Familiar Patterns**: Standard React/Next.js folder structure
 - **Easy Navigation**: Predictable file locations
 - **Import Clarity**: Clear distinction between UI, logic, and state
@@ -218,19 +237,19 @@ src/
 
 ## 📊 Module Complexity Analysis
 
-| Module | Complexity | Lines of Code | Critical for MVP |
-|--------|------------|---------------|------------------|
-| AI/Chat System | High | ~2000+ | ✅ Critical |
-| Authentication | Medium | ~800 | ✅ Critical |
-| Session Management | Medium | ~600 | ✅ Critical |
-| Data Encryption | High | ~400 | ✅ Critical |
-| Session Sync | Medium | ~300 | ⚠️ Important |
-| i18n | Low | ~200 | ⚠️ Important |
-| Error Handling | Low | ~150 | ⚠️ Important |
-| UI Components | Medium | ~1000 | ✅ Critical |
-| Database Layer | Low | ~100 | ✅ Critical |
-| Legal & Compliance | Low | ~50 | ⚠️ Important |
+| Module             | Complexity | Lines of Code | Critical for MVP |
+| ------------------ | ---------- | ------------- | ---------------- |
+| AI/Chat System     | High       | ~2000+        | ✅ Critical      |
+| Authentication     | Medium     | ~800          | ✅ Critical      |
+| Session Management | Medium     | ~600          | ✅ Critical      |
+| Data Encryption    | High       | ~400          | ✅ Critical      |
+| Session Sync       | Medium     | ~300          | ⚠️ Important     |
+| i18n               | Low        | ~200          | ⚠️ Important     |
+| Error Handling     | Low        | ~150          | ⚠️ Important     |
+| UI Components      | Medium     | ~1000         | ✅ Critical      |
+| Database Layer     | Low        | ~100          | ✅ Critical      |
+| Legal & Compliance | Low        | ~50           | ⚠️ Important     |
 
 ---
 
-*This analysis reveals a sophisticated, well-architected application with strong separation of concerns and comprehensive feature coverage for a therapeutic AI platform.*
+_This analysis reveals a sophisticated, well-architected application with strong separation of concerns and comprehensive feature coverage for a therapeutic AI platform._

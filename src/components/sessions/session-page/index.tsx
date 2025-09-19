@@ -10,8 +10,8 @@ import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
 import LoadingComponent from "@/components/loading-component";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
-import { useChatController } from "@/lib/ai/mirael-core/v2/use-chat-controller";
+import { getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
@@ -77,10 +77,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     [resetSession, router]
   );
 
-  const getDecryptedSession = useCallback(
-    async () => await useEncryptedSessionStore.getState().getSession(sessionId),
-    [sessionId]
-  );
+  const getDecryptedSession = useCallback(async () => await getDecryptedStoreSession(sessionId), [sessionId]);
 
   const handleProcessMessage = useCallback(
     async (message: string) => {

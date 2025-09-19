@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { requireAdmin, requireCurrentUser } from "@/app/actions/auth-actions";
-import { SessionMetadataSchema, SessionOverview } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES, errorManager } from "@/lib/errors";
 import { prisma } from "@/lib/prisma";

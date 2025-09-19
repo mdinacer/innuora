@@ -8,7 +8,7 @@ import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 export type SessionOverview = {
   id: string;
-  obfuscatedId: string;
+  publicId?: string;
   title: string;
   subtitle: string | null;
   autoUpdateTitle: boolean;

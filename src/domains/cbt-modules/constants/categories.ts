@@ -1,4 +1,4 @@
-import { SESSION_MODULES } from "./modules";
+import { SESSION_MODULES } from "@/domains/cbt-modules/constants/modules";
 
 export const CORE_MODULES = {
   BEHAVIORAL_ACTIVATION: SESSION_MODULES.BEHAVIORAL_ACTIVATION,

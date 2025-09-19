@@ -1,12 +1,6 @@
 "use client";
 
 import React, { useCallback, useMemo } from "react";
-import { MessageBubble } from "../shared/message-bubble";
-import { MessageRendererProps } from "../types/chat.types";
-
-// Import your existing flow message types
-import { ChatMessage, MessageType } from "@/types/flow-chat-messages.types";
-import { UserOption } from "@/lib/zod/session-flow-schema";
 
 // Import existing flow message components
 import {
@@ -20,6 +14,11 @@ import {
   FlowUserMessage,
   FlowUserOptions,
 } from "@/components/chat-ui/flow-chat/messages";
+import { UserOption } from "@/lib/zod/session-flow-schema";
+// Import your existing flow message types
+import { ChatMessage, MessageType } from "@/types/flow-chat-messages.types";
+import { MessageBubble } from "../shared/message-bubble";
+import { MessageRendererProps } from "../types/chat.types";
 
 interface Props extends MessageRendererProps<ChatMessage> {
   isCurrentStep?: boolean;
@@ -32,76 +31,72 @@ interface Props extends MessageRendererProps<ChatMessage> {
   onFlowEnd?: (actionType: "primary" | "secondary") => void;
 }
 
-export const FlowMessageRenderer: React.FC<Props> = ({
-  message,
-  isCurrentStep = false,
-  actions,
-  onFlowEnd
-}) => {
+export const FlowMessageRenderer: React.FC<Props> = ({ message, isCurrentStep = false, actions, onFlowEnd }) => {
   const { type } = message;
 
-  const handleUserInput = useCallback((key: string, value: string, meta: { id: string; label: string }) => {
-    actions.onUserInput(key, value, meta);
-  }, [actions]);
+  // Wrapper functions to match component signatures
+  const handleUserInputAdapter = useCallback(
+    (key: string, value: string) => {
+      actions.onUserInput(key, value, { id: message.id, label: `User input: ${key}` });
+    },
+    [actions, message.id]
+  );
 
-  const handleUserSelect = useCallback((key: string, selection: UserOption | UserOption[], meta: { id: string; label: string }) => {
-    actions.onUserSelect(key, selection, meta);
-  }, [actions]);
+  const handleUserSelectAdapter = useCallback(
+    (key: string, selection: UserOption | UserOption[]) => {
+      actions.onUserSelect(key, selection, { id: message.id, label: `User selection: ${key}` });
+    },
+    [actions, message.id]
+  );
 
-  const handleFlowEnd = useCallback((actionType: "primary" | "secondary") => {
-    onFlowEnd?.(actionType);
-  }, [onFlowEnd]);
+  const handleUserAction = useCallback(
+    (actionType: "primary" | "secondary", nextStepId: string) => {
+      actions.moveToStep(nextStepId);
+    },
+    [actions]
+  );
+
+  const handleFlowEnd = useCallback(
+    (actionType: "primary" | "secondary") => {
+      onFlowEnd?.(actionType);
+    },
+    [onFlowEnd]
+  );
 
   const messageContent = useMemo(() => {
-    const commonProps = {
-      message,
+    const baseProps = {
       isCurrentStep,
       moveToNextStep: actions.moveToNextStep,
-      moveToStep: actions.moveToStep
+      moveToStep: actions.moveToStep,
     };
 
     switch (type) {
       case MessageType.TEXT:
-        return <FlowTextMessage {...commonProps} />;
+        return <FlowTextMessage message={message as any} {...baseProps} />;
 
       case MessageType.USER_INPUT:
-        return (
-          <FlowUserInput
-            {...commonProps}
-            onUserInput={handleUserInput}
-          />
-        );
+        return <FlowUserInput message={message as any} {...baseProps} onUserInput={handleUserInputAdapter} />;
 
       case MessageType.OPTIONS:
-        return (
-          <FlowUserOptions
-            {...commonProps}
-            onUserSelect={handleUserSelect}
-          />
-        );
+        return <FlowUserOptions message={message as any} {...baseProps} onUserSelect={handleUserSelectAdapter} />;
 
       case MessageType.ACTION:
-        return <FlowAction {...commonProps} />;
+        return <FlowAction message={message as any} {...baseProps} onUserAction={handleUserAction} />;
 
       case MessageType.REFLECTION:
-        return <FlowReflection {...commonProps} />;
+        return <FlowReflection message={message as any} {...baseProps} />;
 
       case MessageType.SYSTEM:
-        return <FlowSystemAction {...commonProps} />;
+        return <FlowSystemAction message={message as any} {...baseProps} />;
 
       case MessageType.USER_MESSAGE:
-        return <FlowUserMessage {...commonProps} />;
+        return <FlowUserMessage message={message as any} {...baseProps} />;
 
       case MessageType.FLOW_END:
-        return (
-          <FlowEnd
-            {...commonProps}
-            onFlowEnd={handleFlowEnd}
-          />
-        );
+        return <FlowEnd message={message as any} {...baseProps} onAction={handleFlowEnd} />;
 
       case MessageType.PARAGRAPHS:
-        return <FlowParagraphs {...commonProps} />;
+        return <FlowParagraphs message={message as any} {...baseProps} onMoveToNextStep={actions.moveToNextStep} />;
 
       default:
         return (
@@ -110,10 +105,18 @@ export const FlowMessageRenderer: React.FC<Props> = ({
           </div>
         );
     }
-  }, [type, message, isCurrentStep, actions, handleUserInput, handleUserSelect, handleFlowEnd]);
+  }, [
+    type,
+    message,
+    isCurrentStep,
+    actions,
+    handleUserInputAdapter,
+    handleUserSelectAdapter,
+    handleUserAction,
+    handleFlowEnd,
+  ]);
 
-  const role = type === MessageType.USER_MESSAGE ? 'user' : 
-               type === MessageType.SYSTEM ? 'system' : 'assistant';
+  const role = type === MessageType.USER_MESSAGE ? "user" : type === MessageType.SYSTEM ? "system" : "assistant";
 
   return (
     <MessageBubble role={role} timestamp={message.timestamp}>

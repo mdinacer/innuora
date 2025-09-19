@@ -25,13 +25,6 @@ export type EncryptedBlob = {
   ciphertext: string; // base64 (ciphertext + auth tag)
 };
 
-// export const EncryptedBlobSchema = z.object({
-//   version: z.number().int().positive(),
-//   alg: z.literal("AES-GCM"),
-//   iv: z.string().min(1), // base64 string
-//   ciphertext: z.string().min(1), // base64 string (ciphertext + auth tag)
-// });
-
 const base64Regex = /^[A-Za-z0-9+/]+={0,2}$/;
 
 export const EncryptedBlobSchema = z.object({

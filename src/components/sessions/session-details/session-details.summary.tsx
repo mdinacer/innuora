@@ -7,12 +7,10 @@ import remarkGfm from "remark-gfm";
 
 import { Button } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import {
-  getSessionMessagesSummary,
-  getSessionSummary,
-} from "@/lib/ai/mirael-core/v2/session-analysis/session-analysis.action";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { Session } from "@/domains/open-chat/open-chat.types";
+import { getSessionMessagesSummary, getSessionSummary } from "@/domains/session-summary/session-summary.action";
 import { AppLocales, FNS_LOCALES_MAP } from "@/lib/i18n";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 
@@ -34,7 +32,7 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
   const handleGenerateSummary = useCallback(async () => {
     if (continuitySummary) return;
 
-    const state = useEncryptedSessionStore.getState();
+    const state = useSessionStore.getState();
 
     try {
       let summaryText: string | undefined;
@@ -58,11 +56,15 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
 
       setSummary(summaryText);
 
-      state.updateSession(session.id, {
-        ...session,
-        ...(title && subtitle && session.autoUpdateTitle ? { title, subtitle } : {}),
-        continuitySummary: { text: summaryText, updatedAt: new Date(), lastMessageIndex: messages.length - 1 },
-      });
+      await updateStoreSession(
+        session.id,
+        {
+          ...session,
+          ...(title && subtitle && session.autoUpdateTitle ? { title, subtitle } : {}),
+          continuitySummary: { text: summaryText, updatedAt: new Date(), lastMessageIndex: messages.length - 1 },
+        },
+        state
+      );
     } catch (error) {
       console.error("Failed to generate session summary:", error);
     }

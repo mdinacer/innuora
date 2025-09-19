@@ -9,7 +9,7 @@ import SessionDetailsQuickActions from "@/components/sessions/session-details/se
 import SessionDetailsSnapshot from "@/components/sessions/session-details/session-details.snapshot";
 import SessionDetailsSummary from "@/components/sessions/session-details/session-details.summary";
 import SessionDetailsSyncStatus from "@/components/sessions/session-details/session-details.sync-status";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { Session } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 
 interface Props {

@@ -21,9 +21,10 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
-import { generateId } from "@/lib/chat/flow/generate-id";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { createStoreSession, getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { Session } from "@/domains/open-chat/open-chat.types";
+import { generateId } from "@/domains/session-flow/utils/generate-id";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
 import TextareaField from "../input/textarea-field";
 import { Button } from "../mir-ui/button";
@@ -39,7 +40,7 @@ interface Props {
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted }) => {
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
-  const encryptedStore = useEncryptedSessionStore();
+  const encryptedStore = useSessionStore();
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
@@ -106,27 +107,33 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
         const result = await createSession(data);
         if (result) {
           // Create local encrypted session
-          await encryptedStore.createSession({
-            id: result.id,
-            title: result.title,
-            subtitle: result.subtitle || undefined,
-            autoUpdateTitle: result.autoUpdateTitle,
-            persistOnCloud: true,
-          });
+          await createStoreSession(
+            {
+              id: result.id,
+              title: result.title,
+              subtitle: result.subtitle || undefined,
+              autoUpdateTitle: result.autoUpdateTitle,
+              persistOnCloud: true,
+            },
+            encryptedStore
+          );
         }
       } else {
         // Create local-only session
-        await encryptedStore.createSession({
-          id,
-          title: data.title || generateId("Session"),
-          subtitle: data.subtitle,
-          autoUpdateTitle: data.autoUpdateTitle,
-          persistOnCloud: data.persistOnCloud,
-        });
+        await createStoreSession(
+          {
+            id,
+            title: data.title || generateId("Session"),
+            subtitle: data.subtitle,
+            autoUpdateTitle: data.autoUpdateTitle,
+            persistOnCloud: data.persistOnCloud,
+          },
+          encryptedStore
+        );
       }
 
       // Get the updated session and call onSubmit
-      const updatedSession = await encryptedStore.getSession(id);
+      const updatedSession = await getDecryptedStoreSession(id, encryptedStore);
       if (updatedSession) {
         onSubmitted?.(updatedSession);
       }

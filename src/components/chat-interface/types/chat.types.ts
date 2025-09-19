@@ -1,12 +1,11 @@
-import { ReactNode } from 'react';
-import { Session } from '@/lib/ai/mirael-core/v2/open-chat-session.types';
+import { Session } from "@/domains/open-chat/open-chat.types";
 
-export type ChatMode = 'flow' | 'open';
+export type ChatMode = "flow" | "open";
 
 export interface ChatMessage {
   id: string;
   content: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   timestamp: number;
 }
 
@@ -14,7 +13,7 @@ export interface ChatContainerProps {
   mode: ChatMode;
   session: Session;
   className?: string;
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
 }
 
 export interface MessageRendererProps<T = ChatMessage> {

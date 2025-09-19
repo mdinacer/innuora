@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import React, { useEffect, useRef } from "react";
+
+import { cn } from "@/lib/utils";
 
 interface Props {
   children: React.ReactNode;
@@ -9,11 +10,7 @@ interface Props {
   autoScroll?: boolean;
 }
 
-export const MessagesContainer: React.FC<Props> = ({
-  children,
-  className,
-  autoScroll = true
-}) => {
+export const MessagesContainer: React.FC<Props> = ({ children, className, autoScroll = true }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,12 +20,12 @@ export const MessagesContainer: React.FC<Props> = ({
   }, [children, autoScroll]);
 
   return (
-    <div 
+    <div
       ref={scrollRef}
       className={cn(
-        'flex-1 overflow-y-auto p-4 space-y-4',
-        'scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600',
-        'scrollbar-track-transparent',
+        "flex-1 overflow-y-auto p-4 space-y-4",
+        "scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600",
+        "scrollbar-track-transparent",
         className
       )}
     >

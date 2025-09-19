@@ -13,7 +13,8 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
 
 ### Core Business Domains
 
-#### 1. **user-management/** 
+#### 1. **user-management/**
+
 - **Purpose**: User lifecycle, authentication, profiles, preferences
 - **Contents**:
   - `user.store.ts` (move from `/stores/user-data.store.ts`)
@@ -23,7 +24,8 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
   - `components/` (auth forms, user dropdown, etc.)
   - `hooks/` (user management hooks)
 
-#### 2. **therapeutic-analysis/** 
+#### 2. **therapeutic-analysis/**
+
 - **Purpose**: AI therapy analysis, CBT modules, state analysis
 - **Contents**:
   - `state-analysis/` (move from `/lib/ai/mirael-core/v2/state-analysis/`)
@@ -33,17 +35,19 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
   - `therapeutic-analysis.types.ts` (already exists)
   - `hooks/` (analysis hooks)
 
-#### 3. **session-management/** 
+#### 3. **session-management/**
+
 - **Purpose**: Consolidate all session-related functionality
 - **Contents**:
   - `active-session/` (existing)
-  - `encrypted-session/` (existing) 
+  - `encrypted-session/` (existing)
   - `session-sync/` (existing)
   - `session.actions.ts` (move from `/app/actions/session-actions.ts`)
   - `session.types.ts`
   - `components/` (session cards, details, etc.)
 
 #### 4. **ai-conversation/**
+
 - **Purpose**: Chat interactions, message handling, AI communication
 - **Contents**:
   - `open-chat/` (existing hooks)
@@ -54,6 +58,7 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
   - `prompts/` (move from `/lib/ai/shared/prompts/`)
 
 #### 5. **points-system/**
+
 - **Purpose**: Points management, billing, transactions
 - **Contents**:
   - `points.store.ts`
@@ -63,6 +68,7 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
   - `hooks/` (points management hooks)
 
 #### 6. **admin/**
+
 - **Purpose**: Administrative functions, audit logs, system management
 - **Contents**:
   - `audit.actions.ts` (move from `/app/actions/audit-actions.ts`)
@@ -73,6 +79,7 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
 ### Supporting Domains
 
 #### 7. **notifications/**
+
 - **Purpose**: Toast notifications, alerts, user feedback
 - **Contents**:
   - `notifications.store.ts`
@@ -80,6 +87,7 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
   - `components/` (toast components)
 
 #### 8. **encryption/**
+
 - **Purpose**: Security, key management, data protection
 - **Contents**:
   - `encryption.utils.ts` (move from `/lib/crypto/`)
@@ -89,24 +97,28 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
 ## Implementation Strategy
 
 ### Phase 1: Core Domain Creation
+
 1. Create `user-management/` domain with auth and user logic
 2. Create `therapeutic-analysis/` domain consolidating AI analysis
 3. Create `ai-conversation/` domain for chat interactions
 4. Create `points-system/` domain for billing logic
 
-### Phase 2: Consolidation  
+### Phase 2: Consolidation
+
 1. Merge duplicate session stores
 2. Move scattered actions into appropriate domains
 3. Reorganize components by domain
 4. Update imports throughout codebase
 
 ### Phase 3: Clean Architecture
+
 1. Establish clear domain interfaces
 2. Implement domain services pattern
 3. Create domain events for cross-domain communication
 4. Remove technical infrastructure from business domains
 
 ## Benefits
+
 - **Clear Boundaries**: Each domain has single responsibility
 - **Reduced Duplication**: Consolidate scattered logic
 - **Better Maintainability**: Easier to locate and modify business logic
@@ -118,10 +130,11 @@ Based on my analysis of the Mirael therapeutic AI application, here's a comprehe
 ### Current Analysis
 
 The current `/domains/` folder structure shows:
+
 ```
 domains/
 ├── active-session/           ✅ Well organized
-├── encrypted-session/        ✅ Well organized  
+├── encrypted-session/        ✅ Well organized
 ├── open-chat/               ✅ Well organized
 ├── session-sync/            ✅ Well organized
 └── therapeutic-analysis/    ⚠️ Only has types file
@@ -130,7 +143,7 @@ domains/
 ### Issues Found
 
 1. **State Analysis Logic**: Currently in `/lib/ai/mirael-core/v2/state-analysis/` - should be in `therapeutic-analysis/`
-2. **Session Analysis Logic**: Currently in `/lib/ai/mirael-core/v2/session-analysis/` - should be in `therapeutic-analysis/` 
+2. **Session Analysis Logic**: Currently in `/lib/ai/mirael-core/v2/session-analysis/` - should be in `therapeutic-analysis/`
 3. **CBT Modules**: Currently in `/lib/ai/mirael-core/v2/modules/` - should be in `therapeutic-analysis/`
 4. **User Management**: Scattered across `/app/actions/auth-actions.ts`, `/stores/user-data.store.ts` - needs dedicated domain
 5. **Points System**: In `/app/actions/points-actions.ts` and `/components/points/` - needs dedicated domain

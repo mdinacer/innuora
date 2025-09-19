@@ -4,7 +4,7 @@ import { ArrowDownIcon, CoinsIcon, MessageSquareTextIcon, PencilIcon, TextIcon }
 import { useTranslation } from "react-i18next";
 
 import InfoCard from "@/components/mir-ui/info-card";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { Session } from "@/domains/open-chat/open-chat.types";
 import { AppLocales, FNS_LOCALES_MAP } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 

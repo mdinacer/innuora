@@ -5,8 +5,8 @@ import { CogIcon, PencilIcon, PlayIcon } from "lucide-react";
 import { Button, buttonVariants } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
 import SessionForm from "@/components/sessions/session-form";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { Session } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const SessionDetailsQuickActions: React.FC<Props> = ({ className, session }) => {
-  const publicId = useEncryptedSessionStore((state) => state.getSessionPublicId(session.id));
+  const publicId = useSessionStore((state) => state.getSessionPublicId(session.id));
 
   return (
     <Card className={className}>

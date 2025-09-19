@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Prisma } from "@prisma/client";
 import { isAfter } from "date-fns";
 import { CloudIcon, CloudOffIcon, DownloadIcon, UploadIcon } from "lucide-react";
 
@@ -13,8 +12,9 @@ import {
 } from "@/app/actions/session-actions";
 import { Button } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
-import { Session, SessionMetadataSchema } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { useEncryptedSessionStore } from "@/lib/ai/mirael-core/v2/stores/encrypted-sessions.store";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
 
 interface Props {
@@ -32,6 +32,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
 
   const transformForUpdate = useCallback(
     (encryptedSession: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
       return {
         ...rest,
@@ -60,7 +61,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
     setLoading(true);
     setError(null);
     try {
-      const state = useEncryptedSessionStore.getState();
+      const state = useSessionStore.getState();
       const encryptedSession = state.sessions[session.id];
       if (!encryptedSession) throw new Error("Session not found");
 
@@ -89,7 +90,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
     setLoading(true);
     setError(null);
     try {
-      const state = useEncryptedSessionStore.getState();
+      const state = useSessionStore.getState();
       const publicId = state.getSessionPublicId(session.id);
       const result = await getSessionById(session.id);
 
@@ -112,8 +113,8 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
     setError(null);
     try {
       await deleteSession(session.id);
-      const state = useEncryptedSessionStore.getState();
-      state.updateSession(session.id, { ...session, persistOnCloud: false });
+      const state = useSessionStore.getState();
+      await updateStoreSession(session.id, { ...session, persistOnCloud: false }, state);
       setCloudInfo(null);
       router.refresh();
     } catch (error) {

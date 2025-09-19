@@ -8,8 +8,9 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle, Clock, RefreshCw, Wifi, WifiOff } from "lucide-react";
 
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
-import { simpleSessionSync, SyncStatusDetailed } from "@/lib/session-sync/simple-sync";
+import { Session } from "@/domains/open-chat/open-chat.types";
+import { sessionSynchronizer } from "@/domains/session-sync/index";
+import { SyncStatusDetailed } from "@/domains/session-sync/session-sync.types";
 
 interface SyncStatusIndicatorProps {
   sessionId: string;
@@ -34,8 +35,8 @@ export function SyncStatusIndicator({
   // Poll sync status
   useEffect(() => {
     const updateStatus = () => {
-      setSyncStatus(simpleSessionSync.getSyncStatus(sessionId));
-      setLastSyncTimes(simpleSessionSync.getLastSyncTimes(sessionId));
+      setSyncStatus(sessionSynchronizer.getSyncStatus(sessionId));
+      setLastSyncTimes(sessionSynchronizer.getLastSyncTimes(sessionId));
     };
 
     updateStatus();
@@ -192,7 +193,7 @@ export function SyncStatusIndicator({
         <div className="flex gap-1">
           {syncStatus.local === "error" && (
             <button
-              onClick={() => simpleSessionSync.retryFailedSync(sessionId, "local")}
+              onClick={() => sessionSynchronizer.retryFailedSync(sessionId, "local")}
               className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
               title="Retry local sync"
             >
@@ -201,7 +202,7 @@ export function SyncStatusIndicator({
           )}
           {syncStatus.cloud === "error" && (
             <button
-              onClick={() => simpleSessionSync.retryFailedSync(sessionId, "cloud")}
+              onClick={() => sessionSynchronizer.retryFailedSync(sessionId, "cloud")}
               className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
               title="Retry cloud sync"
             >
@@ -215,7 +216,7 @@ export function SyncStatusIndicator({
       {syncStatus.local === "synced" && syncStatus.cloud !== "error" && showDetails && (
         <div className="flex gap-1">
           <button
-            onClick={() => simpleSessionSync.syncSessionLocal(sessionId)}
+            onClick={() => sessionSynchronizer.syncSessionLocal(sessionId)}
             className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
             title="Force local sync"
           >
@@ -223,7 +224,7 @@ export function SyncStatusIndicator({
           </button>
           {session?.persistOnCloud && (
             <button
-              onClick={() => simpleSessionSync.syncSessionCloud(sessionId)}
+              onClick={() => sessionSynchronizer.syncSessionCloud(sessionId)}
               className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
               title="Force cloud sync"
             >

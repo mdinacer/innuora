@@ -4,7 +4,7 @@ import { ListChecksIcon } from "lucide-react";
 
 import { Badge } from "@/components/mir-ui/badge";
 import Card from "@/components/mir-ui/card";
-import { Session } from "@/lib/ai/mirael-core/v2/open-chat-session.types";
+import { Session } from "@/domains/open-chat/open-chat.types";
 
 interface Props {
   className?: string;

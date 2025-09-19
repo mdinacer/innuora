@@ -1,13 +1,14 @@
 "use client";
 
-import React from 'react';
-import { ChatContainer } from '../shared/chat-container';
-import { FlowMessageRenderer } from './flow-message-renderer';
-import { ChatContainerProps } from '../types/chat.types';
-import { ChatMessage } from '@/types/flow-chat-messages.types';
-import { UserOption } from '@/lib/zod/session-flow-schema';
+import React from "react";
 
-interface Props extends Omit<ChatContainerProps, 'mode'> {
+import { UserOption } from "@/lib/zod/session-flow-schema";
+import { ChatMessage } from "@/types/flow-chat-messages.types";
+import { ChatContainer } from "../shared/chat-container";
+import { ChatContainerProps } from "../types/chat.types";
+import { FlowMessageRenderer } from "./flow-message-renderer";
+
+interface Props extends Omit<ChatContainerProps, "mode"> {
   messages: ChatMessage[];
   currentStep?: number;
   onUserInput: (key: string, value: string, meta: { id: string; label: string }) => void;
@@ -27,22 +28,17 @@ export const FlowChat: React.FC<Props> = ({
   onUserSelect,
   onFlowEnd,
   onMoveToNextStep,
-  onMoveToStep
+  onMoveToStep,
 }) => {
   const actions = {
     moveToNextStep: onMoveToNextStep,
     moveToStep: onMoveToStep,
     onUserInput,
-    onUserSelect
+    onUserSelect,
   };
 
   return (
-    <ChatContainer
-      mode="flow"
-      session={session}
-      variant={variant}
-      className={className}
-    >
+    <ChatContainer mode="flow" session={session} variant={variant} className={className}>
       {messages.map((message, index) => (
         <FlowMessageRenderer
           key={message.id}
