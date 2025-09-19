@@ -5,7 +5,7 @@ import { TherapeuticAnalysisEngine } from "@/domains/therapeutic-analysis/therap
 import THERAPEUTIC_ANALYSIS_PROMPT from "@/domains/therapeutic-analysis/therapeutic-analysis.prompt";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 import { AiModel } from "@/types/ai-model.types";
 import { AnalysisResult } from "@/types/analysis-result";
 
@@ -14,11 +14,11 @@ export async function analyzeUserInput(
   prevData: TherapeuticAnalysis[] = [],
   model: AiModel
 ): Promise<AnalysisResult> {
-  return await errorManager.wrapOperation<AnalysisResult>(
+  return await logger.wrapOperation<AnalysisResult>(
     async () => {
       if (!userInput?.trim()) {
-        errorManager.handleError(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
-          operation: "analyzeUserInput",
+        logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
+          operation: "therapeutic_analysis_analyze_user_input",
         });
       }
 
@@ -32,23 +32,27 @@ export async function analyzeUserInput(
 
       const analysis = therapeuticAnalysisEngine.safeParseTherapeuticAnalysis(message);
       if (!analysis) {
-        errorManager.handleError(
+        logger.logErrorAndThrow(
           ERROR_CODES.CHAT_ANALYSIS_FAILED,
           new Error("Failed to parse state analysis from AI response"),
           {
-            operation: "analyzeUserInput",
+            operation: "therapeutic_analysis_analyze_user_input",
             metadata: { model: model.apiPath },
           }
         );
-        throw new Error("Unreachable");
       }
 
       return { analysis, modelTokenUsage };
     },
     ERROR_CODES.CHAT_ANALYSIS_FAILED,
     {
-      operation: "analyzeUserInput",
-      metadata: { model: model.apiPath, prevDataLength: prevData.length },
-    }
+      operation: "therapeutic_analysis_analyze_user_input",
+      metadata: { 
+        model: model.apiPath, 
+        prevDataLength: prevData.length,
+        inputLength: userInput?.length || 0
+      },
+    },
+    "Therapeutic analysis completed successfully"
   );
 }

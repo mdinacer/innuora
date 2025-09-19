@@ -4,7 +4,7 @@ import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
 import { calculateCost } from "@/lib/utils/cost-estimation";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
@@ -39,8 +39,8 @@ async function callOpenAi(
     });
     return completion as ChatCompletion;
   } catch (error) {
-    return errorManager.handleError(ERROR_CODES.AI_OPENAI_ERROR, error, {
-      operation: "callOpenAi",
+    logger.logErrorAndThrow(ERROR_CODES.AI_OPENAI_ERROR, error, {
+      operation: "ai_openai_call",
       metadata: { model: modelPath },
     });
   }
@@ -56,11 +56,11 @@ async function callOpenRouter(
 ): Promise<ChatCompletion> {
   const apiKey = process.env.OPEN_ROUTER_API_KEY;
   if (!apiKey) {
-    return errorManager.handleError(
+    logger.logErrorAndThrow(
       ERROR_CODES.AI_OPENROUTER_ERROR,
       new Error("OPEN_ROUTER_API_KEY environment variable is not set"),
       {
-        operation: "callOpenRouter",
+        operation: "ai_openrouter_call",
         metadata: { model: modelPath },
       }
     );
@@ -88,8 +88,8 @@ async function callOpenRouter(
         errorText = "Unable to read error response";
       }
 
-      return errorManager.handleError(ERROR_CODES.AI_OPENROUTER_ERROR, new Error(`${response.status} - ${errorText}`), {
-        operation: "callOpenRouter",
+      logger.logErrorAndThrow(ERROR_CODES.AI_OPENROUTER_ERROR, new Error(`${response.status} - ${errorText}`), {
+        operation: "ai_openrouter_call",
         metadata: { model: modelPath, status: response.status },
       });
     }
@@ -101,8 +101,8 @@ async function callOpenRouter(
 
     if (error instanceof Error && error.name === "AppError") throw error;
 
-    return errorManager.handleError(ERROR_CODES.AI_NETWORK_ERROR, error, {
-      operation: "callOpenRouter",
+    logger.logErrorAndThrow(ERROR_CODES.AI_NETWORK_ERROR, error, {
+      operation: "ai_openrouter_call",
       metadata: { model: modelPath },
     });
   }
@@ -113,30 +113,30 @@ async function callOpenRouter(
  */
 function validateAiModel(model: AiModel): void {
   if (!model) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model configuration is required"), {
-      operation: "validateAiModel",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model configuration is required"), {
+      operation: "ai_validate_model",
     });
   }
 
   if (!model.apiPath) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model apiPath is required"), {
-      operation: "validateAiModel",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model apiPath is required"), {
+      operation: "ai_validate_model",
       metadata: { model: model.vendor },
     });
   }
 
   if (!model.vendor) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model vendor is required"), {
-      operation: "validateAiModel",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model vendor is required"), {
+      operation: "ai_validate_model",
     });
   }
 
   if (!["openai", "tngtech", "mistralai", "qwen", "moonshotai", "rekaai", "deepseek"].includes(model.vendor)) {
-    return errorManager.handleError(
+    logger.logErrorAndThrow(
       ERROR_CODES.AI_UNSUPPORTED_VENDOR,
       new Error(`Unsupported vendor: ${model.vendor}`),
       {
-        operation: "validateAiModel",
+        operation: "ai_validate_model",
         metadata: { vendor: model.vendor },
       }
     );
@@ -148,19 +148,19 @@ function validateAiModel(model: AiModel): void {
  */
 function validatePrompts(prompts: ChatCompletionMessageParam[]): void {
   if (!Array.isArray(prompts) || prompts.length === 0) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_PROMPTS, new Error("Prompts array cannot be empty"), {
-      operation: "validatePrompts",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_PROMPTS, new Error("Prompts array cannot be empty"), {
+      operation: "ai_validate_prompts",
     });
   }
 
   // Validate each prompt has required fields
   prompts.forEach((prompt, index) => {
     if (!prompt.role || !prompt.content) {
-      return errorManager.handleError(
+      logger.logErrorAndThrow(
         ERROR_CODES.AI_INVALID_PROMPTS,
         new Error(`Prompt at index ${index} is missing required role or content`),
         {
-          operation: "validatePrompts",
+          operation: "ai_validate_prompts",
           metadata: { promptIndex: index },
         }
       );
@@ -210,8 +210,8 @@ export async function SendPromptsToAi(
     // Extract and validate response
     const raw = data?.choices?.[0]?.message?.content?.trim();
     if (!raw) {
-      return errorManager.handleError(ERROR_CODES.AI_EMPTY_RESPONSE, new Error("AI returned empty content"), {
-        operation: "SendPromptsToAi",
+      logger.logErrorAndThrow(ERROR_CODES.AI_EMPTY_RESPONSE, new Error("AI returned empty content"), {
+        operation: "ai_send_prompts",
         metadata: { model: model.apiPath, vendor: model.vendor },
       });
     }
@@ -240,8 +240,8 @@ export async function SendPromptsToAi(
     if (error instanceof AppError && error.name === "AppError") throw error;
 
     // Log and handle unexpected errors
-    return errorManager.handleError(ERROR_CODES.AI_REQUEST_FAILED, error, {
-      operation: "SendPromptsToAi",
+    logger.logErrorAndThrow(ERROR_CODES.AI_REQUEST_FAILED, error, {
+      operation: "ai_send_prompts",
       metadata: { model: model.apiPath, vendor: model.vendor },
     });
   }
@@ -277,11 +277,11 @@ export async function SendPromptsToAiWithRetry(
 
       // If this is the last attempt, throw the error
       if (attempt === maxRetries) {
-        return errorManager.handleError(
+        logger.logErrorAndThrow(
           ERROR_CODES.AI_RETRY_EXHAUSTED,
           new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError.message}`),
           {
-            operation: "SendPromptsToAiWithRetry",
+            operation: "ai_send_prompts_with_retry",
             metadata: { attempts: maxRetries, model: model.apiPath },
           }
         );
@@ -295,11 +295,11 @@ export async function SendPromptsToAiWithRetry(
   }
 
   // This should never be reached due to the logic above, but TypeScript needs it
-  return errorManager.handleError(
+  logger.logErrorAndThrow(
     ERROR_CODES.AI_RETRY_EXHAUSTED,
     new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message || "Unknown error"}`),
     {
-      operation: "SendPromptsToAiWithRetry",
+      operation: "ai_send_prompts_with_retry",
       metadata: { attempts: maxRetries },
     }
   );

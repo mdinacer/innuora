@@ -121,20 +121,42 @@ model AuditLog {
   // Identifiers
   id String @id @default(cuid())
 
-  // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Foreign keys (optional for system-level logs)
+  userId String? @map("user_id")
+  user   User?   @relation(fields: [userId], references: [authId], onDelete: Cascade)
 
-  // Business fields
-  action   String
-  metadata Json?
+  // Core logging fields
+  operation String              // Clean operation name (e.g., "user_signup", "session_create")
+  level     LogLevel            // Log level enum
+  message   String              // Human-readable message
+  
+  // Context fields
+  errorCode String?             // Structured error codes
+  sessionId String?    @map("session_id")        // Session correlation
+  userAgent String?    @map("user_agent")        // Client information
+  ipAddress String?    @map("ip_address")        // Request IP
+  
+  // Additional context
+  metadata  Json?               // Flexible additional data
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
 
+  // Indexes for performance
+  @@index([level])
+  @@index([operation])
+  @@index([errorCode])
+  @@index([sessionId])
   @@index([userId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
+  AUDIT
 }
 
 model Session {

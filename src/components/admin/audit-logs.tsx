@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { getAuditLogs } from "@/app/actions/audit-actions";
+// TODO: Update this import once getAuditLogs is migrated to unified logger
+// import { getAuditLogs } from "@/app/actions/audit-actions";
 
 interface AuditLog {
   id: string;

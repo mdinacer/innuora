@@ -14,7 +14,7 @@ import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 import { AppLocales } from "@/lib/i18n";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
@@ -55,19 +55,19 @@ async function buildConversationPrompts(
   // Get language and tone prompts (synchronous lookups)
   const languagePrompt = LanguagePrompt[locale];
   if (!languagePrompt) {
-    errorManager.handleError(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
-      operation: "buildConversationPrompts",
+    logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
+      operation: "open_chat_build_conversation_prompts",
       metadata: { locale },
     });
   }
 
   const toneInstruction = TonePrompt["friendly"][analysis.intensity];
   if (!toneInstruction) {
-    errorManager.handleError(
+    logger.logErrorAndThrow(
       ERROR_CODES.CHAT_UNSUPPORTED_INTENSITY,
       new Error(`Unsupported intensity: ${analysis.intensity}`),
       {
-        operation: "buildConversationPrompts",
+        operation: "open_chat_build_conversation_prompts",
         metadata: { intensity: analysis.intensity },
       }
     );
@@ -117,22 +117,22 @@ export async function handleUserInput(
   locale: AppLocales = "en",
   modelCode: ModelCode = MODELS_CODES.M1
 ): Promise<HandleUserInputResult> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       // Early validation
       if (!userInput?.trim()) {
-        errorManager.handleError(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
-          operation: "handleUserInput",
+        logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
+          operation: "open_chat_handle_user_input",
         });
       }
 
       const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
       if (!aiModel) {
-        errorManager.handleError(
+        logger.logErrorAndThrow(
           ERROR_CODES.CHAT_UNSUPPORTED_MODEL,
           new Error(`Unsupported model code: ${modelCode}`),
           {
-            operation: "handleUserInput",
+            operation: "open_chat_handle_user_input",
             metadata: { modelCode },
           }
         );
@@ -170,8 +170,14 @@ export async function handleUserInput(
     },
     ERROR_CODES.CHAT_RESPONSE_FAILED,
     {
-      operation: "handleUserInput",
-      metadata: { modelCode, locale, messageCount: messages.length },
-    }
+      operation: "open_chat_handle_user_input",
+      metadata: { 
+        modelCode, 
+        locale, 
+        messageCount: messages.length,
+        inputLength: userInput?.length || 0
+      },
+    },
+    "Open chat conversation processed successfully"
   );
 }
