@@ -20,6 +20,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
     addMessage,
     addAnalysis,
     addTokenUsage,
+    addCreditsUsed,
     updateSession,
     resetSession,
     resetEncryptedSession,
@@ -57,7 +58,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         const result = await processInput(message);
         if (!result) return;
 
-        const { assistantMessage, shouldUpdateMemory, tokenUsage } = result;
+        const { assistantMessage, shouldUpdateMemory, tokenUsage, creditsUsed } = result;
 
         if (!assistantMessage) {
           console.error("No assistant message found");
@@ -71,11 +72,14 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
 
         // Check if this is an extended session (more than 10 messages)
 
-        appendAssistantMessage(assistantMessage);
+        appendAssistantMessage(assistantMessage, creditsUsed);
 
         // Add token usage to session for tracking
         if (tokenUsage?.analysisUsage) addTokenUsage(tokenUsage.analysisUsage);
         if (tokenUsage?.responseUsage) addTokenUsage(tokenUsage.responseUsage);
+
+        // Track credits used in session metadata
+        if (creditsUsed > 0) addCreditsUsed(creditsUsed);
 
         if (shouldUpdateMemory) {
           const memoryResult = await updateSessionMemory(message);
@@ -94,7 +98,15 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         setProcessing(false);
       }
     },
-    [appendAssistantMessage, appendUserMessage, processInput, session, updateSessionMemory, addTokenUsage]
+    [
+      appendAssistantMessage,
+      appendUserMessage,
+      processInput,
+      session,
+      updateSessionMemory,
+      addTokenUsage,
+      addCreditsUsed,
+    ]
   );
 
   const handleSessionReset = useCallback(() => {

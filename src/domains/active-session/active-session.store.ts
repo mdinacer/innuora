@@ -21,10 +21,11 @@ interface ActiveSessionStoreState {
 
   // Session actions
   addMessage: (message: OpenChatMessage) => void;
-  appendMessage: (content: string, role: "user" | "assistant") => void;
+  appendMessage: (content: string, role: "user" | "assistant", creditsUsed?: number) => void;
   addAnalysis: (analysis: TherapeuticAnalysis) => void;
   addTokenUsage: (tokenUsage: ModelTokenUsage) => void;
   updateTotalCost: (cost: number | ((cost: number) => number)) => void;
+  addCreditsUsed: (credits: number) => void;
   resetSession: () => void;
 }
 
@@ -75,7 +76,7 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
     });
   },
 
-  appendMessage: (content, role) => {
+  appendMessage: (content, role, creditsUsed) => {
     if (!content.trim()) return;
     const current = get().session;
     if (!current) return;
@@ -85,6 +86,7 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
       role: role,
       content: content,
       timestamp: Date.now(),
+      creditsUsed: creditsUsed,
     });
   },
 
@@ -136,6 +138,23 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
         metadata: {
           ...current.metadata,
           costUSD: newCost,
+        },
+        updatedAt: new Date(),
+      },
+      isDirty: true,
+    });
+  },
+
+  addCreditsUsed: (credits) => {
+    const current = get().session;
+    if (!current) return;
+
+    set({
+      session: {
+        ...current,
+        metadata: {
+          ...current.metadata,
+          creditsUsed: (current.metadata.creditsUsed || 0) + credits,
         },
         updatedAt: new Date(),
       },

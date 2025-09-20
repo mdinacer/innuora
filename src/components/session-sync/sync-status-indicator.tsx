@@ -32,17 +32,33 @@ export function SyncStatusIndicator({
   });
   const [isOnline, setIsOnline] = useState(true);
 
-  // Poll sync status
+  // Event-driven sync status updates (replacing polling)
   useEffect(() => {
     const updateStatus = () => {
       setSyncStatus(sessionSynchronizer.getSyncStatus(sessionId));
       setLastSyncTimes(sessionSynchronizer.getLastSyncTimes(sessionId));
     };
 
+    // Initial status load
     updateStatus();
-    const interval = setInterval(updateStatus, 1000); // Update every second
 
-    return () => clearInterval(interval);
+    // Listen for sync status changes
+    const handleStatusChange = (event: CustomEvent) => {
+      if (event.detail.sessionId === sessionId) {
+        updateStatus();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("sync-status-changed", handleStatusChange as EventListener);
+
+    // Fallback polling at much lower frequency (every 30 seconds) for edge cases
+    const fallbackInterval = setInterval(updateStatus, 30000);
+
+    return () => {
+      window.removeEventListener("sync-status-changed", handleStatusChange as EventListener);
+      clearInterval(fallbackInterval);
+    };
   }, [sessionId]);
 
   // Monitor network status

@@ -47,6 +47,7 @@ interface OpenChatContainerProps<T> extends React.HTMLAttributes<HTMLDivElement>
   welcomeMessage?: React.ReactNode;
   renderItem: (message: T, index: number) => React.ReactNode;
   onUserInput?: (value: string) => Promise<unknown>;
+  userId?: string;
 }
 
 const ChatUIContainer = <T,>({
@@ -59,6 +60,7 @@ const ChatUIContainer = <T,>({
   headerActions,
   onUserInput,
   renderItem,
+  userId,
 }: OpenChatContainerProps<T>) => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -93,7 +95,7 @@ const ChatUIContainer = <T,>({
         {messages.map(renderItem)}
         <Indicator isVisible={isLoading} />
       </MessagesContainer>
-      {onUserInput && <Input onSendMessage={onUserInput} className="absolute bottom-0 inset-x-0" />}
+      {onUserInput && <Input onSendMessage={onUserInput} className="absolute bottom-0 inset-x-0" userId={userId} />}
     </div>
   );
 };

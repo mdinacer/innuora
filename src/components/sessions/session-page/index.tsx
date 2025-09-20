@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +8,7 @@ import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
+import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
 import LoadingComponent from "@/components/loading-component";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
 import { getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
@@ -21,6 +22,7 @@ interface Props {
 
 const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
+  const [creditsError, setCreditsError] = useState<{ error: string; cost: number } | null>(null);
 
   const {
     t,
@@ -81,10 +83,27 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   const handleProcessMessage = useCallback(
     async (message: string) => {
-      const result = await processMessage(message);
+      try {
+        setCreditsError(null); // Clear any previous credits errors
+        const result = await processMessage(message);
 
-      // Message processed successfully
-      return result;
+        // Message processed successfully
+        return result;
+      } catch (error) {
+        // Handle credits-related errors
+        if (error instanceof Error && error.message.includes("Insufficient credits")) {
+          const match = error.message.match(/Estimated cost: (\d+) credits/);
+          const cost = match ? parseInt(match[1]) : 5; // Default estimate
+          setCreditsError({
+            error: error.message,
+            cost,
+          });
+          return { error: error.message };
+        }
+
+        // Re-throw other errors
+        throw error;
+      }
     },
     [processMessage]
   );
@@ -104,16 +123,23 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
         className="absolute top-6 left-6 hover:z-50 "
       />
 
-      {/* Points Error Warning */}
-      {/* {pointsError && (
+      {/* Credits Balance Display */}
+      {session?.userId && (
+        <div className="fixed top-20 right-6 z-40">
+          <CreditsBalance userId={session.userId} />
+        </div>
+      )}
+
+      {/* Credits Error Warning */}
+      {creditsError && session?.userId && (
         <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
-          <InsufficientPointsWarning
-            requiredCost={pointsError.cost || 3}
-            availableBalance={getBalance()}
-            message={pointsError.error}
+          <InsufficientCreditsWarning
+            required={creditsError.cost}
+            userId={session.userId}
+            onPurchaseClick={() => router.push("/pricing")}
           />
         </div>
-      )} */}
+      )}
 
       <Container
         title={session?.title ?? title}
@@ -123,6 +149,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
         renderItem={(message, index) => <MessageBubble key={index} message={message} />}
         onUserInput={handleProcessMessage}
         welcomeMessage={welcomeMessage}
+        userId={session?.userId}
         headerActions={
           <>
             <Menu disabled={!messages?.length} onAction={handleActions} />

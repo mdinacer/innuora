@@ -88,7 +88,7 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
               ...SessionMetadataSchema.parse(encryptedSession.metadata),
               tokenUsage: [],
             }
-          : { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
+          : { messageCount: 0, tokenCount: 0, costUSD: 0, creditsUsed: 0, tokenUsage: [] },
         persistOnCloud: encryptedSession.persistOnCloud ?? false,
       };
 

@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 
+import { calculateAIMessageCost, deductCredits } from "@/app/actions/credit-actions";
+import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { SessionSummary } from "@/domains/open-chat/open-chat.types";
 import { SessionSummarySchema } from "@/domains/session-analysis/session-analysis.types";
@@ -7,9 +9,11 @@ import { combineToSessionAnalysis } from "@/domains/session-analysis/session-ana
 import { getSessionSummary } from "@/domains/session-summary/session-summary.action";
 import { AppLocales } from "@/lib/i18n";
 import { parseJsonObject } from "@/lib/utils/parse-json";
+import { useUserDataStore } from "@/stores/user-data.store";
 
 export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessionId: string; locale?: AppLocales }) {
   const { session, addTokenUsage, updateSession } = useSessionState({ sessionId });
+  const userProfile = useUserDataStore((state) => state.profile);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
@@ -58,8 +62,31 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
         return { error };
       }
 
+      // Track token usage and deduct credits for summarization AI call
       if (result.modelTokenUsage) {
         addTokenUsage({ ...result.modelTokenUsage, type: "summary" });
+
+        // Deduct credits for session summarization AI call
+        if (userProfile?.userId) {
+          const inputTokens = result.modelTokenUsage.usage?.prompt_tokens ?? 0;
+          const outputTokens = result.modelTokenUsage.usage?.completion_tokens ?? 0;
+
+          if (inputTokens > 0 || outputTokens > 0) {
+            try {
+              const summaryCredits = await calculateAIMessageCost(MODELS_CODES.M1, inputTokens, outputTokens);
+              await deductCredits(userProfile.userId, summaryCredits, "session_summarization", sessionId, {
+                inputTokens,
+                outputTokens,
+                locale,
+                sessionMemoryLength: session.memoryStore?.length ?? 0,
+                analysisSnapshotCount: session.analysisSnapshots.length,
+              });
+            } catch (error) {
+              console.warn("Failed to deduct credits for session summarization:", error);
+              // Don't fail the summarization if credit deduction fails
+            }
+          }
+        }
       }
 
       if (!result.message) {

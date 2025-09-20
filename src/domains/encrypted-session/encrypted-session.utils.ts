@@ -23,6 +23,7 @@ export const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt">
     messageCount: 0,
     tokenCount: 0,
     costUSD: 0,
+    creditsUsed: 0,
   },
 };
 

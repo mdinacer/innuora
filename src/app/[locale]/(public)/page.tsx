@@ -4,10 +4,7 @@ import { BotIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import Footer from "@/components/footer";
-import { GradualBlur } from "@/components/gradient-blur";
-import Header from "@/components/header";
-import initTranslations, { AppLocales } from "@/lib/i18n";
+import initTranslations from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type Conversation = {
@@ -165,6 +162,7 @@ export default async function Home({
   const { locale = "en" } = await params;
   const { t } = await initTranslations(locale, ["pages"]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { actions, hero, howItHelps, demo, earlyAccess, faq } = {
     actions: {
       requestAccess: t("homepage.actions.requestAccess"),
