@@ -90,7 +90,10 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
         if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
 
-        onRoundComplete?.();
+        // Add a small delay to ensure all store updates are applied before sync
+        setTimeout(() => {
+          onRoundComplete?.();
+        }, 0);
 
         console.log(
           JSON.stringify(

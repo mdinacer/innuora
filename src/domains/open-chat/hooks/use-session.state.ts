@@ -27,13 +27,15 @@ export function useSessionState({ sessionId }: OpenChatProps) {
 
   // Auto-sync logic integrated directly here
   const triggerSync = useCallback(() => {
-    if (currentSession && sessionId) {
-      // Use local sync for frequent updates - cloud sync is debounced separately
-      sessionSynchronizer.queueLocalSync(sessionId, "update", currentSession);
-      // Also queue cloud sync for sessions with persistOnCloud=true
-      sessionSynchronizer.queueCloudSync(sessionId, "update");
+    // Get the current session from store to avoid stale closures
+    const latestSession = useActiveSessionStore.getState().session;
+    if (latestSession && sessionId) {
+      console.log(`[SessionState] Triggering sync for session ${sessionId}`);
+      // Only trigger local sync here - cloud sync is handled separately by synchronizer
+      sessionSynchronizer.queueLocalSync(sessionId, "update", latestSession);
+      // Cloud sync is debounced and triggered automatically by the synchronizer
     }
-  }, [currentSession, sessionId]);
+  }, [sessionId]);
 
   const handleLoadSession = useCallback(async (sessionId: string) => {
     try {
@@ -73,23 +75,20 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     if (!encryptedHasHydrated || !sessionId) return;
 
     const loadSessionAsync = async () => {
-      // Check if session already loaded in active store
-      if (currentSession?.id === sessionId) {
-        setLoaded(true);
-        return;
-      }
-
-      // Load from encrypted store using real session ID
+      // Always load from encrypted store as source of truth
+      // The active store session might be stale or incomplete
+      console.log(`[SessionState] Loading session ${sessionId} from encrypted store`);
       await handleLoadSession(sessionId);
     };
 
     loadSessionAsync();
-  }, [sessionId, encryptedHasHydrated, currentSession?.id, handleLoadSession]);
+  }, [sessionId, encryptedHasHydrated, handleLoadSession]);
 
-  // Message actions without auto-sync (sync happens at round completion)
+  // Message actions without sync (sync happens at round completion)
   const addMessage = useCallback((message: OpenChatMessage) => {
     try {
       useActiveSessionStore.getState().addMessage(message);
+      // No sync - all messages are part of AI rounds that will complete with sync
     } catch (error) {
       console.error("Failed to add message:", error);
     }
@@ -103,29 +102,23 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     }
   }, []);
 
-  const addAnalysis = useCallback(
-    (analysis: TherapeuticAnalysis) => {
-      try {
-        useActiveSessionStore.getState().addAnalysis(analysis);
-        triggerSync();
-      } catch (error) {
-        console.error("Failed to add analysis:", error);
-      }
-    },
-    [triggerSync]
-  );
+  const addAnalysis = useCallback((analysis: TherapeuticAnalysis) => {
+    try {
+      useActiveSessionStore.getState().addAnalysis(analysis);
+      // No immediate sync - will sync at round completion
+    } catch (error) {
+      console.error("Failed to add analysis:", error);
+    }
+  }, []);
 
-  const addTokenUsage = useCallback(
-    (tokenUsage: ModelTokenUsage) => {
-      try {
-        useActiveSessionStore.getState().addTokenUsage(tokenUsage);
-        triggerSync();
-      } catch (error) {
-        console.error("Failed to add token usage:", error);
-      }
-    },
-    [triggerSync]
-  );
+  const addTokenUsage = useCallback((tokenUsage: ModelTokenUsage) => {
+    try {
+      useActiveSessionStore.getState().addTokenUsage(tokenUsage);
+      // No immediate sync - will sync at round completion
+    } catch (error) {
+      console.error("Failed to add token usage:", error);
+    }
+  }, []);
 
   const updateSession = useCallback(
     (update: Partial<Session> | ((session: Session) => Session)) => {

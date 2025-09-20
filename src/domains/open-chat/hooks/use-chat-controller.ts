@@ -4,7 +4,6 @@ import useSessionInput from "@/domains/open-chat/hooks/use-process-input";
 import useSessionAnalysis from "@/domains/open-chat/hooks/use-session-analysis";
 import useSessionMemory from "@/domains/open-chat/hooks/use-session-memory";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
-import { sessionSynchronizer } from "@/domains/session-sync";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -33,13 +32,19 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
   const { updateSessionMemory } = useSessionMemory({ sessionId });
   const { summarizeSession } = useSessionAnalysis({ sessionId, locale });
 
-  // Sync session after each complete conversation round (local sync only)
+  // Round completion sync - the main sync point after all data is updated
   const handleRoundComplete = useCallback(() => {
-    if (session) {
-      // Use local sync for frequent round completion - cloud sync is debounced separately
-      sessionSynchronizer.queueLocalSync(sessionId, "update", session);
-    }
-  }, [session, sessionId]);
+    console.log(`[ChatController] Round completed for session ${sessionId} - triggering sync`);
+    // Import sessionSynchronizer and get fresh session state
+    import("@/domains/session-sync").then(({ sessionSynchronizer }) => {
+      import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
+        const currentSession = useActiveSessionStore.getState().session;
+        if (currentSession) {
+          sessionSynchronizer.queueLocalSync(sessionId, "update", currentSession);
+        }
+      });
+    });
+  }, [sessionId]);
 
   const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({
     sessionId,
@@ -93,6 +98,8 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         };
       } catch (error) {
         console.error("Error:", error);
+        // Trigger sync for error cases to save user message even if AI failed
+        handleRoundComplete();
         return { error: "Failed to process message" };
       } finally {
         setProcessing(false);
@@ -106,6 +113,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
       updateSessionMemory,
       addTokenUsage,
       addCreditsUsed,
+      handleRoundComplete,
     ]
   );
 

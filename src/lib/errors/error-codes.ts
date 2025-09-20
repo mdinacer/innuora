@@ -80,6 +80,11 @@ export const ERROR_CODES = {
   CRYPTO_INVALID_KEY_PACKAGE: "errors:crypto.invalid_key_package",
   CRYPTO_WEBCRYPTO_UNAVAILABLE: "errors:crypto.webcrypto_unavailable",
   CRYPTO_MALFORMED_DATA: "errors:crypto.malformed_data",
+
+  // Billing errors
+  BILLING_OPERATION_FAILED: "errors:billing.operation_failed",
+  BILLING_STRIPE_CUSTOMER_FAILED: "errors:billing.stripe_customer_failed",
+  BILLING_PAYMENT_INTENT_FAILED: "errors:billing.payment_intent_failed",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
