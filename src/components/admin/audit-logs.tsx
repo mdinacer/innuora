@@ -20,15 +20,8 @@ interface AuditLog {
   };
 }
 
-interface AuditLogsData {
-  logs: AuditLog[];
-  totalPages: number;
-  currentPage: number;
-  total: number;
-}
-
 export function AuditLogsViewer() {
-  const [data, setData] = useState<any | null>(null);
+  const [data] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 

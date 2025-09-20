@@ -95,9 +95,9 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     }
   }, []);
 
-  const appendMessage = useCallback((content: string, role: "user" | "assistant") => {
+  const appendMessage = useCallback((content: string, role: "user" | "assistant", creditsUsed?: number) => {
     try {
-      useActiveSessionStore.getState().appendMessage(content, role);
+      useActiveSessionStore.getState().appendMessage(content, role, creditsUsed);
     } catch (error) {
       console.error("Failed to append message:", error);
     }
@@ -167,6 +167,7 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     appendMessage,
     addAnalysis,
     addTokenUsage,
+    addCreditsUsed: useActiveSessionStore.getState().addCreditsUsed,
     updateSession,
     resetSession,
     resetEncryptedSession: () => sessionId && useSessionStore.getState().clearSession(sessionId),

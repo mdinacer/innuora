@@ -17,6 +17,7 @@ export type SessionOverview = {
     messageCount: number;
     tokenCount: number;
     costUSD: number;
+    creditsUsed: number;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -55,6 +56,7 @@ export interface SessionMeta {
   messageCount: number;
   tokenCount: number;
   costUSD: number;
+  creditsUsed: number;
   [key: string]: unknown;
 }
 
@@ -62,4 +64,5 @@ export const SessionMetadataSchema = z.object({
   messageCount: z.number().optional().default(0),
   tokenCount: z.number().optional().default(0),
   costUSD: z.number().optional().default(0),
+  creditsUsed: z.number().optional().default(0),
 });

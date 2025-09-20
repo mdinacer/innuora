@@ -21,6 +21,9 @@ class SessionSynchronizer {
     },
   };
 
+  // Add mutex protection for sync operations
+  private syncMutex = new Map<string, Promise<void>>();
+
   private syncState: {
     local: {
       status: Record<string, SyncStatus>;
@@ -57,7 +60,48 @@ class SessionSynchronizer {
     return SessionSynchronizer.instance;
   }
 
-  // Helper method to get current session from active store
+  constructor() {
+    // Initialize periodic cloud sync
+    this.startPeriodicCloudSync();
+  }
+
+  // EVENT EMISSION FOR STATUS UPDATES
+  private emitStatusChange(sessionId: string): void {
+    if (typeof window !== "undefined") {
+      const status = this.getSyncStatus(sessionId);
+      window.dispatchEvent(
+        new CustomEvent("sync-status-changed", {
+          detail: { sessionId, status },
+        })
+      );
+    }
+  }
+
+  // Enhanced session access - can get any session by ID, not just current
+  private async getSessionById(sessionId: string): Promise<Session | null> {
+    // Try active store first (fastest)
+    const activeStore = useActiveSessionStore.getState();
+    const activeSession = activeStore.session;
+    if (activeSession?.id === sessionId) {
+      return activeSession;
+    }
+
+    // Fallback to encrypted store for any session
+    try {
+      const encryptedStore = useSessionStore.getState();
+      const encryptedSession = await encryptedStore.getSession(sessionId);
+      if (encryptedSession) {
+        const { decryptSession } = await import("@/domains/encrypted-session/encrypted-session.crypto");
+        return await decryptSession(encryptedSession);
+      }
+    } catch (error) {
+      console.warn(`Failed to decrypt session ${sessionId}:`, error);
+    }
+
+    return null;
+  }
+
+  // Legacy method for backward compatibility
   private getCurrentSession(sessionId: string): Session | null {
     const activeStore = useActiveSessionStore.getState();
     const session = activeStore.session;
@@ -75,6 +119,7 @@ class SessionSynchronizer {
 
     // Set status to pending
     this.syncState.local.status[sessionId] = "pending";
+    this.emitStatusChange(sessionId);
 
     // Debounce: sync after configured time
     const timeout = setTimeout(() => {
@@ -92,20 +137,44 @@ class SessionSynchronizer {
 
   // Execute local sync - Encrypt and store to encrypted session store
   private async executeLocalSync(sessionId: string, session: Session): Promise<void> {
+    // Check if sync is already in progress for this session
+    if (this.syncMutex.has(sessionId)) {
+      // Wait for existing sync to complete
+      await this.syncMutex.get(sessionId);
+      return;
+    }
+
+    // Create sync promise and add to mutex
+    const syncPromise = this.performLocalSync(sessionId, session);
+    this.syncMutex.set(sessionId, syncPromise);
+
+    try {
+      await syncPromise;
+    } finally {
+      // Always clean up mutex entry
+      this.syncMutex.delete(sessionId);
+      // Clean up timeout reference after execution
+      this.syncState.local.timeouts.delete(sessionId);
+    }
+  }
+
+  // Actual sync implementation separated for mutex protection
+  private async performLocalSync(sessionId: string, session: Session): Promise<void> {
     try {
       this.syncState.local.status[sessionId] = "syncing";
       delete this.syncState.local.errors[sessionId];
+      this.emitStatusChange(sessionId);
 
-      await this.updateSession(sessionId, session);
+      await this.retryWithBackoff(() => this.updateSession(sessionId, session));
 
       this.syncState.local.status[sessionId] = "synced";
       this.syncState.local.lastSyncTime[sessionId] = new Date();
+      this.emitStatusChange(sessionId);
     } catch (error) {
       this.syncState.local.status[sessionId] = "error";
       this.syncState.local.errors[sessionId] = error instanceof Error ? error : new Error(`${error}`);
-    } finally {
-      // Clean up timeout reference after execution
-      this.syncState.local.timeouts.delete(sessionId);
+      this.emitStatusChange(sessionId);
+      throw error; // Re-throw to handle in mutex cleanup
     }
   }
 
@@ -187,9 +256,9 @@ class SessionSynchronizer {
   // PUBLIC MANUAL SYNC METHODS
   async syncSessionLocal(sessionId: string): Promise<boolean> {
     try {
-      const session = this.getCurrentSession(sessionId);
+      const session = await this.getSessionById(sessionId);
       if (!session) {
-        console.warn(`Session ${sessionId} not found in active store`);
+        console.warn(`Session ${sessionId} not found`);
         return false;
       }
 
@@ -216,6 +285,52 @@ class SessionSynchronizer {
     const local = await this.syncSessionLocal(sessionId);
     const cloud = await this.syncSessionCloud(sessionId);
     return { local, cloud };
+  }
+
+  // PERIODIC CLOUD SYNC METHODS
+  private startPeriodicCloudSync(): void {
+    // Only start if not already running
+    if (this.syncState.periodicCloudSyncInterval) {
+      return;
+    }
+
+    console.log("Starting periodic cloud sync every", this.config.cloudSync.intervalMs / 1000 / 60, "minutes");
+
+    this.syncState.periodicCloudSyncInterval = setInterval(() => {
+      this.syncAllEligibleSessions();
+    }, this.config.cloudSync.intervalMs);
+  }
+
+  private stopPeriodicCloudSync(): void {
+    if (this.syncState.periodicCloudSyncInterval) {
+      clearInterval(this.syncState.periodicCloudSyncInterval);
+      this.syncState.periodicCloudSyncInterval = undefined;
+      console.log("Stopped periodic cloud sync");
+    }
+  }
+
+  private async syncAllEligibleSessions(): Promise<void> {
+    try {
+      const encryptedStore = useSessionStore.getState();
+      const sessions = encryptedStore.sessions;
+
+      // Find all sessions that should be synced to cloud
+      const eligibleSessions = Object.entries(sessions).filter(([_, session]) => session.persistOnCloud === true);
+
+      console.log(`Periodic cloud sync: Found ${eligibleSessions.length} eligible sessions`);
+
+      // Sync each eligible session
+      for (const [sessionId, _] of eligibleSessions) {
+        try {
+          await this.syncSessionCloud(sessionId);
+        } catch (error) {
+          console.warn(`Periodic cloud sync failed for session ${sessionId}:`, error);
+          // Continue with other sessions even if one fails
+        }
+      }
+    } catch (error) {
+      console.error("Periodic cloud sync error:", error);
+    }
   }
 
   // STATUS METHODS
@@ -262,19 +377,44 @@ class SessionSynchronizer {
     }
   }
 
+  // EXPONENTIAL BACKOFF RETRY UTILITY
+  private async retryWithBackoff<T>(
+    operation: () => Promise<T>,
+    maxRetries: number = 3,
+    baseDelayMs: number = 1000
+  ): Promise<T> {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        if (attempt === maxRetries - 1) {
+          throw error; // Last attempt failed
+        }
+
+        // Exponential backoff: 1s, 2s, 4s, etc.
+        const delayMs = baseDelayMs * Math.pow(2, attempt);
+        console.warn(`Retry attempt ${attempt + 1}/${maxRetries} failed, retrying in ${delayMs}ms:`, error);
+
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+
+    throw new Error("Retry operation failed after all attempts");
+  }
+
   // RETRY AND ERROR HANDLING
   async retryFailedSync(sessionId: string, type: "local" | "cloud" | "both"): Promise<void> {
     if (type === "local" || type === "both") {
       delete this.syncState.local.errors[sessionId];
-      const session = this.getCurrentSession(sessionId);
+      const session = await this.getSessionById(sessionId);
 
       if (session) {
-        await this.executeLocalSync(sessionId, session);
+        await this.retryWithBackoff(() => this.executeLocalSync(sessionId, session));
       }
     }
     if (type === "cloud" || type === "both") {
       delete this.syncState.cloud.errors[sessionId];
-      await this.executeCloudSync(sessionId);
+      await this.retryWithBackoff(() => this.executeCloudSync(sessionId));
     }
   }
 

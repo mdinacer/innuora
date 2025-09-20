@@ -23,7 +23,10 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
 
   const appendUserMessage = useCallback((userInput: string) => appendMessage(userInput, "user"), [appendMessage]);
 
-  const appendAssistantMessage = useCallback((message: string) => appendMessage(message, "assistant"), [appendMessage]);
+  const appendAssistantMessage = useCallback(
+    (message: string, creditsUsed?: number) => appendMessage(message, "assistant", creditsUsed),
+    [appendMessage]
+  );
 
   const processInput = useCallback(
     async (userInput: string) => {
@@ -72,6 +75,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           response: assistantMessage,
           analysis: newAnalysis,
           tokenUsage: { analysisUsage, responseUsage },
+          creditsUsed,
         } = result;
 
         // Validate response content
@@ -104,6 +108,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           assistantMessage,
           shouldUpdateMemory: newAnalysis?.update_memory ?? false,
           tokenUsage: { analysisUsage, responseUsage },
+          creditsUsed,
         };
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error occurred";

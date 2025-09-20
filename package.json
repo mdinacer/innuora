@@ -35,6 +35,7 @@
     "date-fns": "^4.1.0",
     "i18next": "^25.4.2",
     "i18next-resources-to-backend": "^1.2.1",
+    "js-tiktoken": "^1.0.21",
     "localforage": "^1.10.0",
     "lucide-react": "^0.542.0",
     "mathjs": "^14.7.0",

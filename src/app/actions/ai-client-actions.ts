@@ -6,7 +6,6 @@ import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
-import { calculateCost } from "@/lib/utils/cost-estimation";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 
 type RequestOptions = {
@@ -176,8 +175,6 @@ function validatePrompts(prompts: ChatCompletionMessageParam[]): void {
 function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelTokenUsage | null {
   if (!data.usage) return null;
 
-  const costUSD = model.pricing ? calculateCost(model.pricing, data.usage) : 0;
-
   return {
     type: "completion",
     model: data.model,
@@ -185,7 +182,7 @@ function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelToken
     usage: data.usage,
     timestamp: new Date().toISOString(),
     version: "", // You might want to add version tracking
-    costUSD,
+    costUSD: 0, // Legacy field - will be removed once credit system is fully integrated
   };
 }
 

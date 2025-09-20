@@ -19,6 +19,7 @@ export function resetSessionData(session: Session): Session {
       messageCount: 0,
       tokenCount: 0,
       costUSD: 0,
+      creditsUsed: 0,
     },
     createdAt: session.createdAt,
     updatedAt: new Date(), // Update timestamp when resetting

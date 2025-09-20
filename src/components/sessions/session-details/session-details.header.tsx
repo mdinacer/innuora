@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import InfoCard from "@/components/mir-ui/info-card";
 import { Session } from "@/domains/open-chat/open-chat.types";
+import { CreditUtils } from "@/lib/credits/credit-config";
 import { AppLocales, FNS_LOCALES_MAP } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -54,8 +55,8 @@ const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
         />
         <InfoCard
           icon={CoinsIcon}
-          title="Points"
-          value={session.metadata?.tokenCount ?? 0}
+          title="Credits Used"
+          value={CreditUtils.formatCreditsForDisplay(session.metadata?.creditsUsed ?? 0)}
           classNames={{ icon: "text-mir-bg-accent" }}
         />
       </div>
