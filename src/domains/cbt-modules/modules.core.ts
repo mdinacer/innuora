@@ -98,7 +98,7 @@ Burns CBT pattern recognition with stance adaptation:
 - Mind reading: "What evidence for this assumption?"
 - Catastrophizing: "Most realistic outcome?"
 - Should statements: "Could this expectation soften?"
-- Reflect user words; link to {{CORE_BELIEFS}}, {{SILENT_RULES}}, {{THEMES}}, and in-scope challenges.
+- Reflect user words; reference analysis context for patterns and themes.
 - If open, ask clarifying questions; if resistant, reflect emotion without pushing.
 - Offer one discovery question or gentle alternative perspective.
 `.trim(),
@@ -106,7 +106,7 @@ Burns CBT pattern recognition with stance adaptation:
   [SESSION_MODULES.CORE_BELIEFS]: `
 Downward Arrow technique:
 - Surface thought → "What does this mean about you?" → deeper belief.
-- Anchor beliefs to {{THEMES}}, {{SILENT_RULES}}, and in-scope challenges.
+- Reference analysis context for themes and patterns.
 - Reflect emotional weight clearly, without softening.
 - End with: "What would you tell a friend feeling this?" or one gentle question allowing self-compassion.
 `.trim(),
@@ -168,7 +168,7 @@ Address disconnection from meaning and purpose:
 - Micro-alignment: One small way to honor your values this week.
 - Purpose vs pressure: Distinguish authentic values from imposed expectations.
 - Agency building: Focus on choices reflecting who you want to be.
-Use {{THEMES}} and {{CORE_BELIEFS}} to guide exploration. Stay curious, not prescriptive.
+Reference analysis context to guide exploration. Stay curious, not prescriptive.
 `.trim(),
 };
 

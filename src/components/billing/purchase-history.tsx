@@ -44,7 +44,7 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
       setIsLoading(true);
       setError(null);
 
-      const result = await getUserPurchaseHistory(userId, limit);
+      const result = await getUserPurchaseHistory(limit);
 
       if (result.success && result.purchases) {
         setPurchases(result.purchases);

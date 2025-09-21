@@ -46,7 +46,7 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
   useEffect(() => {
     async function createIntent() {
       try {
-        const result = await createCreditPurchaseIntent(userId, productKey, userEmail, userName);
+        const result = await createCreditPurchaseIntent(productKey, userEmail, userName);
 
         if (result.success && result.clientSecret) {
           setClientSecret(result.clientSecret);

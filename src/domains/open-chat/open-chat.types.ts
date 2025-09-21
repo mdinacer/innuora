@@ -57,6 +57,8 @@ export interface SessionMeta {
   tokenCount: number;
   costUSD: number;
   creditsUsed: number;
+  activeDurationMs: number; // Actual conversation time (excludes idle gaps)
+  lastActiveAt: Date; // Last user interaction timestamp
   [key: string]: unknown;
 }
 
@@ -65,4 +67,6 @@ export const SessionMetadataSchema = z.object({
   tokenCount: z.number().optional().default(0),
   costUSD: z.number().optional().default(0),
   creditsUsed: z.number().optional().default(0),
+  activeDurationMs: z.number().optional().default(0),
+  lastActiveAt: z.coerce.date().optional(),
 });

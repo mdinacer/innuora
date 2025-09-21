@@ -120,7 +120,7 @@ export async function createPaymentIntent(params: {
   return await stripe.paymentIntents.create({
     amount: params.amount,
     currency: params.currency,
-    //payment_method_types: STRIPE_CONFIG.paymentMethods,
+    payment_method_types: [...STRIPE_CONFIG.paymentMethods],
     metadata: {
       userId: params.userId,
       productKey: params.productKey,

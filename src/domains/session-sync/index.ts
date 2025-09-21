@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prisma } from "@prisma/client";
 
 import { updateSession } from "@/app/actions/session-actions";
@@ -6,6 +7,7 @@ import { encryptSession } from "@/domains/encrypted-session/encrypted-session.cr
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
 import { SyncConfig, SyncStatus, SyncStatusDetailed, SyncTimestamps } from "@/domains/session-sync/session-sync.types";
+import { logger } from "@/lib/logging/unified-logger";
 
 class SessionSynchronizer {
   private static instance: SessionSynchronizer;
@@ -90,7 +92,10 @@ class SessionSynchronizer {
         }
       }
     } catch (error) {
-      console.warn("Failed to initialize sync status:", error);
+      logger.logWarning("Failed to initialize sync status on startup", {
+        operation: "session_sync_initialize_status",
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
     }
   }
 
@@ -112,7 +117,11 @@ class SessionSynchronizer {
     const activeStore = useActiveSessionStore.getState();
     const activeSession = activeStore.session;
 
-    console.log("[SessionSync] Getting session by ID:", activeSession);
+    logger.logInfo("Getting session by ID for sync operation", {
+      operation: "session_sync_get_session_by_id",
+      sessionId,
+      metadata: { hasActiveSession: !!activeSession },
+    });
 
     if (activeSession?.id === sessionId) {
       return activeSession;
@@ -127,7 +136,11 @@ class SessionSynchronizer {
         return await decryptSession(encryptedSession);
       }
     } catch (error) {
-      console.warn(`Failed to decrypt session ${sessionId}:`, error);
+      logger.logWarning("Failed to decrypt session during sync operation", {
+        operation: "session_sync_decrypt_session",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
     }
 
     return null;
@@ -136,14 +149,23 @@ class SessionSynchronizer {
   // LOCAL SYNC METHODS (Active Store → Encrypted Store)
   // Queue local sync - happens frequently on round complete
   queueLocalSync(sessionId: string, _operation: "create" | "update" | "delete", session: Session): void {
-    console.log(
-      `[SessionSync] Queuing local sync for session ${sessionId}, current status: ${this.syncState.local.status[sessionId]}, debounce: ${this.config.localSync.debounceMs}ms`
-    );
+    logger.logInfo("Queuing local sync for session", {
+      operation: "session_sync_queue_local",
+      sessionId,
+      metadata: {
+        currentStatus: this.syncState.local.status[sessionId],
+        debounceMs: this.config.localSync.debounceMs,
+      },
+    });
 
     // Don't queue if already syncing (prevent interference with active sync)
     const syncStatus = this.syncState.local.status[sessionId];
     if (syncStatus === "syncing") {
-      console.log(`[SessionSync] Skipping queue - sync already in progress for session ${sessionId}`);
+      logger.logInfo("Skipping queue - sync already in progress", {
+        operation: "session_sync_skip_queue",
+        sessionId,
+        metadata: { reason: "sync_in_progress" },
+      });
       return;
     }
 
@@ -202,6 +224,7 @@ class SessionSynchronizer {
 
     const state = useSessionStore.getState();
     const encryptedData = await encryptSession(session);
+
     state.updateSession(sessionId, encryptedData);
 
     console.log(`[SessionSync] Successfully updated encrypted store for session ${sessionId}`);
@@ -256,7 +279,11 @@ class SessionSynchronizer {
       // Automatically queue cloud sync after successful local sync
       this.queueCloudSync(sessionId, "update");
     } catch (error) {
-      console.error(`[SessionSync] Local sync failed for session ${sessionId}:`, error);
+      logger.logWarning("Local sync failed for session", {
+        operation: "session_sync_local_failed",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
       this.syncState.local.status[sessionId] = "error";
       this.syncState.local.errors[sessionId] = error instanceof Error ? error : new Error(`${error}`);
       this.emitStatusChange(sessionId);
@@ -266,7 +293,6 @@ class SessionSynchronizer {
 
   // CLOUD SYNC METHODS (Encrypted Store → Supabase, only if persistOnCloud=true)
   // Queue cloud sync - happens less frequently, debounced
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   queueCloudSync(sessionId: string, operation: "create" | "update" | "delete"): void {
     // Clear existing timeout for this session
     const existingTimeout = this.syncState.cloud.timeouts.get(sessionId);
@@ -296,7 +322,10 @@ class SessionSynchronizer {
       const encryptedSession = encryptedStore.sessions[sessionId];
 
       if (!encryptedSession) {
-        console.warn(`No encrypted session found for ${sessionId}`);
+        logger.logWarning("No encrypted session found for cloud sync", {
+          operation: "session_sync_cloud_missing_session",
+          sessionId,
+        });
         this.syncState.cloud.status[sessionId] = "error";
         this.syncState.cloud.errors[sessionId] = new Error("Session not found in encrypted store");
         return;
@@ -344,14 +373,21 @@ class SessionSynchronizer {
     try {
       const session = await this.getSessionById(sessionId);
       if (!session) {
-        console.warn(`Session ${sessionId} not found`);
+        logger.logWarning("Session not found for manual sync", {
+          operation: "session_sync_manual_session_not_found",
+          sessionId,
+        });
         return false;
       }
 
       await this.executeLocalSync(sessionId, session);
       return this.syncState.local.status[sessionId] === "synced";
     } catch (error) {
-      console.error("Manual local sync failed:", error);
+      logger.logWarning("Manual local sync failed", {
+        operation: "session_sync_manual_local_failed",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
       return false;
     }
   }

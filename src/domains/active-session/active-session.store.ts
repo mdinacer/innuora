@@ -81,6 +81,27 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
     const current = get().session;
     if (!current) return;
 
+    // Update active duration when user sends a message
+    if (role === "user") {
+      const now = new Date();
+      const lastActive = new Date(current.metadata.lastActiveAt);
+      const timeSinceLastActive = lastActive ? now.getTime() - lastActive.getTime() : 0;
+
+      // Only count as active time if less than 5 minutes gap (300,000ms)
+      const additionalTime = timeSinceLastActive < 300000 ? timeSinceLastActive : 0;
+
+      set({
+        session: {
+          ...current,
+          metadata: {
+            ...current.metadata,
+            activeDurationMs: current.metadata.activeDurationMs + additionalTime,
+            lastActiveAt: now,
+          },
+        },
+      });
+    }
+
     get().addMessage({
       id: generateMessageId(`${role}-message-${current.id}`),
       role: role,

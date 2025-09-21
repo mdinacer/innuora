@@ -6,6 +6,7 @@ import { CreditCard, History, Package, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { logger } from "@/lib/logging/unified-logger";
 import CreditPackages from "../credits/credit-packages";
 import CreditsBalance from "../credits/credits-balance";
 import PurchaseHistory from "./purchase-history";
@@ -37,7 +38,7 @@ function BillingOverview({ userId }: { userId: string }) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <CreditsBalance userId={userId} showUSDValue={true} />
+          <CreditsBalance showUSDValue={true} />
 
           <div className="mt-4 p-4 bg-blue-50 rounded-lg">
             <h4 className="font-semibold text-blue-900 mb-2">How Credits Work</h4>
@@ -86,7 +87,14 @@ export function BillingManagement({ userId, userEmail, userName, className = "" 
 
   const handlePurchaseSuccess = (result: { creditsAdded: number; newBalance: number }) => {
     // Optionally show a success notification
-    console.log("Purchase successful:", result);
+    logger.logSuccess("Credit package purchase completed successfully", {
+      operation: "billing_purchase_success",
+      userId,
+      metadata: {
+        creditsAdded: result.creditsAdded,
+        newBalance: result.newBalance,
+      },
+    });
 
     // Switch to overview tab to show updated balance
     setActiveTab("overview");

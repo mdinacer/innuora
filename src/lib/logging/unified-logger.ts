@@ -57,7 +57,11 @@ class UnifiedLogger {
   /**
    * Log errors and throw AppError (replaces errorManager.handleError)
    */
-  logErrorAndThrow(errorCode: ErrorCode, originalError: Error | unknown, context: LogContext): never {
+  logErrorAndThrow: (errorCode: ErrorCode, originalError: Error | unknown, context: LogContext) => never = (
+    errorCode: ErrorCode,
+    originalError: Error | unknown,
+    context: LogContext
+  ): never => {
     // Create log entry
     const logEntry: LogEntry = {
       level: LogLevel.ERROR,
@@ -73,7 +77,7 @@ class UnifiedLogger {
 
     // Throw AppError for client
     throw new AppError(errorCode, context, originalError instanceof Error ? originalError : undefined);
-  }
+  };
 
   /**
    * Log warnings (non-critical issues)

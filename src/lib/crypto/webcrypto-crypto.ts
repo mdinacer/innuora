@@ -250,10 +250,9 @@ export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: C
             metadata: { originalError: error instanceof Error ? error.message : String(error) },
           }
         );
-        throw new Error("Unreachable");
       }
 
-      const json = new TextDecoder().decode(plainBuf);
+      const json = new TextDecoder().decode(plainBuf!);
       return JSON.parse(json) as T;
     },
     ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
@@ -297,10 +296,11 @@ export async function getStoredContentKey(): Promise<CryptoKey | null> {
     return importRawKeyFromBase64(keyB64);
   } catch (error) {
     // Log but don't throw - return null to indicate key not available
-    logger.logErrorAndThrow(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, error, {
+    logger.logWarning("Failed to retrieve stored content key", {
       operation: "getStoredContentKey",
+      metadata: { error: error instanceof Error ? error.message : String(error) },
     });
-    throw new Error("Unreachable");
+    return null;
   }
 }
 

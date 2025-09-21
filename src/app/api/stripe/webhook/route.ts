@@ -194,21 +194,30 @@ async function handlePaymentFailed(event: any): Promise<void> {
     // Update transaction status to failed
     const { prisma } = await import("@/lib/prisma");
 
-    await (prisma as any).creditTransaction.updateMany({
+    // Find and update the relevant transaction
+    const transactionsToUpdate = await prisma.creditTransaction.findMany({
       where: {
-        metadata: {
-          path: ["paymentIntentId"],
-          equals: paymentIntent.id,
-        },
-      },
-      data: {
-        metadata: {
-          status: "failed",
-          failureReason: paymentIntent.last_payment_error?.message || "Unknown error",
-          failedAt: new Date().toISOString(),
-        },
+        reason: "credit_purchase",
       },
     });
+
+    const relevantTransactions = transactionsToUpdate.filter(
+      (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntent.id
+    );
+
+    for (const transaction of relevantTransactions) {
+      await prisma.creditTransaction.update({
+        where: { id: transaction.id },
+        data: {
+          metadata: {
+            ...(transaction.metadata as any),
+            status: "failed",
+            failureReason: paymentIntent.last_payment_error?.message || "Unknown error",
+            failedAt: new Date().toISOString(),
+          },
+        },
+      });
+    }
 
     // TODO: Send notification to user about failed payment
     // TODO: Optionally retry payment or suggest alternative payment method

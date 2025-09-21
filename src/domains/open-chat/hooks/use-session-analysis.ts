@@ -8,6 +8,7 @@ import { SessionSummarySchema } from "@/domains/session-analysis/session-analysi
 import { combineToSessionAnalysis } from "@/domains/session-analysis/session-analysis.utils";
 import { getSessionSummary } from "@/domains/session-summary/session-summary.action";
 import { AppLocales } from "@/lib/i18n";
+import { prisma } from "@/lib/prisma";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 import { useUserDataStore } from "@/stores/user-data.store";
 
@@ -73,8 +74,18 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
 
           if (inputTokens > 0 || outputTokens > 0) {
             try {
+              // Resolve authId from database user ID
+              const user = await prisma.user.findUnique({
+                where: { id: userProfile.userId },
+                select: { authId: true },
+              });
+
+              if (!user?.authId) {
+                throw new Error("User authId not found");
+              }
+
               const summaryCredits = await calculateAIMessageCost(MODELS_CODES.M1, inputTokens, outputTokens);
-              await deductCredits(userProfile.userId, summaryCredits, "session_summarization", sessionId, {
+              await deductCredits(user.authId, summaryCredits, "session_summarization", sessionId, {
                 inputTokens,
                 outputTokens,
                 locale,

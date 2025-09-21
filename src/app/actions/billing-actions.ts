@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { requireCurrentUser } from "@/app/actions/auth-actions";
 import { addCredits } from "@/app/actions/credit-actions";
 import { BILLING_ERROR_CODES, BillingProductKey, BillingUtils, TRANSACTION_CONFIG } from "@/lib/billing/billing-config";
 import {
@@ -53,13 +54,15 @@ interface RefundPaymentResult {
  * Create a Stripe payment intent for credit purchase
  */
 export async function createCreditPurchaseIntent(
-  userId: string,
   productKey: BillingProductKey,
   userEmail?: string,
   userName?: string
 ): Promise<CreatePaymentIntentResult> {
   return await logger.wrapOperation(
     async () => {
+      // Get current authenticated user
+      const authUser = await requireCurrentUser();
+      const authId = authUser.id;
       // Validate product
       const product = BillingUtils.getProduct(productKey);
       if (!product) {
@@ -82,7 +85,7 @@ export async function createCreditPurchaseIntent(
 
       // Verify user exists
       const user = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { authId: authId },
         select: { id: true, creditsBalance: true },
       });
 
@@ -108,14 +111,14 @@ export async function createCreditPurchaseIntent(
       let customer;
       try {
         customer = await createOrGetCustomer({
-          userId,
+          userId: authId,
           email: userEmail,
           name: userName,
         });
       } catch (error) {
         logger.logErrorAndThrow(ERROR_CODES.BILLING_STRIPE_CUSTOMER_FAILED, error, {
           operation: "create_stripe_customer",
-          userId,
+          userId: authId,
         });
         return {
           success: false,
@@ -129,7 +132,7 @@ export async function createCreditPurchaseIntent(
         const paymentIntent = await createPaymentIntent({
           amount: amountCents,
           currency: "usd",
-          userId,
+          userId: authId,
           productKey,
           metadata: {
             credits: product.credits.toString(),
@@ -140,9 +143,9 @@ export async function createCreditPurchaseIntent(
         // Store payment intent in database for tracking
         await prisma.$transaction(async (tx) => {
           // Create a pending transaction record
-          await (tx as any).creditTransaction.create({
+          await tx.creditTransaction.create({
             data: {
-              userId,
+              userId: user.id,
               type: "CREDIT",
               amount: product.credits,
               reason: TRANSACTION_CONFIG.reasons.PURCHASE,
@@ -174,7 +177,7 @@ export async function createCreditPurchaseIntent(
 
         await logger.logWarning("Failed to create payment intent", {
           operation: "create_payment_intent",
-          userId,
+          userId: authId,
           metadata: { productKey },
         });
 
@@ -188,7 +191,6 @@ export async function createCreditPurchaseIntent(
     ERROR_CODES.BILLING_OPERATION_FAILED,
     {
       operation: "create_credit_purchase_intent",
-      userId,
       metadata: { productKey },
     },
     "Payment intent created successfully"
@@ -230,17 +232,18 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         }
 
         // Check if payment was already processed
-        const existingTransaction = await (prisma as any).creditTransaction.findFirst({
+        // Note: Simplified approach - check all purchase transactions and filter in memory
+        // This is less efficient but more reliable than JSON queries
+        const purchaseTransactions = await prisma.creditTransaction.findMany({
           where: {
-            metadata: {
-              path: ["paymentIntentId"],
-              equals: paymentIntentId,
-            },
             reason: TRANSACTION_CONFIG.reasons.PURCHASE,
           },
         });
 
-        if (existingTransaction && existingTransaction.metadata?.status === "completed") {
+        const existingTransaction = purchaseTransactions.find(
+          (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntentId
+        );
+        if (existingTransaction && (existingTransaction.metadata as any)?.status === "completed") {
           return {
             success: false,
             error: "Payment has already been processed",
@@ -250,7 +253,7 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
 
         // Process the payment in a transaction
         const result = await prisma.$transaction(async (tx) => {
-          // Add credits to user account
+          // Add credits to user account (userId here is already authId from payment metadata)
           const creditResult = await addCredits(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
             paymentIntentId,
             productKey,
@@ -261,11 +264,11 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
 
           // Update the pending transaction to completed
           if (existingTransaction) {
-            await (tx as any).creditTransaction.update({
+            await tx.creditTransaction.update({
               where: { id: existingTransaction.id },
               data: {
                 metadata: {
-                  ...existingTransaction.metadata,
+                  ...(existingTransaction.metadata as any),
                   status: "completed",
                   processedAt: new Date().toISOString(),
                 },
@@ -332,16 +335,16 @@ export async function processRefund(
     async () => {
       try {
         // Find the original transaction
-        const originalTransaction = await (prisma as any).creditTransaction.findFirst({
+        const purchaseTransactions = await prisma.creditTransaction.findMany({
           where: {
-            metadata: {
-              path: ["paymentIntentId"],
-              equals: paymentIntentId,
-            },
             reason: TRANSACTION_CONFIG.reasons.PURCHASE,
             type: "CREDIT",
           },
         });
+
+        const originalTransaction = purchaseTransactions.find(
+          (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntentId
+        );
 
         if (!originalTransaction) {
           return {
@@ -364,18 +367,22 @@ export async function processRefund(
         // Deduct credits from user account
         const { deductCredits } = await import("@/app/actions/credit-actions");
 
-        await deductCredits(
-          originalTransaction.userId,
-          originalTransaction.amount,
-          TRANSACTION_CONFIG.reasons.REFUND,
-          undefined,
-          {
-            refundId: refund.id,
-            paymentIntentId,
-            originalTransactionId: originalTransaction.id,
-            reason,
-          }
-        );
+        // Get user's authId for credit operations
+        const user = await prisma.user.findUnique({
+          where: { id: originalTransaction.userId },
+          select: { authId: true },
+        });
+
+        if (!user?.authId) {
+          throw new Error(`User authId not found for transaction user: ${originalTransaction.userId}`);
+        }
+
+        await deductCredits(user.authId, originalTransaction.amount, TRANSACTION_CONFIG.reasons.REFUND, undefined, {
+          refundId: refund.id,
+          paymentIntentId,
+          originalTransactionId: originalTransaction.id,
+          reason,
+        });
 
         return {
           success: true,
@@ -461,10 +468,7 @@ export async function getPaymentStatus(paymentIntentId: string): Promise<{
 /**
  * Get user's purchase history
  */
-export async function getUserPurchaseHistory(
-  userId: string,
-  limit: number = 10
-): Promise<{
+export async function getUserPurchaseHistory(limit: number = 10): Promise<{
   success: boolean;
   purchases?: Array<{
     id: string;
@@ -479,9 +483,25 @@ export async function getUserPurchaseHistory(
   return await logger.wrapOperation(
     async () => {
       try {
-        const transactions = await (prisma as any).creditTransaction.findMany({
+        // Get current authenticated user
+        const authUser = await requireCurrentUser();
+
+        // Get the database user record to get the internal user ID
+        const dbUser = await prisma.user.findUnique({
+          where: { authId: authUser.id },
+          select: { id: true },
+        });
+
+        if (!dbUser) {
+          return {
+            success: false,
+            error: "User not found",
+          };
+        }
+
+        const transactions = await prisma.creditTransaction.findMany({
           where: {
-            userId,
+            userId: dbUser.id,
             reason: TRANSACTION_CONFIG.reasons.PURCHASE,
             type: "CREDIT",
           },
@@ -505,7 +525,6 @@ export async function getUserPurchaseHistory(
       } catch (error) {
         await logger.logWarning("Failed to get purchase history", {
           operation: "get_user_purchase_history",
-          userId,
         });
 
         return {
@@ -517,7 +536,6 @@ export async function getUserPurchaseHistory(
     ERROR_CODES.BILLING_OPERATION_FAILED,
     {
       operation: "get_user_purchase_history",
-      userId,
     }
   );
 }

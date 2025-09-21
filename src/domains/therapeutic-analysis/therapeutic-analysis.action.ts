@@ -14,7 +14,8 @@ export async function analyzeUserInput(
   prevData: TherapeuticAnalysis[] = [],
   model: AiModel,
   userId?: string,
-  sessionId?: string
+  sessionId?: string,
+  sessionMetadata?: { messageCount: number; activeDurationMs: number }
 ): Promise<AnalysisResult> {
   return await logger.wrapOperation<AnalysisResult>(
     async () => {
@@ -24,11 +25,14 @@ export async function analyzeUserInput(
           userId,
           sessionId,
         });
-        throw new Error("Unreachable");
       }
 
       const therapeuticAnalysisEngine = new TherapeuticAnalysisEngine();
-      const analysisContextPrompt = therapeuticAnalysisEngine.getAnalysisContextPrompt(userInput, prevData);
+      const analysisContextPrompt = therapeuticAnalysisEngine.getAnalysisContextPrompt(
+        userInput,
+        prevData,
+        sessionMetadata
+      );
 
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];
 
@@ -47,10 +51,9 @@ export async function analyzeUserInput(
             metadata: { model: model.apiPath },
           }
         );
-        throw new Error("Unreachable");
       }
 
-      return { analysis, modelTokenUsage };
+      return { analysis: analysis!, modelTokenUsage };
     },
     ERROR_CODES.CHAT_ANALYSIS_FAILED,
     {

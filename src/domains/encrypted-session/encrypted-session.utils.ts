@@ -24,6 +24,8 @@ export const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt">
     tokenCount: 0,
     costUSD: 0,
     creditsUsed: 0,
+    activeDurationMs: 0,
+    lastActiveAt: new Date(),
   },
 };
 
@@ -119,10 +121,9 @@ export async function getDecryptedStoreSession(sessionId: string, state?: Sessio
     return await decryptSession(encryptedSession);
   } catch (error) {
     // Log error and throw
-    logger.logErrorAndThrow(ERROR_CODES.SESSION_DECRYPTION_FAILED, error, {
+    return logger.logErrorAndThrow(ERROR_CODES.SESSION_DECRYPTION_FAILED, error, {
       operation: "encrypted_session_utils_get_decrypted_store_session",
       sessionId,
     });
-    throw new Error("Unreachable");
   }
 }

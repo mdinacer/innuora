@@ -4,6 +4,8 @@ import { calculateAIMessageCost, deductCredits } from "@/app/actions/credit-acti
 import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { generateSessionMemory } from "@/domains/session-memory/session-memory.action";
+import { logger } from "@/lib/logging/unified-logger";
+import { prisma } from "@/lib/prisma";
 import { useUserDataStore } from "@/stores/user-data.store";
 
 export default function useSessionMemory({ sessionId }: { sessionId: string }) {
@@ -32,7 +34,7 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        const result = await generateSessionMemory(userMessage);
+        const result = await generateSessionMemory(userMessage, session.memoryStore);
         if (!result) {
           const error = "Memory generation failed - no response received";
           console.error(error);
@@ -59,14 +61,33 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
 
             if (inputTokens > 0 || outputTokens > 0) {
               try {
+                // Resolve authId from database user ID
+                const user = await prisma.user.findUnique({
+                  where: { id: userProfile.userId },
+                  select: { authId: true },
+                });
+
+                if (!user?.authId) {
+                  throw new Error("User authId not found");
+                }
+
                 const memoryCredits = await calculateAIMessageCost(MODELS_CODES.M1, inputTokens, outputTokens);
-                await deductCredits(userProfile.userId, memoryCredits, "memory_generation", sessionId, {
+                await deductCredits(user.authId, memoryCredits, "memory_generation", sessionId, {
                   inputTokens,
                   outputTokens,
                   userMessage: userMessage.substring(0, 100), // First 100 chars for tracking
                 });
               } catch (error) {
-                console.warn("Failed to deduct credits for memory generation:", error);
+                logger.logWarning("Failed to deduct credits for memory generation", {
+                  operation: "session_memory_credit_deduction_failed",
+                  sessionId,
+                  userId: userProfile?.userId,
+                  metadata: {
+                    error: error instanceof Error ? error.message : String(error),
+                    inputTokens,
+                    outputTokens,
+                  },
+                });
                 // Don't fail the memory update if credit deduction fails
               }
             }
@@ -91,14 +112,36 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         }
 
         updateSession((prev) => {
-          const mergedMemory = [prev.memoryStore, ...memoryArray].filter(Boolean).join("\n");
-          return { ...prev, memoryStore: mergedMemory };
+          // Replace memory with AI-optimized version instead of appending
+          const optimizedMemory = memoryArray.join("\n");
+
+          // Validate memory size (warn if over 400 words)
+          const wordCount = optimizedMemory.split(/\s+/).length;
+          if (wordCount > 400) {
+            logger.logInfo("Large memory size detected - consider optimization", {
+              operation: "session_memory_size_warning",
+              sessionId,
+              metadata: {
+                wordCount,
+                optimizationSuggested: true,
+              },
+            });
+          }
+
+          return { ...prev, memoryStore: optimizedMemory };
         });
 
         return { success: true };
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error occurred";
-        console.error("Memory update failed:", error);
+        logger.logWarning("Memory update failed", {
+          operation: "session_memory_update_failed",
+          sessionId,
+          userId: userProfile?.userId,
+          metadata: {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
         setMemoryError(`Memory update failed: ${message}`);
         return { error: message };
       } finally {
