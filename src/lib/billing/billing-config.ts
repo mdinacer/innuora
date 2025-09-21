@@ -180,6 +180,7 @@ export const BillingUtils = {
   /**
    * Calculate platform fee (if any)
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   calculatePlatformFee: (amountCents: number): number => {
     // Currently no platform fee, but ready for future implementation
     return 0;

@@ -64,6 +64,7 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
     if (userId) {
       loadPurchaseHistory();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, limit]);
 
   const handleRefresh = async () => {

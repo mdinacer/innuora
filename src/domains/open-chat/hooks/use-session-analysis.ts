@@ -156,6 +156,7 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
     } finally {
       setIsAnalyzing(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addTokenUsage, locale, session, updateSession]);
 
   return {

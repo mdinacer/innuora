@@ -26,7 +26,7 @@ interface BillingManagementProps {
 // Billing Overview Component
 // =========================
 
-function BillingOverview({ userId }: { userId: string }) {
+function BillingOverview() {
   return (
     <div className="space-y-6">
       {/* Current Balance */}
@@ -130,7 +130,7 @@ export function BillingManagement({ userId, userEmail, userName, className = "" 
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
-          <BillingOverview userId={userId} />
+          <BillingOverview />
         </TabsContent>
 
         <TabsContent value="purchase" className="mt-6">

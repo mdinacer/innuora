@@ -10,14 +10,13 @@ import { Button } from "@/components/ui/button";
 import { CreditUXUtils } from "@/lib/credits/credit-config";
 
 interface InsufficientCreditsWarningProps {
-  required: number;
+  //required: number;
   available?: number;
   onPurchaseClick?: () => void;
   className?: string;
 }
 
 export function InsufficientCreditsWarning({
-  required,
   available,
   onPurchaseClick,
   className = "",
@@ -53,7 +52,7 @@ export function InsufficientCreditsWarning({
   }, [available]);
 
   const effectiveBalance = available !== undefined ? available : currentBalance;
-  const deficit = required - effectiveBalance;
+  //const deficit = required - effectiveBalance;
 
   if (isLoading) {
     return (
@@ -65,7 +64,7 @@ export function InsufficientCreditsWarning({
     );
   }
 
-  const isLowBalance = CreditUXUtils.isBalanceLow(effectiveBalance);
+  //const isLowBalance = CreditUXUtils.isBalanceLow(effectiveBalance);
   const isCriticalBalance = CreditUXUtils.isBalanceCritical(effectiveBalance);
   const warningMessage = CreditUXUtils.getLowBalanceWarning(effectiveBalance);
 

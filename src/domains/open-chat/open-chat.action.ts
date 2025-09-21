@@ -4,7 +4,7 @@ import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
-import { calculateAIMessageCost, checkAndDeductCredits, estimateAIMessageCost } from "@/app/actions/credit-actions";
+import { calculateAIMessageCost, checkAndDeductCredits } from "@/app/actions/credit-actions";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
 import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
@@ -163,11 +163,12 @@ export async function handleUserInput(
       }
 
       // Estimate credits needed (defer actual check until after AI calls for accuracy)
-      let estimatedCredits = 0;
-      if (userId) {
-        const baseEstimate = await estimateAIMessageCost(userInput, modelCode);
-        estimatedCredits = Math.ceil(baseEstimate * 2); // 2x buffer for multiple AI calls
-      }
+      // TODO: Check why CLAUDE added this part
+      // let estimatedCredits = 0;
+      // if (userId) {
+      //   const baseEstimate = await estimateAIMessageCost(userInput, modelCode);
+      //   estimatedCredits = Math.ceil(baseEstimate * 2); // 2x buffer for multiple AI calls
+      // }
 
       // Initialize round cost tracker
       let roundTracker: RoundCostTracker | null = null;

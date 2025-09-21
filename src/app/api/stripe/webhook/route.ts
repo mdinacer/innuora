@@ -14,118 +14,6 @@ import { getStripeServer } from "@/lib/billing/stripe-client";
 import { logger } from "@/lib/logging/unified-logger";
 
 // =========================
-// Webhook Handler
-// =========================
-
-export async function POST(request: NextRequest) {
-  try {
-    // Get request body and signature
-    const body = await request.text();
-    const headersList = await headers();
-    const signature = headersList.get("stripe-signature");
-
-    if (!signature) {
-      await logger.logWarning("Missing Stripe signature", {
-        operation: "stripe_webhook_handler",
-      });
-      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
-    }
-
-    // Verify webhook signature
-    const stripe = getStripeServer();
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(body, signature, STRIPE_CONFIG.webhookSecret);
-    } catch (error) {
-      await logger.logWarning("Stripe webhook signature verification failed", {
-        operation: "stripe_webhook_verification",
-        metadata: {
-          signature: signature.substring(0, 20) + "...", // Log partial signature for debugging
-        },
-      });
-      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
-    }
-
-    // Check if we handle this event type
-    if (!WEBHOOK_CONFIG.handledEvents.includes(event.type as any)) {
-      await logger.logWarning(`Unhandled webhook event type: ${event.type}`, {
-        operation: "stripe_webhook_handler",
-        metadata: {
-          eventType: event.type,
-          eventId: event.id,
-        },
-      });
-      return NextResponse.json({ received: true, handled: false });
-    }
-
-    await logger.logInfo(`Processing Stripe webhook: ${event.type}`, {
-      operation: "stripe_webhook_handler",
-      metadata: {
-        eventType: event.type,
-        eventId: event.id,
-      },
-    });
-
-    // Process the event
-    await processWebhookEvent(event);
-
-    return NextResponse.json({ received: true, handled: true });
-  } catch (error) {
-    await logger.logWarning("Stripe webhook handler failed", {
-      operation: "stripe_webhook_handler",
-      metadata: { error: error instanceof Error ? error.message : String(error) },
-    });
-    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
-  }
-}
-
-// =========================
-// Event Processing
-// =========================
-
-async function processWebhookEvent(event: any): Promise<void> {
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      await handlePaymentSucceeded(event);
-      break;
-
-    case "payment_intent.payment_failed":
-      await handlePaymentFailed(event);
-      break;
-
-    case "invoice.payment_succeeded":
-      await handleInvoicePaymentSucceeded(event);
-      break;
-
-    case "invoice.payment_failed":
-      await handleInvoicePaymentFailed(event);
-      break;
-
-    case "customer.subscription.created":
-      await handleSubscriptionCreated(event);
-      break;
-
-    case "customer.subscription.updated":
-      await handleSubscriptionUpdated(event);
-      break;
-
-    case "customer.subscription.deleted":
-      await handleSubscriptionDeleted(event);
-      break;
-
-    default:
-      await logger.logWarning(`Unhandled event type in processor: ${event.type}`, {
-        operation: "stripe_webhook_processor",
-        metadata: {
-          eventType: event.type,
-          eventId: event.id,
-        },
-      });
-  }
-}
-
-// =========================
 // Payment Event Handlers
 // =========================
 
@@ -391,3 +279,115 @@ export const config = {
     bodyParser: false,
   },
 };
+
+// =========================
+// Event Processing
+// =========================
+
+async function processWebhookEvent(event: any): Promise<void> {
+  switch (event.type) {
+    case "payment_intent.succeeded":
+      await handlePaymentSucceeded(event);
+      break;
+
+    case "payment_intent.payment_failed":
+      await handlePaymentFailed(event);
+      break;
+
+    case "invoice.payment_succeeded":
+      await handleInvoicePaymentSucceeded(event);
+      break;
+
+    case "invoice.payment_failed":
+      await handleInvoicePaymentFailed(event);
+      break;
+
+    case "customer.subscription.created":
+      await handleSubscriptionCreated(event);
+      break;
+
+    case "customer.subscription.updated":
+      await handleSubscriptionUpdated(event);
+      break;
+
+    case "customer.subscription.deleted":
+      await handleSubscriptionDeleted(event);
+      break;
+
+    default:
+      await logger.logWarning(`Unhandled event type in processor: ${event.type}`, {
+        operation: "stripe_webhook_processor",
+        metadata: {
+          eventType: event.type,
+          eventId: event.id,
+        },
+      });
+  }
+}
+
+// =========================
+// Webhook Handler
+// =========================
+
+export async function POST(request: NextRequest) {
+  try {
+    // Get request body and signature
+    const body = await request.text();
+    const headersList = await headers();
+    const signature = headersList.get("stripe-signature");
+
+    if (!signature) {
+      await logger.logWarning("Missing Stripe signature", {
+        operation: "stripe_webhook_handler",
+      });
+      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
+    }
+
+    // Verify webhook signature
+    const stripe = getStripeServer();
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(body, signature, STRIPE_CONFIG.webhookSecret);
+    } catch {
+      await logger.logWarning("Stripe webhook signature verification failed", {
+        operation: "stripe_webhook_verification",
+        metadata: {
+          signature: signature.substring(0, 20) + "...", // Log partial signature for debugging
+        },
+      });
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    }
+
+    // Check if we handle this event type
+    if (!WEBHOOK_CONFIG.handledEvents.includes(event.type as any)) {
+      await logger.logWarning(`Unhandled webhook event type: ${event.type}`, {
+        operation: "stripe_webhook_handler",
+        metadata: {
+          eventType: event.type,
+          eventId: event.id,
+        },
+      });
+      return NextResponse.json({ received: true, handled: false });
+    }
+
+    await logger.logInfo(`Processing Stripe webhook: ${event.type}`, {
+      operation: "stripe_webhook_handler",
+      metadata: {
+        eventType: event.type,
+        eventId: event.id,
+      },
+    });
+
+    // Process the event
+    await processWebhookEvent(event);
+
+    return NextResponse.json({ received: true, handled: true });
+  } catch (error) {
+    await logger.logWarning("Stripe webhook handler failed", {
+      operation: "stripe_webhook_handler",
+      metadata: { error: error instanceof Error ? error.message : String(error) },
+    });
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+  }
+}

@@ -1,7 +1,7 @@
 import { getActiveSessionDuration } from "@/domains/active-session/active-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { SessionWellness, SessionWellnessContext } from "./session-wellness.types";
+import { SessionWellness } from "./session-wellness.types";
 
 export class SessionWellnessEngine {
   /**
@@ -78,6 +78,8 @@ export class SessionWellnessEngine {
     return messageCount > 40 || durationMinutes > 60;
   }
 
+  //TODO: check the necessity of the lastUserMessage prop
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private shouldConcludeByProgress(recentAnalyses: TherapeuticAnalysis[], lastUserMessage: string): boolean {
     if (recentAnalyses.length < 2) return false;
 

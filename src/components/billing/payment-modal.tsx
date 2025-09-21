@@ -233,6 +233,12 @@ export function PaymentModal({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successResult, setSuccessResult] = useState<{ creditsAdded: number; newBalance: number } | null>(null);
 
+  const resetModal = () => {
+    setPaymentStatus("idle");
+    setErrorMessage("");
+    setSuccessResult(null);
+  };
+
   const handleSuccess = (result: { creditsAdded: number; newBalance: number }) => {
     setPaymentStatus("success");
     setSuccessResult(result);
@@ -248,12 +254,6 @@ export function PaymentModal({
   const handleError = (error: string) => {
     setPaymentStatus("error");
     setErrorMessage(error);
-  };
-
-  const resetModal = () => {
-    setPaymentStatus("idle");
-    setErrorMessage("");
-    setSuccessResult(null);
   };
 
   const handleClose = () => {

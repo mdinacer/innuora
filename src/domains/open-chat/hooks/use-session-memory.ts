@@ -148,6 +148,7 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         setIsUpdating(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [addTokenUsage, session, updateSession]
   );
 

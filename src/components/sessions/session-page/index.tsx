@@ -147,7 +147,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
       {/* Credits Error Warning */}
       {creditsError && session?.userId && (
         <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
-          <InsufficientCreditsWarning required={creditsError.cost} onPurchaseClick={() => router.push("/pricing")} />
+          <InsufficientCreditsWarning onPurchaseClick={() => router.push("/pricing")} />
         </div>
       )}
 

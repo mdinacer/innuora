@@ -49,6 +49,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         }
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
 
   const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({
@@ -165,6 +166,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         setProcessing(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       appendAssistantMessage,
       appendUserMessage,

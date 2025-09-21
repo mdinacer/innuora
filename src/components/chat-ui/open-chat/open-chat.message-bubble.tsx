@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { CreditUtils, CreditUXUtils } from "@/lib/credits/credit-config";
+import { CreditUtils } from "@/lib/credits/credit-config";
 import { cn } from "@/lib/utils";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 

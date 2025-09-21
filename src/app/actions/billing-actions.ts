@@ -445,7 +445,7 @@ export async function getPaymentStatus(paymentIntentId: string): Promise<{
           amount: paymentIntent.amount,
           currency: paymentIntent.currency,
         };
-      } catch (error) {
+      } catch {
         await logger.logWarning("Failed to get payment status", {
           operation: "get_payment_status",
           metadata: { paymentIntentId },
@@ -522,7 +522,7 @@ export async function getUserPurchaseHistory(limit: number = 10): Promise<{
           success: true,
           purchases,
         };
-      } catch (error) {
+      } catch {
         await logger.logWarning("Failed to get purchase history", {
           operation: "get_user_purchase_history",
         });
