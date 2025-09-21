@@ -4,12 +4,7 @@ import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
-import {
-  calculateAIMessageCost,
-  checkSufficientCredits,
-  deductCredits,
-  estimateAIMessageCost,
-} from "@/app/actions/credit-actions";
+import { calculateAIMessageCost, checkAndDeductCredits } from "@/app/actions/credit-actions";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
 import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
@@ -22,8 +17,11 @@ import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
+import { prisma } from "@/lib/prisma";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+import { registerRoundTracker, unregisterRoundTracker } from "./round-cost-extensions";
+import { RoundCostSummary, RoundCostTracker } from "./round-cost-tracker";
 
 interface HandleUserInputResult {
   analysis: TherapeuticAnalysis | null;
@@ -34,6 +32,7 @@ interface HandleUserInputResult {
   };
   cost: number; // USD cost (for backward compatibility)
   creditsUsed: number; // Credits deducted
+  roundCostSummary?: RoundCostSummary; // Complete round cost breakdown
 }
 
 /**
@@ -144,6 +143,16 @@ export async function handleUserInput(
       }
 
       const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
+
+      // Resolve authId for credit operations (userId is database User.id, we need authId)
+      let authId: string | undefined;
+      if (userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { authId: true },
+        });
+        authId = user?.authId;
+      }
       if (!aiModel) {
         logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
           operation: "open_chat_handle_user_input",
@@ -153,32 +162,46 @@ export async function handleUserInput(
         });
       }
 
-      // Check credits if userId is provided
-      if (userId) {
-        // Estimate generous buffer for multiple AI calls (analysis + response + potential memory/summary)
-        const baseEstimate = await estimateAIMessageCost(userInput, modelCode);
-        const generousEstimate = Math.ceil(baseEstimate * 2); // 2x buffer for multiple AI calls
-        const hasSufficientCredits = await checkSufficientCredits(userId, generousEstimate);
+      // Estimate credits needed (defer actual check until after AI calls for accuracy)
+      // TODO: Check why CLAUDE added this part
+      // let estimatedCredits = 0;
+      // if (userId) {
+      //   const baseEstimate = await estimateAIMessageCost(userInput, modelCode);
+      //   estimatedCredits = Math.ceil(baseEstimate * 2); // 2x buffer for multiple AI calls
+      // }
 
-        if (!hasSufficientCredits) {
-          logger.logErrorAndThrow(
-            ERROR_CODES.VALIDATION_FAILED,
-            new Error(
-              `Insufficient credits. Estimated cost: ${generousEstimate} credits (includes buffer for analysis, memory, and summarization)`
-            ),
-            {
-              operation: "open_chat_handle_user_input",
-              userId,
-              sessionId,
-              metadata: { baseEstimate, generousEstimate, modelCode },
-            }
-          );
-        }
+      // Initialize round cost tracker
+      let roundTracker: RoundCostTracker | null = null;
+      if (userId && sessionId) {
+        roundTracker = new RoundCostTracker(userId, sessionId, modelCode);
+        // Register globally so background processes can track their AI calls
+        registerRoundTracker(roundTracker.getRoundId(), roundTracker);
       }
 
       // Step 1: Analyze user input
-      const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel, userId, sessionId);
+      const sessionMetadata = {
+        messageCount: messages.length,
+        activeDurationMs: 0, // Will be properly calculated in store
+      };
+      const analysisResult = await analyzeUserInput(
+        userInput,
+        prevAnalysis,
+        aiModel,
+        userId,
+        sessionId,
+        sessionMetadata
+      );
       const { analysis, modelTokenUsage: analysisUsage } = analysisResult;
+
+      // Track analysis AI call
+      if (roundTracker && analysisUsage) {
+        roundTracker.trackAICall(
+          "analysis",
+          analysisUsage.usage?.prompt_tokens ?? 0,
+          analysisUsage.usage?.completion_tokens ?? 0,
+          analysisUsage.model ?? "unknown"
+        );
+      }
 
       // Step 2: Build conversation prompts
       const conversationPrompts = await buildConversationPrompts(
@@ -195,35 +218,62 @@ export async function handleUserInput(
       // Step 3: Generate AI response
       const miraelResponse = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
 
-      // Step 4: Calculate actual credits cost from ALL token usage and deduct
+      // Track response AI call
+      if (roundTracker && miraelResponse.modelTokenUsage) {
+        roundTracker.trackAICall(
+          "response",
+          miraelResponse.modelTokenUsage.usage?.prompt_tokens ?? 0,
+          miraelResponse.modelTokenUsage.usage?.completion_tokens ?? 0,
+          miraelResponse.modelTokenUsage.model ?? "unknown"
+        );
+      }
+
+      // Step 4: Finalize round cost tracking and deduct credits
       let creditsUsed = 0;
+      let roundCostSummary: RoundCostSummary | undefined;
       const totalCost = (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0);
 
-      if (userId) {
-        // Sum ALL token usage from all AI calls (analysis + response)
+      if (userId && roundTracker) {
+        // Finalize round tracking (this calculates total cost from all tracked AI calls)
+        roundCostSummary = await roundTracker.finalizeRound();
+
+        // Unregister round tracker
+        unregisterRoundTracker(roundCostSummary.roundId);
+
+        // Deduct credits based on complete round cost
+        if (!authId) {
+          throw new Error("User authentication required for credit operations");
+        }
+        await checkAndDeductCredits(authId, roundCostSummary.totalCredits, "ai_usage", sessionId, {
+          modelCode,
+          roundId: roundCostSummary.roundId,
+          totalInputTokens: roundCostSummary.totalInputTokens,
+          totalOutputTokens: roundCostSummary.totalOutputTokens,
+          totalTokens: roundCostSummary.totalTokens,
+          breakdown: roundCostSummary.breakdown,
+          aiCallsCount: roundCostSummary.aiCalls.length,
+          durationMs: roundCostSummary.durationMs,
+          messageLength: userInput.length,
+          responseLength: miraelResponse.message.length,
+        });
+
+        creditsUsed = roundCostSummary.totalCredits;
+      } else if (userId) {
+        // Fallback to old calculation if no round tracker
         const totalInputTokens =
           (analysisUsage?.usage?.prompt_tokens ?? 0) + (miraelResponse.modelTokenUsage?.usage?.prompt_tokens ?? 0);
-
         const totalOutputTokens =
           (analysisUsage?.usage?.completion_tokens ?? 0) +
           (miraelResponse.modelTokenUsage?.usage?.completion_tokens ?? 0);
-
-        // Calculate credits based on TOTAL token usage from all AI calls
         const actualCreditsNeeded = await calculateAIMessageCost(modelCode, totalInputTokens, totalOutputTokens);
 
-        // Deduct credits with comprehensive metadata
-        await deductCredits(userId, actualCreditsNeeded, "ai_usage", sessionId, {
+        if (!authId) {
+          throw new Error("User authentication required for credit operations");
+        }
+        await checkAndDeductCredits(authId, actualCreditsNeeded, "ai_usage", sessionId, {
           modelCode,
           totalInputTokens,
           totalOutputTokens,
-          analysisTokens: {
-            input: analysisUsage?.usage?.prompt_tokens ?? 0,
-            output: analysisUsage?.usage?.completion_tokens ?? 0,
-          },
-          responseTokens: {
-            input: miraelResponse.modelTokenUsage?.usage?.prompt_tokens ?? 0,
-            output: miraelResponse.modelTokenUsage?.usage?.completion_tokens ?? 0,
-          },
           messageLength: userInput.length,
           responseLength: miraelResponse.message.length,
         });
@@ -240,6 +290,7 @@ export async function handleUserInput(
         },
         cost: totalCost,
         creditsUsed,
+        roundCostSummary,
       };
     },
     ERROR_CODES.CHAT_RESPONSE_FAILED,

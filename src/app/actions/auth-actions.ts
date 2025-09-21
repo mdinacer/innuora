@@ -27,14 +27,12 @@ export async function requireCurrentUser(): Promise<User> {
 
   if (error) {
     logger.logErrorAndThrow(ERROR_CODES.AUTH_SESSION_EXPIRED, error, { operation: "require_current_user" });
-    throw new Error("Unreachable");
   }
 
   if (!data.user) {
     logger.logErrorAndThrow(ERROR_CODES.AUTH_SESSION_EXPIRED, new Error("No user found in session"), {
       operation: "require_current_user",
     });
-    throw new Error("Unreachable");
   }
 
   return data.user!; // Non-null assertion since logErrorAndThrow throws
@@ -50,7 +48,6 @@ export async function requireAdmin() {
       operation: "require_admin",
       metadata: { userRole: user?.role || "none" },
     });
-    throw new Error("Unreachable");
   }
   return user!; // Non-null assertion since logErrorAndThrow throws if unauthorized
 }
@@ -61,7 +58,6 @@ export async function assertCurrentUserId(userId: string): Promise<void> {
       operation: "assert_current_user_id",
       metadata: { providedUserId: userId },
     });
-    throw new Error("Unreachable");
   }
   const currentUser = await requireCurrentUser();
   if (userId !== currentUser.id) {
@@ -70,7 +66,6 @@ export async function assertCurrentUserId(userId: string): Promise<void> {
       operation: "assert_current_user_id",
       metadata: { requestedUserId: userId },
     });
-    throw new Error("Unreachable");
   }
 }
 

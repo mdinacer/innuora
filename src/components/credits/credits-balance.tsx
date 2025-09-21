@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+import { findCurrentUser } from "@/app/actions/auth-actions";
 import { getUserCreditsBalance } from "@/app/actions/credit-actions";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CreditUtils, CreditUXUtils } from "@/lib/credits/credit-config";
+import { CreditUXUtils } from "@/lib/credits/credit-config";
 import { creditsToUSD, formatUSD } from "@/lib/credits/credits-utils";
+import { logger } from "@/lib/logging/unified-logger";
 
 interface CreditsBalanceProps {
-  userId: string;
   className?: string;
   showUSDValue?: boolean;
 }
 
-export function CreditsBalance({ userId, className = "", showUSDValue = false }: CreditsBalanceProps) {
+export function CreditsBalance({ className = "", showUSDValue = false }: CreditsBalanceProps) {
   const [balance, setBalance] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,20 +24,33 @@ export function CreditsBalance({ userId, className = "", showUSDValue = false }:
       try {
         setIsLoading(true);
         setError(null);
-        const currentBalance = await getUserCreditsBalance(userId);
+
+        // Get current authenticated user
+        const user = await findCurrentUser();
+        if (!user) {
+          setError("Not authenticated");
+          return;
+        }
+
+        const currentBalance = await getUserCreditsBalance(user.id);
+        console.log("Current balance:", currentBalance);
+
         setBalance(currentBalance);
       } catch (err) {
-        console.error("Failed to load credits balance:", err);
+        logger.logWarning("Failed to load credits balance in UI component", {
+          operation: "credits_balance_load_failed",
+          metadata: {
+            error: err instanceof Error ? err.message : String(err),
+          },
+        });
         setError("Failed to load balance");
       } finally {
         setIsLoading(false);
       }
     }
 
-    if (userId) {
-      loadBalance();
-    }
-  }, [userId]);
+    loadBalance();
+  }, []);
 
   if (isLoading) {
     return (

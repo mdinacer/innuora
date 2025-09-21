@@ -4,6 +4,7 @@ import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { handleUserInput } from "@/domains/open-chat/open-chat.action";
 import { AppLocales } from "@/lib/i18n";
+import { logger } from "@/lib/logging/unified-logger";
 import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -33,6 +34,8 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
       setProcessingError(null);
       setIsProcessing(true);
 
+      const userProfile = useUserDataStore.getState().profile;
+
       try {
         if (!session) {
           const error = "No session found";
@@ -50,7 +53,6 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
 
         const recentAnalysis = session.analysisSnapshots?.slice(-RECENT_ANALYSIS_COUNT) ?? [];
         const history: OpenChatMessage[] = session.messages ?? [];
-        const userProfile = useUserDataStore.getState().profile;
 
         const result = await handleUserInput(
           userInput,
@@ -90,19 +92,23 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
         if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
 
-        onRoundComplete?.();
+        // Trigger sync in background - don't block user interaction
+        setTimeout(() => {
+          onRoundComplete?.();
+        }, 0);
 
-        console.log(
-          JSON.stringify(
-            {
-              analysis: newAnalysis,
-              response: assistantMessage,
-              tokenUsage: { analysisUsage, responseUsage },
-            },
-            null,
-            2
-          )
-        );
+        logger.logInfo("User input processed successfully", {
+          operation: "process_input_success",
+          sessionId,
+          userId: userProfile?.userId,
+          metadata: {
+            hasAnalysis: !!newAnalysis,
+            hasResponse: !!assistantMessage,
+            analysisTokens: (analysisUsage?.usage?.prompt_tokens ?? 0) + (analysisUsage?.usage?.completion_tokens ?? 0),
+            responseTokens: (responseUsage?.usage?.prompt_tokens ?? 0) + (responseUsage?.usage?.completion_tokens ?? 0),
+            locale,
+          },
+        });
 
         return {
           assistantMessage,
@@ -112,7 +118,15 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         };
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error occurred";
-        console.error("Input processing failed:", error);
+        logger.logWarning("Input processing failed", {
+          operation: "process_input_failed",
+          sessionId,
+          userId: userProfile?.userId,
+          metadata: {
+            error: error instanceof Error ? error.message : String(error),
+            locale,
+          },
+        });
         setProcessingError(`Processing failed: ${message}`);
         return { error: message };
       } finally {

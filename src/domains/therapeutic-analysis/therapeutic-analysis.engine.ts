@@ -24,18 +24,34 @@ export class TherapeuticAnalysisEngine {
     }
   }
 
-  getAnalysisContextPrompt(userInput: string, prevData: TherapeuticAnalysis[]): ChatCompletionMessageParam {
+  getAnalysisContextPrompt(
+    userInput: string,
+    prevData: TherapeuticAnalysis[],
+    sessionMetadata?: { messageCount: number; activeDurationMs: number }
+  ): ChatCompletionMessageParam {
     console.log("prevData", prevData);
+
+    const sessionContext = sessionMetadata
+      ? {
+          message_count: sessionMetadata.messageCount,
+          active_duration_minutes: Math.round(sessionMetadata.activeDurationMs / 60000),
+        }
+      : null;
+
     return prevData.length === 0
       ? {
           role: "user",
-          content: ` current_message: ${userInput.trim()}`,
+          content: JSON.stringify({
+            current_message: userInput.trim(),
+            ...(sessionContext && { session_context: sessionContext }),
+          }),
         }
       : ({
           role: "user",
           content: JSON.stringify({
             current_message: userInput.trim(),
             previous_analyses: this.getAnalysisContext(prevData),
+            ...(sessionContext && { session_context: sessionContext }),
             instructions: `
       You are provided with context from the user’s previous messages.
       When analyzing the current message:

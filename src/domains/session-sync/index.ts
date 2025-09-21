@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prisma } from "@prisma/client";
 
 import { updateSession } from "@/app/actions/session-actions";
@@ -6,6 +7,7 @@ import { encryptSession } from "@/domains/encrypted-session/encrypted-session.cr
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
 import { SyncConfig, SyncStatus, SyncStatusDetailed, SyncTimestamps } from "@/domains/session-sync/session-sync.types";
+import { logger } from "@/lib/logging/unified-logger";
 
 class SessionSynchronizer {
   private static instance: SessionSynchronizer;
@@ -23,6 +25,9 @@ class SessionSynchronizer {
 
   // Add mutex protection for sync operations
   private syncMutex = new Map<string, Promise<void>>();
+
+  // Track last synced session data to avoid redundant syncs
+  private lastSyncedData = new Map<string, { updatedAt: Date; messageCount: number; analysisCount: number }>();
 
   private syncState: {
     local: {
@@ -63,6 +68,35 @@ class SessionSynchronizer {
   constructor() {
     // Initialize periodic cloud sync
     this.startPeriodicCloudSync();
+
+    // Initialize sync status for existing sessions on startup
+    this.initializeSyncStatus();
+  }
+
+  // Initialize sync status for existing sessions when synchronizer starts
+  private initializeSyncStatus(): void {
+    if (typeof window === "undefined") return;
+
+    try {
+      const encryptedStore = useSessionStore.getState();
+      const sessionIds = Object.keys(encryptedStore.sessions);
+
+      // Check if any sessions need syncing by comparing active vs encrypted store
+      for (const sessionId of sessionIds) {
+        // Initialize status as synced by default
+        if (!this.syncState.local.status[sessionId]) {
+          this.syncState.local.status[sessionId] = "synced";
+        }
+        if (!this.syncState.cloud.status[sessionId]) {
+          this.syncState.cloud.status[sessionId] = "synced";
+        }
+      }
+    } catch (error) {
+      logger.logWarning("Failed to initialize sync status on startup", {
+        operation: "session_sync_initialize_status",
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
+    }
   }
 
   // EVENT EMISSION FOR STATUS UPDATES
@@ -82,6 +116,13 @@ class SessionSynchronizer {
     // Try active store first (fastest)
     const activeStore = useActiveSessionStore.getState();
     const activeSession = activeStore.session;
+
+    logger.logInfo("Getting session by ID for sync operation", {
+      operation: "session_sync_get_session_by_id",
+      sessionId,
+      metadata: { hasActiveSession: !!activeSession },
+    });
+
     if (activeSession?.id === sessionId) {
       return activeSession;
     }
@@ -95,34 +136,79 @@ class SessionSynchronizer {
         return await decryptSession(encryptedSession);
       }
     } catch (error) {
-      console.warn(`Failed to decrypt session ${sessionId}:`, error);
+      logger.logWarning("Failed to decrypt session during sync operation", {
+        operation: "session_sync_decrypt_session",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
     }
 
     return null;
   }
 
-  // Legacy method for backward compatibility
-  private getCurrentSession(sessionId: string): Session | null {
-    const activeStore = useActiveSessionStore.getState();
-    const session = activeStore.session;
-    return session && session.id === sessionId ? session : null;
-  }
-
   // LOCAL SYNC METHODS (Active Store → Encrypted Store)
   // Queue local sync - happens frequently on round complete
   queueLocalSync(sessionId: string, _operation: "create" | "update" | "delete", session: Session): void {
+    logger.logInfo("Queuing local sync for session", {
+      operation: "session_sync_queue_local",
+      sessionId,
+      metadata: {
+        currentStatus: this.syncState.local.status[sessionId],
+        debounceMs: this.config.localSync.debounceMs,
+      },
+    });
+
+    // Don't queue if already syncing (prevent interference with active sync)
+    const syncStatus = this.syncState.local.status[sessionId];
+    if (syncStatus === "syncing") {
+      logger.logInfo("Skipping queue - sync already in progress", {
+        operation: "session_sync_skip_queue",
+        sessionId,
+        metadata: { reason: "sync_in_progress" },
+      });
+      return;
+    }
+
+    // Check if session data has actually changed since last sync
+    const lastSynced = this.lastSyncedData.get(sessionId);
+    const currentData = {
+      updatedAt: session.updatedAt,
+      messageCount: session.messages.length,
+      analysisCount: session.analysisSnapshots.length,
+    };
+
+    if (
+      lastSynced &&
+      lastSynced.updatedAt.getTime() === currentData.updatedAt.getTime() &&
+      lastSynced.messageCount === currentData.messageCount &&
+      lastSynced.analysisCount === currentData.analysisCount
+    ) {
+      console.log(`[SessionSync] Skipping queue - session ${sessionId} has not changed since last sync`);
+      return;
+    }
+
+    console.log(`[SessionSync] Session ${sessionId} has changes:`, {
+      previous: lastSynced,
+      current: currentData,
+    });
+
     // Clear existing timeout for this session
     const existingTimeout = this.syncState.local.timeouts.get(sessionId);
     if (existingTimeout) {
       clearTimeout(existingTimeout);
+      console.log(`[SessionSync] Cleared existing timeout for session ${sessionId}`);
     }
 
-    // Set status to pending
-    this.syncState.local.status[sessionId] = "pending";
-    this.emitStatusChange(sessionId);
+    // Set status to pending only if not already syncing
+    const pendingStatus = this.syncState.local.status[sessionId];
+    if (pendingStatus !== "syncing") {
+      this.syncState.local.status[sessionId] = "pending";
+      this.emitStatusChange(sessionId);
+    }
 
     // Debounce: sync after configured time
     const timeout = setTimeout(() => {
+      console.log(`[SessionSync] Debounce timeout reached, executing sync for session ${sessionId}`);
       this.executeLocalSync(sessionId, session);
     }, this.config.localSync.debounceMs);
 
@@ -130,9 +216,18 @@ class SessionSynchronizer {
   }
 
   private async updateSession(sessionId: string, session: Session) {
+    console.log(`[SessionSync] Updating encrypted session ${sessionId}`, {
+      messageCount: session.messages.length,
+      analysisCount: session.analysisSnapshots.length,
+      lastUpdated: session.updatedAt,
+    });
+
     const state = useSessionStore.getState();
     const encryptedData = await encryptSession(session);
+
     state.updateSession(sessionId, encryptedData);
+
+    console.log(`[SessionSync] Successfully updated encrypted store for session ${sessionId}`);
   }
 
   // Execute local sync - Encrypt and store to encrypted session store
@@ -161,6 +256,7 @@ class SessionSynchronizer {
   // Actual sync implementation separated for mutex protection
   private async performLocalSync(sessionId: string, session: Session): Promise<void> {
     try {
+      console.log(`[SessionSync] Starting local sync for session ${sessionId}`);
       this.syncState.local.status[sessionId] = "syncing";
       delete this.syncState.local.errors[sessionId];
       this.emitStatusChange(sessionId);
@@ -169,8 +265,25 @@ class SessionSynchronizer {
 
       this.syncState.local.status[sessionId] = "synced";
       this.syncState.local.lastSyncTime[sessionId] = new Date();
+
+      // Track the synced data to avoid redundant syncs
+      this.lastSyncedData.set(sessionId, {
+        updatedAt: session.updatedAt,
+        messageCount: session.messages.length,
+        analysisCount: session.analysisSnapshots.length,
+      });
+
+      console.log(`[SessionSync] Completed local sync for session ${sessionId}`);
       this.emitStatusChange(sessionId);
+
+      // Automatically queue cloud sync after successful local sync
+      this.queueCloudSync(sessionId, "update");
     } catch (error) {
+      logger.logWarning("Local sync failed for session", {
+        operation: "session_sync_local_failed",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
       this.syncState.local.status[sessionId] = "error";
       this.syncState.local.errors[sessionId] = error instanceof Error ? error : new Error(`${error}`);
       this.emitStatusChange(sessionId);
@@ -180,7 +293,6 @@ class SessionSynchronizer {
 
   // CLOUD SYNC METHODS (Encrypted Store → Supabase, only if persistOnCloud=true)
   // Queue cloud sync - happens less frequently, debounced
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   queueCloudSync(sessionId: string, operation: "create" | "update" | "delete"): void {
     // Clear existing timeout for this session
     const existingTimeout = this.syncState.cloud.timeouts.get(sessionId);
@@ -210,7 +322,10 @@ class SessionSynchronizer {
       const encryptedSession = encryptedStore.sessions[sessionId];
 
       if (!encryptedSession) {
-        console.warn(`No encrypted session found for ${sessionId}`);
+        logger.logWarning("No encrypted session found for cloud sync", {
+          operation: "session_sync_cloud_missing_session",
+          sessionId,
+        });
         this.syncState.cloud.status[sessionId] = "error";
         this.syncState.cloud.errors[sessionId] = new Error("Session not found in encrypted store");
         return;
@@ -258,14 +373,21 @@ class SessionSynchronizer {
     try {
       const session = await this.getSessionById(sessionId);
       if (!session) {
-        console.warn(`Session ${sessionId} not found`);
+        logger.logWarning("Session not found for manual sync", {
+          operation: "session_sync_manual_session_not_found",
+          sessionId,
+        });
         return false;
       }
 
       await this.executeLocalSync(sessionId, session);
       return this.syncState.local.status[sessionId] === "synced";
     } catch (error) {
-      console.error("Manual local sync failed:", error);
+      logger.logWarning("Manual local sync failed", {
+        operation: "session_sync_manual_local_failed",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
       return false;
     }
   }

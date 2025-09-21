@@ -118,6 +118,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
             encryptedStore
           );
         }
+        useSessionStore.getState().addSession(result);
       } else {
         // Create local-only session
         await createStoreSession(

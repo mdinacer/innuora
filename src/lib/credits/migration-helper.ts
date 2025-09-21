@@ -37,7 +37,7 @@ export async function migrateUserCreditBalances(): Promise<{
           });
 
           // Create migration transaction record
-          await (tx as any).creditTransaction.create({
+          await tx.creditTransaction.create({
             data: {
               userId: user.id,
               type: "CREDIT",

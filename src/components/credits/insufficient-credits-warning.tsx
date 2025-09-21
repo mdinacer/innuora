@@ -3,35 +3,41 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 
+import { findCurrentUser } from "@/app/actions/auth-actions";
 import { getUserCreditsBalance } from "@/app/actions/credit-actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { CreditUXUtils } from "@/lib/credits/credit-config";
 
 interface InsufficientCreditsWarningProps {
-  required: number;
+  //required: number;
   available?: number;
-  userId?: string;
   onPurchaseClick?: () => void;
   className?: string;
 }
 
 export function InsufficientCreditsWarning({
-  required,
   available,
-  userId,
   onPurchaseClick,
   className = "",
 }: InsufficientCreditsWarningProps) {
   const [currentBalance, setCurrentBalance] = useState<number>(available || 0);
-  const [isLoading, setIsLoading] = useState<boolean>(!!userId && available === undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(available === undefined);
 
   useEffect(() => {
     async function fetchBalance() {
-      if (userId && available === undefined) {
+      if (available === undefined) {
         try {
           setIsLoading(true);
-          const balance = await getUserCreditsBalance(userId);
+
+          // Get current authenticated user
+          const user = await findCurrentUser();
+          if (!user) {
+            setIsLoading(false);
+            return;
+          }
+
+          const balance = await getUserCreditsBalance(user.id);
           setCurrentBalance(balance);
         } catch (error) {
           console.error("Failed to fetch credits balance:", error);
@@ -43,10 +49,10 @@ export function InsufficientCreditsWarning({
     }
 
     fetchBalance();
-  }, [userId, available]);
+  }, [available]);
 
   const effectiveBalance = available !== undefined ? available : currentBalance;
-  const deficit = required - effectiveBalance;
+  //const deficit = required - effectiveBalance;
 
   if (isLoading) {
     return (
@@ -58,7 +64,7 @@ export function InsufficientCreditsWarning({
     );
   }
 
-  const isLowBalance = CreditUXUtils.isBalanceLow(effectiveBalance);
+  //const isLowBalance = CreditUXUtils.isBalanceLow(effectiveBalance);
   const isCriticalBalance = CreditUXUtils.isBalanceCritical(effectiveBalance);
   const warningMessage = CreditUXUtils.getLowBalanceWarning(effectiveBalance);
 

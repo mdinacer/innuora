@@ -159,10 +159,7 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
       if (state === "new") {
         storeState.addSession(sessionData);
       } else {
-        const publicId = storeState.getSessionPublicId(sessionId);
-        if (publicId) {
-          storeState.updateSession(publicId, sessionData);
-        }
+        storeState.updateSession(sessionId, sessionData);
       }
 
       // Remove from list after success

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -11,8 +11,10 @@ import CodeView from "@/components/code-view";
 import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
 import LoadingComponent from "@/components/loading-component";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
-import { getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
+import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
+import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
+import { Session } from "@/domains/open-chat/open-chat.types";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
@@ -24,6 +26,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
   const [creditsError, setCreditsError] = useState<{ error: string; cost: number } | null>(null);
 
+  const [decryptedSession, setDecryptedSession] = useState<Session | null>(null);
   const {
     t,
     i18n: { language },
@@ -79,8 +82,6 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     [resetSession, router]
   );
 
-  const getDecryptedSession = useCallback(async () => await getDecryptedStoreSession(sessionId), [sessionId]);
-
   const handleProcessMessage = useCallback(
     async (message: string) => {
       try {
@@ -108,6 +109,22 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     [processMessage]
   );
 
+  // Subscribe to encrypted session store changes
+  const encryptedSession = useSessionStore((state) => state.sessions[sessionId]);
+
+  const handleGetDecryptedSession = useCallback(async () => {
+    if (!encryptedSession) {
+      setDecryptedSession(null);
+      return;
+    }
+    const decryptedData = await decryptSession(encryptedSession);
+    setDecryptedSession(decryptedData);
+  }, [encryptedSession]);
+
+  useEffect(() => {
+    handleGetDecryptedSession();
+  }, [handleGetDecryptedSession]);
+
   if (!hasHydrated) {
     return <LoadingComponent />;
   }
@@ -118,26 +135,19 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
   return (
     <>
       <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
-      <CodeView
-        data={{ sessionId, session, encryptedSession: getDecryptedSession().then((session) => session) }}
-        className="absolute top-6 left-6 hover:z-50 "
-      />
+      <CodeView data={{ sessionId, decryptedSession }} className="absolute top-6 left-6 hover:z-50 " />
 
       {/* Credits Balance Display */}
       {session?.userId && (
         <div className="fixed top-20 right-6 z-40">
-          <CreditsBalance userId={session.userId} />
+          <CreditsBalance />
         </div>
       )}
 
       {/* Credits Error Warning */}
       {creditsError && session?.userId && (
         <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
-          <InsufficientCreditsWarning
-            required={creditsError.cost}
-            userId={session.userId}
-            onPurchaseClick={() => router.push("/pricing")}
-          />
+          <InsufficientCreditsWarning onPurchaseClick={() => router.push("/pricing")} />
         </div>
       )}
 

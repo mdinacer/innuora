@@ -1,29 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+// Import proper types from Prisma
+import type { CreditTransaction } from "@prisma/client";
+import { CreditTransactionType } from "@prisma/client";
 import { format } from "date-fns";
 import { ArrowDownCircle, ArrowUpCircle, Loader2 } from "lucide-react";
 
 import { getUserCreditHistory } from "@/app/actions/credit-actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditUtils } from "@/lib/credits/credit-config";
-
-// Local type definition to avoid Prisma client dependency issues
-enum CreditTransactionType {
-  CREDIT = "CREDIT",
-  DEBIT = "DEBIT",
-}
-
-interface CreditTransaction {
-  id: string;
-  userId: string;
-  type: CreditTransactionType;
-  amount: number;
-  reason: string;
-  sessionId?: string;
-  metadata?: any;
-  createdAt: Date;
-}
+import { logger } from "@/lib/logging/unified-logger";
 
 interface CreditsTransactionHistoryProps {
   userId: string;
@@ -44,7 +31,13 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
         const history = await getUserCreditHistory(userId, limit);
         setTransactions(history);
       } catch (err) {
-        console.error("Failed to load credit history:", err);
+        logger.logWarning("Failed to load credit transaction history", {
+          operation: "credits_transaction_history_load_failed",
+          userId,
+          metadata: {
+            error: err instanceof Error ? err.message : String(err),
+          },
+        });
         setError("Failed to load transaction history");
       } finally {
         setIsLoading(false);

@@ -118,7 +118,11 @@ JSON STRUCTURE:
 //   "state": "first_time|returning|established",
 //   "therapeutic_readiness": "resistant|ambivalent|ready|engaged",
 //   "update_memory": false,
-//   "recall_memory": false
+//   "recall_memory": false,
+//   "session_wellness": {
+//     "suggest_conclusion": false,
+//     "reason": "length|progress|repetition|fatigue|natural_end"
+//   }
 // }
 // `.trim(),
 // };

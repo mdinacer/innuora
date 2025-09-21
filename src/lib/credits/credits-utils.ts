@@ -1,7 +1,7 @@
 // Credits system utilities and constants
 import { encodingForModel } from "js-tiktoken";
 
-import { CREDIT_CONFIG, CreditUtils } from "./credit-config";
+import { CreditUtils } from "./credit-config";
 
 // Credit conversion: 1 credit = $0.005 USD (0.5¢)
 export const CREDIT_UNIT_USD = 0.005;

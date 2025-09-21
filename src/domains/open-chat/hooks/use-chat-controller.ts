@@ -4,8 +4,8 @@ import useSessionInput from "@/domains/open-chat/hooks/use-process-input";
 import useSessionAnalysis from "@/domains/open-chat/hooks/use-session-analysis";
 import useSessionMemory from "@/domains/open-chat/hooks/use-session-memory";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
-import { sessionSynchronizer } from "@/domains/session-sync";
 import { AppLocales } from "@/lib/i18n";
+import { logger } from "@/lib/logging/unified-logger";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
@@ -33,13 +33,24 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
   const { updateSessionMemory } = useSessionMemory({ sessionId });
   const { summarizeSession } = useSessionAnalysis({ sessionId, locale });
 
-  // Sync session after each complete conversation round (local sync only)
+  // Round completion sync - the main sync point after all data is updated
   const handleRoundComplete = useCallback(() => {
-    if (session) {
-      // Use local sync for frequent round completion - cloud sync is debounced separately
-      sessionSynchronizer.queueLocalSync(sessionId, "update", session);
-    }
-  }, [session, sessionId]);
+    logger.logInfo("Chat round completed - triggering session sync", {
+      operation: "chat_controller_round_complete",
+      sessionId,
+      metadata: { locale },
+    });
+    // Import sessionSynchronizer and get fresh session state
+    import("@/domains/session-sync").then(({ sessionSynchronizer }) => {
+      import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
+        const currentSession = useActiveSessionStore.getState().session;
+        if (currentSession) {
+          sessionSynchronizer.queueLocalSync(sessionId, "update", currentSession);
+        }
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
 
   const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({
     sessionId,
@@ -61,7 +72,11 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         const { assistantMessage, shouldUpdateMemory, tokenUsage, creditsUsed } = result;
 
         if (!assistantMessage) {
-          console.error("No assistant message found");
+          logger.logWarning("No assistant message found in chat response", {
+            operation: "chat_controller_process_input",
+            sessionId,
+            metadata: { locale },
+          });
           return { error: "No assistant message found" };
         }
 
@@ -81,23 +96,77 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         // Track credits used in session metadata
         if (creditsUsed > 0) addCreditsUsed(creditsUsed);
 
+        // Move memory update to background to avoid blocking UI
         if (shouldUpdateMemory) {
-          const memoryResult = await updateSessionMemory(message);
-          if (memoryResult?.error) {
-            console.warn("Memory enhancement failed:", memoryResult.error);
-          }
+          // Non-blocking memory update
+          updateSessionMemory(message).catch((error) => {
+            logger.logWarning("Memory enhancement failed during chat processing", {
+              operation: "chat_controller_memory_enhancement",
+              sessionId,
+              metadata: {
+                error: error instanceof Error ? error.message : String(error),
+                locale,
+              },
+            });
+          });
         }
+
+        // Evaluate session wellness using AI (non-blocking)
+        setTimeout(() => {
+          import("@/domains/session-wellness/session-wellness.ai").then(({ AISessionWellnessEngine }) => {
+            const aiWellnessEngine = new AISessionWellnessEngine();
+            const currentSession = session;
+            if (currentSession) {
+              aiWellnessEngine
+                .evaluateSessionWellness(currentSession, currentSession.analysisSnapshots, message)
+                .then((wellness) => {
+                  if (wellness.suggest_conclusion) {
+                    logger.logInfo("AI session wellness evaluation completed", {
+                      operation: "chat_controller_session_wellness",
+                      sessionId,
+                      metadata: {
+                        shouldEnd: wellness.suggest_conclusion,
+                        reason: wellness.reason,
+                        locale,
+                      },
+                    });
+                    // TODO: Implement gentle conclusion guidance based on wellness.reason
+                  }
+                })
+                .catch((error) => {
+                  logger.logWarning("Session wellness evaluation failed", {
+                    operation: "chat_controller_session_wellness_failed",
+                    sessionId,
+                    metadata: {
+                      error: error instanceof Error ? error.message : String(error),
+                      locale,
+                    },
+                  });
+                });
+            }
+          });
+        }, 0);
 
         return {
           success: true,
         };
       } catch (error) {
-        console.error("Error:", error);
+        logger.logWarning("Chat processing error occurred", {
+          operation: "chat_controller_process_error",
+          sessionId,
+          metadata: {
+            error: error instanceof Error ? error.message : String(error),
+            locale,
+          },
+        });
+        // Trigger sync for error cases to save user message even if AI failed
+        handleRoundComplete();
         return { error: "Failed to process message" };
       } finally {
         setProcessing(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       appendAssistantMessage,
       appendUserMessage,
@@ -106,6 +175,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
       updateSessionMemory,
       addTokenUsage,
       addCreditsUsed,
+      handleRoundComplete,
     ]
   );
 

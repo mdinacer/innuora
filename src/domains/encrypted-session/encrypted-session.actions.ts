@@ -79,6 +79,9 @@ export async function createSession(sessionCreateInput: SessionCreate) {
             messageCount: 0,
             tokenCount: 0,
             costUSD: 0,
+            creditsUsed: 0,
+            activeDurationMs: 0,
+            lastActiveAt: new Date(),
           },
           user: {
             connect: { authId: authUser.id },

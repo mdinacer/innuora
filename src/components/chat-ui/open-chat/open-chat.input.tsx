@@ -101,7 +101,7 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           <div className="text-xs text-mir-text-secondary opacity-75 flex items-center gap-2">
             <span>Affordable therapeutic support</span>
             <span>•</span>
-            <CreditsBalance userId={userId} className="inline" />
+            <CreditsBalance className="inline" />
           </div>
         </div>
       )}
