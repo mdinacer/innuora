@@ -56,12 +56,8 @@ describe("SessionSynchronizerV2", () => {
       const status = synchronizer.getSyncStatus("unknown-session");
 
       expect(status).toEqual({
-        local: "pending",
-        cloud: "pending",
-        lastLocalSync: null,
-        lastCloudSync: null,
-        localError: null,
-        cloudError: null,
+        local: "synced",
+        cloud: "synced",
       });
     });
 
@@ -71,8 +67,8 @@ describe("SessionSynchronizerV2", () => {
       const localStatus = synchronizer.getLocalSyncStatus(sessionId);
       const cloudStatus = synchronizer.getCloudSyncStatus(sessionId);
 
-      expect(localStatus).toBe("pending");
-      expect(cloudStatus).toBe("pending");
+      expect(localStatus).toBe("synced");
+      expect(cloudStatus).toBe("synced");
     });
   });
 

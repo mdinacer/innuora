@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -83,7 +83,7 @@ export function CreditPackages({
   );
 
   return (
-    <div className={`grid md:grid-cols-3 gap-4 ${className}`}>
+    <div data-testid="credit-packages" className={`grid md:grid-cols-3 gap-4 ${className}`}>
       {packages.map(([key, pkg]) => (
         <Card key={key} className={`relative ${pkg.popular ? "border-mir-bg-accent shadow-lg" : ""}`}>
           {pkg.popular && (
