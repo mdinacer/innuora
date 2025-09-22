@@ -60,10 +60,10 @@ importers:
         version: 2.57.0
       "@vercel/analytics":
         specifier: ^1.5.0
-        version: 1.5.0(next@15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 1.5.0(next@15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       "@vercel/speed-insights":
         specifier: ^1.2.0
-        version: 1.2.0(next@15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 1.2.0(next@15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -99,7 +99,7 @@ importers:
         version: 5.1.5
       next:
         specifier: 15.5.2
-        version: 15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-i18n-router:
         specifier: ^5.5.3
         version: 5.5.3
@@ -158,6 +158,9 @@ importers:
       "@next/eslint-plugin-next":
         specifier: ^15.5.2
         version: 15.5.2
+      "@playwright/test":
+        specifier: ^1.55.0
+        version: 1.55.0
       "@tailwindcss/postcss":
         specifier: ^4
         version: 4.1.12
@@ -921,6 +924,12 @@ packages:
     resolution:
       { integrity: sha512-fdDH1LSGfZdTH2sxdpVMw31BanV28K/Gry0cVFxaNP77neJSkd82mM8ErPNYs9e+0O7SdHBLTDzDgwUuy18RnQ== }
     engines: { node: ^12.20.0 || ^14.18.0 || >=16.0.0 }
+
+  "@playwright/test@1.55.0":
+    resolution:
+      { integrity: sha512-04IXzPwHrW69XusN/SIdDdKZBzMfOT9UNT/YiJit/xpy2VuAoB8NHc8Aplb96zsWDddLnbkPL3TsmrS04ZU2xQ== }
+    engines: { node: ">=18" }
+    hasBin: true
 
   "@polka/url@1.0.0-next.29":
     resolution:
@@ -2889,6 +2898,12 @@ packages:
       react-dom:
         optional: true
 
+  fsevents@2.3.2:
+    resolution:
+      { integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA== }
+    engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution:
       { integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw== }
@@ -3940,6 +3955,18 @@ packages:
   pkg-types@2.3.0:
     resolution:
       { integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig== }
+
+  playwright-core@1.55.0:
+    resolution:
+      { integrity: sha512-GvZs4vU3U5ro2nZpeiwyb0zuFaqb9sUiAJuyrWpcGouD8y9/HLgGbNRjIph7zU9D3hnPaisMl9zG9CgFi/biIg== }
+    engines: { node: ">=18" }
+    hasBin: true
+
+  playwright@1.55.0:
+    resolution:
+      { integrity: sha512-sdCWStblvV1YU909Xqx0DhOjPZE4/5lJsIS84IfN9dAZfcl/CIZ5O8l3o0j7hPMjDvqoTF8ZUcc+i/GL5erstA== }
+    engines: { node: ">=18" }
+    hasBin: true
 
   possible-typed-array-names@1.1.0:
     resolution:
@@ -5410,6 +5437,10 @@ snapshots:
 
   "@pkgr/core@0.1.2": {}
 
+  "@playwright/test@1.55.0":
+    dependencies:
+      playwright: 1.55.0
+
   "@polka/url@1.0.0-next.29": {}
 
   "@prisma/client@6.15.0(prisma@6.15.0(typescript@5.9.2))(typescript@5.9.2)":
@@ -6269,14 +6300,14 @@ snapshots:
   "@unrs/resolver-binding-win32-x64-msvc@1.11.1":
     optional: true
 
-  "@vercel/analytics@1.5.0(next@15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)":
+  "@vercel/analytics@1.5.0(next@15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)":
     optionalDependencies:
-      next: 15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
-  "@vercel/speed-insights@1.2.0(next@15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)":
+  "@vercel/speed-insights@1.2.0(next@15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)":
     optionalDependencies:
-      next: 15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
   "@vitest/expect@3.2.4":
@@ -7141,6 +7172,9 @@ snapshots:
     optionalDependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+
+  fsevents@2.3.2:
+    optional: true
 
   fsevents@2.3.3:
     optional: true
@@ -8055,7 +8089,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  next@15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  next@15.5.2(@playwright/test@1.55.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       "@next/env": 15.5.2
       "@swc/helpers": 0.5.15
@@ -8073,6 +8107,7 @@ snapshots:
       "@next/swc-linux-x64-musl": 15.5.2
       "@next/swc-win32-arm64-msvc": 15.5.2
       "@next/swc-win32-x64-msvc": 15.5.2
+      "@playwright/test": 1.55.0
       sharp: 0.34.3
     transitivePeerDependencies:
       - "@babel/core"
@@ -8201,6 +8236,14 @@ snapshots:
       confbox: 0.2.2
       exsolve: 1.0.7
       pathe: 2.0.3
+
+  playwright-core@1.55.0: {}
+
+  playwright@1.55.0:
+    dependencies:
+      playwright-core: 1.55.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   possible-typed-array-names@1.1.0: {}
 
