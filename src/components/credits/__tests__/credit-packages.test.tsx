@@ -3,6 +3,7 @@
  * Ensuring performance optimizations work correctly
  */
 
+import React from "react";
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -27,6 +28,14 @@ vi.mock("@/lib/billing/billing-config", () => ({
       label: "Growth Pack",
       tagline: "Best balance of value and consistency",
     },
+  },
+  STRIPE_CONFIG: {
+    publishableKey: "pk_test_mock_publishable_key",
+    secretKey: "sk_test_mock_secret_key",
+    webhookSecret: "whsec_mock_webhook_secret",
+    currency: "usd",
+    paymentMethods: ["card"],
+    apiVersion: "2025-08-27.basil",
   },
 }));
 
