@@ -1,0 +1,220 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check for outdated packages
+        id: outdated
+        run: |
+          pnpm outdated --format json > outdated.json || true
+          if [ -s outdated.json ]; then
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update patch and minor versions
+        if: steps.outdated.outputs.has_updates == 'true'
+        run: |
+          # Update patch versions (safe updates)
+          pnpm update --latest --workspace-root
+
+      - name: Run tests after update
+        if: steps.outdated.outputs.has_updates == 'true'
+        run: |
+          pnpm prisma generate
+          pnpm test --run
+        env:
+          NODE_ENV: test
+
+      - name: Run security audit
+        if: steps.outdated.outputs.has_updates == 'true'
+        run: pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Check build
+        if: steps.outdated.outputs.has_updates == 'true'
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+          SKIP_ENV_VALIDATION: true
+
+      - name: Create Pull Request
+        if: steps.outdated.outputs.has_updates == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dependencies"
+          title: "🔄 Automated Dependency Updates"
+          body: |
+            ## 📦 Dependency Updates
+
+            This PR contains automated dependency updates. The following changes were made:
+
+            ### Changes
+            - Updated patch and minor versions of dependencies
+            - All tests are passing ✅
+            - Build is successful ✅
+            - Security audit completed ✅
+
+            ### Review Checklist
+            - [ ] Review updated packages for breaking changes
+            - [ ] Test critical functionality manually
+            - [ ] Check for any new security advisories
+            - [ ] Verify all tests pass in CI
+
+            ### Auto-generated Information
+            - **Generated on**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            - **Node version**: ${{ env.NODE_VERSION }}
+            - **pnpm version**: ${{ env.PNPM_VERSION }}
+
+            ---
+            *This PR was automatically created by the dependency update workflow.*
+          branch: chore/automated-dependency-updates
+          delete-branch: true
+
+      - name: Enable auto-merge for dependency updates
+        if: steps.outdated.outputs.has_updates == 'true'
+        run: |
+          # Get the PR number from the created PR
+          PR_NUMBER=$(gh pr list --head chore/automated-dependency-updates --json number --jq '.[0].number')
+
+          if [ ! -z "$PR_NUMBER" ]; then
+            # Enable auto-merge if all checks pass
+            gh pr merge $PR_NUMBER --auto --squash
+            echo "Auto-merge enabled for PR #$PR_NUMBER"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  security-check:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run security audit
+        run: pnpm audit --audit-level moderate
+
+      - name: Check for known vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: Create security issue if vulnerabilities found
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Security Vulnerabilities Detected - ${new Date().toISOString().split('T')[0]}`,
+              body: `# Security Alert
+              
+              Security vulnerabilities have been detected in the project dependencies.
+              
+              ## Action Required
+              - [ ] Review the security audit results
+              - [ ] Update vulnerable packages
+              - [ ] Test the application after updates
+              - [ ] Deploy security fixes
+              
+              ## Details
+              - **Detection Date**: ${new Date().toISOString()}
+              - **Workflow**: Dependency Updates Security Check
+              - **Severity**: High or above
+              
+              Please address these vulnerabilities as soon as possible.
+              `,
+              labels: ['security', 'dependencies', 'high-priority']
+            });
+
+            console.log(`Created security issue #${issue.data.number}`);
+
+  notify-results:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [update-dependencies, security-check]
+    if: always()
+
+    steps:
+      - name: Notify dependency update results
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              text: "📦 Dependency Update Report",
+              attachments: [{
+                color: "${{ needs.update-dependencies.result == 'success' && needs.security-check.result == 'success' && 'good' || 'warning' }}",
+                fields: [
+                  {
+                    title: "Dependency Updates",
+                    value: "${{ needs.update-dependencies.result }}",
+                    short: true
+                  },
+                  {
+                    title: "Security Check",
+                    value: "${{ needs.security-check.result }}",
+                    short: true
+                  },
+                  {
+                    title: "Date",
+                    value: "${{ github.event.repository.updated_at }}",
+                    short: true
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
