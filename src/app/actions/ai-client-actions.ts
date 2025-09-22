@@ -203,10 +203,8 @@ export async function SendPromptsToAi(
           `AI Service Called:
           Model: ${model.apiPath}
           Vendor: ${model.vendor}
-          Prompts: %o
           TokenUsage: %o
           Response: %s`,
-          prompts,
           data?.usage,
           raw
         );

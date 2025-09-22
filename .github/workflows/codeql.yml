@@ -2,12 +2,12 @@ name: "CodeQL Security Analysis"
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
     # Run CodeQL analysis every Monday at 6 AM UTC
-    - cron: '0 6 * * 1'
+    - cron: "0 6 * * 1"
 
 jobs:
   analyze:
@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
+        language: ["javascript"]
 
     steps:
       - name: Checkout repository
@@ -36,12 +36,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: '9'
+          version: "9"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

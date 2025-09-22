@@ -5,7 +5,11 @@
 
 import { describe, expect, it } from "vitest";
 
-import { CrisisLevel, EmotionalIntensity, TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import {
+  CrisisLevel,
+  EmotionalIntensity,
+  TherapeuticAnalysis,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { SessionAnalysis } from "../session-analysis.types";
 import { combineToSessionAnalysis } from "../session-analysis.utils";
 
@@ -451,10 +455,7 @@ describe("Session Analysis Utils", () => {
             { theme: "Work Stress", frequency: "pervasive" },
             { theme: "Self-Worth", frequency: "frequent" },
           ],
-          core_beliefs: [
-            { belief: "Must excel at everything" },
-            { belief: "Not good enough as others" },
-          ],
+          core_beliefs: [{ belief: "Must excel at everything" }, { belief: "Not good enough as others" }],
           silent_rules: [
             { rule: "Must be perfectly prepared", rigidity: "rigid" },
             { rule: "Don't let others see struggles", rigidity: "moderate" },
@@ -480,10 +481,7 @@ describe("Session Analysis Utils", () => {
             { theme: "Self-Worth", frequency: "pervasive" },
             { theme: "Childhood Patterns", frequency: "occasional" },
           ],
-          core_beliefs: [
-            { belief: "Not good enough as others" },
-            { belief: "Others will leave if I'm not perfect" },
-          ],
+          core_beliefs: [{ belief: "Not good enough as others" }, { belief: "Others will leave if I'm not perfect" }],
           silent_rules: [
             { rule: "Don't let others see struggles", rigidity: "rigid" },
             { rule: "Keep feelings to yourself", rigidity: "rigid" },

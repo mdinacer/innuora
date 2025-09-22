@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to rollback'
+        description: "Environment to rollback"
         required: true
         type: choice
         options:
           - staging
           - production
       rollback_method:
-        description: 'Rollback method'
+        description: "Rollback method"
         required: true
         type: choice
         options:
@@ -19,7 +19,7 @@ on:
           - specific_commit
           - specific_tag
       target:
-        description: 'Commit hash, tag, or leave empty for previous deployment'
+        description: "Commit hash, tag, or leave empty for previous deployment"
         required: false
         type: string
       confirm_production:
@@ -28,14 +28,14 @@ on:
         type: string
 
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '9'
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
 
 jobs:
   validate-rollback:
     name: Validate Rollback Request
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Validate production rollback
         if: github.event.inputs.environment == 'production'
@@ -45,7 +45,7 @@ jobs:
             exit 1
           fi
           echo "✅ Production rollback confirmed"
-          
+
       - name: Validate target for specific rollback
         if: github.event.inputs.rollback_method != 'previous_deployment'
         run: |
@@ -60,46 +60,46 @@ jobs:
     runs-on: ubuntu-latest
     needs: [validate-rollback]
     environment: ${{ github.event.inputs.environment }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for rollbacks
-          
+          fetch-depth: 0 # Fetch full history for rollbacks
+
       - name: Checkout target commit/tag
         if: github.event.inputs.rollback_method != 'previous_deployment'
         run: |
           git checkout ${{ github.event.inputs.target }}
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Generate Prisma client
         run: pnpm prisma generate
-        
+
       - name: Build application
         run: pnpm run build
         env:
           NODE_ENV: production
           SKIP_ENV_VALIDATION: true
-          
+
       - name: Run critical tests before rollback
         run: pnpm test --run src/domains/credits src/lib/crypto
         env:
           NODE_ENV: test
         continue-on-error: false
-        
+
       - name: Set database URL
         run: |
           if [ "${{ github.event.inputs.environment }}" == "production" ]; then
@@ -109,7 +109,7 @@ jobs:
             echo "DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }}" >> $GITHUB_ENV
             echo "TARGET_URL=${{ secrets.STAGING_URL }}" >> $GITHUB_ENV
           fi
-          
+
       - name: Deploy rollback to Vercel
         id: deploy
         uses: amondnet/vercel-action@v25
@@ -119,18 +119,18 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: ${{ github.event.inputs.environment == 'production' && '--prod' || '' }}
           working-directory: ./
-          
+
       - name: Wait for deployment
         run: sleep 30
-        
+
       - name: Health check after rollback
         run: |
           curl -f ${{ env.TARGET_URL }}/api/health || exit 1
-          
+
       - name: Verify database compatibility
         run: pnpm prisma migrate status
         continue-on-error: true
-        
+
       - name: Create rollback documentation
         run: |
           echo "# Rollback Report" > rollback-report.md
@@ -146,13 +146,13 @@ jobs:
           echo "- [ ] Health check passed" >> rollback-report.md
           echo "- [ ] Database compatibility verified" >> rollback-report.md
           echo "- [ ] Critical functionality tested" >> rollback-report.md
-          
+
       - name: Upload rollback report
         uses: actions/upload-artifact@v3
         with:
           name: rollback-report-${{ github.event.inputs.environment }}
           path: rollback-report.md
-          
+
       - name: Notify success
         if: success()
         uses: 8398a7/action-slack@v3
@@ -160,17 +160,17 @@ jobs:
           status: success
           text: |
             🔄 Rollback completed successfully!
-            
+
             **Environment**: ${{ github.event.inputs.environment }}
             **Method**: ${{ github.event.inputs.rollback_method }}
             **Target**: ${{ github.event.inputs.target || 'Previous deployment' }}
             **URL**: ${{ env.TARGET_URL }}
             **Executed by**: ${{ github.actor }}
-            
+
             ✅ Health check passed
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          
+
       - name: Notify failure
         if: failure()
         uses: 8398a7/action-slack@v3
@@ -178,12 +178,12 @@ jobs:
           status: failure
           text: |
             ❌ Rollback failed!
-            
+
             **Environment**: ${{ github.event.inputs.environment }}
             **Method**: ${{ github.event.inputs.rollback_method }}
             **Target**: ${{ github.event.inputs.target || 'Previous deployment' }}
             **Executed by**: ${{ github.actor }}
-            
+
             🚨 **URGENT**: Manual intervention required!
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -193,7 +193,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [rollback]
     if: success()
-    
+
     steps:
       - name: Create incident issue
         if: github.event.inputs.environment == 'production'
@@ -232,9 +232,9 @@ jobs:
               **Labels**: incident, production, rollback`,
               labels: ['incident', 'production', 'rollback', 'high-priority']
             });
-            
+
             console.log(`Created incident issue #${issue.data.number}`);
-            
+
       - name: Update monitoring
         run: |
           echo "Rollback completed. Monitoring should be updated to reflect the current deployment state."

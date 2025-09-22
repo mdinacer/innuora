@@ -327,7 +327,7 @@ Some additional text after.`;
         "invalid": syntax
       }`;
 
-      expect(() => parseJsonObject(invalidJson)).toThrow("Failed to parse JSON");
+      expect(() => parseJsonObject(invalidJson)).toThrow(/Failed to parse JSON/);
     });
 
     it("should throw error for non-object JSON", () => {
@@ -337,10 +337,18 @@ Some additional text after.`;
       const booleanJson = `true`;
 
       // These should fail to find JSON boundaries since they don't contain braces
-      expect(() => parseJsonObject(arrayJson)).toThrow("Malformed JSON: Unable to locate JSON boundaries");
-      expect(() => parseJsonObject(stringJson)).toThrow("Malformed JSON: Unable to locate JSON boundaries");
-      expect(() => parseJsonObject(numberJson)).toThrow("Malformed JSON: Unable to locate JSON boundaries");
-      expect(() => parseJsonObject(booleanJson)).toThrow("Malformed JSON: Unable to locate JSON boundaries");
+      expect(() => parseJsonObject(arrayJson)).toThrow(
+        /Failed to parse JSON.*Malformed JSON: Unable to locate JSON boundaries/
+      );
+      expect(() => parseJsonObject(stringJson)).toThrow(
+        /Failed to parse JSON.*Malformed JSON: Unable to locate JSON boundaries/
+      );
+      expect(() => parseJsonObject(numberJson)).toThrow(
+        /Failed to parse JSON.*Malformed JSON: Unable to locate JSON boundaries/
+      );
+      expect(() => parseJsonObject(booleanJson)).toThrow(
+        /Failed to parse JSON.*Malformed JSON: Unable to locate JSON boundaries/
+      );
     });
 
     it("should throw error for malformed JSON boundaries", () => {
@@ -348,9 +356,13 @@ Some additional text after.`;
       const missingOpenBrace = `"key": "value"}`;
       const missingCloseBrace = `{"key": "value"`;
 
-      expect(() => parseJsonObject(noBraces)).toThrow("Malformed JSON: Unable to locate JSON boundaries");
-      expect(() => parseJsonObject(missingOpenBrace)).toThrow("Malformed JSON: Unable to locate JSON boundaries");
-      expect(() => parseJsonObject(missingCloseBrace)).toThrow("Failed to parse JSON");
+      expect(() => parseJsonObject(noBraces)).toThrow(
+        /Failed to parse JSON.*Malformed JSON: Unable to locate JSON boundaries/
+      );
+      expect(() => parseJsonObject(missingOpenBrace)).toThrow(
+        /Failed to parse JSON.*Malformed JSON: Unable to locate JSON boundaries/
+      );
+      expect(() => parseJsonObject(missingCloseBrace)).toThrow(/Failed to parse JSON/);
     });
 
     it("should handle escaped quotes and special characters", () => {

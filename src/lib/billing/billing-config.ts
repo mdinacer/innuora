@@ -54,15 +54,15 @@ export const STRIPE_CONFIG = {
 export const BILLING_PRODUCTS = {
   starter: {
     priceId: process.env.STRIPE_PRICE_STARTER || "price_starter",
-    credits: 120, // enough for meaningful first exposure
+    credits: 60, // ~30 rounds (enough for one deep session)
     price: 15.0,
     popular: false,
     label: "Starter Pack",
-    tagline: "Get started with focused support",
+    tagline: "Get started with one safe session",
   },
   regular: {
     priceId: process.env.STRIPE_PRICE_REGULAR || "price_regular",
-    credits: 400, // solid recurring engagement
+    credits: 240, // ~120 rounds (~4 sessions or a month of weekly use)
     price: 40.0,
     popular: true,
     label: "Growth Pack",
@@ -70,11 +70,11 @@ export const BILLING_PRODUCTS = {
   },
   premium: {
     priceId: process.env.STRIPE_PRICE_PREMIUM || "price_premium",
-    credits: 1200, // feels abundant, reduces credit anxiety
+    credits: 720, // ~360 rounds (~12 sessions or ~3 months of weekly use)
     price: 99.0,
     popular: false,
     label: "Premium Pack",
-    tagline: "For sustained deep support",
+    tagline: "For sustained deep support without limits",
   },
 } as const;
 
