@@ -54,7 +54,7 @@ export default function useFetchSessions() {
     }
   }, [loading]);
 
-  const addChangesEntry = useCallback(async (sessionId: string, entry: SessionChangeState) => {
+  const addChangesEntry = useCallback(async (_sessionId: string, _entry: any) => {
     // useSessionStore.getState().setChangesMap((prev) => {
     //   const newMap = { ...prev };
     //   newMap[sessionId] = entry;

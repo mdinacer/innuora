@@ -1,46 +1,84 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/domains/cbt-modules";
-import { IN_SCOPE_CHALLENGES, OUT_OF_SCOPE_CHALLENGES, SessionModule } from "@/domains/cbt-modules/constants";
+import { SESSION_MODULES, SessionModule } from "@/domains/cbt-modules/constants";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { capitalize } from "@/lib/utils/capitalize-word";
 
 export class ModulesPromptBuilder {
   async buildModulesPrompt(analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
-    const { core_module, process_module, utility_module } = analysis;
+    const { crisis, core_module, process_module, utility_module, intensity } = analysis;
+
+    // 1. ABSOLUTE PRIORITY: IMMEDIATE CRISIS (from analysis.crisis)
+    if (crisis === "immediate") {
+      const analysisContext = this.buildAnalysisContext(analysis);
+      const instructions = await this.getModuleInstructions(SESSION_MODULES.CRISIS);
+      const content = `USER IN IMMEDIATE CRISIS. FOLLOW CRISIS MODULE INSTRUCTIONS EXACTLY. IGNORE ALL OTHER MODULES.
+
+Current Analysis Context:
+${analysisContext}
+
+Crisis Module Instructions:
+${instructions}`;
+      return { role: "system", content } as ChatCompletionMessageParam;
+    }
+
+    // 2. HIGH INTENSITY PRIORITY: OVERWHELM & RESISTANCE (from analysis.process_module)
+    // Check if the analyzer has already determined that a containment process module is the highest priority.
+    if (
+      intensity === "high" &&
+      (process_module === SESSION_MODULES.OVERWHELM || process_module === SESSION_MODULES.RESISTANCE_OVERWHELM)
+    ) {
+      const analysisContext = this.buildAnalysisContext(analysis);
+      const instructions = await this.getModuleInstructions(process_module);
+      const content = `USER STATE: HIGH INTENSITY WITH OVERWHELM/RESISTANCE. PRIORITIZE CONTAINMENT. THE CORE_MODULE (${core_module}) IS TEMPORARILY PAUSED.
+
+Current Analysis Context:
+${analysisContext}
+
+Process Module Instructions:
+${instructions}`;
+      return { role: "system", content } as ChatCompletionMessageParam;
+    }
+
+    // Build analysis context once (shared across all modules to avoid triplication)
+    const analysisContext = this.buildAnalysisContext(analysis);
 
     const moduleLines: string[] = [];
 
+    // Add analysis context first
+    moduleLines.push(`Current Analysis Context:\n${analysisContext}`);
+
     if (core_module) {
-      const instructions = this.injectAnalysis(await this.getModuleInstructions(core_module), analysis);
-      moduleLines.push(`${capitalize(core_module)}: ${instructions}`);
+      const instructions = await this.getModuleInstructions(core_module);
+      moduleLines.push(`\n- Core: ${capitalize(core_module)}\nInstructions: ${instructions}`);
     }
 
     if (process_module) {
-      const instructions = this.injectAnalysis(await this.getModuleInstructions(process_module), analysis);
-      moduleLines.push(`${capitalize(process_module)}: ${instructions}`);
+      const instructions = await this.getModuleInstructions(process_module);
+      moduleLines.push(`\n- Process: ${capitalize(process_module)}\nInstructions: ${instructions}`);
     }
 
     if (utility_module) {
-      const instructions = this.injectAnalysis(await this.getModuleInstructions(utility_module), analysis);
-      moduleLines.push(`${capitalize(utility_module)}: ${instructions}`);
+      const instructions = await this.getModuleInstructions(utility_module);
+      moduleLines.push(`\n- Utility: ${capitalize(utility_module)}\nInstructions: ${instructions}`);
     }
 
     const generalInstructions = `
-Response: Single paragraph ≤120 words. Core module drives response.
-- Reflect user's exact words and emotions
-- Apply active module guidance naturally
-- Offer one specific insight or question when appropriate
-- Maintain conversational flow and supportive tone
+General Instructions:
+- Output must be a single short paragraph (≤120 words). Only extend to two concise paragraphs if absolutely necessary.
+- The core module drives the response. Process and utility modules act as subtle modifiers, never standalone sections.
+- Reflect the user's words and emotions directly, showing you understand their inner experience.
+- Highlight cognitive, emotional, thematic, or behavioral patterns tied to active modules.
+- Suggest small, actionable next steps only if aligned with the user’s therapeutic readiness.
+- Keep tone and intensity calibrated to analysis (calm, moderate, high).
+- Maintain continuity with prior messages for a natural conversational flow.
 `.trim();
 
     const content =
       moduleLines.length > 0 ? `${moduleLines.join("\n")}\n\n${generalInstructions}` : generalInstructions;
 
-    return {
-      role: "system",
-      content,
-    } as ChatCompletionMessageParam;
+    return { role: "system", content } as ChatCompletionMessageParam;
   }
 
   async getModuleInstructions(module: SessionModule): Promise<string> {
@@ -48,28 +86,19 @@ Response: Single paragraph ≤120 words. Core module drives response.
   }
 
   async buildModuleSection(module: SessionModule, analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
-    const instructions = await MODULES_INSTRUCTIONS_MAP_ASYNC[module]();
-    const injectedInstructions = this.injectAnalysis(instructions, analysis);
+    const instructions = await this.getModuleInstructions(module);
+    const analysisContext = this.buildAnalysisContext(analysis);
 
     return {
       role: "system",
-      content: `${capitalize(module)} Module: \n${injectedInstructions}`,
-    };
-  }
+      content: `${capitalize(module)} Module:
 
-  private injectAnalysis(template: string, analysis: TherapeuticAnalysis): string {
-    return template
-      .replace(/{{CRISIS}}/g, analysis.crisis ?? "none")
-      .replace(/{{INTENSITY}}/g, analysis.intensity ?? "medium")
-      .replace(/{{STATE}}/g, analysis.state ?? "unknown")
-      .replace(/{{THERAPEUTIC_READINESS}}/g, analysis.therapeutic_readiness ?? "ambivalent")
-      .replace(/{{DISTORTIONS}}/g, this.formatDistortions(analysis.distortions))
-      .replace(/{{THEMES}}/g, this.formatThemes(analysis.themes))
-      .replace(/{{CORE_BELIEFS}}/g, this.formatCoreBeliefs(analysis.core_beliefs))
-      .replace(/{{SILENT_RULES}}/g, this.formatSilentRules(analysis.silent_rules))
-      .replace(/{{BEHAVIORAL_PATTERNS}}/g, this.formatBehavioralPatterns(analysis.behavioral_patterns))
-      .replace(/{{IN_SCOPE_CHALLENGES}}/g, IN_SCOPE_CHALLENGES.join("\n- "))
-      .replace(/{{OUT_OF_SCOPE_CHALLENGES}}/g, OUT_OF_SCOPE_CHALLENGES.join("\n- "));
+Current Analysis Context:
+${analysisContext}
+
+Instructions:
+${instructions}`,
+    };
   }
 
   private formatDistortions(distortions: TherapeuticAnalysis["distortions"]): string {
@@ -95,5 +124,17 @@ Response: Single paragraph ≤120 words. Core module drives response.
   private formatBehavioralPatterns(patterns: TherapeuticAnalysis["behavioral_patterns"]): string {
     if (!patterns?.length) return "none";
     return patterns.map((p) => `${p.type}(${p.severity})`).join(", ");
+  }
+
+  private buildAnalysisContext(analysis: TherapeuticAnalysis): string {
+    return `- Crisis: ${analysis.crisis ?? "none"}
+- Intensity: ${analysis.intensity ?? "medium"}
+- Therapeutic Readiness: ${analysis.therapeutic_readiness ?? "ambivalent"}
+- State: ${analysis.state ?? "unknown"}
+- Distortions: ${this.formatDistortions(analysis.distortions)}
+- Themes: ${this.formatThemes(analysis.themes)}
+- Core Beliefs: ${this.formatCoreBeliefs(analysis.core_beliefs)}
+- Silent Rules: ${this.formatSilentRules(analysis.silent_rules)}
+- Behavioral Patterns: ${this.formatBehavioralPatterns(analysis.behavioral_patterns)}`;
   }
 }

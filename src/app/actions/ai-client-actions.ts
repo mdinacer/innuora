@@ -2,11 +2,11 @@
 
 import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 
+import { calculateCreditsUsed } from "@/domains/credits/credits-calculation";
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
-import { calculateCost } from "@/lib/utils/cost-estimation";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 
 type RequestOptions = {
@@ -31,19 +31,21 @@ async function callOpenAi(
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
 ): Promise<ChatCompletion> {
-  try {
-    const completion = await openai.chat.completions.create({
-      model: modelPath,
-      messages: prompts,
-      ...options,
-    });
-    return completion as ChatCompletion;
-  } catch (error) {
-    return errorManager.handleError(ERROR_CODES.AI_OPENAI_ERROR, error, {
-      operation: "callOpenAi",
+  return await logger.wrapOperation(
+    async () => {
+      const completion = await openai.chat.completions.create({
+        model: modelPath,
+        messages: prompts,
+        ...options,
+      });
+      return completion as ChatCompletion;
+    },
+    ERROR_CODES.AI_OPENAI_ERROR,
+    {
+      operation: "ai_openai_call",
       metadata: { model: modelPath },
-    });
-  }
+    }
+  );
 }
 
 /**
@@ -54,58 +56,45 @@ async function callOpenRouter(
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
 ): Promise<ChatCompletion> {
-  const apiKey = process.env.OPEN_ROUTER_API_KEY;
-  if (!apiKey) {
-    return errorManager.handleError(
-      ERROR_CODES.AI_OPENROUTER_ERROR,
-      new Error("OPEN_ROUTER_API_KEY environment variable is not set"),
-      {
-        operation: "callOpenRouter",
-        metadata: { model: modelPath },
-      }
-    );
-  }
-
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: modelPath,
-        messages: prompts,
-        ...options,
-      }),
-    });
-
-    if (!response.ok) {
-      let errorText: string;
-      try {
-        errorText = await response.text();
-      } catch {
-        errorText = "Unable to read error response";
+  return await logger.wrapOperation(
+    async () => {
+      const apiKey = process.env.OPEN_ROUTER_API_KEY;
+      if (!apiKey) {
+        throw new Error("OPEN_ROUTER_API_KEY environment variable is not set");
       }
 
-      return errorManager.handleError(ERROR_CODES.AI_OPENROUTER_ERROR, new Error(`${response.status} - ${errorText}`), {
-        operation: "callOpenRouter",
-        metadata: { model: modelPath, status: response.status },
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: modelPath,
+          messages: prompts,
+          ...options,
+        }),
       });
-    }
 
-    const data = (await response.json()) as ChatCompletion;
-    return data;
-  } catch (error: unknown) {
-    // Re-throw AppError from errorManager.handleError calls
+      if (!response.ok) {
+        let errorText: string;
+        try {
+          errorText = await response.text();
+        } catch {
+          errorText = "Unable to read error response";
+        }
+        throw new Error(`${response.status} - ${errorText}`);
+      }
 
-    if (error instanceof Error && error.name === "AppError") throw error;
-
-    return errorManager.handleError(ERROR_CODES.AI_NETWORK_ERROR, error, {
-      operation: "callOpenRouter",
+      const data = (await response.json()) as ChatCompletion;
+      return data;
+    },
+    ERROR_CODES.AI_OPENROUTER_ERROR,
+    {
+      operation: "ai_openrouter_call",
       metadata: { model: modelPath },
-    });
-  }
+    }
+  );
 }
 
 /**
@@ -113,33 +102,29 @@ async function callOpenRouter(
  */
 function validateAiModel(model: AiModel): void {
   if (!model) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model configuration is required"), {
-      operation: "validateAiModel",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model configuration is required"), {
+      operation: "ai_validate_model",
     });
   }
 
   if (!model.apiPath) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model apiPath is required"), {
-      operation: "validateAiModel",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model apiPath is required"), {
+      operation: "ai_validate_model",
       metadata: { model: model.vendor },
     });
   }
 
   if (!model.vendor) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model vendor is required"), {
-      operation: "validateAiModel",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model vendor is required"), {
+      operation: "ai_validate_model",
     });
   }
 
   if (!["openai", "tngtech", "mistralai", "qwen", "moonshotai", "rekaai", "deepseek"].includes(model.vendor)) {
-    return errorManager.handleError(
-      ERROR_CODES.AI_UNSUPPORTED_VENDOR,
-      new Error(`Unsupported vendor: ${model.vendor}`),
-      {
-        operation: "validateAiModel",
-        metadata: { vendor: model.vendor },
-      }
-    );
+    logger.logErrorAndThrow(ERROR_CODES.AI_UNSUPPORTED_VENDOR, new Error(`Unsupported vendor: ${model.vendor}`), {
+      operation: "ai_validate_model",
+      metadata: { vendor: model.vendor },
+    });
   }
 }
 
@@ -148,19 +133,19 @@ function validateAiModel(model: AiModel): void {
  */
 function validatePrompts(prompts: ChatCompletionMessageParam[]): void {
   if (!Array.isArray(prompts) || prompts.length === 0) {
-    return errorManager.handleError(ERROR_CODES.AI_INVALID_PROMPTS, new Error("Prompts array cannot be empty"), {
-      operation: "validatePrompts",
+    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_PROMPTS, new Error("Prompts array cannot be empty"), {
+      operation: "ai_validate_prompts",
     });
   }
 
   // Validate each prompt has required fields
   prompts.forEach((prompt, index) => {
     if (!prompt.role || !prompt.content) {
-      return errorManager.handleError(
+      logger.logErrorAndThrow(
         ERROR_CODES.AI_INVALID_PROMPTS,
         new Error(`Prompt at index ${index} is missing required role or content`),
         {
-          operation: "validatePrompts",
+          operation: "ai_validate_prompts",
           metadata: { promptIndex: index },
         }
       );
@@ -174,8 +159,6 @@ function validatePrompts(prompts: ChatCompletionMessageParam[]): void {
 function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelTokenUsage | null {
   if (!data.usage) return null;
 
-  const costUSD = model.pricing ? calculateCost(model.pricing, data.usage) : 0;
-
   return {
     type: "completion",
     model: data.model,
@@ -183,7 +166,7 @@ function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelToken
     usage: data.usage,
     timestamp: new Date().toISOString(),
     version: "", // You might want to add version tracking
-    costUSD,
+    costUSD: 0, // Legacy field - will be removed once credit system is fully integrated
   };
 }
 
@@ -195,56 +178,58 @@ export async function SendPromptsToAi(
   model: AiModel,
   options: Partial<RequestOptions> = {}
 ): Promise<AiMessageResponse> {
-  // Validate inputs
-  validatePrompts(prompts);
-  validateAiModel(model);
+  return await logger.wrapOperation(
+    async () => {
+      // Validate inputs
+      validatePrompts(prompts);
+      validateAiModel(model);
 
-  const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...options };
+      const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...options };
 
-  try {
-    // Call appropriate AI service
-    const data = await (model.vendor === "openai"
-      ? callOpenAi(model.apiPath, prompts, mergedOptions)
-      : callOpenRouter(model.apiPath, prompts, mergedOptions));
+      // Call appropriate AI service
+      const data = await (model.vendor === "openai"
+        ? callOpenAi(model.apiPath, prompts, mergedOptions)
+        : callOpenRouter(model.apiPath, prompts, mergedOptions));
 
-    // Extract and validate response
-    const raw = data?.choices?.[0]?.message?.content?.trim();
-    if (!raw) {
-      return errorManager.handleError(ERROR_CODES.AI_EMPTY_RESPONSE, new Error("AI returned empty content"), {
-        operation: "SendPromptsToAi",
-        metadata: { model: model.apiPath, vendor: model.vendor },
-      });
-    }
+      // Extract and validate response
+      const raw = data?.choices?.[0]?.message?.content?.trim();
+      if (!raw) {
+        throw new Error("AI returned empty content");
+      }
 
-    // Log in development environment
-    if (process.env.NODE_ENV === "development") {
-      console.info(
-        `AI Service Called:
-        Model: ${model.apiPath}
-        Vendor: ${model.vendor}
-        Prompts: %o
-        TokenUsage: %o
-        Response: %s`,
-        prompts,
-        data?.usage,
-        raw
-      );
-    }
+      // Log in development environment
+      if (process.env.NODE_ENV === "development") {
+        console.info(
+          `AI Service Called:
+          Model: ${model.apiPath}
+          Vendor: ${model.vendor}
+          Prompts: %o
+          TokenUsage: %o
+          Response: %s`,
+          prompts,
+          data?.usage,
+          raw
+        );
+      }
 
-    return {
-      message: raw,
-      modelTokenUsage: createModelTokenUsage(data, model),
-    };
-  } catch (error) {
-    // Re-throw AppError from errorManager.handleError calls
-    if (error instanceof AppError && error.name === "AppError") throw error;
+      let consumedCredits = 0;
 
-    // Log and handle unexpected errors
-    return errorManager.handleError(ERROR_CODES.AI_REQUEST_FAILED, error, {
-      operation: "SendPromptsToAi",
+      if (data.usage) {
+        consumedCredits = calculateCreditsUsed(model, data.usage);
+      }
+
+      return {
+        message: raw,
+        modelTokenUsage: createModelTokenUsage(data, model),
+        consumedCredits,
+      };
+    },
+    ERROR_CODES.AI_REQUEST_FAILED,
+    {
+      operation: "ai_send_prompts",
       metadata: { model: model.apiPath, vendor: model.vendor },
-    });
-  }
+    }
+  );
 }
 
 /**
@@ -257,50 +242,45 @@ export async function SendPromptsToAiWithRetry(
   maxRetries: number = 3,
   retryDelay: number = 1000
 ): Promise<AiMessageResponse> {
-  let lastError: Error | null = null;
+  return await logger.wrapOperation(
+    async () => {
+      let lastError: Error | null = null;
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await SendPromptsToAi(prompts, model, options);
-    } catch (error) {
-      lastError = error as Error;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          return await SendPromptsToAi(prompts, model, options);
+        } catch (error) {
+          lastError = error as Error;
 
-      // Don't retry on certain error types - check AppError errorCode if available
-      if (
-        error instanceof AppError &&
-        error.name === "AppError" &&
-        ((error && error.errorCode === ERROR_CODES.AI_EMPTY_RESPONSE) ||
-          error.errorCode === ERROR_CODES.AI_INVALID_PROMPTS)
-      ) {
-        throw error;
-      }
-
-      // If this is the last attempt, throw the error
-      if (attempt === maxRetries) {
-        return errorManager.handleError(
-          ERROR_CODES.AI_RETRY_EXHAUSTED,
-          new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError.message}`),
-          {
-            operation: "SendPromptsToAiWithRetry",
-            metadata: { attempts: maxRetries, model: model.apiPath },
+          // Don't retry on certain error types - check AppError errorCode if available
+          if (
+            error instanceof AppError &&
+            error.name === "AppError" &&
+            ((error && error.errorCode === ERROR_CODES.AI_EMPTY_RESPONSE) ||
+              error.errorCode === ERROR_CODES.AI_INVALID_PROMPTS)
+          ) {
+            throw error;
           }
-        );
+
+          // If this is the last attempt, throw the error
+          if (attempt === maxRetries) {
+            throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError.message}`);
+          }
+
+          // Wait before retrying (with exponential backoff)
+          const delay = retryDelay * Math.pow(2, attempt - 1);
+          console.warn(`AI request failed (attempt ${attempt}/${maxRetries}). Retrying in ${delay}ms...`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
       }
 
-      // Wait before retrying (with exponential backoff)
-      const delay = retryDelay * Math.pow(2, attempt - 1);
-      console.warn(`AI request failed (attempt ${attempt}/${maxRetries}). Retrying in ${delay}ms...`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-    }
-  }
-
-  // This should never be reached due to the logic above, but TypeScript needs it
-  return errorManager.handleError(
+      // This should never be reached due to the logic above
+      throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message || "Unknown error"}`);
+    },
     ERROR_CODES.AI_RETRY_EXHAUSTED,
-    new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message || "Unknown error"}`),
     {
-      operation: "SendPromptsToAiWithRetry",
-      metadata: { attempts: maxRetries },
+      operation: "ai_send_prompts_with_retry",
+      metadata: { attempts: maxRetries, model: model.apiPath },
     }
   );
 }

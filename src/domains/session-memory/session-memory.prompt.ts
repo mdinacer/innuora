@@ -1,21 +1,26 @@
 const CHAT_MEMORY_BUILD_INSTRUCTIONS = `
-You are Mirael. Create an internal session memory from the user message below.  
+You are Mirael. Update and optimize the session memory based on the new user message.  
 This memory is for internal reference only.
 
-Guidelines:
-- Capture only factual content: specific situations, events, people, decisions, or plans.
-- Each fact must be one clear string.
-- Do not include headers or extra text, return only an array of strings.
-- Use neutral, concise language; avoid emotional descriptions or interpretations.
-- Merge related points and avoid repeating similar facts.
-- Skip general emotional states unless tied to a concrete situation.
-- Keep total length 100–200 words.
+EXISTING MEMORY:
+{{existing_memory}}
 
-INPUT:
+NEW USER MESSAGE:
 {{user_message}}
 
-OUTPUT (JSON array of facts):
-["fact 1", "fact 2", "fact 3"]
+Guidelines:
+- Merge new facts with existing memory, removing duplicates and outdated information
+- Capture only factual content: specific situations, events, people, decisions, or plans
+- Each fact must be one clear, concise string
+- Use neutral language; avoid emotional descriptions or interpretations
+- Consolidate related points (e.g., "work stress" + "job anxiety" → "experiencing work-related stress and anxiety")
+- Remove superseded information and keep most relevant/recent facts
+- If existing memory is empty, create new memory from the user message
+- Keep total memory length 150–300 words maximum
+- Return only a JSON array of optimized facts
+
+OUTPUT (JSON array of consolidated facts):
+["consolidated fact 1", "consolidated fact 2", "consolidated fact 3"]
 `.trim();
 
 export const SESSION_MEMORY_REFERENCE_INSTRUCTIONS = `

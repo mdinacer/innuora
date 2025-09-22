@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { CreditUtils } from "@/lib/credits/credit-config";
 import { cn } from "@/lib/utils";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -59,6 +60,11 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
       </div>
       <div className={cn("message-time", " text-xs text-mir-text-secondary mt-2 text-center font-medium")}>
         {formattedDate}
+        {message.role === "assistant" && message.creditsUsed && (
+          <span className="ml-2 opacity-75">
+            • {CreditUtils.formatCreditsForDisplay(message.creditsUsed)} credits for this reflection
+          </span>
+        )}
       </div>
     </div>
   );

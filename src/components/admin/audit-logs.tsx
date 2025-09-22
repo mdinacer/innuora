@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { getAuditLogs } from "@/app/actions/audit-actions";
+// TODO: Update this import once getAuditLogs is migrated to unified logger
+// import { getAuditLogs } from "@/app/actions/audit-actions";
 
 interface AuditLog {
   id: string;
@@ -19,23 +20,16 @@ interface AuditLog {
   };
 }
 
-interface AuditLogsData {
-  logs: AuditLog[];
-  totalPages: number;
-  currentPage: number;
-  total: number;
-}
-
 export function AuditLogsViewer() {
-  const [data, setData] = useState<any | null>(null);
+  const [data] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   const loadAuditLogs = async () => {
     setLoading(true);
     try {
-      const result = await getAuditLogs(currentPage);
-      setData(result);
+      // const result = await getAuditLogs(currentPage);
+      // setData(result);
     } catch (error) {
       console.error("Failed to load audit logs:", error);
     } finally {

@@ -150,8 +150,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
               {content.dataWeCollect.table.rows.map((row, index) => {
                 if (row.length !== 3) return null;
                 const [header, description, storage] = row;
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const [_, descriptionCol, storageCol] = content.dataWeCollect.table.headers;
+                const [_headerCol, descriptionCol, storageCol] = content.dataWeCollect.table.headers;
                 return (
                   <div key={index} className="space-y-2">
                     <h3 className="font-semibold text-mir-text-primary">{header}</h3>

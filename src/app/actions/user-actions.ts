@@ -3,7 +3,8 @@
 import { User as AppUser, Prisma, ThemeMode } from "@prisma/client";
 import { User as AuthUser } from "@supabase/supabase-js";
 
-import { ERROR_CODES, errorManager } from "@/lib/errors";
+import { ERROR_CODES } from "@/lib/errors";
+import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { UserWithRelations } from "@/types/user.types";
 import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";
@@ -12,14 +13,14 @@ import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";
 export async function getUserById(authUserId: string): Promise<AppUser | null> {
   await assertCurrentUserId(authUserId);
 
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     () =>
       prisma.user.findUnique({
         where: { authId: authUserId },
       }),
     ERROR_CODES.SERVER_ERROR, // Database error only - null result is fine
     {
-      operation: "getUserById",
+      operation: "user_get_by_id",
       userId: authUserId,
     }
   );
@@ -27,7 +28,7 @@ export async function getUserById(authUserId: string): Promise<AppUser | null> {
 export async function getUserWithRelationsById(authUserId: string): Promise<UserWithRelations | null> {
   await assertCurrentUserId(authUserId);
 
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     () =>
       prisma.user.findUnique({
         where: { authId: authUserId },
@@ -38,7 +39,7 @@ export async function getUserWithRelationsById(authUserId: string): Promise<User
       }),
     ERROR_CODES.SERVER_ERROR,
     {
-      operation: "getUserWithRelationsById",
+      operation: "user_get_with_relations_by_id",
       userId: authUserId,
     }
   );
@@ -49,13 +50,13 @@ export async function getCurrentUser(): Promise<AppUser> {
   const user = await getUserById(currentAuthUser.id);
 
   if (!user) {
-    errorManager.handleError(ERROR_CODES.USER_NOT_FOUND, new Error("Current user not found in database"), {
-      operation: "getCurrentUser",
+    logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("Current user not found in database"), {
+      operation: "user_get_current",
       userId: currentAuthUser.id,
     });
   }
 
-  return user!; // Non-null assertion since handleError throws
+  return user!; // Non-null assertion since logErrorAndThrow throws
 }
 
 export async function getCurrentUserWithRelations(): Promise<UserWithRelations> {
@@ -63,21 +64,21 @@ export async function getCurrentUserWithRelations(): Promise<UserWithRelations> 
   const userWithRelations = await getUserWithRelationsById(currentAuthUser.id);
 
   if (!userWithRelations) {
-    errorManager.handleError(
+    logger.logErrorAndThrow(
       ERROR_CODES.USER_NOT_FOUND,
       new Error("Current user with relations not found in database"),
       {
-        operation: "getCurrentUserWithRelations",
+        operation: "user_get_current_with_relations",
         userId: currentAuthUser.id,
       }
     );
   }
 
-  return userWithRelations!; // Non-null assertion since handleError throws
+  return userWithRelations!; // Non-null assertion since logErrorAndThrow throws
 }
 
 export async function createUserWithDefaults(authUserId: string): Promise<UserWithRelations> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     () =>
       prisma.user.create({
         data: {
@@ -100,9 +101,15 @@ export async function createUserWithDefaults(authUserId: string): Promise<UserWi
       }),
     ERROR_CODES.USER_CREATE_FAILED,
     {
-      operation: "createUserWithDefaults",
+      operation: "user_create_with_defaults",
       userId: authUserId,
-    }
+      metadata: {
+        defaultTheme: ThemeMode.light,
+        defaultLocale: "en",
+        autoSave: false,
+      },
+    },
+    "User created with default settings"
   );
 }
 
@@ -122,7 +129,7 @@ export async function updateUserById(
 ): Promise<UserWithRelations> {
   await assertCurrentUserId(authUserId);
 
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     () =>
       prisma.user.update({
         where: { authId: authUserId },
@@ -131,10 +138,14 @@ export async function updateUserById(
       }),
     ERROR_CODES.USER_UPDATE_FAILED,
     {
-      operation: "updateUserById",
+      operation: "user_update_by_id",
       userId: authUserId,
-      metadata: { updateFields: Object.keys(userData) },
-    }
+      metadata: {
+        updateFields: Object.keys(userData),
+        fieldsCount: Object.keys(userData).length,
+      },
+    },
+    "User profile updated"
   );
 }
 
@@ -146,19 +157,34 @@ export async function updateCurrentUser(userData: Partial<Prisma.UserUpdateInput
 export async function deleteUserById(authUserId: string): Promise<boolean> {
   await assertCurrentUserId(authUserId);
 
-  const deletedUser = await errorManager.wrapOperation(
-    () =>
-      prisma.user.delete({
+  return await logger.wrapOperation(
+    async () => {
+      // Get user info before deletion for audit
+      const user = await prisma.user.findUnique({
         where: { authId: authUserId },
-      }),
+        select: { id: true, authId: true, createdAt: true },
+      });
+
+      if (!user) {
+        throw new Error(`User not found: ${authUserId}`);
+      }
+
+      await prisma.user.delete({
+        where: { authId: authUserId },
+      });
+
+      return true;
+    },
     ERROR_CODES.USER_DELETE_FAILED,
     {
-      operation: "deleteUserById",
+      operation: "user_delete_by_id",
       userId: authUserId,
-    }
+      metadata: {
+        action: "delete_user_account",
+      },
+    },
+    "User account deleted"
   );
-
-  return !!deletedUser;
 }
 
 export async function deleteCurrentUser(): Promise<boolean> {

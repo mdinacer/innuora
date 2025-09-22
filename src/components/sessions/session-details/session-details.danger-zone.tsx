@@ -11,7 +11,7 @@ interface Props {
   session: Session;
 }
 
-const SessionDetailsDangerZone: React.FC<Props> = ({ className, session }) => {
+const SessionDetailsDangerZone: React.FC<Props> = ({ className }) => {
   return (
     <Card className={cn("border-red-200 dark:border-red-800", className)}>
       <h3 className="font-bold mb-4 flex items-center gap-2 text-red-600 dark:text-red-400">

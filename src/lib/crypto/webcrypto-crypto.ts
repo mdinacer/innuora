@@ -2,7 +2,7 @@ import localforage from "localforage";
 
 import { EncryptedBlob, WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 
 /* webcrypto-crypto.ts
    Wrapped-key only (AES-GCM content + AES-KW wrapping)
@@ -17,11 +17,11 @@ const subtle = (globalThis as any).crypto?.subtle;
 
 function ensureSubtle(): SubtleCrypto {
   if (!subtle) {
-    errorManager.handleError(
+    logger.logErrorAndThrow(
       ERROR_CODES.CRYPTO_WEBCRYPTO_UNAVAILABLE,
       new Error("Web Crypto (crypto.subtle) not available in runtime."),
       {
-        operation: "ensureSubtle",
+        operation: "crypto_ensure_subtle",
       }
     );
   }
@@ -64,7 +64,7 @@ export async function deriveWrappingKeyFromPassword(
   saltB64: string,
   iterations = 600_000
 ): Promise<CryptoKey> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
       const enc = new TextEncoder();
@@ -97,7 +97,7 @@ export async function deriveWrappingKeyFromPassword(
 
 /** Generate a fresh AES-GCM content key (extractable so we can wrap/export if needed). */
 export async function generateContentKey(): Promise<CryptoKey> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
       return s.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
@@ -132,7 +132,7 @@ export async function wrapContentKeyWithPassword(
   password: string,
   iterations = 600_000
 ): Promise<WrappedKeyPackage> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
       const salt = getRandomBytes(16);
@@ -162,12 +162,12 @@ export async function wrapContentKeyWithPassword(
  * Unwrap a WrappedKeyPackage using the provided password. Returns the AES-GCM contentKey.
  */
 export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, password: string): Promise<CryptoKey> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
 
       if (pkg.kdf !== "PBKDF2" || pkg.hash !== "SHA-256") {
-        errorManager.handleError(
+        logger.logErrorAndThrow(
           ERROR_CODES.CRYPTO_INVALID_KEY_PACKAGE,
           new Error("Unsupported KDF/hash in wrapped key package."),
           {
@@ -205,7 +205,7 @@ export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, passw
  * Returns an EncryptedBlob (JSON-serializable): { iv, ciphertext }.
  */
 export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): Promise<EncryptedBlob> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       const json = JSON.stringify(data);
       const pt = new TextEncoder().encode(json);
@@ -227,11 +227,11 @@ export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): P
  * Decrypt an EncryptedBlob using a contentKey and parse JSON back into T.
  */
 export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: CryptoKey): Promise<T> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
       if (!blob.iv || !blob.ciphertext) {
-        errorManager.handleError(ERROR_CODES.CRYPTO_MALFORMED_DATA, new Error("Malformed encrypted blob."), {
+        logger.logErrorAndThrow(ERROR_CODES.CRYPTO_MALFORMED_DATA, new Error("Malformed encrypted blob."), {
           operation: "decryptObjectWithKey",
         });
       }
@@ -242,7 +242,7 @@ export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: C
       try {
         plainBuf = await s.decrypt({ name: "AES-GCM", iv }, contentKey, ct);
       } catch (error) {
-        errorManager.handleError(
+        logger.logErrorAndThrow(
           ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
           new Error("Decryption failed: invalid key or corrupted payload."),
           {
@@ -250,10 +250,9 @@ export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: C
             metadata: { originalError: error instanceof Error ? error.message : String(error) },
           }
         );
-        throw new Error("Unreachable");
       }
 
-      const json = new TextDecoder().decode(plainBuf);
+      const json = new TextDecoder().decode(plainBuf!);
       return JSON.parse(json) as T;
     },
     ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
@@ -297,10 +296,11 @@ export async function getStoredContentKey(): Promise<CryptoKey | null> {
     return importRawKeyFromBase64(keyB64);
   } catch (error) {
     // Log but don't throw - return null to indicate key not available
-    errorManager.handleError(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, error, {
+    logger.logWarning("Failed to retrieve stored content key", {
       operation: "getStoredContentKey",
+      metadata: { error: error instanceof Error ? error.message : String(error) },
     });
-    throw new Error("Unreachable");
+    return null;
   }
 }
 
@@ -308,7 +308,7 @@ export async function getStoredContentKey(): Promise<CryptoKey | null> {
  * Store the content key (base64) in sessionStorage or IndexedDB depending on persist flag.
  */
 export async function storeContentKey(key: CryptoKey, persist: boolean = false): Promise<void> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       // Export CryptoKey to base64
       const keyB64 = await exportKeyToBase64(key);

@@ -22,8 +22,7 @@ model User {
 
   // Business fields
   role           UserRole?          @default(user)
-  pointsBalance  Int                @default(0) @map("points_balance")
-  pointsConsumed Int                @default(0) @map("points_consumed")
+  creditsBalance Int                @default(0) @map("credits_balance")
   status         UserAccountStatus? @default(active)
   isOnboarded    Boolean            @default(false)
 
@@ -35,17 +34,13 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  auditLogs           AuditLog[]
-  config              UserConfig?
-  feedbacks           Feedback[]
-  madeAdjustments     AdminAdjustment[]   @relation("AdjustmentsMade")
-  payments            Payment[]
-  pointsTransactions  PointsTransaction[]
-  profile             Profile?
-  receivedAdjustments AdminAdjustment[]   @relation("AdjustmentsReceived")
-  sessions            Session[]
-  subscription        Subscription?
-  userFeatureFlags    UserFeatureFlag[]
+  auditLogs          AuditLog[]
+  config             UserConfig?
+  profile            Profile?
+  sessions           Session[]
+  creditTransactions CreditTransaction[]
+  subscriptions      Subscription[]
+  subscriptionRenewals SubscriptionRenewal[]
 
   @@map("users")
 }
@@ -74,24 +69,6 @@ model Profile {
   @@map("profiles")
 }
 
-model Subscription {
-  // Identifiers
-  id String @id @default(uuid())
-
-  // Foreign keys
-  userId String @unique @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Business fields
-  plan   SubscriptionPlan?   @default(free)
-  status SubscriptionStatus? @default(active)
-
-  // Timestamps
-  startedAt DateTime  @default(now()) @map("started_at")
-  expiresAt DateTime? @map("expires_at")
-
-  @@map("subscriptions")
-}
 
 model UserConfig {
   // Identifiers
@@ -121,20 +98,42 @@ model AuditLog {
   // Identifiers
   id String @id @default(cuid())
 
-  // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Foreign keys (optional for system-level logs)
+  userId String? @map("user_id")
+  user   User?   @relation(fields: [userId], references: [authId], onDelete: Cascade)
 
-  // Business fields
-  action   String
-  metadata Json?
+  // Core logging fields
+  operation String              // Clean operation name (e.g., "user_signup", "session_create")
+  level     LogLevel            // Log level enum
+  message   String              // Human-readable message
+  
+  // Context fields
+  errorCode String?             // Structured error codes
+  sessionId String?    @map("session_id")        // Session correlation
+  userAgent String?    @map("user_agent")        // Client information
+  ipAddress String?    @map("ip_address")        // Request IP
+  
+  // Additional context
+  metadata  Json?               // Flexible additional data
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
 
+  // Indexes for performance
+  @@index([level])
+  @@index([operation])
+  @@index([errorCode])
+  @@index([sessionId])
   @@index([userId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
+  AUDIT
 }
 
 model Session {
@@ -150,7 +149,7 @@ model Session {
   modelCode       ModelCode @default(M1)
   autoUpdateTitle Boolean   @default(false)
   persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
-  metadata        Json // additional metadata { messageCount :int, tokenCount: int, costUSD :float}
+  metadata        Json // additional metadata { messageCount: int, tokenCount: int, creditsUsed: int }
   // Encrypted session bundle
   encryptedData   Json?     @map("encrypted_data")
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -159,7 +158,7 @@ model Session {
   @@map("sessions")
 }
 
-model PointsTransaction {
+model CreditTransaction {
   // Identifiers
   id String @id @default(cuid())
 
@@ -167,105 +166,27 @@ model PointsTransaction {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Business fields
-  type   PointsTransactionType? @default(credit)
-  amount Int
-  reason String?
-  meta   Json?
+  // Transaction details
+  type      CreditTransactionType // CREDIT | DEBIT
+  amount    Int                   // Credits amount (always positive)
+  reason    String                // "ai_usage", "purchase", "admin_adjustment"
+  sessionId String?               @map("session_id") // Link to session if AI usage
+  
+  // Metadata for context
+  metadata Json? // Additional context (model used, tokens, etc.)
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
 
   @@index([userId])
   @@index([createdAt])
-  @@map("points_transactions")
+  @@index([type])
+  @@index([reason])
+  @@map("credit_transactions")
 }
 
-model Feedback {
-  // Identifiers
-  id String @id @default(cuid())
 
-  // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Business fields
-  message String
-  rating  Int?
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("feedbacks")
-}
-
-model UserFeatureFlag {
-  // Identifiers
-  id String @id @default(cuid())
-
-  // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Business fields
-  flag    String
-  enabled Boolean @default(false)
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@unique([userId, flag])
-  @@map("user_feature_flags")
-}
-
-// =========================
-// Admin & Payments
-// =========================
-
-model Payment {
-  // Identifiers
-  id String @id @default(cuid())
-
-  // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Business fields
-  provider    String
-  providerRef String        @map("provider_ref")
-  amountCents Int           @map("amount_cents")
-  currency    String        @default("usd")
-  status      PaymentStatus @default(pending)
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@index([userId])
-  @@index([createdAt])
-  @@map("payments")
-}
-
-model AdminAdjustment {
-  // Identifiers
-  id String @id @default(cuid())
-
-  // Foreign keys
-  userId String @map("user_id")
-  user   User   @relation("AdjustmentsReceived", fields: [userId], references: [id], onDelete: Cascade)
-
-  adminId String @map("admin_id")
-  admin   User   @relation("AdjustmentsMade", fields: [adminId], references: [id], onDelete: Cascade)
-
-  // Business fields
-  amount Int
-  reason String?
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("admin_adjustments")
-}
 
 model Tester {
   // Identifiers
@@ -289,6 +210,86 @@ model Tester {
 }
 
 // =========================
+// Subscription Management
+// =========================
+
+model Subscription {
+  // Identifiers
+  id              String @id @default(cuid())
+  stripeId        String @unique @map("stripe_id") // Stripe subscription ID
+  customerId      String @map("customer_id") // Stripe customer ID
+  
+  // Foreign keys
+  userId          String @map("user_id")
+  
+  // Subscription details
+  status          SubscriptionStatus
+  currentPeriodStart DateTime @map("current_period_start")
+  currentPeriodEnd   DateTime @map("current_period_end")
+  cancelAtPeriodEnd  Boolean @default(false) @map("cancel_at_period_end")
+  canceledAt      DateTime? @map("canceled_at")
+  
+  // Plan details
+  planId          String @map("plan_id") // Stripe price ID
+  creditsPerPeriod Int @map("credits_per_period")
+  priceAmountCents Int @map("price_amount_cents")
+  currency        String @default("usd")
+  
+  // Billing
+  trialStart      DateTime? @map("trial_start")
+  trialEnd        DateTime? @map("trial_end")
+  
+  // Metadata
+  metadata        Json @default("{}")
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  // Relationships
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  renewals        SubscriptionRenewal[]
+  
+  @@map("subscriptions")
+}
+
+model SubscriptionRenewal {
+  // Identifiers
+  id              String @id @default(cuid())
+  
+  // Foreign keys
+  subscriptionId  String @map("subscription_id")
+  userId          String @map("user_id")
+  
+  // Renewal details
+  periodStart     DateTime @map("period_start")
+  periodEnd       DateTime @map("period_end")
+  creditsGranted  Int @map("credits_granted")
+  amountPaidCents Int @map("amount_paid_cents")
+  
+  // Stripe details
+  invoiceId       String? @map("invoice_id") // Stripe invoice ID
+  paymentIntentId String? @map("payment_intent_id") // Stripe payment intent ID
+  
+  // Status
+  status          RenewalStatus @default(pending)
+  processedAt     DateTime? @map("processed_at")
+  
+  // Metadata
+  metadata        Json @default("{}")
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  // Relationships
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscription_renewals")
+}
+
+// =========================
 // Enums
 // =========================
 
@@ -298,9 +299,9 @@ enum ModelCode {
   M3
 }
 
-enum PointsTransactionType {
-  credit
-  debit
+enum CreditTransactionType {
+  CREDIT  // User receives credits (purchase, bonus, refund)
+  DEBIT   // User spends credits (AI usage)
 }
 
 enum UserRole {
@@ -309,17 +310,6 @@ enum UserRole {
   tester
 }
 
-enum SubscriptionPlan {
-  free
-  pro
-  enterprise
-}
-
-enum SubscriptionStatus {
-  active
-  canceled
-  past_due
-}
 
 enum AgeGroup {
   Age18_24
@@ -387,9 +377,21 @@ enum UserAccountStatus {
   banned
 }
 
-enum PaymentStatus {
-  pending
-  succeeded
-  failed
-  refunded
+enum SubscriptionStatus {
+  active
+  past_due
+  canceled
+  unpaid
+  paused
+  trialing
+  incomplete
+  incomplete_expired
 }
+
+enum RenewalStatus {
+  pending
+  processed
+  failed
+  skipped
+}
+

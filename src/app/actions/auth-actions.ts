@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
-import { ERROR_CODES, errorManager, mapSupabaseAuthError } from "@/lib/errors";
+import { ERROR_CODES } from "@/lib/errors";
+import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { SignInSchema, SignInSchemaType, SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
-import { logAction } from "./audit-actions";
 
 export async function findCurrentUser() {
   const supabase = await createClient();
@@ -26,16 +26,16 @@ export async function requireCurrentUser(): Promise<User> {
   const { data, error } = await supabase.auth.getUser();
 
   if (error) {
-    errorManager.handleError(ERROR_CODES.AUTH_SESSION_EXPIRED, error, { operation: "requireCurrentUser" });
+    logger.logErrorAndThrow(ERROR_CODES.AUTH_SESSION_EXPIRED, error, { operation: "require_current_user" });
   }
 
   if (!data.user) {
-    errorManager.handleError(ERROR_CODES.AUTH_SESSION_EXPIRED, new Error("No user found in session"), {
-      operation: "requireCurrentUser",
+    logger.logErrorAndThrow(ERROR_CODES.AUTH_SESSION_EXPIRED, new Error("No user found in session"), {
+      operation: "require_current_user",
     });
   }
 
-  return data.user!; // Non-null assertion since handleError throws
+  return data.user!; // Non-null assertion since logErrorAndThrow throws
 }
 
 export async function requireAdmin() {
@@ -43,27 +43,27 @@ export async function requireAdmin() {
   const user = await prisma.user.findUnique({ where: { authId: authUser.id } });
 
   if (!user?.role || user.role !== "admin") {
-    errorManager.handleError(ERROR_CODES.AUTH_UNAUTHORIZED, new Error("Admin access denied"), {
+    logger.logErrorAndThrow(ERROR_CODES.AUTH_UNAUTHORIZED, new Error("Admin access denied"), {
       userId: authUser.id,
-      operation: "requireAdmin",
+      operation: "require_admin",
       metadata: { userRole: user?.role || "none" },
     });
   }
-  return user!; // Non-null assertion since handleError throws if unauthorized
+  return user!; // Non-null assertion since logErrorAndThrow throws if unauthorized
 }
 
 export async function assertCurrentUserId(userId: string): Promise<void> {
   if (!userId || typeof userId !== "string") {
-    errorManager.handleError(ERROR_CODES.VALIDATION_FAILED, new Error("Invalid user ID provided"), {
-      operation: "assertCurrentUserId",
+    logger.logErrorAndThrow(ERROR_CODES.VALIDATION_FAILED, new Error("Invalid user ID provided"), {
+      operation: "assert_current_user_id",
       metadata: { providedUserId: userId },
     });
   }
   const currentUser = await requireCurrentUser();
   if (userId !== currentUser.id) {
-    errorManager.handleError(ERROR_CODES.AUTH_UNAUTHORIZED, new Error("User ID mismatch"), {
+    logger.logErrorAndThrow(ERROR_CODES.AUTH_UNAUTHORIZED, new Error("User ID mismatch"), {
       userId: currentUser.id,
-      operation: "assertCurrentUserId",
+      operation: "assert_current_user_id",
       metadata: { requestedUserId: userId },
     });
   }
@@ -72,79 +72,96 @@ export async function assertCurrentUserId(userId: string): Promise<void> {
 export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: WrappedKeyPackage) {
   const parsedData = SignUpSchema.parse(singUpData);
   const supabase = await createClient();
-
   const { email, password } = parsedData;
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        crypto: wrappedKeyPackage,
-        ageConfirm: parsedData.ageConfirm,
-        termsAgree: parsedData.termsAgree,
+  await logger.wrapOperation(
+    async () => {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            crypto: wrappedKeyPackage,
+            ageConfirm: parsedData.ageConfirm,
+            termsAgree: parsedData.termsAgree,
+          },
+        },
+      });
+
+      if (error) {
+        throw error; // Will be caught and logged with proper error code
+      }
+
+      if (!data.user?.confirmation_sent_at) {
+        throw new Error("No confirmation email sent");
+      }
+
+      return data;
+    },
+    ERROR_CODES.AUTH_SIGNUP_FAILED,
+    {
+      operation: "user_signup",
+      userId: singUpData.email, // Use email as temp identifier
+      metadata: {
+        email: email.toLowerCase(),
+        hasKeyPackage: !!wrappedKeyPackage,
+        ageConfirmed: parsedData.ageConfirm,
+        termsAccepted: parsedData.termsAgree,
       },
     },
-  });
-
-  if (error) {
-    errorManager.handleError(mapSupabaseAuthError(error), error, {
-      operation: "signUp",
-      metadata: { email: email.toLowerCase() },
-    });
-  }
-
-  if (!data.user?.confirmation_sent_at) {
-    errorManager.handleError(ERROR_CODES.AUTH_EMAIL_VERIFICATION_FAILED, new Error("No confirmation email sent"), {
-      operation: "signUp",
-      metadata: { email: email.toLowerCase() },
-    });
-  }
-
-  // Log successful signup
-  if (data.user) {
-    await logAction(data.user.id, "signup", `User registered: ${email}`);
-  }
+    `User signup completed: ${email}`
+  );
 
   redirect("/auth/verify-email/sent");
 }
 
 export async function signIn(signInData: SignInSchemaType) {
   const parsedData = SignInSchema.parse(signInData);
-  const { remember } = parsedData;
+  const { remember, email, password } = parsedData;
   const supabase = await createClient(remember);
-  const { email, password } = parsedData;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  return await logger.wrapOperation(
+    async () => {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-  if (error) {
-    errorManager.handleError(mapSupabaseAuthError(error), error, {
-      operation: "signIn",
-      metadata: { email: email.toLowerCase(), remember },
-    });
-  }
+      if (error) {
+        throw error; // Will be caught and logged with proper error code
+      }
 
-  // Log successful signin
-  if (data.user) {
-    await logAction(data.user.id, "signin", `User logged in: ${email}`);
-  }
-
-  return data;
+      return data;
+    },
+    ERROR_CODES.AUTH_SIGNIN_FAILED,
+    {
+      operation: "user_signin",
+      userId: email, // Use email as temp identifier
+      metadata: {
+        email: email.toLowerCase(),
+        remember,
+      },
+    },
+    `User signed in: ${email}`
+  );
 }
 
 export async function signOut() {
   const supabase = await createClient();
-
-  // Get current user before signing out
   const currentUser = await findCurrentUser();
 
-  await supabase.auth.signOut();
-
-  // Log signout
-  if (currentUser) {
-    await logAction(currentUser.id, "signout", "User logged out");
-  }
+  await logger.wrapOperation(
+    async () => {
+      await supabase.auth.signOut();
+    },
+    ERROR_CODES.AUTH_SIGNOUT_FAILED,
+    {
+      operation: "user_signout",
+      userId: currentUser?.id,
+      metadata: {
+        sessionValid: !!currentUser,
+      },
+    },
+    "User signed out successfully"
+  );
 }

@@ -4,6 +4,7 @@ import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
+import { deductCredits } from "@/app/actions/credit-actions";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
 import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
@@ -14,8 +15,9 @@ import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
 import { AppLocales } from "@/lib/i18n";
+import { logger } from "@/lib/logging/unified-logger";
+import { prisma } from "@/lib/prisma";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -26,7 +28,8 @@ interface HandleUserInputResult {
     analysisUsage: ModelTokenUsage | null;
     responseUsage: ModelTokenUsage | null;
   };
-  cost: number;
+  cost: number; // USD cost (for backward compatibility)
+  creditsUsed: number; // Credits deducted
 }
 
 /**
@@ -38,7 +41,9 @@ async function buildConversationPrompts(
   messages: OpenChatMessage[],
   profile: Profile | null,
   prevMemory: string | null,
-  locale: AppLocales
+  locale: AppLocales,
+  userId?: string,
+  sessionId?: string
 ): Promise<ChatCompletionMessageParam[]> {
   // Initialize services - can be done in parallel
   const [modulesPromptBuilder, messagesManager] = await Promise.all([
@@ -55,19 +60,23 @@ async function buildConversationPrompts(
   // Get language and tone prompts (synchronous lookups)
   const languagePrompt = LanguagePrompt[locale];
   if (!languagePrompt) {
-    errorManager.handleError(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
-      operation: "buildConversationPrompts",
+    logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
+      operation: "open_chat_build_conversation_prompts",
+      userId,
+      sessionId,
       metadata: { locale },
     });
   }
 
   const toneInstruction = TonePrompt["friendly"][analysis.intensity];
   if (!toneInstruction) {
-    errorManager.handleError(
+    logger.logErrorAndThrow(
       ERROR_CODES.CHAT_UNSUPPORTED_INTENSITY,
       new Error(`Unsupported intensity: ${analysis.intensity}`),
       {
-        operation: "buildConversationPrompts",
+        operation: "open_chat_build_conversation_prompts",
+        userId,
+        sessionId,
         metadata: { intensity: analysis.intensity },
       }
     );
@@ -115,32 +124,55 @@ export async function handleUserInput(
   profile: Profile | null,
   prevMemory: string | null,
   locale: AppLocales = "en",
-  modelCode: ModelCode = MODELS_CODES.M1
+  modelCode: ModelCode = MODELS_CODES.M1,
+  userId?: string,
+  sessionId?: string
 ): Promise<HandleUserInputResult> {
-  return await errorManager.wrapOperation(
+  return await logger.wrapOperation(
     async () => {
       // Early validation
       if (!userInput?.trim()) {
-        errorManager.handleError(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
-          operation: "handleUserInput",
+        logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
+          operation: "open_chat_handle_user_input",
+          userId,
+          sessionId,
         });
       }
 
       const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
+
+      // Resolve authId for credit operations (userId is database User.id, we need authId)
+      let authId: string | undefined;
+      if (userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { authId: true },
+        });
+        authId = user?.authId;
+      }
       if (!aiModel) {
-        errorManager.handleError(
-          ERROR_CODES.CHAT_UNSUPPORTED_MODEL,
-          new Error(`Unsupported model code: ${modelCode}`),
-          {
-            operation: "handleUserInput",
-            metadata: { modelCode },
-          }
-        );
+        logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
+          operation: "open_chat_handle_user_input",
+          userId,
+          sessionId,
+          metadata: { modelCode },
+        });
       }
 
       // Step 1: Analyze user input
-      const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel);
-      const { analysis, modelTokenUsage: analysisUsage } = analysisResult;
+      const sessionMetadata = {
+        messageCount: messages.length,
+        activeDurationMs: 0, // Will be properly calculated in store
+      };
+      const analysisResult = await analyzeUserInput(
+        userInput,
+        prevAnalysis,
+        aiModel,
+        userId,
+        sessionId,
+        sessionMetadata
+      );
+      const { analysis, modelTokenUsage: analysisUsage, consumedCredits: analysisCredits } = analysisResult;
 
       // Step 2: Build conversation prompts
       const conversationPrompts = await buildConversationPrompts(
@@ -149,14 +181,30 @@ export async function handleUserInput(
         messages,
         profile,
         prevMemory,
-        locale
+        locale,
+        userId,
+        sessionId
       );
 
       // Step 3: Generate AI response
       const miraelResponse = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
+      const { consumedCredits: responseCredits } = miraelResponse;
 
-      // Step 4: Calculate total cost
-      const totalCost = (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0);
+      // Step 4: Simple credit deduction - exact amounts!
+      let creditsUsed = 0;
+      if (userId && authId) {
+        const totalCredits = (analysisCredits || 0) + (responseCredits || 0);
+
+        await deductCredits(authId, totalCredits, "ai_usage", sessionId, {
+          modelCode,
+          analysisCredits: analysisCredits || 0,
+          responseCredits: responseCredits || 0,
+          messageLength: userInput.length,
+          responseLength: miraelResponse.message.length,
+        });
+
+        creditsUsed = totalCredits;
+      }
 
       return {
         analysis,
@@ -165,13 +213,22 @@ export async function handleUserInput(
           analysisUsage,
           responseUsage: miraelResponse.modelTokenUsage,
         },
-        cost: totalCost,
+        cost: (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0),
+        creditsUsed,
       };
     },
     ERROR_CODES.CHAT_RESPONSE_FAILED,
     {
-      operation: "handleUserInput",
-      metadata: { modelCode, locale, messageCount: messages.length },
-    }
+      operation: "open_chat_handle_user_input",
+      userId,
+      sessionId,
+      metadata: {
+        modelCode,
+        locale,
+        messageCount: messages.length,
+        inputLength: userInput?.length || 0,
+      },
+    },
+    "Open chat conversation processed successfully"
   );
 }

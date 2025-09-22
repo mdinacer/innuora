@@ -6,6 +6,7 @@ export const ERROR_CODES = {
   // Auth errors
   AUTH_SIGNIN_FAILED: "errors:auth.signin_failed",
   AUTH_SIGNUP_FAILED: "errors:auth.signup_failed",
+  AUTH_SIGNOUT_FAILED: "errors:auth.signout_failed",
   AUTH_EMAIL_VERIFICATION_FAILED: "errors:auth.email_verification_failed",
   AUTH_PASSWORD_REQUIREMENTS: "errors:auth.password_requirements",
   AUTH_EMAIL_INVALID: "errors:auth.email_invalid",
@@ -41,6 +42,12 @@ export const ERROR_CODES = {
   USER_UPDATE_FAILED: "errors:user.update_failed",
   USER_DELETE_FAILED: "errors:user.delete_failed",
 
+  // Tester errors
+  TESTER_NOT_FOUND: "errors:tester.not_found",
+  TESTER_CREATE_FAILED: "errors:tester.create_failed",
+  TESTER_UPDATE_FAILED: "errors:tester.update_failed",
+  TESTER_DELETE_FAILED: "errors:tester.delete_failed",
+
   // AI errors
   AI_REQUEST_FAILED: "errors:ai.request_failed",
   AI_EMPTY_RESPONSE: "errors:ai.empty_response",
@@ -73,6 +80,12 @@ export const ERROR_CODES = {
   CRYPTO_INVALID_KEY_PACKAGE: "errors:crypto.invalid_key_package",
   CRYPTO_WEBCRYPTO_UNAVAILABLE: "errors:crypto.webcrypto_unavailable",
   CRYPTO_MALFORMED_DATA: "errors:crypto.malformed_data",
+
+  // Billing errors
+  BILLING_OPERATION_FAILED: "errors:billing.operation_failed",
+  BILLING_STRIPE_CUSTOMER_FAILED: "errors:billing.stripe_customer_failed",
+  BILLING_PAYMENT_INTENT_FAILED: "errors:billing.payment_intent_failed",
+  BILLING_CONFIG_INVALID: "errors:billing.config_invalid",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

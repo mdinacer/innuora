@@ -10,8 +10,9 @@ import Card from "@/components/mir-ui/card";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
-import { getSessionMessagesSummary, getSessionSummary } from "@/domains/session-summary/session-summary.action";
+import { getSessionSummary } from "@/domains/session-summary/session-summary.action";
 import { AppLocales, FNS_LOCALES_MAP } from "@/lib/i18n";
+import { logger } from "@/lib/logging/unified-logger";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 
 interface Props {
@@ -31,6 +32,7 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
 
   const handleGenerateSummary = useCallback(async () => {
     if (continuitySummary) return;
+    if (!aggregatedAnalysis || !memoryStore) return;
 
     const state = useSessionStore.getState();
 
@@ -47,9 +49,6 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
           title = data.title;
           subtitle = data.subtitle;
         }
-      } else if (messages.length > 0) {
-        const result = await getSessionMessagesSummary(messages, undefined, language as AppLocales);
-        summaryText = result.message;
       }
 
       if (!summaryText) return;
@@ -66,7 +65,14 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
         state
       );
     } catch (error) {
-      console.error("Failed to generate session summary:", error);
+      logger.logWarning("Failed to generate session summary", {
+        operation: "session_summary_generation_failed",
+        sessionId: session.id,
+        metadata: {
+          error: error instanceof Error ? error.message : String(error),
+          messageCount: session.messages.length,
+        },
+      });
     }
   }, [aggregatedAnalysis, continuitySummary, language, memoryStore, messages, session]);
   return (
@@ -76,12 +82,23 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
           <FileTextIcon className="size-5 text-mir-bg-accent" />
           <h2 className="text-xl font-bold">Session Summary</h2>
         </div>
-        {!summary && !continuitySummary && (
+        {!summary && !continuitySummary && aggregatedAnalysis && memoryStore && (
           <Button variant={"outline"} onClick={handleGenerateSummary}>
             Generate Summary
           </Button>
         )}
       </div>
+
+      {!continuitySummary && !summary && (!aggregatedAnalysis || !memoryStore) && (
+        <div className="text-mir-text-secondary text-sm p-4 bg-mir-bg-secondary rounded-lg">
+          <p>
+            Session summaries are available after you've had some conversation rounds with analysis and memory
+            collection.
+          </p>
+          <p className="mt-2">Continue chatting to build up session context for summary generation.</p>
+        </div>
+      )}
+
       {continuitySummary && (
         <>
           <div className="leading-7 mb-4 rtl:leading-loose tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>ul]:list-inside [&>ul]:list-disc">

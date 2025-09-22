@@ -4,15 +4,17 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SendIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { CreditsBalance } from "@/components/credits";
 import { cn } from "@/lib/utils";
 
 interface Props {
   className?: string;
   isLoading?: boolean;
   onSendMessage: (value: string) => void;
+  userId?: string;
 }
 
-const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
+const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage, userId }) => {
   const { t } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.input" });
 
   const { label, placeholder, actionTitle } = useMemo(
@@ -92,6 +94,17 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           <SendIcon className="size-[18px] text-white shrink-0" />
         </button>
       </div>
+
+      {/* General Cost Context */}
+      {userId && (
+        <div className="mt-2 px-4">
+          <div className="text-xs text-mir-text-secondary opacity-75 flex items-center gap-2">
+            <span>Affordable therapeutic support</span>
+            <span>•</span>
+            <CreditsBalance className="inline" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

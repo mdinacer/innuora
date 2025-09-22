@@ -4,6 +4,7 @@ import { resetSessionData } from "@/domains/active-session/active-session.utils"
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { generateMessageId } from "@/domains/session-flow/utils/generate-id";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logger } from "@/lib/logging/unified-logger";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -21,10 +22,11 @@ interface ActiveSessionStoreState {
 
   // Session actions
   addMessage: (message: OpenChatMessage) => void;
-  appendMessage: (content: string, role: "user" | "assistant") => void;
+  appendMessage: (content: string, role: "user" | "assistant", creditsUsed?: number) => void;
   addAnalysis: (analysis: TherapeuticAnalysis) => void;
   addTokenUsage: (tokenUsage: ModelTokenUsage) => void;
   updateTotalCost: (cost: number | ((cost: number) => number)) => void;
+  addCreditsUsed: (credits: number) => void;
   resetSession: () => void;
 }
 
@@ -35,7 +37,10 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
 
   setSession: (session) => {
     if (!session?.id) {
-      console.warn("Attempting to set invalid session");
+      logger.logWarning("Attempting to set invalid session", {
+        operation: "active_session_store_set_invalid_session",
+        metadata: { hasSession: !!session, sessionId: session?.id },
+      });
       return;
     }
     set({ session, isDirty: false });
@@ -75,16 +80,38 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
     });
   },
 
-  appendMessage: (content, role) => {
+  appendMessage: (content, role, creditsUsed) => {
     if (!content.trim()) return;
     const current = get().session;
     if (!current) return;
+
+    // Update active duration when user sends a message
+    if (role === "user") {
+      const now = new Date();
+      const lastActive = new Date(current.metadata.lastActiveAt);
+      const timeSinceLastActive = lastActive ? now.getTime() - lastActive.getTime() : 0;
+
+      // Only count as active time if less than 5 minutes gap (300,000ms)
+      const additionalTime = timeSinceLastActive < 300000 ? timeSinceLastActive : 0;
+
+      set({
+        session: {
+          ...current,
+          metadata: {
+            ...current.metadata,
+            activeDurationMs: current.metadata.activeDurationMs + additionalTime,
+            lastActiveAt: now,
+          },
+        },
+      });
+    }
 
     get().addMessage({
       id: generateMessageId(`${role}-message-${current.id}`),
       role: role,
       content: content,
       timestamp: Date.now(),
+      creditsUsed: creditsUsed,
     });
   },
 
@@ -136,6 +163,23 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
         metadata: {
           ...current.metadata,
           costUSD: newCost,
+        },
+        updatedAt: new Date(),
+      },
+      isDirty: true,
+    });
+  },
+
+  addCreditsUsed: (credits) => {
+    const current = get().session;
+    if (!current) return;
+
+    set({
+      session: {
+        ...current,
+        metadata: {
+          ...current.metadata,
+          creditsUsed: (current.metadata.creditsUsed || 0) + credits,
         },
         updatedAt: new Date(),
       },

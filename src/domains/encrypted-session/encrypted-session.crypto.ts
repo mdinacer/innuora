@@ -5,33 +5,36 @@ import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.ty
 import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { EncryptedBlob, EncryptedBlobSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 
 const DEFAULT_MODEL_CODE = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE ?? MODELS_CODES.M1;
 
 /** Ensure content key is available or raise a managed error */
-async function requireContentKey(operation: string, sessionId?: string) {
+async function requireContentKey(operation: string, sessionId?: string): Promise<CryptoKey> {
   const contentKey = await getStoredContentKey();
   if (!contentKey) {
-    errorManager.handleError(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, new Error("No content key found"), {
+    logger.logErrorAndThrow(ERROR_CODES.CRYPTO_KEY_RETRIEVAL_FAILED, new Error("No content key found"), {
       operation,
       sessionId,
     });
-    throw new Error("Missing content key"); // defensive fallback
   }
-  return contentKey;
+  return contentKey as CryptoKey;
 }
 
 export async function encryptSession(session: Partial<Session>): Promise<PrismaSession> {
-  return errorManager.wrapOperation(
+  return logger.wrapOperation(
     async () => {
-      const contentKey = await requireContentKey("encryptSession", session.id);
+      const contentKey = await requireContentKey("crypto_encrypt_session", session.id);
 
       const { messages = [], memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots, ...rest } = session;
 
       const sessionData: Partial<PrismaSession> = {
         ...rest,
-        metadata: { ...rest.metadata, tokenUsage: [] },
+        metadata: {
+          ...rest.metadata,
+          tokenUsage: [],
+          lastActiveAt: (rest.metadata?.lastActiveAt || new Date()).toISOString(),
+        },
       };
 
       if (messages.length > 0) {
@@ -45,20 +48,28 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
 
         const encryptedData: EncryptedBlob = await encryptObjectWithKey(dataToEncrypt, contentKey);
 
-        sessionData.encryptedData = encryptedData;
+        sessionData.encryptedData = encryptedData as EncryptedBlob;
       }
 
       return sessionData as PrismaSession;
     },
     ERROR_CODES.SESSION_ENCRYPTION_FAILED,
-    { operation: "encryptSession", sessionId: session.id }
+    {
+      operation: "crypto_encrypt_session",
+      sessionId: session.id,
+      metadata: {
+        // hasMessages: messages.length > 0,
+        // messageCount: messages.length,
+      },
+    },
+    "Session encrypted successfully"
   );
 }
 
 export async function decryptSession(encryptedSession: PrismaSession): Promise<Session> {
-  return errorManager.wrapOperation(
+  return logger.wrapOperation(
     async () => {
-      const contentKey = await requireContentKey("decryptSession", encryptedSession.id);
+      const contentKey = await requireContentKey("crypto_decrypt_session", encryptedSession.id);
 
       // Base session with sane defaults
       let session: Session = {
@@ -78,9 +89,18 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
         metadata: encryptedSession.metadata
           ? {
               ...SessionMetadataSchema.parse(encryptedSession.metadata),
+              lastActiveAt: new Date(),
               tokenUsage: [],
             }
-          : { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
+          : {
+              messageCount: 0,
+              tokenCount: 0,
+              costUSD: 0,
+              creditsUsed: 0,
+              activeDurationMs: 0,
+              lastActiveAt: new Date(),
+              tokenUsage: [],
+            },
         persistOnCloud: encryptedSession.persistOnCloud ?? false,
       };
 
@@ -95,6 +115,13 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
       return session;
     },
     ERROR_CODES.SESSION_DECRYPTION_FAILED,
-    { operation: "decryptSession", sessionId: encryptedSession.id }
+    {
+      operation: "crypto_decrypt_session",
+      sessionId: encryptedSession.id,
+      metadata: {
+        hasEncryptedData: !!encryptedSession.encryptedData,
+      },
+    },
+    "Session decrypted successfully"
   );
 }

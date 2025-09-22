@@ -20,11 +20,11 @@ export interface SessionsStoreState extends PersistedStoreBaseProps {
   setSession: (publicId: string, session: PrismaSession) => void;
   addSession: (session: PrismaSession) => void;
   updateSession: (
-    publicId: string,
+    sessionId: string,
     session: Partial<PrismaSession> | ((session: PrismaSession) => PrismaSession)
   ) => void;
-  removeSession: (publicId: string) => void;
-  clearSession: (publicId: string) => void;
+  removeSession: (sessionId: string) => void;
+  clearSession: (sessionId: string) => void;
   setSessions: (sessions: PrismaSession[]) => void;
   sessionExists: (sessionId: string) => boolean; // Now uses real session ID
 }
@@ -105,10 +105,10 @@ export const useSessionStore = create<SessionsStoreState>()(
         });
       },
 
-      updateSession: (publicId, patch) => {
+      updateSession: (sessionId, patch) => {
         set((state) => {
-          const sessionId = state.publicIdMap[publicId];
-          if (!sessionId) return state;
+          // const sessionId = state.publicIdMap[publicId];
+          // if (!sessionId) return state;
 
           const current = state.sessions[sessionId];
           if (!current) return state;
@@ -124,10 +124,10 @@ export const useSessionStore = create<SessionsStoreState>()(
         });
       },
 
-      removeSession: (publicId) => {
+      removeSession: (sessionId) => {
         set((state) => {
-          const sessionId = state.publicIdMap[publicId];
-          if (!sessionId) return state;
+          const publicId = state.getSessionPublicId(sessionId);
+          if (!publicId) return state;
 
           const { [sessionId]: _, ...restSessions } = state.sessions;
           const { [publicId]: __, ...restPublicIdMap } = state.publicIdMap;
@@ -141,10 +141,8 @@ export const useSessionStore = create<SessionsStoreState>()(
         });
       },
 
-      clearSession: (publicId) => {
+      clearSession: (sessionId) => {
         set((state) => {
-          const sessionId = state.publicIdMap[publicId];
-          if (!sessionId) return state;
           const current = state.sessions[sessionId];
           if (!current) return state;
 

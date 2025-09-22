@@ -29,21 +29,16 @@ Based on analysis of the Prisma schema and existing codebase, here are the model
 - Create admin dashboard to view audit trails
 - Implement automated cleanup for old logs
 
-#### 2. **PointsTransaction Model** ⚠️ _Missing Implementation_
+#### 2. **CreditTransaction Model** ✅ _IMPLEMENTED_
 
-**Purpose**: Track all points credits/debits for transparency and accounting
-**Current Status**: Model exists, no implementation found
-**Should Do**:
+**Purpose**: Track all credits debits/credits for AI usage transparency
+**Current Status**: Implemented as part of credits system
+**Features**:
 
-- Record points earned (registration bonus, referrals, rewards)
-- Track points spent (AI usage, premium features)
+- Record credits spent (AI usage)
+- Track credits purchased/received
 - Log admin adjustments with reasons
 - Provide transaction history to users
-  **Implementation Approach**:
-- Create `points-actions.ts` for transaction CRUD
-- Add transaction logging to all point operations
-- Build user transaction history page
-- Create admin analytics dashboard
 
 #### 3. **Feedback Model** ⚠️ _Missing Implementation_
 
@@ -129,9 +124,9 @@ Based on analysis of the Prisma schema and existing codebase, here are the model
 
 ### **Phase 1: Core Business Logic (High Priority)**
 
-1. **PointsTransaction** - Essential for points system transparency
-2. **Payment** - Required for monetization
-3. **Subscription** - Core for business model
+1. **CreditTransaction** - ✅ Implemented for credits system transparency
+2. **Payment** - Required for monetization (moved to future-features.md)
+3. **Subscription** - Core for business model (moved to future-features.md)
 
 ### **Phase 2: Admin & Compliance (Medium Priority)**
 

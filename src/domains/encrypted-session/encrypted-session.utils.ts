@@ -4,7 +4,7 @@ import { decryptSession, encryptSession } from "@/domains/encrypted-session/encr
 import { SessionsStoreState, useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { ERROR_CODES } from "@/lib/errors";
-import { errorManager } from "@/lib/errors/error-manager";
+import { logger } from "@/lib/logging/unified-logger";
 
 export const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt"> = {
   userId: "",
@@ -23,6 +23,9 @@ export const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt">
     messageCount: 0,
     tokenCount: 0,
     costUSD: 0,
+    creditsUsed: 0,
+    activeDurationMs: 0,
+    lastActiveAt: new Date(),
   },
 };
 
@@ -43,8 +46,8 @@ export async function createStoreSession(data: Partial<Session>, state?: Session
 
   // Check if session ID already exists
   if (sessions[sessionId]) {
-    errorManager.handleError(ERROR_CODES.SESSION_CREATE_FAILED, new Error("Session already exists"), {
-      operation: "createSession",
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_CREATE_FAILED, new Error("Session already exists"), {
+      operation: "encrypted_session_utils_create_store_session",
       sessionId,
     });
   }
@@ -65,8 +68,10 @@ export async function createStoreSession(data: Partial<Session>, state?: Session
 
     return sessionId;
   } catch (error) {
-    errorManager.handleError(ERROR_CODES.SESSION_CREATE_FAILED, error, { operation: "createSession", sessionId });
-    throw new Error("Unreachable");
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_CREATE_FAILED, error, {
+      operation: "encrypted_session_utils_create_store_session",
+      sessionId,
+    });
   }
 }
 
@@ -76,16 +81,15 @@ export async function updateStoreSession(sessionId: string, session: Session, st
   const publicId = storeState.getSessionPublicId(sessionId);
 
   if (!sessions[sessionId]) {
-    errorManager.handleError(ERROR_CODES.SESSION_NOT_FOUND, new Error("Session not found"), {
-      operation: "updateSession",
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error("Session not found"), {
+      operation: "encrypted_session_utils_update_store_session",
       sessionId,
     });
-    throw new Error("Unreachable");
   }
 
   if (!publicId) {
-    errorManager.handleError(ERROR_CODES.SESSION_NOT_FOUND, new Error("Session not found"), {
-      operation: "updateSession",
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error("Session not found"), {
+      operation: "encrypted_session_utils_update_store_session",
       sessionId,
     });
     throw new Error("Unreachable");
@@ -100,7 +104,10 @@ export async function updateStoreSession(sessionId: string, session: Session, st
 
     storeState.setSession(publicId, encryptedSession);
   } catch (error) {
-    errorManager.handleError(ERROR_CODES.SESSION_UPDATE_FAILED, error, { operation: "updateSession", sessionId });
+    logger.logErrorAndThrow(ERROR_CODES.SESSION_UPDATE_FAILED, error, {
+      operation: "encrypted_session_utils_update_store_session",
+      sessionId,
+    });
   }
 }
 
@@ -113,11 +120,10 @@ export async function getDecryptedStoreSession(sessionId: string, state?: Sessio
   try {
     return await decryptSession(encryptedSession);
   } catch (error) {
-    // Log error but return null for graceful handling
-    errorManager.handleError(ERROR_CODES.SESSION_DECRYPTION_FAILED, error, {
-      operation: "getSession",
+    // Log error and throw
+    return logger.logErrorAndThrow(ERROR_CODES.SESSION_DECRYPTION_FAILED, error, {
+      operation: "encrypted_session_utils_get_decrypted_store_session",
       sessionId,
     });
-    throw new Error("Unreachable");
   }
 }

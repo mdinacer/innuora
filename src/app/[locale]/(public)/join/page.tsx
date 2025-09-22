@@ -8,12 +8,12 @@ import JoinPageSuccess from "@/components/tester/join-page-success";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Join Beta - AI Emotional Companion for Women | Mirael", 
+  title: "Join Beta - AI Emotional Companion for Women | Mirael",
   description:
     "Get early access to Mirael, the AI emotional companion for high-functioning women. Join the beta program for burnout recovery, emotional clarity, and overwhelm support.",
   keywords: [
     "emotional burnout support beta",
-    "women burnout recovery app beta", 
+    "women burnout recovery app beta",
     "high-functioning women support beta",
     "AI emotional companion beta",
     "emotional overwhelm relief beta",

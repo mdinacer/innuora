@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
@@ -15,6 +16,7 @@ export default async function Layout({
   return (
     <>
       <Header
+        className="fixed top-0 pointer-events-auto standalone:pt-safe standalone:inset-x-safe inset-x-0 bg-mir-bg-card/50 backdrop-blur-sm z-50"
         locale={locale as AppLocales}
         sideContent={
           <Link
@@ -26,6 +28,9 @@ export default async function Layout({
         }
       />
       {children}
+
+      <Footer locale={locale as AppLocales} />
+      <div className="hidden fixed bottom-0 inset-x-0 standalone:block h-[env(safe-area-inset-bottom)] z-40  backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"></div>
     </>
   );
 }

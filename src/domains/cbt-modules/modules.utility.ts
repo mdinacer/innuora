@@ -37,6 +37,13 @@ Keep the step very small and realistic (e.g., one follow-up, one conversation, o
 Reflect how taking this step might bring new evidence or relief, while validating current fears.
 Never overwhelm the user with multiple tasks; limit to a single suggestion.
 `.trim(),
+
+  [SESSION_MODULES.PATTERN_WHY]: `
+Identify recurring connections between {{THEMES}}, {{CORE_BELIEFS}}, and {{BEHAVIORAL_PATTERNS}} in the user’s experience.
+Formulate a single, clear observation about a potential link. NEVER state it as a fact or diagnosis.
+Pose it as a curious, open-ended question for the user to reflect upon.
+Example: "I've noticed you often mention feeling like a burden [THEME] after you've helped others [BEHAVIORAL PATTERN]. I wonder if there's a connection there for you between giving help and feeling drained?"
+This must feel like a gentle invitation to explore, not a pronouncement from the AI.`,
 };
 
 export default UTILITY_MODULE_INSTRUCTIONS;
