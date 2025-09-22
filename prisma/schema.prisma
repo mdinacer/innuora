@@ -39,6 +39,8 @@ model User {
   profile            Profile?
   sessions           Session[]
   creditTransactions CreditTransaction[]
+  subscriptions      Subscription[]
+  subscriptionRenewals SubscriptionRenewal[]
 
   @@map("users")
 }
@@ -208,6 +210,86 @@ model Tester {
 }
 
 // =========================
+// Subscription Management
+// =========================
+
+model Subscription {
+  // Identifiers
+  id              String @id @default(cuid())
+  stripeId        String @unique @map("stripe_id") // Stripe subscription ID
+  customerId      String @map("customer_id") // Stripe customer ID
+  
+  // Foreign keys
+  userId          String @map("user_id")
+  
+  // Subscription details
+  status          SubscriptionStatus
+  currentPeriodStart DateTime @map("current_period_start")
+  currentPeriodEnd   DateTime @map("current_period_end")
+  cancelAtPeriodEnd  Boolean @default(false) @map("cancel_at_period_end")
+  canceledAt      DateTime? @map("canceled_at")
+  
+  // Plan details
+  planId          String @map("plan_id") // Stripe price ID
+  creditsPerPeriod Int @map("credits_per_period")
+  priceAmountCents Int @map("price_amount_cents")
+  currency        String @default("usd")
+  
+  // Billing
+  trialStart      DateTime? @map("trial_start")
+  trialEnd        DateTime? @map("trial_end")
+  
+  // Metadata
+  metadata        Json @default("{}")
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  // Relationships
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  renewals        SubscriptionRenewal[]
+  
+  @@map("subscriptions")
+}
+
+model SubscriptionRenewal {
+  // Identifiers
+  id              String @id @default(cuid())
+  
+  // Foreign keys
+  subscriptionId  String @map("subscription_id")
+  userId          String @map("user_id")
+  
+  // Renewal details
+  periodStart     DateTime @map("period_start")
+  periodEnd       DateTime @map("period_end")
+  creditsGranted  Int @map("credits_granted")
+  amountPaidCents Int @map("amount_paid_cents")
+  
+  // Stripe details
+  invoiceId       String? @map("invoice_id") // Stripe invoice ID
+  paymentIntentId String? @map("payment_intent_id") // Stripe payment intent ID
+  
+  // Status
+  status          RenewalStatus @default(pending)
+  processedAt     DateTime? @map("processed_at")
+  
+  // Metadata
+  metadata        Json @default("{}")
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  // Relationships
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscription_renewals")
+}
+
+// =========================
 // Enums
 // =========================
 
@@ -293,5 +375,23 @@ enum UserAccountStatus {
   deleted
   locked
   banned
+}
+
+enum SubscriptionStatus {
+  active
+  past_due
+  canceled
+  unpaid
+  paused
+  trialing
+  incomplete
+  incomplete_expired
+}
+
+enum RenewalStatus {
+  pending
+  processed
+  failed
+  skipped
 }
 

@@ -1,11 +1,12 @@
 import { Metadata } from "next";
 
+import { APP_CONFIG, APP_NAMES } from "@/config/app";
+
 export const METADATA: Metadata = {
-  title: "Mirael — AI Emotional Companion for High-Functioning Women",
-  description:
-    "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Get clarity through emotionally attuned conversations that reflect patterns, challenge cognitive distortions, and help you understand what's beneath the surface.",
+  title: APP_NAMES.taglined,
+  description: APP_CONFIG.description,
   keywords: [
-    // Primary keywords - core problems Mirael solves
+    // Primary keywords - core problems Innuora solves
     "emotional burnout support",
     "women burnout recovery",
     "high-functioning women support",
@@ -29,7 +30,7 @@ export const METADATA: Metadata = {
     "emotional validation app",
     "working women emotional support",
 
-    // Branding keywords - what Mirael is
+    // Branding keywords - what Innuora is
     "AI emotional companion",
     "digital emotional support",
     "emotional companion for women",
@@ -53,16 +54,16 @@ export const METADATA: Metadata = {
     "help with silent emotional rules",
 
     // Core identity
-    "Mirael",
+    APP_CONFIG.name,
     "emotional companion",
     "women emotional clarity",
   ],
 
-  applicationName: "Mirael",
-  authors: [{ name: "Abdenasser Mohammedi" }],
-  creator: "Abdenasser Mohammedi",
+  applicationName: APP_CONFIG.name,
+  authors: [{ name: APP_CONFIG.company.founder }],
+  creator: APP_CONFIG.company.founder,
   category: "health",
-  metadataBase: new URL("https://www.mirael.life"),
+  metadataBase: new URL(APP_CONFIG.domains.primary),
   alternates: {
     canonical: "/en",
     languages: {
@@ -90,7 +91,7 @@ export const METADATA: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Mirael",
+    title: APP_CONFIG.name,
     startupImage: [
       {
         url: "/assets/icons/ios/1024.png",
@@ -122,17 +123,16 @@ export const METADATA: Metadata = {
   },
 
   openGraph: {
-    title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
-    description:
-      "Mirael helps high-functioning women navigate emotional exhaustion, perfectionism, and stress by reflecting emotions, uncovering silent rules, and offering actionable self-insight.",
-    url: "https://www.mirael.life",
-    siteName: "Mirael",
+    title: `${APP_CONFIG.name} — AI for Emotional Clarity, Reflection, and Insight`,
+    description: `${APP_CONFIG.name} helps high-functioning women navigate emotional exhaustion, perfectionism, and stress by reflecting emotions, uncovering silent rules, and offering actionable self-insight.`,
+    url: APP_CONFIG.domains.primary,
+    siteName: APP_CONFIG.name,
     images: [
       {
-        url: "/og/mirael-cover.png",
+        url: "/og/innuora-cover.png",
         width: 1200,
         height: 630,
-        alt: "Mirael App Open Graph Cover",
+        alt: `${APP_CONFIG.name} App Open Graph Cover`,
       },
     ],
     locale: "en_US",
@@ -141,18 +141,17 @@ export const METADATA: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Mirael — AI for Emotional Clarity, Reflection, and Insight",
-    description:
-      "Mirael is a unique AI companion helping high-functioning women gain clarity, process overwhelm, and navigate perfectionism with emotional reflection and insight.",
-    creator: "@miraelapp",
-    images: ["/og/mirael-cover.png"],
+    title: `${APP_CONFIG.name} — AI for Emotional Clarity, Reflection, and Insight`,
+    description: `${APP_CONFIG.name} is a unique AI companion helping high-functioning women gain clarity, process overwhelm, and navigate perfectionism with emotional reflection and insight.`,
+    creator: APP_CONFIG.social.twitter.creator,
+    images: ["/og/innuora-cover.png"],
   },
 
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
-    "apple-mobile-web-app-title": "Mirael",
+    "apple-mobile-web-app-title": APP_CONFIG.name,
     "msapplication-TileColor": "#ffffff",
     "msapplication-config": "/browserconfig.xml",
   },

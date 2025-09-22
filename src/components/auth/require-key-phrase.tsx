@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { clearStoredContentKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
+import { logger } from "@/lib/logging/unified-logger";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RequireKeyPhrase() {
@@ -19,15 +20,16 @@ export default function RequireKeyPhrase() {
         await clearStoredContentKey();
         await supabase.auth.signOut();
 
-        console.log("No key found, redirecting to login");
+        logger.logInfo("No key found, redirecting to login", {
+          operation: "require_key_phrase_redirect",
+        });
         // Redirect to login
         router.replace("/auth");
       }
     }
 
     verifyKeyPhrase();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [router, supabase]);
 
   return null; // This component renders nothing
 }

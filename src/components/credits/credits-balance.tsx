@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
 import { getUserCreditsBalance } from "@/app/actions/credit-actions";
@@ -19,38 +19,50 @@ export function CreditsBalance({ className = "", showUSDValue = false }: Credits
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadBalance() {
-      try {
-        setIsLoading(true);
-        setError(null);
+  const loadBalance = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        // Get current authenticated user
-        const user = await findCurrentUser();
-        if (!user) {
-          setError("Not authenticated");
-          return;
-        }
-
-        const currentBalance = await getUserCreditsBalance(user.id);
-        console.log("Current balance:", currentBalance);
-
-        setBalance(currentBalance);
-      } catch (err) {
-        logger.logWarning("Failed to load credits balance in UI component", {
-          operation: "credits_balance_load_failed",
-          metadata: {
-            error: err instanceof Error ? err.message : String(err),
-          },
-        });
-        setError("Failed to load balance");
-      } finally {
-        setIsLoading(false);
+      // Get current authenticated user
+      const user = await findCurrentUser();
+      if (!user) {
+        setError("Not authenticated");
+        return;
       }
-    }
 
-    loadBalance();
+      const currentBalance = await getUserCreditsBalance(user.id);
+      logger.logInfo("Credits balance loaded", {
+        operation: "credits_balance_loaded",
+        metadata: { balance: currentBalance },
+      });
+
+      setBalance(currentBalance);
+    } catch (err) {
+      logger.logWarning("Failed to load credits balance in UI component", {
+        operation: "credits_balance_load_failed",
+        metadata: {
+          error: err instanceof Error ? err.message : String(err),
+        },
+      });
+      setError("Failed to load balance");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadBalance();
+  }, [loadBalance]);
+
+  const { usdValue, mainText, subText } = useMemo(() => {
+    const currentBalance = balance || 0;
+    const usdValue = creditsToUSD(currentBalance);
+    const balanceText = CreditUXUtils.getBalanceDisplayText(currentBalance);
+    const [mainText, subText] = balanceText.split("\n");
+
+    return { usdValue, mainText, subText };
+  }, [balance]);
 
   if (isLoading) {
     return (
@@ -68,10 +80,6 @@ export function CreditsBalance({ className = "", showUSDValue = false }: Credits
       </div>
     );
   }
-
-  const usdValue = creditsToUSD(balance || 0);
-  const balanceText = CreditUXUtils.getBalanceDisplayText(balance || 0);
-  const [mainText, subText] = balanceText.split("\n");
 
   return (
     <div className={`credits-balance ${className}`}>

@@ -4,6 +4,7 @@ import { resetSessionData } from "@/domains/active-session/active-session.utils"
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { generateMessageId } from "@/domains/session-flow/utils/generate-id";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logger } from "@/lib/logging/unified-logger";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -36,7 +37,10 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
 
   setSession: (session) => {
     if (!session?.id) {
-      console.warn("Attempting to set invalid session");
+      logger.logWarning("Attempting to set invalid session", {
+        operation: "active_session_store_set_invalid_session",
+        metadata: { hasSession: !!session, sessionId: session?.id },
+      });
       return;
     }
     set({ session, isDirty: false });

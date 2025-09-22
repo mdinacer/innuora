@@ -1,8 +1,10 @@
+import { APP_CONFIG, EMAIL_ADDRESSES } from "@/config/app";
+
 export default {
-  ageEligibility: "18+",
-  legalEntity: "Mirael, Inc.",
+  ageEligibility: APP_CONFIG.legal.ageRequirement,
+  legalEntity: APP_CONFIG.company.legalName,
   emails: {
-    support: "support@mirael.life",
-    privacy: "privacy@mirael.life",
+    support: EMAIL_ADDRESSES.support,
+    privacy: EMAIL_ADDRESSES.privacy,
   },
 } as const;

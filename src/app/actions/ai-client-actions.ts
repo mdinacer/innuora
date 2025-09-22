@@ -2,6 +2,7 @@
 
 import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 
+import { calculateCreditsUsed } from "@/domains/credits/credits-calculation";
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
@@ -211,9 +212,16 @@ export async function SendPromptsToAi(
         );
       }
 
+      let consumedCredits = 0;
+
+      if (data.usage) {
+        consumedCredits = calculateCreditsUsed(model, data.usage);
+      }
+
       return {
         message: raw,
         modelTokenUsage: createModelTokenUsage(data, model),
+        consumedCredits,
       };
     },
     ERROR_CODES.AI_REQUEST_FAILED,

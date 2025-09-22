@@ -16,6 +16,7 @@ import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
 import { recoverContentKeyFromWrapped, storeContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { WrappedKeyPackageSchema } from "@/lib/crypto/webcrypto-crypto.types";
+import { logger } from "@/lib/logging/unified-logger";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
@@ -81,13 +82,34 @@ const SignInForm: React.FC<Props> = ({ className }) => {
           const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, data.password);
           storeContentKey(contentKey, data.remember);
         } else {
-          console.warn("Crypto metadata invalid", parsedCryptoData.error);
+          logger.logWarning("Crypto metadata invalid during sign-in", {
+            operation: "auth_signin_crypto_metadata_invalid",
+            metadata: {
+              email: data.email,
+              cryptoParsingError: parsedCryptoData.error?.message || "Unknown parsing error",
+            },
+          });
         }
 
         router.push("/sessions");
       } catch (error: unknown) {
         if (error instanceof AuthError) {
           setFormError(error.message);
+          logger.logWarning("Authentication error during sign-in", {
+            operation: "auth_signin_auth_error",
+            metadata: {
+              email: data.email,
+              authErrorMessage: error.message,
+            },
+          });
+        } else {
+          logger.logWarning("Unexpected error during sign-in", {
+            operation: "auth_signin_unexpected_error",
+            metadata: {
+              email: data.email,
+              error: error instanceof Error ? error.message : String(error),
+            },
+          });
         }
       }
     },

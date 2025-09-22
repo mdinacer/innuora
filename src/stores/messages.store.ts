@@ -66,8 +66,7 @@ export const useSessionMessagesStore = create<MessagesStoreState>()(
       removeSession: (sessionId) =>
         set(
           (state) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { [sessionId]: _, ...rest } = state.sessionMessages;
+            const { [sessionId]: _removed, ...rest } = state.sessionMessages;
             return { sessionMessages: rest };
           },
           false,

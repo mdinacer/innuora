@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,12 +30,16 @@ export function CreditPackages({
   const [selectedProduct, setSelectedProduct] = useState<BillingProductKey | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const packages = Object.entries(BILLING_PRODUCTS) as [
-    keyof typeof BILLING_PRODUCTS,
-    (typeof BILLING_PRODUCTS)[keyof typeof BILLING_PRODUCTS],
-  ][];
+  const packages = useMemo(
+    () =>
+      Object.entries(BILLING_PRODUCTS) as [
+        keyof typeof BILLING_PRODUCTS,
+        (typeof BILLING_PRODUCTS)[keyof typeof BILLING_PRODUCTS],
+      ][],
+    []
+  );
 
-  const getPackageTimeFrame = (credits: number): string => {
+  const getPackageTimeFrame = useCallback((credits: number): string => {
     const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
     const days = CreditUXUtils.creditsToEstimatedDays(credits);
 
@@ -46,28 +50,37 @@ export function CreditPackages({
     } else {
       return `${days} days of support`;
     }
-  };
+  }, []);
 
-  const getPackageTitle = (key: string, credits: number): string => {
-    const timeFrame = getPackageTimeFrame(credits);
-    return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack — ${timeFrame}`;
-  };
+  const getPackageTitle = useCallback(
+    (key: string, credits: number): string => {
+      const timeFrame = getPackageTimeFrame(credits);
+      return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack — ${timeFrame}`;
+    },
+    [getPackageTimeFrame]
+  );
 
-  const handlePurchaseClick = (key: BillingProductKey) => {
-    if (userId) {
-      setSelectedProduct(key);
-      setIsPaymentModalOpen(true);
-    } else {
-      // Fallback to custom onPurchase handler if no userId provided
-      onPurchase?.(key);
-    }
-  };
+  const handlePurchaseClick = useCallback(
+    (key: BillingProductKey) => {
+      if (userId) {
+        setSelectedProduct(key);
+        setIsPaymentModalOpen(true);
+      } else {
+        // Fallback to custom onPurchase handler if no userId provided
+        onPurchase?.(key);
+      }
+    },
+    [userId, onPurchase]
+  );
 
-  const handlePaymentSuccess = (result: { creditsAdded: number; newBalance: number }) => {
-    setIsPaymentModalOpen(false);
-    setSelectedProduct(null);
-    onPurchaseSuccess?.(result);
-  };
+  const handlePaymentSuccess = useCallback(
+    (result: { creditsAdded: number; newBalance: number }) => {
+      setIsPaymentModalOpen(false);
+      setSelectedProduct(null);
+      onPurchaseSuccess?.(result);
+    },
+    [onPurchaseSuccess]
+  );
 
   return (
     <div className={`grid md:grid-cols-3 gap-4 ${className}`}>
@@ -78,14 +91,19 @@ export function CreditPackages({
           )}
 
           <CardHeader className="text-center">
-            <CardTitle className="text-lg">{getPackageTitle(key, pkg.credits)}</CardTitle>
-            <div className="text-sm text-gray-600 mt-2">Perfect for therapeutic support</div>
+            <CardTitle className="text-lg">{pkg.label}</CardTitle>
+            <div className="text-sm text-gray-600 mt-2">{pkg.tagline}</div>
           </CardHeader>
 
           <CardContent className="text-center space-y-4">
             <div>
               <div className="text-lg font-semibold">~{formatCredits(pkg.credits)} credits</div>
               <div className="text-sm text-gray-600">automatically applied</div>
+            </div>
+
+            <div>
+              <div className="text-xl font-bold">${pkg.price.toFixed(2)}</div>
+              <div className="text-xs text-gray-500">one-time purchase</div>
             </div>
 
             <Button

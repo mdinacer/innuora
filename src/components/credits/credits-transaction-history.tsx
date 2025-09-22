@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 // Import proper types from Prisma
 import type { CreditTransaction } from "@prisma/client";
 import { CreditTransactionType } from "@prisma/client";
@@ -49,29 +49,38 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
     }
   }, [userId, limit]);
 
-  const getTransactionIcon = (type: CreditTransactionType) => {
+  const getTransactionIcon = useCallback((type: CreditTransactionType) => {
     return type === CreditTransactionType.CREDIT ? (
       <ArrowUpCircle className="h-4 w-4 text-green-600" />
     ) : (
       <ArrowDownCircle className="h-4 w-4 text-red-600" />
     );
-  };
+  }, []);
 
-  const getTransactionColor = (type: CreditTransactionType) => {
+  const getTransactionColor = useCallback((type: CreditTransactionType) => {
     return type === CreditTransactionType.CREDIT ? "text-green-600" : "text-red-600";
-  };
+  }, []);
 
-  const formatReason = (reason: string) => {
-    const reasonMap: Record<string, string> = {
+  const reasonMap = useMemo(
+    () => ({
       ai_usage: "AI Message",
       purchase: "Credit Purchase",
       admin_adjustment: "Admin Adjustment",
       bonus: "Bonus Credits",
       refund: "Refund",
-    };
+    }),
+    []
+  );
 
-    return reasonMap[reason] || reason.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-  };
+  const formatReason = useCallback(
+    (reason: string) => {
+      return (
+        reasonMap[reason as keyof typeof reasonMap] ||
+        reason.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+      );
+    },
+    [reasonMap]
+  );
 
   if (isLoading) {
     return (

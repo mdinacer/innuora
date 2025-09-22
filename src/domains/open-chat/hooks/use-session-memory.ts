@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { calculateAIMessageCost, deductCredits } from "@/app/actions/credit-actions";
-import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
+import { deductCredits } from "@/app/actions/credit-actions";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { generateSessionMemory } from "@/domains/session-memory/session-memory.action";
 import { logger } from "@/lib/logging/unified-logger";
@@ -42,7 +41,7 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        const { modelTokenUsage, message } = result;
+        const { modelTokenUsage, message, consumedCredits } = result;
         if (!message?.trim()) {
           const error = "Memory generation returned empty response";
           console.error(error);
@@ -71,12 +70,15 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
                   throw new Error("User authId not found");
                 }
 
-                const memoryCredits = await calculateAIMessageCost(MODELS_CODES.M1, inputTokens, outputTokens);
-                await deductCredits(user.authId, memoryCredits, "memory_generation", sessionId, {
-                  inputTokens,
-                  outputTokens,
-                  userMessage: userMessage.substring(0, 100), // First 100 chars for tracking
-                });
+                // Use exact credits from AI response
+                const memoryCredits = consumedCredits || 0;
+                if (memoryCredits > 0) {
+                  await deductCredits(user.authId, memoryCredits, "memory_generation", sessionId, {
+                    inputTokens,
+                    outputTokens,
+                    userMessage: userMessage.substring(0, 100), // First 100 chars for tracking
+                  });
+                }
               } catch (error) {
                 logger.logWarning("Failed to deduct credits for memory generation", {
                   operation: "session_memory_credit_deduction_failed",

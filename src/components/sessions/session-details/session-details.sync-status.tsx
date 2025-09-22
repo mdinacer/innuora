@@ -32,8 +32,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
 
   const transformForUpdate = useCallback(
     (encryptedSession: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
+      const { id: _id, userId: _userId, createdAt: _createdAt, updatedAt: _updatedAt, ...rest } = encryptedSession;
       return {
         ...rest,
         subtitle: session.subtitle || null,

@@ -54,7 +54,6 @@ export default function useFetchSessions() {
     }
   }, [loading]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const addChangesEntry = useCallback(async (_sessionId: string, _entry: any) => {
     // useSessionStore.getState().setChangesMap((prev) => {
     //   const newMap = { ...prev };

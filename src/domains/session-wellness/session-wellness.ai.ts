@@ -4,6 +4,7 @@ import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
 import { getActiveSessionDuration } from "@/domains/active-session/active-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logger } from "@/lib/logging/unified-logger";
 import { GPT_4_1_MINI_MODEL } from "../ai-conversation/ai-models";
 import SESSION_WELLNESS_PROMPT from "./session-wellness.prompt";
 import { SessionWellness, SessionWellnessSchema } from "./session-wellness.types";
@@ -94,7 +95,17 @@ export class AISessionWellnessEngine {
 
       return validatedResult;
     } catch (error) {
-      console.warn("AI session wellness evaluation failed:", error);
+      logger.logWarning("AI session wellness evaluation failed", {
+        operation: "session_wellness_ai_evaluation_failed",
+        sessionId: session.id,
+        metadata: {
+          error: error instanceof Error ? error.message : String(error),
+          messageCount,
+          durationMinutes,
+          latestAnalysisIntensity: latestAnalysis?.intensity,
+          latestAnalysisCrisis: latestAnalysis?.crisis,
+        },
+      });
       // Fallback to basic length-based evaluation
       return {
         suggest_conclusion: messageCount > 40 || durationMinutes > 60,
