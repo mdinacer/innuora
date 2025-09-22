@@ -50,7 +50,7 @@ jobs:
         run: pnpm run lint
 
       - name: Run tests
-        run: pnpm test --run
+        run: pnpm run test --run
         env:
           NODE_ENV: test
 
