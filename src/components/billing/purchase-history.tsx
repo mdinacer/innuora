@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import { CheckCircle, Clock, Receipt, RefreshCw, XCircle } from "lucide-react";
 
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BillingUtils } from "@/lib/billing/billing-config";
+import { logger } from "@/lib/logging/unified-logger";
 
 // =========================
 // Types
@@ -39,7 +40,7 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const loadPurchaseHistory = async () => {
+  const loadPurchaseHistory = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -53,19 +54,21 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
       }
     } catch (err) {
       setError("An unexpected error occurred");
-      console.error("Purchase history loading error:", err);
+      logger.logWarning("Purchase history loading error", {
+        operation: "purchase_history_load",
+        metadata: { error: err instanceof Error ? err.message : String(err) },
+      });
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, [limit]);
 
   useEffect(() => {
     if (userId) {
       loadPurchaseHistory();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, limit]);
+  }, [userId, limit, loadPurchaseHistory]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

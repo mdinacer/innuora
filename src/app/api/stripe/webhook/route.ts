@@ -11,13 +11,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { processSuccessfulPayment } from "@/app/actions/billing-actions";
 import { STRIPE_CONFIG, WEBHOOK_CONFIG } from "@/lib/billing/billing-config";
 import { getStripeServer } from "@/lib/billing/stripe-client";
+import {
+  InvoiceEvent,
+  PaymentIntentEvent,
+  StripeWebhookEvent,
+  SubscriptionEvent,
+} from "@/lib/billing/stripe-webhook-types";
 import { logger } from "@/lib/logging/unified-logger";
 
 // =========================
 // Payment Event Handlers
 // =========================
 
-async function handlePaymentSucceeded(event: any): Promise<void> {
+async function handlePaymentSucceeded(event: PaymentIntentEvent): Promise<void> {
   try {
     const paymentIntent = event.data.object;
 
@@ -65,7 +71,7 @@ async function handlePaymentSucceeded(event: any): Promise<void> {
   }
 }
 
-async function handlePaymentFailed(event: any): Promise<void> {
+async function handlePaymentFailed(event: PaymentIntentEvent): Promise<void> {
   try {
     const paymentIntent = event.data.object;
 
@@ -125,7 +131,7 @@ async function handlePaymentFailed(event: any): Promise<void> {
 // Invoice Event Handlers
 // =========================
 
-async function handleInvoicePaymentSucceeded(event: any): Promise<void> {
+async function handleInvoicePaymentSucceeded(event: InvoiceEvent): Promise<void> {
   try {
     const invoice = event.data.object;
 
@@ -152,7 +158,7 @@ async function handleInvoicePaymentSucceeded(event: any): Promise<void> {
   }
 }
 
-async function handleInvoicePaymentFailed(event: any): Promise<void> {
+async function handleInvoicePaymentFailed(event: InvoiceEvent): Promise<void> {
   try {
     const invoice = event.data.object;
 
@@ -183,7 +189,7 @@ async function handleInvoicePaymentFailed(event: any): Promise<void> {
 // Subscription Event Handlers
 // =========================
 
-async function handleSubscriptionCreated(event: any): Promise<void> {
+async function handleSubscriptionCreated(event: SubscriptionEvent): Promise<void> {
   try {
     const subscription = event.data.object;
 
@@ -212,7 +218,7 @@ async function handleSubscriptionCreated(event: any): Promise<void> {
   }
 }
 
-async function handleSubscriptionUpdated(event: any): Promise<void> {
+async function handleSubscriptionUpdated(event: SubscriptionEvent): Promise<void> {
   try {
     const subscription = event.data.object;
 
@@ -241,7 +247,7 @@ async function handleSubscriptionUpdated(event: any): Promise<void> {
   }
 }
 
-async function handleSubscriptionDeleted(event: any): Promise<void> {
+async function handleSubscriptionDeleted(event: SubscriptionEvent): Promise<void> {
   try {
     const subscription = event.data.object;
 
@@ -284,42 +290,42 @@ export const config = {
 // Event Processing
 // =========================
 
-async function processWebhookEvent(event: any): Promise<void> {
+async function processWebhookEvent(event: PaymentIntentEvent | InvoiceEvent | SubscriptionEvent): Promise<void> {
   switch (event.type) {
     case "payment_intent.succeeded":
-      await handlePaymentSucceeded(event);
+      await handlePaymentSucceeded(event as PaymentIntentEvent);
       break;
 
     case "payment_intent.payment_failed":
-      await handlePaymentFailed(event);
+      await handlePaymentFailed(event as PaymentIntentEvent);
       break;
 
     case "invoice.payment_succeeded":
-      await handleInvoicePaymentSucceeded(event);
+      await handleInvoicePaymentSucceeded(event as InvoiceEvent);
       break;
 
     case "invoice.payment_failed":
-      await handleInvoicePaymentFailed(event);
+      await handleInvoicePaymentFailed(event as InvoiceEvent);
       break;
 
     case "customer.subscription.created":
-      await handleSubscriptionCreated(event);
+      await handleSubscriptionCreated(event as SubscriptionEvent);
       break;
 
     case "customer.subscription.updated":
-      await handleSubscriptionUpdated(event);
+      await handleSubscriptionUpdated(event as SubscriptionEvent);
       break;
 
     case "customer.subscription.deleted":
-      await handleSubscriptionDeleted(event);
+      await handleSubscriptionDeleted(event as SubscriptionEvent);
       break;
 
     default:
-      await logger.logWarning(`Unhandled event type in processor: ${event.type}`, {
+      await logger.logWarning(`Unhandled event type in processor: ${(event as any).type}`, {
         operation: "stripe_webhook_processor",
         metadata: {
-          eventType: event.type,
-          eventId: event.id,
+          eventType: (event as any).type,
+          eventId: (event as any).id,
         },
       });
   }
@@ -380,7 +386,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Process the event
-    await processWebhookEvent(event);
+    await processWebhookEvent(event as PaymentIntentEvent | InvoiceEvent | SubscriptionEvent);
 
     return NextResponse.json({ received: true, handled: true });
   } catch (error) {

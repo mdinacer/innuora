@@ -37,7 +37,7 @@ export async function analyzeUserInput(
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];
 
       const response = await SendPromptsToAiWithRetry(prompts, model);
-      const { message, modelTokenUsage } = response;
+      const { message, modelTokenUsage, consumedCredits } = response;
 
       const analysis = therapeuticAnalysisEngine.safeParseTherapeuticAnalysis(message);
       if (!analysis) {
@@ -53,7 +53,7 @@ export async function analyzeUserInput(
         );
       }
 
-      return { analysis: analysis!, modelTokenUsage };
+      return { analysis: analysis!, modelTokenUsage, consumedCredits };
     },
     ERROR_CODES.CHAT_ANALYSIS_FAILED,
     {

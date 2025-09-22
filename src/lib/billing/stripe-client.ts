@@ -8,6 +8,8 @@
 import { type StripeError } from "@stripe/stripe-js";
 import Stripe from "stripe";
 
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { logger } from "@/lib/logging/unified-logger";
 import { STRIPE_CONFIG } from "./billing-config";
 
 // =========================
@@ -22,7 +24,14 @@ let stripeServerInstance: Stripe | null = null;
 export function getStripeServer(): Stripe {
   if (!stripeServerInstance) {
     if (!STRIPE_CONFIG.secretKey) {
-      throw new Error("Stripe secret key is not configured. Please set STRIPE_SECRET_KEY environment variable.");
+      logger.logErrorAndThrow(
+        ERROR_CODES.BILLING_CONFIG_INVALID,
+        new Error("Stripe secret key is not configured. Please set STRIPE_SECRET_KEY environment variable."),
+        {
+          operation: "stripe_server_init",
+          metadata: { configKey: "STRIPE_SECRET_KEY" },
+        }
+      );
     }
 
     stripeServerInstance = new Stripe(STRIPE_CONFIG.secretKey, {
@@ -43,8 +52,15 @@ export function getStripeServer(): Stripe {
  */
 export function getStripePublishableKey(): string {
   if (!STRIPE_CONFIG.publishableKey) {
-    throw new Error(
-      "Stripe publishable key is not configured. Please set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable."
+    logger.logErrorAndThrow(
+      ERROR_CODES.BILLING_CONFIG_INVALID,
+      new Error(
+        "Stripe publishable key is not configured. Please set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable."
+      ),
+      {
+        operation: "stripe_get_publishable_key",
+        metadata: { configKey: "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" },
+      }
     );
   }
 

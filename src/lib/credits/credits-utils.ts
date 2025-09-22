@@ -1,6 +1,7 @@
 // Credits system utilities and constants
 import { encodingForModel } from "js-tiktoken";
 
+import { logger } from "@/lib/logging/unified-logger";
 import { CreditUtils } from "./credit-config";
 
 // Credit conversion: 1 credit = $0.005 USD (0.5¢)
@@ -99,7 +100,14 @@ function getAccurateTokenCount(content: string, modelCode: keyof typeof AI_MODEL
     return tokens.length;
   } catch (error) {
     // Silently fall back to character-based estimation
-    console.warn("js-tiktoken not available, falling back to character estimation:", error);
+    logger.logWarning("js-tiktoken not available, falling back to character estimation", {
+      operation: "credits_utils_tiktoken_fallback",
+      metadata: {
+        modelCode,
+        contentLength: content.length,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    });
     return null;
   }
 }

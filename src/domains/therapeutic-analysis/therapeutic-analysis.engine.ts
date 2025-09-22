@@ -97,8 +97,7 @@ export class TherapeuticAnalysisEngine {
     });
 
     const recurringThemes = Object.entries(themeCounts)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .filter(([_, count]) => count > 1)
+      .filter(([_theme, count]) => count > 1)
       .map(([theme]) => theme);
 
     return {

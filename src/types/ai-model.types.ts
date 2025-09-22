@@ -44,4 +44,5 @@ export type ModelTokenUsage = {
 export type AiMessageResponse = {
   message: string;
   modelTokenUsage: ModelTokenUsage | null;
+  consumedCredits: number;
 };

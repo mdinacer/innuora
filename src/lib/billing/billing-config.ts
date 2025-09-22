@@ -29,25 +29,52 @@ export const STRIPE_CONFIG = {
 // Billing Product Configuration
 // =========================
 
+// export const BILLING_PRODUCTS = {
+//   // Credit packages with Stripe price IDs
+//   starter: {
+//     priceId: process.env.STRIPE_PRICE_STARTER || "price_starter",
+//     credits: 50,
+//     price: 5.0,
+//     popular: false,
+//   },
+//   regular: {
+//     priceId: process.env.STRIPE_PRICE_REGULAR || "price_regular",
+//     credits: 150,
+//     price: 10.0,
+//     popular: true,
+//   },
+//   premium: {
+//     priceId: process.env.STRIPE_PRICE_PREMIUM || "price_premium",
+//     credits: 400,
+//     price: 25.0,
+//     popular: false,
+//   },
+// } as const;
+
 export const BILLING_PRODUCTS = {
-  // Credit packages with Stripe price IDs
   starter: {
     priceId: process.env.STRIPE_PRICE_STARTER || "price_starter",
-    credits: 1000,
-    price: 5.0,
+    credits: 120, // enough for meaningful first exposure
+    price: 15.0,
     popular: false,
+    label: "Starter Pack",
+    tagline: "Get started with focused support",
   },
   regular: {
     priceId: process.env.STRIPE_PRICE_REGULAR || "price_regular",
-    credits: 2200,
-    price: 10.0,
+    credits: 400, // solid recurring engagement
+    price: 40.0,
     popular: true,
+    label: "Growth Pack",
+    tagline: "Best balance of value and consistency",
   },
   premium: {
     priceId: process.env.STRIPE_PRICE_PREMIUM || "price_premium",
-    credits: 6000,
-    price: 25.0,
+    credits: 1200, // feels abundant, reduces credit anxiety
+    price: 99.0,
     popular: false,
+    label: "Premium Pack",
+    tagline: "For sustained deep support",
   },
 } as const;
 
@@ -180,8 +207,7 @@ export const BillingUtils = {
   /**
    * Calculate platform fee (if any)
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  calculatePlatformFee: (amountCents: number): number => {
+  calculatePlatformFee: (_amountCents: number): number => {
     // Currently no platform fee, but ready for future implementation
     return 0;
   },

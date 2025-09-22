@@ -111,40 +111,82 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
           });
         }
 
-        // Evaluate session wellness using AI (non-blocking)
+        // Evaluate session wellness using AI (optimized frequency to reduce token waste)
         setTimeout(() => {
-          import("@/domains/session-wellness/session-wellness.ai").then(({ AISessionWellnessEngine }) => {
-            const aiWellnessEngine = new AISessionWellnessEngine();
-            const currentSession = session;
-            if (currentSession) {
-              aiWellnessEngine
-                .evaluateSessionWellness(currentSession, currentSession.analysisSnapshots, message)
-                .then((wellness) => {
-                  if (wellness.suggest_conclusion) {
-                    logger.logInfo("AI session wellness evaluation completed", {
-                      operation: "chat_controller_session_wellness",
+          import("@/domains/session-wellness/session-wellness.frequency-manager").then(
+            ({ wellnessFrequencyManager }) => {
+              const currentSession = session;
+              if (currentSession) {
+                const messageCount = currentSession.messages.length;
+                const latestAnalysis = currentSession.analysisSnapshots[currentSession.analysisSnapshots.length - 1];
+                const hasCrisisIndicators = latestAnalysis?.crisis !== "none" || latestAnalysis?.intensity === "high";
+
+                // Check if wellness analysis should run based on frequency optimization
+                if (wellnessFrequencyManager.shouldCheckWellness(sessionId, messageCount, hasCrisisIndicators)) {
+                  import("@/domains/session-wellness/session-wellness.ai").then(({ AISessionWellnessEngine }) => {
+                    const aiWellnessEngine = new AISessionWellnessEngine();
+
+                    // Log wellness check execution with frequency stats
+                    const stats = wellnessFrequencyManager.getCheckStats(sessionId, messageCount);
+                    const savings = wellnessFrequencyManager.getTokenSavingsEstimate(sessionId, messageCount);
+
+                    logger.logInfo("Executing wellness check with frequency optimization", {
+                      operation: "chat_controller_wellness_check_optimized",
                       sessionId,
                       metadata: {
-                        shouldEnd: wellness.suggest_conclusion,
-                        reason: wellness.reason,
+                        messageCount,
+                        messagesSinceLastCheck: stats.messagesSinceLastCheck,
+                        estimatedTokensSaved: savings.estimatedTokensSaved,
+                        hasCrisisIndicators,
                         locale,
                       },
                     });
-                    // TODO: Implement gentle conclusion guidance based on wellness.reason
-                  }
-                })
-                .catch((error) => {
-                  logger.logWarning("Session wellness evaluation failed", {
-                    operation: "chat_controller_session_wellness_failed",
+
+                    aiWellnessEngine
+                      .evaluateSessionWellness(currentSession, currentSession.analysisSnapshots, message)
+                      .then((wellness) => {
+                        if (wellness.suggest_conclusion) {
+                          logger.logInfo("AI session wellness evaluation completed", {
+                            operation: "chat_controller_session_wellness",
+                            sessionId,
+                            metadata: {
+                              shouldEnd: wellness.suggest_conclusion,
+                              reason: wellness.reason,
+                              locale,
+                            },
+                          });
+                          // TODO: Implement gentle conclusion guidance based on wellness.reason
+                        }
+                      })
+                      .catch((error) => {
+                        logger.logWarning("Session wellness evaluation failed", {
+                          operation: "chat_controller_session_wellness_failed",
+                          sessionId,
+                          metadata: {
+                            error: error instanceof Error ? error.message : String(error),
+                            locale,
+                          },
+                        });
+                      });
+                  });
+                } else {
+                  // Log when wellness check is skipped for frequency optimization
+                  const stats = wellnessFrequencyManager.getCheckStats(sessionId, messageCount);
+                  logger.logInfo("Wellness check skipped for frequency optimization", {
+                    operation: "chat_controller_wellness_check_skipped",
                     sessionId,
                     metadata: {
-                      error: error instanceof Error ? error.message : String(error),
+                      messageCount,
+                      messagesSinceLastCheck: stats.messagesSinceLastCheck,
+                      timeSinceLastCheckMs: stats.timeSinceLastCheck,
+                      hasCrisisIndicators,
                       locale,
                     },
                   });
-                });
+                }
+              }
             }
-          });
+          );
         }, 0);
 
         return {

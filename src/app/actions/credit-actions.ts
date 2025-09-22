@@ -9,11 +9,6 @@
 // Use Prisma-generated type
 import type { CreditTransaction } from "@prisma/client";
 
-import {
-  AI_MODEL_PRICING_USD,
-  calculateCreditsFromTokens,
-  estimateCreditsFromContent,
-} from "@/lib/credits/credits-utils";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
@@ -243,65 +238,6 @@ export async function getUserCreditHistory(
 }
 
 // =========================
-// AI Usage Cost Calculations
-// =========================
-
-/**
- * Calculate credits cost for AI message based on model and token usage
- */
-export async function calculateAIMessageCost(
-  modelCode: keyof typeof AI_MODEL_PRICING_USD,
-  inputTokens: number,
-  outputTokens: number
-): Promise<number> {
-  return await logger.wrapOperation(
-    async () => {
-      try {
-        return calculateCreditsFromTokens(modelCode, inputTokens, outputTokens);
-      } catch (error) {
-        logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, error, {
-          operation: "calculate_ai_message_cost",
-          metadata: { modelCode },
-        });
-        return 0; // Never reached but satisfies TypeScript
-      }
-    },
-    ERROR_CODES.CHAT_UNSUPPORTED_MODEL,
-    {
-      operation: "calculate_ai_message_cost",
-      metadata: { modelCode, inputTokens, outputTokens },
-    }
-  );
-}
-
-/**
- * Estimate credits cost for AI message (rough estimate before processing)
- */
-export async function estimateAIMessageCost(
-  content: string,
-  modelCode: keyof typeof AI_MODEL_PRICING_USD
-): Promise<number> {
-  return await logger.wrapOperation(
-    async () => {
-      try {
-        return estimateCreditsFromContent(content, modelCode);
-      } catch (error) {
-        logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, error, {
-          operation: "estimate_ai_message_cost",
-          metadata: { modelCode, contentLength: content.length },
-        });
-        return 0; // Never reached but satisfies TypeScript
-      }
-    },
-    ERROR_CODES.CHAT_UNSUPPORTED_MODEL,
-    {
-      operation: "estimate_ai_message_cost",
-      metadata: { modelCode, contentLength: content.length },
-    }
-  );
-}
-
-// =========================
 // Admin Operations
 // =========================
 
@@ -420,88 +356,4 @@ export async function adminAdjustCredits(
 export async function checkSufficientCredits(authId: string, requiredCredits: number): Promise<boolean> {
   const balance = await getUserCreditsBalance(authId);
   return balance >= requiredCredits;
-}
-
-/**
- * Optimized credit check and deduction in single transaction
- * Avoids double database calls during chat flow
- */
-export async function checkAndDeductCredits(
-  authId: string,
-  amount: number,
-  reason: string,
-  sessionId?: string,
-  metadata?: Record<string, any>
-): Promise<CreditOperationResult> {
-  return await logger.wrapOperation(
-    async () => {
-      if (amount <= 0) {
-        logger.logErrorAndThrow(ERROR_CODES.VALIDATION_FAILED, new Error("Credit amount must be positive"), {
-          operation: "check_and_deduct_credits",
-          metadata: { authId, amount, reason },
-        });
-      }
-
-      // Single transaction for check + deduct
-      const result = await prisma.$transaction(async (tx) => {
-        // Get current balance
-        const user = await tx.user.findUnique({
-          where: { authId: authId },
-          select: { id: true, creditsBalance: true },
-        });
-
-        if (!user) {
-          throw new Error(`User not found: ${authId}`);
-        }
-
-        // Check sufficient balance
-        if (user.creditsBalance < amount) {
-          throw new Error(`Insufficient credits. Required: ${amount}, Available: ${user.creditsBalance}`);
-        }
-
-        // Update user balance
-        const updatedUser = await tx.user.update({
-          where: { id: user.id },
-          data: {
-            creditsBalance: {
-              decrement: amount,
-            },
-          },
-          select: { creditsBalance: true },
-        });
-
-        // Create transaction record
-        const transaction = await tx.creditTransaction.create({
-          data: {
-            userId: user.id,
-            type: "DEBIT",
-            amount,
-            reason,
-            sessionId,
-            metadata: metadata,
-          },
-          select: { id: true },
-        });
-
-        return {
-          success: true,
-          newBalance: updatedUser.creditsBalance,
-          transactionId: transaction.id,
-        };
-      });
-
-      logger.logInfo("Credits deducted successfully", {
-        operation: "check_and_deduct_credits",
-        sessionId,
-        metadata: { authId, amount, reason, newBalance: result.newBalance },
-      });
-
-      return result;
-    },
-    ERROR_CODES.VALIDATION_FAILED,
-    {
-      operation: "check_and_deduct_credits",
-      metadata: { authId, amount, reason, sessionId },
-    }
-  );
 }

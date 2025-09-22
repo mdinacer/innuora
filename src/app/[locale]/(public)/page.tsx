@@ -162,7 +162,6 @@ export default async function Home({
   const { locale = "en" } = await params;
   const { t } = await initTranslations(locale, ["pages"]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { actions, hero, howItHelps, demo, earlyAccess, faq } = {
     actions: {
       requestAccess: t("homepage.actions.requestAccess"),
