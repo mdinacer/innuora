@@ -76,8 +76,8 @@ describe("SessionSynchronizerV2", () => {
     it("should allow updating sync configuration", () => {
       const newConfig = {
         localSync: {
-          enabled: true,
           debounceMs: 500,
+          triggers: ["sessionUpdate", "messageAdd"] as ("sessionUpdate" | "messageAdd" | "roundComplete")[],
         },
       };
 

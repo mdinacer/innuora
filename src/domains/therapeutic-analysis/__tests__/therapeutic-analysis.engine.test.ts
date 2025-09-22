@@ -3,7 +3,7 @@
  * Critical analytical processing - tests AI response parsing and context building
  */
 
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { parseJsonObject } from "@/lib/utils/parse-json";
 import { TherapeuticAnalysisEngine } from "../therapeutic-analysis.engine";

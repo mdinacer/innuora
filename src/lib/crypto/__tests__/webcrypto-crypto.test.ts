@@ -3,7 +3,7 @@
  * Critical security foundation - tests core encryption/decryption operations
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   clearStoredContentKey,
@@ -392,7 +392,7 @@ describe("WebCrypto Crypto Functions", () => {
       };
 
       const encrypted = await encryptObjectWithKey(largeData, contentKey);
-      const decrypted = await decryptObjectWithKey(encrypted, contentKey);
+      const decrypted = await decryptObjectWithKey<typeof largeData>(encrypted, contentKey);
 
       expect(decrypted).toEqual(largeData);
       expect(decrypted.messages).toHaveLength(1000);
@@ -411,7 +411,7 @@ describe("WebCrypto Crypto Functions", () => {
       };
 
       const encrypted = await encryptObjectWithKey(edgeCaseData, contentKey);
-      const decrypted = await decryptObjectWithKey(encrypted, contentKey);
+      const decrypted = await decryptObjectWithKey<typeof edgeCaseData>(encrypted, contentKey);
 
       // Note: JSON.parse will convert undefined to null or omit it
       expect(decrypted.emptyString).toBe("");
@@ -447,7 +447,7 @@ describe("WebCrypto Crypto Functions", () => {
     it("should fail with malformed encrypted blob", async () => {
       const malformedBlob = {
         version: 1,
-        alg: "AES-GCM",
+        alg: "AES-GCM" as const,
         iv: "",
         ciphertext: "",
       };
