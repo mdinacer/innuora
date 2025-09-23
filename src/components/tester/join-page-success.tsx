@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
+import { APP_CONFIG } from "@/config/app";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +16,7 @@ export default async function JoinPageSuccess({ className, locale = "en" }: Prop
   const pageData = {
     badge: t("joinSuccess.badge"),
     title: t("joinSuccess.title"),
-    message: t("joinSuccess.message"),
+    message: t("joinSuccess.message", { app_name: APP_CONFIG.name }),
     nextSteps: {
       title: t("joinSuccess.nextSteps.title"),
       steps: (t("joinSuccess.nextSteps.steps", {
@@ -27,11 +28,11 @@ export default async function JoinPageSuccess({ className, locale = "en" }: Prop
       title: t("joinSuccess.timeline.title"),
       description: t("joinSuccess.timeline.description"),
     },
-    closingNote: t("joinSuccess.closingNote"),
+    closingNote: t("joinSuccess.closingNote", { app_name: APP_CONFIG.name }),
     actions: {
       // follow: t("joinSuccess.actions.follow"),
       // contact: t("joinSuccess.actions.contact"),
-      back: t("joinSuccess.actions.back"),
+      back: t("joinSuccess.actions.back", { app_name: APP_CONFIG.name }),
     },
   };
   return (

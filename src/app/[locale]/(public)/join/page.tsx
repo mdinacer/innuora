@@ -48,8 +48,8 @@ export default async function TesterJoinRoute({
   const pageData = {
     hero: {
       badge: t("advancedTester.hero.badge"),
-      title: t("advancedTester.hero.title"),
-      description: t("advancedTester.hero.description"),
+      title: t("advancedTester.hero.title", { app_name: APP_CONFIG.name }),
+      description: t("advancedTester.hero.description", { app_name: APP_CONFIG.name }),
     },
     form: {
       email: {
@@ -73,17 +73,17 @@ export default async function TesterJoinRoute({
         helpText: t("advancedTester.form.coping.helpText"),
       },
       source: {
-        label: t("advancedTester.form.source.label"),
+        label: t("advancedTester.form.source.label", { app_name: APP_CONFIG.name }),
         placeholder: t("advancedTester.form.source.placeholder"),
         helpText: t("advancedTester.form.source.helpText"),
       },
       notes: {
         label: t("advancedTester.form.notes.label"),
-        placeholder: t("advancedTester.form.notes.placeholder"),
+        placeholder: t("advancedTester.form.notes.placeholder", { app_name: APP_CONFIG.name }),
         helpText: t("advancedTester.form.notes.helpText"),
       },
       submitButton: t("advancedTester.form.submitButton"),
-      thankYouNote: t("advancedTester.form.thankYouNote"),
+      thankYouNote: t("advancedTester.form.thankYouNote", { app_name: APP_CONFIG.name }),
     },
     messages: {
       success: t("advancedTester.messages.success"),

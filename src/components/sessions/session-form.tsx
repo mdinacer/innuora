@@ -6,6 +6,8 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { APP_CONFIG } from "@/config/app";
+
 import { createSession } from "@/app/actions/session-actions";
 import SwitchField from "@/components/input/switch-field";
 import TextField from "@/components/input/text-field";
@@ -72,8 +74,8 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
           placeholder: t("fields.subtitle.placeholder"),
         },
         aiSuggestedTitle: {
-          label: t("fields.aiSuggestedTitle.label"),
-          description: t("fields.aiSuggestedTitle.description"),
+          label: t("fields.aiSuggestedTitle.label", { app_name: APP_CONFIG.name }),
+          description: t("fields.aiSuggestedTitle.description", { app_name: APP_CONFIG.name }),
         },
         persistOnCloud: {
           label: t("fields.persistOnCloud.label"),
