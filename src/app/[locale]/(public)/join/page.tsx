@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import JoinPage from "@/components/tester/join-page";
 import JoinPageSuccess from "@/components/tester/join-page-success";
 import { APP_CONFIG } from "@/config/app";
@@ -93,7 +91,7 @@ export default async function TesterJoinRoute({
 
   return (
     <main className="min-h-screen  standalone:min-h-screen-safe w-screen standalone:w-full">
-      <Header className="sticky top-0 standalone:pt-safe standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50" />
+      {/* <Header className="sticky top-0 standalone:pt-safe standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50" /> */}
       <Suspense fallback={<div>Loading...</div>}>
         {status && status === "success" ? (
           <JoinPageSuccess className="" locale={locale as AppLocales} />
@@ -101,7 +99,7 @@ export default async function TesterJoinRoute({
           <JoinPage className="" pageData={pageData} />
         )}
       </Suspense>
-      <Footer locale={locale as AppLocales} />
+      {/* <Footer locale={locale as AppLocales} /> */}
     </main>
   );
 }

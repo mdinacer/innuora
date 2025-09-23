@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import PoliciesFooter from "@/components/policies/policies.footer";
 import { APP_CONFIG } from "@/config/app";
-import initTranslations, { AppLocales } from "@/lib/i18n";
+import initTranslations from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: `Privacy Policy - ${APP_CONFIG.name}`,
@@ -40,8 +39,8 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
     lastUpdated: t("privacy.lastUpdated"),
     intro: {
       title: t("privacy.intro.title"),
-      message: t("privacy.intro.message"),
-      note: t("privacy.intro.note"),
+      message: t("privacy.intro.message", { app_name: APP_CONFIG.name }),
+      note: t("privacy.intro.note", { app_name: APP_CONFIG.name }),
     },
     principles: {
       title: t("privacy.principles.title"),
@@ -56,15 +55,23 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
     },
     howWeUse: {
       title: t("privacy.howWeUse.title"),
-      paragraphs: t("privacy.howWeUse.paragraphs", { returnObjects: true, defaultValue: [] }) as string[],
+      paragraphs: t("privacy.howWeUse.paragraphs", {
+        returnObjects: true,
+        defaultValue: [],
+        app_name: APP_CONFIG.name,
+      }) as string[],
     },
     yourRights: {
       title: t("privacy.yourRights.title"),
-      paragraphs: t("privacy.yourRights.paragraphs", { returnObjects: true, defaultValue: [] }) as string[],
+      paragraphs: t("privacy.yourRights.paragraphs", {
+        returnObjects: true,
+        defaultValue: [],
+        privacy_email: APP_CONFIG.contact.support,
+      }) as string[],
     },
     children: {
       title: t("privacy.children.title"),
-      note: t("privacy.children.note"),
+      note: t("privacy.children.note", { app_name: APP_CONFIG.name }),
     },
     contact: {
       title: t("privacy.contact.title"),
@@ -220,7 +227,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
         </section>
       </div>
 
-      <PoliciesFooter locale={locale as AppLocales} currentPage="privacy" />
+      {/* <PoliciesFooter locale={locale as AppLocales} currentPage="privacy" /> */}
     </main>
   );
 }

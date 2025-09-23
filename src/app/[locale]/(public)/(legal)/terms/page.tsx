@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import PoliciesFooter from "@/components/policies/policies.footer";
 import { APP_CONFIG } from "@/config/app";
-import initTranslations, { AppLocales } from "@/lib/i18n";
+import initTranslations from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: `Terms of Use - ${APP_CONFIG.name}`,
@@ -41,8 +40,8 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
     intro: {
       headline: t("terms.intro.headline"),
-      message: t("terms.intro.message"),
-      note: t("terms.intro.note"),
+      message: t("terms.intro.message", { app_name: APP_CONFIG.name }),
+      note: t("terms.intro.note", { app_name: APP_CONFIG.name }),
     },
 
     contact: {
@@ -55,18 +54,22 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
     eligibility: {
       title: t("terms.eligibility.title"),
       ageRequirement: t("terms.eligibility.ageRequirement"),
-      message: t("terms.eligibility.message"),
+      message: t("terms.eligibility.message", { app_name: APP_CONFIG.name }),
     },
 
     license: {
       title: t("terms.license.title"),
       permitted: {
         title: t("terms.license.permitted.title"),
-        message: t("terms.license.permitted.message"),
+        message: t("terms.license.permitted.message", { app_name: APP_CONFIG.name }),
       },
       restricted: {
         title: t("terms.license.restricted.title"),
-        items: t("terms.license.restricted.items", { returnObjects: true, defaultValue: [] }) as string[],
+        items: t("terms.license.restricted.items", {
+          returnObjects: true,
+          defaultValue: [],
+          app_name: APP_CONFIG.name,
+        }) as string[],
       },
     },
 
@@ -79,7 +82,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         },
         legalCompliance: {
           title: t("terms.responsibilities.sections.legal_compliance.title"),
-          description: t("terms.responsibilities.sections.legal_compliance.description"),
+          description: t("terms.responsibilities.sections.legal_compliance.description", { app_name: APP_CONFIG.name }),
         },
         prohibitedUses: {
           title: t("terms.responsibilities.sections.prohibited_uses.title"),
@@ -87,14 +90,15 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
           items: t("terms.responsibilities.sections.prohibited_uses.items", {
             returnObjects: true,
             defaultValue: [],
+            app_name: APP_CONFIG.name,
           }) as string[],
         },
       },
     },
 
     natureOfService: {
-      title: t("terms.natureOfService.title"),
-      message: t("terms.natureOfService.message"),
+      title: t("terms.natureOfService.title", { app_name: APP_CONFIG.name }),
+      message: t("terms.natureOfService.message", { app_name: APP_CONFIG.name }),
       disclaimer: t("terms.natureOfService.disclaimer"),
     },
 
@@ -103,11 +107,13 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       sections: {
         generatedResponses: {
           title: t("terms.ai_and_content.sections.ai_generated_responses.title"),
-          description: t("terms.ai_and_content.sections.ai_generated_responses.description"),
+          description: t("terms.ai_and_content.sections.ai_generated_responses.description", {
+            app_name: APP_CONFIG.name,
+          }),
         },
         contentRights: {
           title: t("terms.ai_and_content.sections.content_rights.title"),
-          description: t("terms.ai_and_content.sections.content_rights.description"),
+          description: t("terms.ai_and_content.sections.content_rights.description", { app_name: APP_CONFIG.name }),
         },
         contentModeration: {
           title: t("terms.ai_and_content.sections.content_moderation.title"),
@@ -126,7 +132,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       title: t("terms.termination.title"),
       byUser: {
         title: t("terms.termination.by_user.title"),
-        description: t("terms.termination.by_user.description"),
+        description: t("terms.termination.by_user.description", { app_name: APP_CONFIG.name }),
       },
       byUs: {
         title: t("terms.termination.by_us.title"),
@@ -140,25 +146,25 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
     intellectualProperty: {
       title: t("terms.intellectualProperty.title"),
-      ownership: t("terms.intellectualProperty.ownership"),
-      branding: t("terms.intellectualProperty.branding"),
+      ownership: t("terms.intellectualProperty.ownership", { app_name: APP_CONFIG.name }),
+      branding: t("terms.intellectualProperty.branding", { app_name: APP_CONFIG.name }),
     },
 
     disclaimers: {
       title: t("terms.disclaimers.title"),
       asIsService: {
         title: t("terms.disclaimers.as_is_service.title"),
-        description: t("terms.disclaimers.as_is_service.description"),
+        description: t("terms.disclaimers.as_is_service.description", { app_name: APP_CONFIG.name }),
       },
       healthDisclaimer: {
         title: t("terms.disclaimers.health_disclaimer.title"),
-        description: t("terms.disclaimers.health_disclaimer.description"),
+        description: t("terms.disclaimers.health_disclaimer.description", { app_name: APP_CONFIG.name }),
       },
     },
 
     liability: {
       title: t("terms.liability.title"),
-      message: t("terms.liability.message"),
+      message: t("terms.liability.message", { app_name: APP_CONFIG.name }),
       cap: {
         label: t("terms.liability.cap.label"),
         message: t("terms.liability.cap.message"),
@@ -167,35 +173,39 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
     indemnification: {
       title: t("terms.indemnification.title"),
-      message: t("terms.indemnification.message"),
+      message: t("terms.indemnification.message", { app_name: APP_CONFIG.name }),
     },
 
     governingLaw: {
       title: t("terms.governingLaw.title"),
-      points: t("terms.governingLaw.points", { returnObjects: true, defaultValue: [] }) as string[],
+      points: t("terms.governingLaw.points", {
+        returnObjects: true,
+        defaultValue: [],
+        app_name: APP_CONFIG.name,
+      }) as string[],
     },
 
     additionalTerms: {
       title: t("terms.additional.title"),
       thirdPartyServices: {
         title: t("terms.additional.third_party_services.title"),
-        description: t("terms.additional.third_party_services.description"),
+        description: t("terms.additional.third_party_services.description", { app_name: APP_CONFIG.name }),
       },
       exportControls: {
         title: t("terms.additional.export_controls.title"),
-        description: t("terms.additional.export_controls.description"),
+        description: t("terms.additional.export_controls.description", { app_name: APP_CONFIG.name }),
       },
     },
 
     changes: {
       title: t("terms.changes.title"),
       message: t("terms.changes.message"),
-      note: t("terms.changes.note"),
+      note: t("terms.changes.note", { app_name: APP_CONFIG.name }),
     },
 
     entireAgreement: {
       title: t("terms.entireAgreement.title"),
-      message: t("terms.entireAgreement.message"),
+      message: t("terms.entireAgreement.message", { app_name: APP_CONFIG.name }),
     },
   };
   return (
@@ -484,7 +494,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
           </div>
         </section>
       </div>
-      <PoliciesFooter locale={locale as AppLocales} currentPage="terms" />
+      {/* <PoliciesFooter locale={locale as AppLocales} currentPage="terms" /> */}
     </main>
   );
 }
