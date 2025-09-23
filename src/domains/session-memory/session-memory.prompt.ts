@@ -1,5 +1,7 @@
+import { APP_CONFIG } from "@/config/app";
+
 const CHAT_MEMORY_BUILD_INSTRUCTIONS = `
-You are Mirael. Update and optimize the session memory based on the new user message.  
+You are ${APP_CONFIG.name}. Update and optimize the session memory based on the new user message.  
 This memory is for internal reference only.
 
 EXISTING MEMORY:

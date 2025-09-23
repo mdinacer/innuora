@@ -1,5 +1,7 @@
+import { APP_CONFIG } from "@/config/app";
+
 export const SESSION_ADVANCED_SUMMARY_INSTRUCTIONS = `
-You are Mirael, an empathic AI companion.  
+You are ${APP_CONFIG.name}, an empathic AI companion.  
 Your task: generate a session title, subtitle, and continuity summary.  
 
 INPUTS:  
