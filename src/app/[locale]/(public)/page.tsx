@@ -4,12 +4,11 @@ import { BotIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { APP_CONFIG } from "@/config/app";
 import initTranslations from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type Conversation = {
-  role: "user" | "generic" | "app";
+  role: "user" | "generic" | "mirael";
   text: string;
 };
 
@@ -62,23 +61,25 @@ export const metadata: Metadata = {
     "working women emotional support",
   ],
   openGraph: {
-    title: `${APP_CONFIG.name} — Emotional AI Companion for High-Functioning Women`,
-    description: `Navigate overwhelm and perfectionism with ${APP_CONFIG.name}, the AI companion for emotional clarity and insight.`,
-    url: APP_CONFIG.domains.primary,
-    siteName: APP_CONFIG.name,
-    images: [{ url: "/og/app-cover.png", width: 1200, height: 630, alt: `${APP_CONFIG.name} Open Graph Cover` }],
+    title: "Mirael — Emotional AI Companion for High-Functioning Women",
+    description:
+      "Navigate overwhelm and perfectionism with Mirael, the AI companion for emotional clarity and insight.",
+    url: "https://www.mirael.life",
+    siteName: "Mirael",
+    images: [{ url: "/og/mirael-cover.png", width: 1200, height: 630, alt: "Mirael Open Graph Cover" }],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${APP_CONFIG.name} — Emotional AI Companion`,
-    description: `Gain clarity, process overwhelm, and manage perfectionism with ${APP_CONFIG.name}, the AI companion for emotional insight.`,
-    images: ["/og/app-cover.png"],
-    creator: APP_CONFIG.social.twitter.creator,
+    title: "Mirael — Emotional AI Companion",
+    description:
+      "Gain clarity, process overwhelm, and manage perfectionism with Mirael, the AI companion for emotional insight.",
+    images: ["/og/mirael-cover.png"],
+    creator: "@miraelapp",
   },
   alternates: {
-    canonical: APP_CONFIG.domains.canonical,
+    canonical: "https://www.mirael.life",
   },
 };
 
@@ -103,7 +104,7 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
     );
   }
 
-  if (conversation.role === "app") {
+  if (conversation.role === "mirael") {
     return (
       <div className="flex justify-start">
         <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
@@ -112,11 +113,11 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
           </div>
           <div className="flex flex-col sm:gap-1 gap-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-mir-bg-accent" />
+              <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-mir-bg-accent"></div>
               <span className="text-sm font-medium rtl:font-arabic-body rtl:text-base text-mir-bg-accent rtl:font-semibold">
                 {label}
               </span>
-              <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-mir-bg-accent" />
+              <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-mir-bg-accent"></div>
             </div>
             <div
               className="rounded-2xl bg-mir-bg-accent text-white px-4 py-3 text-base  rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
@@ -161,37 +162,32 @@ export default async function Home({
   const { locale = "en" } = await params;
   const { t } = await initTranslations(locale, ["pages"]);
 
-  const { hero, howItHelps, demo, earlyAccess, faq } = {
-    // TODO: Implement call-to-action buttons using these actions
-    // actions: {
-    //   requestAccess: t("homepage.actions.requestAccess"),
-    //   testerSignIn: t("homepage.actions.testerSignIn"),
-    // },
+  const { actions, hero, howItHelps, demo, earlyAccess, faq } = {
+    actions: {
+      requestAccess: t("homepage.actions.requestAccess"),
+      testerSignIn: t("homepage.actions.testerSignIn"),
+    },
     hero: {
       badge: t("homepage.hero.badge"),
       title: t("homepage.hero.title"),
-      subtitle: t("homepage.hero.subtitle", { app_name: APP_CONFIG.name }),
+      subtitle: t("homepage.hero.subtitle"),
       cta: {
         join: t("homepage.hero.cta.join"),
         demo: t("homepage.hero.cta.demo"),
       },
-      disclaimer: t("homepage.hero.disclaimer", { app_name: APP_CONFIG.name }),
+      disclaimer: t("homepage.hero.disclaimer"),
     },
     howItHelps: {
-      title: t("homepage.howItHelps.title", { app_name: APP_CONFIG.name }),
-      subtitle: t("homepage.howItHelps.subtitle", { app_name: APP_CONFIG.name }),
-      features: t("homepage.howItHelps.features", {
-        returnObjects: true,
-        defaultValue: [],
-        app_name: APP_CONFIG.name,
-      }) as {
+      title: t("homepage.howItHelps.title"),
+      subtitle: t("homepage.howItHelps.subtitle"),
+      features: t("homepage.howItHelps.features", { returnObjects: true, defaultValue: [] }) as {
         title: string;
         subtitle: string;
       }[],
     },
     demo: {
-      title: t("homepage.demo.title", { app_name: APP_CONFIG.name }),
-      subtitle: t("homepage.demo.subtitle", { app_name: APP_CONFIG.name }),
+      title: t("homepage.demo.title"),
+      subtitle: t("homepage.demo.subtitle"),
       conversation: t("homepage.demo.conversation", { returnObjects: true, defaultValue: [] }) as {
         role: string;
         text: string;
@@ -199,27 +195,27 @@ export default async function Home({
       legend: {
         user: t("homepage.demo.legend.user"),
         generic: t("homepage.demo.legend.generic"),
-        app: APP_CONFIG.name,
+        mirael: t("homepage.demo.legend.mirael"),
       },
       insights: {
         generic: {
           title: t("homepage.demo.insights.generic.title"),
           points: t("homepage.demo.insights.generic.points", { returnObjects: true, defaultValue: [] }) as string[],
         },
-        app: {
-          title: t("homepage.demo.insights.app.title", { app_name: APP_CONFIG.name }),
-          points: t("homepage.demo.insights.app.points", { returnObjects: true, defaultValue: [] }) as string[],
+        mirael: {
+          title: t("homepage.demo.insights.mirael.title"),
+          points: t("homepage.demo.insights.mirael.points", { returnObjects: true, defaultValue: [] }) as string[],
         },
       },
     },
     earlyAccess: {
-      title: t("homepage.earlyAccess.title", { app_name: APP_CONFIG.name }),
-      subtitle: t("homepage.earlyAccess.subtitle", { app_name: APP_CONFIG.name }),
+      title: t("homepage.earlyAccess.title"),
+      subtitle: t("homepage.earlyAccess.subtitle"),
       cta: t("homepage.earlyAccess.cta"),
     },
     faq: {
       title: t("homepage.faq.title"),
-      items: t("homepage.faq.items", { returnObjects: true, defaultValue: [], app_name: APP_CONFIG.name }) as {
+      items: t("homepage.faq.items", { returnObjects: true, defaultValue: [] }) as {
         question: string;
         answer: string;
       }[],
@@ -229,28 +225,28 @@ export default async function Home({
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: APP_CONFIG.company.legalName,
-    url: APP_CONFIG.domains.primary,
-    logo: `${APP_CONFIG.domains.primary}/assets/icons/ios/512.png`,
+    name: "Mirael",
+    url: "https://www.mirael.life",
+    logo: "https://www.mirael.life/assets/icons/ios/512.png",
     description: "AI companion for emotional clarity, self-reflection, and burnout recovery",
-    foundingDate: APP_CONFIG.company.establishedYear,
+    foundingDate: "2024",
     founder: {
       "@type": "Person",
-      name: APP_CONFIG.company.founder,
+      name: "Abdenasser Mohammedi",
     },
     contactPoint: {
       "@type": "ContactPoint",
-      email: APP_CONFIG.contact.support,
+      email: "support@mirael.life",
       contactType: "customer support",
     },
-    sameAs: ["https://twitter.com/innuora", "https://www.linkedin.com/company/innuora"],
+    sameAs: ["https://twitter.com/miraelapp"],
   };
 
   const webAppJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "Mirael",
-    url: APP_CONFIG.domains.primary,
+    url: "https://www.mirael.life",
     description: "AI companion for emotional clarity and burnout recovery for high-functioning women",
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -284,6 +280,32 @@ export default async function Home({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+
+      {/* <GradualBlur
+        target="page"
+        position="top"
+        height="5rem"
+        strength={2}
+        divCount={5}
+        curve="bezier"
+        exponential={true}
+        opacity={1}
+      >
+        <Header
+          className="fixed top-0 pointer-events-auto standalone:pt-safe standalone:inset-x-safe inset-x-0 bg-transparent"
+          locale={locale as AppLocales}
+          sideContent={
+            <div className="flex items-center gap-x-4 ltr:ml-5 rtl:mr-5">
+              <Link
+                href="#early-access"
+                className="sm:inline-flex hidden items-center gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+              >
+                {actions.requestAccess}
+              </Link>
+            </div>
+          }
+        />
+      </GradualBlur> */}
 
       {/* <!-- Hero --> */}
       <section className="max-w-5xl mx-auto px-6 py-16 text-center">
@@ -350,7 +372,7 @@ export default async function Home({
           <div className="flex justify-center items-center gap-4 pb-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-mir-bg-accent"></div>
-              <span className="font-medium">{demo.legend.app}</span>
+              <span className="font-medium">{demo.legend.mirael}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-gray-400"></div>
@@ -393,10 +415,10 @@ export default async function Home({
               <div className="space-y-4">
                 <h4 className="font-semibold text-mir-text-primary flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-mir-bg-accent"></div>
-                  {demo.insights.app.title}
+                  {demo.insights.mirael.title}
                 </h4>
                 <ul className="space-y-3 text-base text-primary/80 rtl:text-lg list-inside">
-                  {demo.insights.app.points.map((item, index) => (
+                  {demo.insights.mirael.points.map((item, index) => (
                     <li key={index} className="list-item">
                       <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>{item}</ReactMarkdown>
                     </li>
