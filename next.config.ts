@@ -1,4 +1,11 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+  // analyzerMode: "json",
+  // openAnalyzer: false,
+});
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -8,9 +15,24 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
 
-  // Enable experimental features for better SEO
+  // Enable experimental features for better SEO and bundle optimization
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-avatar",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-label",
+      "@radix-ui/react-radio-group",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-tabs",
+      "date-fns",
+      "react-hook-form",
+    ],
   },
 
   // Headers for SEO and security
@@ -58,4 +80,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

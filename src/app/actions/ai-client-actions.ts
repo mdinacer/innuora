@@ -7,6 +7,7 @@ import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
+import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 
 type RequestOptions = {
@@ -176,10 +177,30 @@ function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelToken
 export async function SendPromptsToAi(
   prompts: ChatCompletionMessageParam[],
   model: AiModel,
-  options: Partial<RequestOptions> = {}
+  options: Partial<RequestOptions> = {},
+  userId?: string
 ): Promise<AiMessageResponse> {
   return await logger.wrapOperation(
     async () => {
+      // Check rate limits
+      if (userId) {
+        const burstLimit = rateLimiter.checkLimit(userId, "AI_BURST");
+        if (!burstLimit.success) {
+          throw new AppError(ERROR_CODES.RATE_LIMIT_EXCEEDED, {
+            remaining: burstLimit.remaining,
+            resetTime: burstLimit.resetTime,
+          });
+        }
+
+        const generalLimit = rateLimiter.checkLimit(userId, "AI_REQUESTS");
+        if (!generalLimit.success) {
+          throw new AppError(ERROR_CODES.RATE_LIMIT_EXCEEDED, {
+            remaining: generalLimit.remaining,
+            resetTime: generalLimit.resetTime,
+          });
+        }
+      }
+
       // Validate inputs
       validatePrompts(prompts);
       validateAiModel(model);
@@ -238,7 +259,8 @@ export async function SendPromptsToAiWithRetry(
   model: AiModel,
   options: Partial<RequestOptions> = {},
   maxRetries: number = 3,
-  retryDelay: number = 1000
+  retryDelay: number = 1000,
+  userId?: string
 ): Promise<AiMessageResponse> {
   return await logger.wrapOperation(
     async () => {
@@ -246,7 +268,7 @@ export async function SendPromptsToAiWithRetry(
 
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-          return await SendPromptsToAi(prompts, model, options);
+          return await SendPromptsToAi(prompts, model, options, userId);
         } catch (error) {
           lastError = error as Error;
 

@@ -23,6 +23,7 @@ export const ERROR_CODES = {
   SERVER_ERROR: "errors:general.server_error",
   VALIDATION_FAILED: "errors:general.validation_failed",
   UNKNOWN_ERROR: "errors:general.unknown_error",
+  RATE_LIMIT_EXCEEDED: "errors:general.rate_limit_exceeded",
 
   // Session errors
   SESSION_NOT_FOUND: "errors:session.not_found",

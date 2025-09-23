@@ -50,7 +50,8 @@
     "network_error": "Network error. Please check your connection",
     "server_error": "Something went wrong. Please try again later",
     "validation_failed": "Please check your input and try again",
-    "unknown_error": "An unexpected error occurred"
+    "unknown_error": "An unexpected error occurred",
+    "rate_limit_exceeded": "Too many requests. Please wait before trying again"
   },
   "session": {
     "not_found": "Session not found",
