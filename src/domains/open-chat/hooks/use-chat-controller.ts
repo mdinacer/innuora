@@ -5,6 +5,7 @@ import useSessionAnalysis from "@/domains/open-chat/hooks/use-session-analysis";
 import useSessionMemory from "@/domains/open-chat/hooks/use-session-memory";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { AppLocales } from "@/lib/i18n";
+import { analytics } from "@/lib/analytics/analytics";
 import { logger } from "@/lib/logging/unified-logger";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -95,6 +96,15 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
 
         // Track credits used in session metadata
         if (creditsUsed > 0) addCreditsUsed(creditsUsed);
+
+        // Track AI message interaction for business analytics
+        analytics.trackSession('message_sent', {
+          sessionId,
+          userId: session.userId,
+          creditsUsed,
+          modelUsed: tokenUsage?.responseUsage?.model || 'unknown',
+          messageCount: messages.length + 1, // +1 for the new message being processed
+        });
 
         // Move memory update to background to avoid blocking UI
         if (shouldUpdateMemory) {
