@@ -50,7 +50,8 @@
     "network_error": "Erreur réseau. Veuillez vérifier votre connexion",
     "server_error": "Une erreur s'est produite. Veuillez réessayer plus tard",
     "validation_failed": "Veuillez vérifier votre saisie et réessayer",
-    "unknown_error": "Une erreur inattendue s'est produite"
+    "unknown_error": "Une erreur inattendue s'est produite",
+    "rate_limit_exceeded": "Trop de requêtes. Veuillez attendre avant de réessayer"
   },
   "session": {
     "not_found": "Session introuvable",

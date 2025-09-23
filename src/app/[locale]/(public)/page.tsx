@@ -92,10 +92,10 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
     return (
       <div className="flex justify-end">
         <div className="flex items-end gap-2 max-w-[95%] md:max-w-[80%]">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-input px-4 py-3 text-base rtl:text-lg rtl:font-medium text-mir-text-primary">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-input px-4 py-3 text-base rtl:text-lg rtl:font-medium text-inn-text-primary">
             {conversation.text}
           </div>
-          <div className="size-7 sm:size-9 font-sans rounded-full bg-mir-bg-secondary flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+          <div className="size-7 sm:size-9 font-sans rounded-full bg-inn-bg-secondary flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
             U
           </div>
         </div>
@@ -107,19 +107,19 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
     return (
       <div className="flex justify-start">
         <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
-          <div className="size-7 font-sans sm:size-9 rounded-full bg-mir-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
+          <div className="size-7 font-sans sm:size-9 rounded-full bg-inn-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
             I
           </div>
           <div className="flex flex-col sm:gap-1 gap-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-mir-bg-accent" />
-              <span className="text-sm font-medium rtl:font-arabic-body rtl:text-base text-mir-bg-accent rtl:font-semibold">
+              <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-inn-bg-accent" />
+              <span className="text-sm font-medium rtl:font-arabic-body rtl:text-base text-inn-bg-accent rtl:font-semibold">
                 {label}
               </span>
-              <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-mir-bg-accent" />
+              <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-inn-bg-accent" />
             </div>
             <div
-              className="rounded-2xl bg-mir-bg-accent text-white px-4 py-3 text-base  rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
+              className="rounded-2xl bg-inn-bg-accent text-white px-4 py-3 text-base  rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
               [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 
               [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-2"
             >
@@ -282,7 +282,7 @@ export default async function Home({
   };
 
   return (
-    <main className="relative rtl:font-arabic-body pt-20 text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden  transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative rtl:font-arabic-body pt-20 text-base rtl:text-lg font-sans min-h-screen w-screen standalone:w-full overflow-hidden  transition-all duration-300 ease-in text-inn-text-primary">
       {/* Structured Data */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
@@ -290,7 +290,7 @@ export default async function Home({
 
       {/* <!-- Hero --> */}
       <section className="max-w-5xl mx-auto px-6 py-16 text-center">
-        <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] font-semibold text-mir-bg-accent">
+        <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-[13px] font-semibold text-inn-bg-accent">
           {hero.badge}
         </div>
         <h1
@@ -301,22 +301,22 @@ export default async function Home({
           {hero.title}
         </h1>
 
-        <p className="text-lg md:text-xl text-mir-text-secondary max-w-2xl mx-auto mb-8">{hero.subtitle}</p>
+        <p className="text-lg md:text-xl text-inn-text-secondary max-w-2xl mx-auto mb-8">{hero.subtitle}</p>
         <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5">
           <Link
             href="#early-access"
-            className="inline-flex justify-center rtl:pt-4 rounded-2xl bg-mir-bg-accent px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
+            className="inline-flex justify-center rtl:pt-4 rounded-2xl bg-inn-bg-accent px-6 py-3 text-white font-semibold shadow hover:translate-y-[-1px] transition"
           >
             {hero.cta.join}
           </Link>
           <Link
             href="#demo"
-            className="inline-flex justify-center rounded-2xl border border-mir-border-light bg-transparent rtl:pt-4 px-6 py-3 font-semibold text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+            className="inline-flex justify-center rounded-2xl border border-inn-border-light bg-transparent rtl:pt-4 px-6 py-3 font-semibold text-inn-text-primary hover:text-inn-bg-accent hover:border-inn-bg-accent transition"
           >
             {hero.cta.demo}
           </Link>
         </div>
-        <p className="text-sm text-mir-text-secondary max-w-xl mx-auto">
+        <p className="text-sm text-inn-text-secondary max-w-xl mx-auto">
           <em>{hero.disclaimer}</em>
         </p>
       </section>
@@ -327,13 +327,13 @@ export default async function Home({
           <h2 className="text-3xl md:text-4xl rtl:md:text-5xl rtl:leading-loose font-bold mb-3 rtl:font-arabic">
             {howItHelps.title}
           </h2>
-          <p className="text-[17px] rtl:text-xl text-mir-text-secondary max-w-3xl mx-auto">{howItHelps.subtitle}</p>
+          <p className="text-[17px] rtl:text-xl text-inn-text-secondary max-w-3xl mx-auto">{howItHelps.subtitle}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {howItHelps.features.map((feature, index) => (
             <div
               key={index}
-              className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5"
+              className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5"
             >
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.subtitle}</p>
@@ -347,12 +347,12 @@ export default async function Home({
           <h2 className="text-2xl rtl:font-arabic md:text-3xl rtl:leading-normal rtl:md:text-5xl font-bold mb-3 rtl:mb-5">
             {demo.title}
           </h2>
-          <p className="text-base rtl:text-lg text-mir-text-secondary max-w-2xl mx-auto mb-4">{demo.subtitle}</p>
+          <p className="text-base rtl:text-lg text-inn-text-secondary max-w-2xl mx-auto mb-4">{demo.subtitle}</p>
         </div>
-        <div className="rounded-3xl border border-mir-border-light bg-mir-bg-card sm:p-8 p-4 shadow-md">
+        <div className="rounded-3xl border border-inn-border-light bg-inn-bg-card sm:p-8 p-4 shadow-md">
           <div className="flex justify-center items-center gap-4 pb-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-mir-bg-accent"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-inn-bg-accent"></div>
               <span className="font-medium">{demo.legend.innuora}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -360,7 +360,7 @@ export default async function Home({
               <span className="font-medium">{demo.legend.generic}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-mir-bg-secondary"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-inn-bg-secondary"></div>
               <span className="font-medium">{demo.legend.user}</span>
             </div>
           </div>
@@ -378,10 +378,10 @@ export default async function Home({
           </div>
 
           {/* <!-- Conversation Insights --> */}
-          <div className="mt-8 pt-6 border-t border-mir-border-light">
+          <div className="mt-8 pt-6 border-t border-inn-border-light">
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h4 className="font-semibold text-mir-text-primary flex items-center gap-2">
+                <h4 className="font-semibold text-inn-text-primary flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-gray-400"></div>
                   {demo.insights.generic.title}
                 </h4>
@@ -394,8 +394,8 @@ export default async function Home({
                 </ul>
               </div>
               <div className="space-y-4">
-                <h4 className="font-semibold text-mir-text-primary flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-mir-bg-accent"></div>
+                <h4 className="font-semibold text-inn-text-primary flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-inn-bg-accent"></div>
                   {demo.insights.innuora.title}
                 </h4>
                 <ul className="space-y-3 text-base text-primary/80 rtl:text-lg list-inside">
@@ -413,12 +413,12 @@ export default async function Home({
 
       {/* <!-- Early Access CTA --> */}
       <section id="early-access" className="px-6 py-16">
-        <div className="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white bg-gradient-to-br from-[#FF6B5A] to-[#FF8A7A] rtl:to-mir-bg-accent-dark">
+        <div className="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white bg-gradient-to-br from-inn-bg-accent-dark to-inn-bg-accent rtl:to-inn-bg-accent-dark">
           <h2 className="text-3xl md:text-4xl  font-bold mb-3 rtl:mb-5 rtl:font-arabic">{earlyAccess.title}</h2>
           <p className="text-base md:text-lg rtl:font-medium max-w-2xl mx-auto mb-8">{earlyAccess.subtitle}</p>
           <Link
             href={"/join"}
-            className="rounded-2xl bg-white px-6 py-3 font-semibold text-mir-bg-accent transition hover:translate-y-[-1px]"
+            className="rounded-2xl bg-white px-6 py-3 font-semibold text-inn-bg-accent transition hover:translate-y-[-1px]"
           >
             {earlyAccess.cta}
           </Link>
@@ -429,7 +429,7 @@ export default async function Home({
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center rtl:font-arabic rtl:md:text-5xl">{faq.title}</h2>
         <div className="space-y-4">
           {faq.items.map((item, index) => (
-            <details key={index} className="rounded-xl border border-mir-border-light bg-mir-bg-card p-4">
+            <details key={index} className="rounded-xl border border-inn-border-light bg-inn-bg-card p-4">
               <summary className="cursor-pointer select-none list-none rtl:font-arabic font-semibold">
                 {item.question}
               </summary>

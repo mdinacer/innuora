@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { dir } from "i18next";
 
 import AuthListener from "@/components/auth/auth-listener";
-import { BackgroundBeams } from "@/components/background-beams";
+import { DynamicEffects } from "@/components/dynamic-loaders";
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -46,7 +46,7 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
             <AuthListener />
-            <BackgroundBeams className="hidden md:block" />
+            <DynamicEffects.BackgroundBeams className="hidden md:block" />
             {children}
             <Toaster />
           </TranslationProvider>
