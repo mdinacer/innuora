@@ -9,7 +9,9 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
 ### 🗄️ Database Configuration
 
 #### Staging Environment
+
 - `STAGING_DATABASE_URL`: PostgreSQL connection string for staging database
+
   - Format: `postgresql://username:password@host:port/database`
   - Example: `postgresql://user:pass@staging-db.example.com:5432/innuora_staging`
 
@@ -18,7 +20,9 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
   - Format: `postgresql://username:password@host:port/database`
 
 #### Production Environment
+
 - `PRODUCTION_DATABASE_URL`: PostgreSQL connection string for production database
+
   - Format: `postgresql://username:password@host:port/database`
   - Example: `postgresql://user:pass@prod-db.example.com:5432/innuora_prod`
 
@@ -28,10 +32,12 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
 ### 🔐 Authentication & Supabase
 
 - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+
   - Format: `https://your-project-id.supabase.co`
   - This is public, used in client-side code
 
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous key
+
   - Format: `eyJ...` (JWT token)
   - This is public, used for client-side authentication
 
@@ -42,6 +48,7 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
 ### 🤖 AI Services
 
 - `OPENAI_API_KEY`: OpenAI API key for GPT models
+
   - Format: `sk-...`
   - Required for AI conversation features
 
@@ -52,10 +59,12 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
 ### 💳 Stripe Payment Configuration
 
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe publishable key
+
   - Format: `pk_live_...` (production) or `pk_test_...` (test mode)
   - This is public, used in client-side code
 
 - `STRIPE_SECRET_KEY`: Stripe secret key
+
   - Format: `sk_live_...` (production) or `sk_test_...` (test mode)
   - Used for server-side payment processing
 
@@ -64,11 +73,14 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
   - Used to verify webhook authenticity
 
 #### Stripe Product Price IDs
+
 - `STRIPE_PRICE_STARTER`: Price ID for starter credit package
+
   - Format: `price_...`
   - Example: `price_1S9bxgCkl61wF9R3477zZcna`
 
 - `STRIPE_PRICE_REGULAR`: Price ID for regular credit package
+
   - Format: `price_...`
 
 - `STRIPE_PRICE_PREMIUM`: Price ID for premium credit package
@@ -84,6 +96,7 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
 ### 📊 Optional: Monitoring & Notifications
 
 - `SLACK_WEBHOOK_URL`: Slack webhook for deployment notifications
+
   - Format: `https://hooks.slack.com/services/...`
   - Used by database migration workflow
 
@@ -96,11 +109,13 @@ This document outlines the required repository secrets for the Innuora CI/CD pip
 The repository should have two environments configured:
 
 ### 🧪 Staging Environment
+
 - Name: `staging`
 - Secrets: All staging-specific secrets (database URLs, etc.)
 - Used for: Development branch deployments
 
 ### 🚀 Production Environment
+
 - Name: `production`
 - Secrets: All production-specific secrets
 - Protection rules: Require review, restrict to main branch
@@ -109,23 +124,29 @@ The repository should have two environments configured:
 ## Current Workflow Overview
 
 ### 1. CI Pipeline (`ci.yml`)
+
 **Triggers**: Push/PR to main or dev branches
 **Purpose**: Run tests, linting, type checking, and build verification
 **Secrets Used**:
+
 - All secrets with fallbacks to test values
 - Ensures build works with real configuration
 
 ### 2. Deploy Health Check (`deploy.yml`)
+
 **Triggers**: Push to main or dev branches
 **Purpose**: Verify deployment health and notify via commit comments
 **Domains**:
+
 - Staging: `https://dev.innuora.com`
 - Production: `https://www.innuora.com`
 
 ### 3. Database Migration (`db-migrate.yml`)
+
 **Triggers**: Manual workflow dispatch
 **Purpose**: Run database migrations on staging/production
 **Features**:
+
 - Environment selection (staging/production)
 - Production confirmation requirement
 - Slack notifications
@@ -168,16 +189,19 @@ After adding all secrets, you can verify the setup by:
 ## Troubleshooting
 
 ### Build Failures
+
 - Check if all required secrets are present
 - Verify secret names match exactly (case-sensitive)
 - Ensure database connectivity from GitHub Actions runners
 
 ### Database Migration Issues
+
 - Verify database URLs are accessible
 - Check Prisma schema is up to date
 - Ensure proper database permissions
 
 ### Deployment Health Check Failures
+
 - Verify domain configuration (DNS)
 - Check if health API endpoint exists (`/api/health`)
 - Ensure application is properly deployed

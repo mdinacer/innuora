@@ -20,7 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return routes.flatMap((route) =>
     locales.map((locale) => ({
-      url: `${baseUrl}/${locale}${route.path}`,
+      url: `${baseUrl}/${locale}${route.path.startsWith("/") ? route.path : "/" + route.path}`,
+      //url: `${baseUrl}/${locale}${route.path}`,
       lastModified,
       changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
       priority: route.priority,

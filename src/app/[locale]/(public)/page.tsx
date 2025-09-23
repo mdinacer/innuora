@@ -207,8 +207,8 @@ export default async function Home({
           points: t("homepage.demo.insights.generic.points", { returnObjects: true, defaultValue: [] }) as string[],
         },
         innuora: {
-          title: t("homepage.demo.insights.innuora.title", { app_name: APP_CONFIG.name }),
-          points: t("homepage.demo.insights.innuora.points", { returnObjects: true, defaultValue: [] }) as string[],
+          title: t("homepage.demo.insights.app.title", { app_name: APP_CONFIG.name }),
+          points: t("homepage.demo.insights.app.points", { returnObjects: true, defaultValue: [] }) as string[],
         },
       },
     },
