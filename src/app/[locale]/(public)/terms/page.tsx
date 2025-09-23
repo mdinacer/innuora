@@ -7,8 +7,7 @@ import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: `Terms of Use - ${APP_CONFIG.name}`,
-  description:
-    `Read ${APP_CONFIG.name}'s Terms of Use to understand your rights and responsibilities when using our emotional AI companion platform.`,
+  description: `Read ${APP_CONFIG.name}'s Terms of Use to understand your rights and responsibilities when using our emotional AI companion platform.`,
   keywords: [
     `${APP_CONFIG.name} terms of use`,
     "terms and conditions",
@@ -18,11 +17,11 @@ export const metadata: Metadata = {
     "app terms",
   ],
   alternates: {
-    canonical: `${APP_CONFIG.domain}/en/terms`,
+    canonical: `${APP_CONFIG.domains.primary}/en/terms`,
     languages: {
-      en: `${APP_CONFIG.domain}/en/terms`,
-      fr: `${APP_CONFIG.domain}/fr/terms`,
-      ar: `${APP_CONFIG.domain}/ar/terms`,
+      en: `${APP_CONFIG.domains.primary}/en/terms`,
+      fr: `${APP_CONFIG.domains.primary}/fr/terms`,
+      ar: `${APP_CONFIG.domains.primary}/ar/terms`,
     },
   },
   robots: {
@@ -229,7 +228,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             <div className="space-y-2 text-muted-foreground">
               <p className="space-x-2 rtl:space-x-reverse">
                 <strong className="text-mir-text-primary">{content.contact.entity}</strong>
-                <span>{APP_CONFIG.legalEntity}</span>
+                <span>{APP_CONFIG.company.legalName}</span>
               </p>
               <p className="space-x-2 rtl:space-x-reverse">
                 <strong className="text-mir-text-primary">{content.contact.support}</strong>
@@ -253,7 +252,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.eligibility.title}</h2>
             <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15 mb-4">
               <p className="text-sm font-semibold text-mir-text-primary space-x-2 rtl:space-x-reverse">
-                <span>{content.eligibility.ageRequirement}</span> {APP_CONFIG.minAge}+
+                <span>{content.eligibility.ageRequirement}</span> {APP_CONFIG.legal.ageRequirement}
               </p>
             </div>
             <p className="text-muted-foreground">{content.eligibility.message}</p>

@@ -5,11 +5,10 @@ import { useRouter } from "next/navigation";
 import { Profile } from "@prisma/client";
 import { useTranslation } from "react-i18next";
 
-import { APP_CONFIG } from "@/config/app";
-
 import { Container } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import FlowChatMessageRenderer from "@/components/chat-ui/flow-chat/flow-chat.message-renderer";
+import { APP_CONFIG } from "@/config/app";
 import { SESSIONS_IDS } from "@/domains/session-flow/constants/sessions.props";
 import { useSessionFlowOrchestrator } from "@/domains/session-flow/hooks/use-session-flow-orchestrator";
 import useFlowStepController from "@/domains/session-flow/hooks/use-session-flow-step-controller";

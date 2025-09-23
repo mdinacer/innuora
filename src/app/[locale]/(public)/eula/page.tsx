@@ -6,8 +6,7 @@ import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: `End User License Agreement (EULA) - ${APP_CONFIG.name}`,
-  description:
-    `Read ${APP_CONFIG.name}'s End User License Agreement (EULA) to understand the licensing terms for using our emotional AI companion application.`,
+  description: `Read ${APP_CONFIG.name}'s End User License Agreement (EULA) to understand the licensing terms for using our emotional AI companion application.`,
   keywords: [
     `${APP_CONFIG.name} EULA`,
     "end user license agreement",
@@ -17,11 +16,11 @@ export const metadata: Metadata = {
     "emotional AI license",
   ],
   alternates: {
-    canonical: `${APP_CONFIG.domain}/en/eula`,
+    canonical: `${APP_CONFIG.domains.primary}/en/eula`,
     languages: {
-      en: `${APP_CONFIG.domain}/en/eula`,
-      fr: `${APP_CONFIG.domain}/fr/eula`,
-      ar: `${APP_CONFIG.domain}/ar/eula`,
+      en: `${APP_CONFIG.domains.primary}/en/eula`,
+      fr: `${APP_CONFIG.domains.primary}/fr/eula`,
+      ar: `${APP_CONFIG.domains.primary}/ar/eula`,
     },
   },
   robots: {

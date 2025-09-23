@@ -22,17 +22,17 @@ export const metadata: Metadata = {
     "women emotional wellness registration",
   ],
   alternates: {
-    canonical: `${APP_CONFIG.domain}/en/auth/sign-up`,
+    canonical: `${APP_CONFIG.domains.primary}/en/auth/sign-up`,
     languages: {
-      en: `${APP_CONFIG.domain}/en/auth/sign-up`,
-      fr: `${APP_CONFIG.domain}/fr/auth/sign-up`,
-      ar: `${APP_CONFIG.domain}/ar/auth/sign-up`,
+      en: `${APP_CONFIG.domains.primary}/en/auth/sign-up`,
+      fr: `${APP_CONFIG.domains.primary}/fr/auth/sign-up`,
+      ar: `${APP_CONFIG.domains.primary}/ar/auth/sign-up`,
     },
   },
   openGraph: {
     title: `Join ${APP_CONFIG.name} - Start Your Emotional Clarity Journey`,
     description: `Create your free account and begin exploring emotional awareness with ${APP_CONFIG.name}'s AI companion.`,
-    url: `${APP_CONFIG.domain}/en/auth/sign-up`,
+    url: `${APP_CONFIG.domains.primary}/en/auth/sign-up`,
     images: [
       {
         url: "/og/mirael-cover.png",

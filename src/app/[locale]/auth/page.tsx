@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+
 import { APP_CONFIG } from "@/config/app";
 
 export const metadata: Metadata = {

@@ -6,8 +6,6 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { APP_CONFIG } from "@/config/app";
-
 import { createSession } from "@/app/actions/session-actions";
 import SwitchField from "@/components/input/switch-field";
 import TextField from "@/components/input/text-field";
@@ -23,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import { APP_CONFIG } from "@/config/app";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { createStoreSession, getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";

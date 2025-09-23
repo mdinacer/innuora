@@ -2,8 +2,8 @@
   "advancedTester": {
     "hero": {
       "badge": "Programme de Test Exclusif",
-      "title": "Aidez à façonner l'avenir de Mirael",
-      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
+      "title": "Aidez à façonner l'avenir de {{app_name}}",
+      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster {{app_name}} afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
     },
     "messages": {
       "success": "Candidature envoyée",
@@ -68,11 +68,11 @@
   "chat-ui": {
     "onboarding": {
       "header": {
-        "title": "Bienvenue sur Mirael",
+        "title": "Bienvenue sur {{app_name}}",
         "subtitle": "Un espace doux pour commencer votre réflexion"
       },
       "hero": {
-        "title": "Bienvenue sur Mirael",
+        "title": "Bienvenue sur {{app_name}}",
         "subtitle": "Un espace bienveillant rien que pour vous",
         "paragraphs": [
           "**Ceci est votre espace privé pour arriver telle que vous êtes.**",
@@ -93,7 +93,7 @@
         "paragraphs": [
           "Prenez un moment pour vous installer et remarquer ce que vous ressentez.",
           "Cet espace est à vous. Partagez librement et réfléchissez à votre rythme.",
-          "*Rappelez-vous que Mirael reflète vos émotions pour vous aider à y voir plus clair.*"
+          "*Rappelez-vous que {{app_name}} reflète vos émotions pour vous aider à y voir plus clair.*"
         ],
         "buttonText": "Commencer la réflexion"
       },
@@ -160,11 +160,11 @@
     },
     "default": {
       "header": {
-        "title": "Mirael",
+        "title": "{{app_name}}",
         "subtitle": "Un espace privé pour réfléchir"
       },
       "hero": {
-        "title": "Mirael",
+        "title": "{{app_name}}",
         "subtitle": "Un espace privé pour réfléchir et se reconnecter à vos émotions.",
         "paragraphs": [
           "Commencez une nouvelle session quand vous êtes prête à faire le point avec vous-même.",
@@ -197,24 +197,24 @@
     "hero": {
       "badge": "Accès anticipé",
       "title": "Un miroir pour votre monde intérieur",
-      "subtitle": "Mirael vous aide à faire une pause, à remarquer les schémas et à trouver de la clarté lorsque la vie devient lourde. Elle fonctionne à travers des conversations réfléchies et sensibles aux émotions.",
+      "subtitle": "{{app_name}} vous aide à faire une pause, à remarquer les schémas et à trouver de la clarté lorsque la vie devient lourde. Elle fonctionne à travers des conversations réfléchies et sensibles aux émotions.",
       "cta": {
         "join": "Rejoindre l'accès anticipé",
         "demo": "Voir une conversation"
       },
-      "disclaimer": "Mirael n’est pas une thérapie ni un service d’urgence. Si vous êtes en danger immédiat, contactez les services d’urgence locaux."
+      "disclaimer": "{{app_name}} n’est pas une thérapie ni un service d’urgence. Si vous êtes en danger immédiat, contactez les services d’urgence locaux."
     },
     "howItHelps": {
-      "title": "Comment Mirael aide",
-      "subtitle": "Mirael est un miroir bienveillant qui vous aide à explorer vos émotions, reconnaître vos schémas et réfléchir dans un espace privé que vous contrôlez.",
+      "title": "Comment {{app_name}} aide",
+      "subtitle": "{{app_name}} est un miroir bienveillant qui vous aide à explorer vos émotions, reconnaître vos schémas et réfléchir dans un espace privé que vous contrôlez.",
       "features": [
         {
           "title": "Conversations réfléchies",
-          "subtitle": "Mirael reflète vos émotions pour vous aider à nommer et comprendre ce que vous ressentez réellement."
+          "subtitle": "{{app_name}} reflète vos émotions pour vous aider à nommer et comprendre ce que vous ressentez réellement."
         },
         {
           "title": "Détection des schémas",
-          "subtitle": "Au fil du temps, Mirael met en lumière les thèmes récurrents dans votre pensée pour vous aider à remarquer des liens que vous auriez pu manquer."
+          "subtitle": "Au fil du temps, {{app_name}} met en lumière les thèmes récurrents dans votre pensée pour vous aider à remarquer des liens que vous auriez pu manquer."
         },
         {
           "title": "Privé par défaut",
@@ -223,8 +223,8 @@
       ]
     },
     "demo": {
-      "title": "Ce qui rend Mirael différente",
-      "subtitle": "Découvrez comment Mirael va au-delà des conseils génériques en révélant les sources de stress profondes et en proposant des solutions pratiques et claires.",
+      "title": "Ce qui rend {{app_name}} différente",
+      "subtitle": "Découvrez comment {{app_name}} va au-delà des conseils génériques en révélant les sources de stress profondes et en proposant des solutions pratiques et claires.",
       "conversation": [
         {
           "role": "mirael",
@@ -382,7 +382,7 @@
       "legend": {
         "user": "Utilisateur",
         "generic": "IA Générique",
-        "mirael": "Mirael"
+        "mirael": "{{app_name}}"
       },
       "insights": {
         "generic": {
@@ -395,7 +395,7 @@
           ]
         },
         "mirael": {
-          "title": "Ce qui différencie Mirael",
+          "title": "Ce qui différencie {{app_name}}",
           "points": [
             "Remarque quand vos pensées amplifient les situations de manière excessive",
             "Aide à identifier la pensée en noir et blanc qui empêche tout équilibre",
@@ -406,44 +406,44 @@
       }
     },
     "earlyAccess": {
-      "title": "Faites partie des premières utilisatrices de Mirael",
-      "subtitle": "Nous invitons un groupe sélectionné de femmes à rejoindre le programme de test de Mirael. Partagez vos expériences et besoins pour nous aider à ajuster Mirael afin qu’il vous voie, vous entende et vous comprenne réellement.",
+      "title": "Faites partie des premières utilisatrices de {{app_name}}",
+      "subtitle": "Nous invitons un groupe sélectionné de femmes à rejoindre le programme de test de {{app_name}}. Partagez vos expériences et besoins pour nous aider à ajuster {{app_name}} afin qu’il vous voie, vous entende et vous comprenne réellement.",
       "cta": "Rejoignez le Cercle Privilégié"
     },
     "faq": {
       "title": "Questions fréquentes",
       "items": [
         {
-          "question": "Qu’est-ce que Mirael ?",
-          "answer": "Mirael est un miroir émotionnel. Elle vous aide à ralentir, réfléchir et voir votre monde intérieur avec plus de clarté à travers de courtes conversations sensibles aux émotions."
+          "question": "Qu’est-ce que {{app_name}} ?",
+          "answer": "{{app_name}} est un miroir émotionnel. Elle vous aide à ralentir, réfléchir et voir votre monde intérieur avec plus de clarté à travers de courtes conversations sensibles aux émotions."
         },
         {
-          "question": "En quoi Mirael diffère-t-elle d’une thérapie ?",
-          "answer": "Mirael n’est pas une thérapie et ne remplace pas une prise en charge professionnelle. Elle est conçue pour soutenir la conscience de soi au quotidien, sans diagnostiquer ni traiter des problèmes de santé mentale."
+          "question": "En quoi {{app_name}} diffère-t-elle d’une thérapie ?",
+          "answer": "{{app_name}} n’est pas une thérapie et ne remplace pas une prise en charge professionnelle. Elle est conçue pour soutenir la conscience de soi au quotidien, sans diagnostiquer ni traiter des problèmes de santé mentale."
         },
         {
-          "question": "Comment fonctionne Mirael concrètement ?",
-          "answer": "Mirael utilise des questions et des modèles de conversation conçus pour refléter vos émotions. Elle met en évidence les pressions invisibles, les pensées récurrentes et les règles implicites pour mieux vous comprendre."
+          "question": "Comment fonctionne {{app_name}} concrètement ?",
+          "answer": "{{app_name}} utilise des questions et des modèles de conversation conçus pour refléter vos émotions. Elle met en évidence les pressions invisibles, les pensées récurrentes et les règles implicites pour mieux vous comprendre."
         },
         {
           "question": "Mes données sont-elles privées ?",
           "answer": "Oui. Vos réflexions vous appartiennent entièrement. Les conversations sont privées par conception, et vous pouvez exporter ou supprimer vos données."
         },
         {
-          "question": "À qui s’adresse Mirael ?",
-          "answer": "Mirael s’adresse aux personnes qui portent beaucoup, semblent fortes en apparence mais se sentent épuisées intérieurement. Elle leur offre un espace sûr pour réfléchir, reconnaître les schémas et retrouver de la clarté."
+          "question": "À qui s’adresse {{app_name}} ?",
+          "answer": "{{app_name}} s’adresse aux personnes qui portent beaucoup, semblent fortes en apparence mais se sentent épuisées intérieurement. Elle leur offre un espace sûr pour réfléchir, reconnaître les schémas et retrouver de la clarté."
         },
         {
-          "question": "Mirael peut-elle aider en cas de crise ?",
-          "answer": "Non. Mirael n’est pas un service d’urgence. Si vous êtes en danger immédiat ou faites face à une situation critique, contactez les services d’urgence locaux ou une ligne professionnelle."
+          "question": "{{app_name}} peut-elle aider en cas de crise ?",
+          "answer": "Non. {{app_name}} n’est pas un service d’urgence. Si vous êtes en danger immédiat ou faites face à une situation critique, contactez les services d’urgence locaux ou une ligne professionnelle."
         },
         {
           "question": "Quel est le coût ?",
-          "answer": "Pendant l’accès anticipé, Mirael est gratuite. Les tarifs seront définis ultérieurement en fonction des retours des premières utilisatrices."
+          "answer": "Pendant l’accès anticipé, {{app_name}} est gratuite. Les tarifs seront définis ultérieurement en fonction des retours des premières utilisatrices."
         },
         {
           "question": "Pourquoi rejoindre l’accès anticipé ?",
-          "answer": "L’accès anticipé vous permet de façonner Mirael avec nous. Vos retours influenceront directement l’évolution de l’expérience, et vous serez parmi les premières à bénéficier des nouvelles fonctionnalités."
+          "answer": "L’accès anticipé vous permet de façonner {{app_name}} avec nous. Vos retours influenceront directement l’évolution de l’expérience, et vous serez parmi les premières à bénéficier des nouvelles fonctionnalités."
         }
       ]
     }
@@ -451,7 +451,7 @@
   "joinSuccess": {
     "badge": "Candidature envoyée",
     "title": "Merci de nous avoir rejoints",
-    "message": "Nous avons bien reçu votre candidature pour le programme de test avancé de Mirael. Votre intérêt compte beaucoup alors que nous continuons à créer un espace de réflexion et de clarté.",
+    "message": "Nous avons bien reçu votre candidature pour le programme de test avancé de {{app_name}}. Votre intérêt compte beaucoup alors que nous continuons à créer un espace de réflexion et de clarté.",
     "nextSteps": {
       "title": "Quelle est la suite ?",
       "steps": [
@@ -473,15 +473,15 @@
       "title": "Calendrier prévisionnel",
       "description": "Nous examinons généralement les candidatures sous 1 à 2 semaines. Les candidats sélectionnés seront contactés peu après. En raison du grand nombre de demandes, nous ne pourrons peut-être pas répondre individuellement à chacun."
     },
-    "closingNote": "En attendant, vous pouvez suivre l’avancée de Mirael ou nous contacter pour toute question concernant le programme de test.",
+    "closingNote": "En attendant, vous pouvez suivre l’avancée de {{app_name}} ou nous contacter pour toute question concernant le programme de test.",
     "actions": {
       "follow": "Suivre les mises à jour",
       "contact": "Nous contacter",
-      "back": "Retour à Mirael"
+      "back": "Retour à {{app_name}}"
     }
   },
   "loading": {
-    "title": "Préparation de Mirael",
+    "title": "Préparation de {{app_name}}",
     "subtitle": "Configuration de votre miroir émotionnel",
     "loadingMessage": "Cela ne prendra qu'un instant...",
     "loadedMessage": "Prêt"
@@ -489,7 +489,7 @@
   "policies_footer": {
     "disclaimer": {
       "label": "Important : ",
-      "message": "Mirael n’est pas un service de santé mentale ou de crise. Si vous êtes en situation de crise, veuillez contacter les services d’urgence locaux."
+      "message": "{{app_name}} n’est pas un service de santé mentale ou de crise. Si vous êtes en situation de crise, veuillez contacter les services d’urgence locaux."
     },
     "questions": "Des questions concernant cette page {{currentPage}} ?",
     "contact_email": "Contactez-nous à ",
@@ -501,7 +501,7 @@
       "help": "Aide",
       "support": "Support"
     },
-    "copyright": "© 2025 Mirael, Inc. Tous droits réservés."
+    "copyright": "© 2025 {{app_name}}, Inc. Tous droits réservés."
   },
   "sessions": {
     "title": "Vos sessions",
@@ -543,8 +543,8 @@
           "placeholder": "Optionnel"
         },
         "aiSuggestedTitle": {
-          "label": "Laissez Mirael proposer un titre et un sous-titre",
-          "description": "Mirael peut générer un titre et un sous-titre brefs et réfléchis pour cette session. Vous pouvez les modifier ensuite si vous le souhaitez."
+          "label": "Laissez {{app_name}} proposer un titre et un sous-titre",
+          "description": "{{app_name}} peut générer un titre et un sous-titre brefs et réfléchis pour cette session. Vous pouvez les modifier ensuite si vous le souhaitez."
         },
         "persistOnCloud": {
           "label": "Stocker la session sur le cloud",

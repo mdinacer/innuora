@@ -4,59 +4,59 @@
     "lastUpdated": "Dernière mise à jour : 2 septembre 2025",
     "hero": {
       "headline": "Contrat de Licence Utilisateur Final",
-      "description": "Ce contrat régit votre utilisation de l'application Mirael et définit les conditions selon lesquelles vous pouvez accéder à notre logiciel."
+      "description": "Ce contrat régit votre utilisation de l'application {{app_name}} et définit les conditions selon lesquelles vous pouvez accéder à notre logiciel."
     },
     "notice": {
       "title": "Accord Juridique Important",
-      "message": "En téléchargeant, installant ou utilisant Mirael, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final.",
-      "warning": "Si vous n'acceptez pas ces conditions, n'installez pas et n'utilisez pas Mirael."
+      "message": "En téléchargeant, installant ou utilisant {{app_name}}, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final.",
+      "warning": "Si vous n'acceptez pas ces conditions, n'installez pas et n'utilisez pas {{app_name}}."
     },
     "acceptance": {
       "title": "Acceptation de l’Accord",
-      "message": "En téléchargeant, installant ou utilisant Mirael, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final (CLUF). Si vous n'acceptez pas, n'installez pas et n'utilisez pas Mirael."
+      "message": "En téléchargeant, installant ou utilisant {{app_name}}, vous acceptez d'être lié par les termes de ce Contrat de Licence Utilisateur Final (CLUF). Si vous n'acceptez pas, n'installez pas et n'utilisez pas {{app_name}}."
     },
     "licenseGrant": {
       "title": "Octroi de Licence",
-      "message": "Mirael vous accorde une licence limitée, non exclusive, non transférable et révocable pour utiliser l'application à des fins personnelles et non commerciales conformément à ce CLUF."
+      "message": "{{app_name}} vous accorde une licence limitée, non exclusive, non transférable et révocable pour utiliser l'application à des fins personnelles et non commerciales conformément à ce CLUF."
     },
     "licenseRestrictions": {
       "title": "Restrictions de Licence",
       "message": "Vous acceptez de ne pas :",
       "items": [
-        "Ingénierie inverse, décompiler ou désassembler Mirael",
-        "Louer, prêter, vendre, redistribuer ou sous-licencier Mirael",
-        "Utiliser Mirael d'une manière qui viole les lois ou règlements applicables",
-        "Tenter de contourner les mesures de sécurité ou d'accéder au code source de Mirael"
+        "Ingénierie inverse, décompiler ou désassembler {{app_name}}",
+        "Louer, prêter, vendre, redistribuer ou sous-licencier {{app_name}}",
+        "Utiliser {{app_name}} d'une manière qui viole les lois ou règlements applicables",
+        "Tenter de contourner les mesures de sécurité ou d'accéder au code source de {{app_name}}"
       ]
     },
     "intellectualProperty": {
       "title": "Propriété Intellectuelle",
-      "message": "Tous les droits, titres et intérêts sur Mirael, y compris tout le contenu, la conception et le logiciel, restent la propriété exclusive de Mirael et de ses concédants. Ce CLUF ne vous accorde aucun droit de propriété sur une partie de Mirael."
+      "message": "Tous les droits, titres et intérêts sur {{app_name}}, y compris tout le contenu, la conception et le logiciel, restent la propriété exclusive de {{app_name}} et de ses concédants. Ce CLUF ne vous accorde aucun droit de propriété sur une partie de {{app_name}}."
     },
     "updates": {
       "title": "Mises à Jour et Modifications",
-      "message": "Mirael peut, à sa discrétion, fournir des mises à jour, correctifs ou modifications de l'application. Ce CLUF s'applique à toutes ces mises à jour sauf si elles sont accompagnées d'un accord de licence distinct."
+      "message": "{{app_name}} peut, à sa discrétion, fournir des mises à jour, correctifs ou modifications de l'application. Ce CLUF s'applique à toutes ces mises à jour sauf si elles sont accompagnées d'un accord de licence distinct."
     },
     "termination": {
       "title": "Résiliation",
-      "message": "Ce CLUF reste en vigueur jusqu'à sa résiliation. Mirael peut suspendre ou résilier votre accès à tout moment sans préavis si vous violez l'une de ses conditions.",
+      "message": "Ce CLUF reste en vigueur jusqu'à sa résiliation. {{app_name}} peut suspendre ou résilier votre accès à tout moment sans préavis si vous violez l'une de ses conditions.",
       "uponTermination": {
         "label": "En cas de résiliation :",
-        "message": "Vous devez désinstaller immédiatement Mirael et cesser toute utilisation de l'application."
+        "message": "Vous devez désinstaller immédiatement {{app_name}} et cesser toute utilisation de l'application."
       }
     },
     "disclaimer": {
       "title": "Avertissement sur les Garanties",
-      "message": "Mirael est fourni « tel quel » sans aucune garantie, expresse ou implicite, y compris, mais sans s'y limiter, les garanties de qualité marchande, d'adéquation à un usage particulier, de fiabilité ou de disponibilité.",
+      "message": "{{app_name}} est fourni « tel quel » sans aucune garantie, expresse ou implicite, y compris, mais sans s'y limiter, les garanties de qualité marchande, d'adéquation à un usage particulier, de fiabilité ou de disponibilité.",
       "note": "Cela signifie que nous ne pouvons garantir que l'application fonctionnera parfaitement ou répondra à toutes vos attentes, bien que nous nous efforcions de fournir la meilleure expérience possible."
     },
     "liability": {
       "title": "Limitation de Responsabilité",
-      "message": "Dans toute la mesure permise par la loi, Mirael et ses affiliés ne pourront être tenus responsables d'aucun dommage indirect, accessoire, spécial, consécutif ou punitif découlant de votre utilisation de l'application."
+      "message": "Dans toute la mesure permise par la loi, {{app_name}} et ses affiliés ne pourront être tenus responsables d'aucun dommage indirect, accessoire, spécial, consécutif ou punitif découlant de votre utilisation de l'application."
     },
     "governingLaw": {
       "title": "Droit Applicable",
-      "message": "Ce CLUF est régi et interprété conformément aux lois de la juridiction applicable où Mirael est mis à disposition, sans tenir compte des dispositions sur les conflits de lois."
+      "message": "Ce CLUF est régi et interprété conformément aux lois de la juridiction applicable où {{app_name}} est mis à disposition, sans tenir compte des dispositions sur les conflits de lois."
     },
     "contact": {
       "title": "Informations de Contact",
@@ -65,8 +65,8 @@
     },
     "summary": {
       "title": "Résumé de l’Accord",
-      "message": "Ce CLUF vous permet d'utiliser Mirael à des fins personnelles tout en protégeant nos droits de propriété intellectuelle et en limitant la responsabilité.",
-      "acknowledgment": "En continuant à utiliser Mirael, vous reconnaissez avoir lu, compris et accepté d'être lié par ces termes."
+      "message": "Ce CLUF vous permet d'utiliser {{app_name}} à des fins personnelles tout en protégeant nos droits de propriété intellectuelle et en limitant la responsabilité.",
+      "acknowledgment": "En continuant à utiliser {{app_name}}, vous reconnaissez avoir lu, compris et accepté d'être lié par ces termes."
     }
   },
   "privacy": {
@@ -74,8 +74,8 @@
     "lastUpdated": "Dernière mise à jour : septembre 2025",
     "intro": {
       "title": "Votre confidentialité, notre engagement",
-      "message": "Mirael est conçu comme un espace privé et réflexif. Nous ne collectons que ce qui est strictement nécessaire au fonctionnement du service, et nous ne vendons jamais vos données.",
-      "note": "Mirael n’établit pas une relation thérapeutique. Si vous êtes en situation de crise ou à risque, veuillez chercher immédiatement un soutien professionnel."
+      "message": "{{app_name}} est conçu comme un espace privé et réflexif. Nous ne collectons que ce qui est strictement nécessaire au fonctionnement du service, et nous ne vendons jamais vos données.",
+      "note": "{{app_name}} n’établit pas une relation thérapeutique. Si vous êtes en situation de crise ou à risque, veuillez chercher immédiatement un soutien professionnel."
     },
     "principles": {
       "title": "Principes Clés",
@@ -113,7 +113,7 @@
     "howWeUse": {
       "title": "Comment nous utilisons vos données",
       "paragraphs": [
-        "Mirael traite vos saisies en temps réel via des modèles GPT. Les réponses sont générées sans conserver l’historique des conversations, sauf si vous choisissez d’enregistrer vos réflexions.",
+        "{{app_name}} traite vos saisies en temps réel via des modèles GPT. Les réponses sont générées sans conserver l’historique des conversations, sauf si vous choisissez d’enregistrer vos réflexions.",
         "Nous utilisons des prestataires d’hébergement, de stockage et d’analytique uniquement pour faire fonctionner le service. Ces prestataires agissent en tant que sous-traitants et ne peuvent pas utiliser vos données à leurs propres fins."
       ]
     },
@@ -126,7 +126,7 @@
     },
     "children": {
       "title": "Enfants",
-      "note": "Mirael ne s’adresse pas aux personnes de moins de 18 ans. Nous ne collectons pas sciemment de données personnelles concernant des mineurs."
+      "note": "{{app_name}} ne s’adresse pas aux personnes de moins de 18 ans. Nous ne collectons pas sciemment de données personnelles concernant des mineurs."
     },
     "contact": {
       "title": "Contactez-nous",
@@ -139,8 +139,8 @@
     "version": "Version 1.0",
     "intro": {
       "headline": "Accord important",
-      "message": "En accédant à Mirael ou en l'utilisant, vous acceptez d'être lié par ces Conditions d'utilisation. Si vous n'acceptez pas ces conditions, vous ne pouvez pas utiliser notre service.",
-      "note": "Veuillez lire attentivement ces conditions avant d'utiliser Mirael."
+      "message": "En accédant à {{app_name}} ou en l'utilisant, vous acceptez d'être lié par ces Conditions d'utilisation. Si vous n'acceptez pas ces conditions, vous ne pouvez pas utiliser notre service.",
+      "note": "Veuillez lire attentivement ces conditions avant d'utiliser {{app_name}}."
     },
     "contact": {
       "title": "Informations de contact",
@@ -151,20 +151,20 @@
     "eligibility": {
       "title": "Éligibilité",
       "ageRequirement": "Âge requis :",
-      "message": "En utilisant Mirael, vous déclarez et garantissez que vous avez au moins 18 ans (ou l'âge légal dans votre juridiction) et que vous avez la capacité légale de conclure ces Conditions."
+      "message": "En utilisant {{app_name}}, vous déclarez et garantissez que vous avez au moins 18 ans (ou l'âge légal dans votre juridiction) et que vous avez la capacité légale de conclure ces Conditions."
     },
     "license": {
       "title": "Licence d'utilisation",
       "permitted": {
         "title": "Ce que vous pouvez faire",
-        "message": "Nous vous accordons une licence limitée, non exclusive, non transférable et révocable pour utiliser Mirael à des fins personnelles et non commerciales conformément à ces Conditions."
+        "message": "Nous vous accordons une licence limitée, non exclusive, non transférable et révocable pour utiliser {{app_name}} à des fins personnelles et non commerciales conformément à ces Conditions."
       },
       "restricted": {
         "title": "Ce que vous ne pouvez pas faire",
         "items": [
           "Copier, modifier, distribuer, vendre ou louer une partie du Service",
           "Effectuer de l'ingénierie inverse, décompiler ou tenter d'extraire le code source (sauf si la loi le permet)",
-          "Utiliser Mirael pour créer des produits ou services concurrents"
+          "Utiliser {{app_name}} pour créer des produits ou services concurrents"
         ]
       }
     },
@@ -177,7 +177,7 @@
         },
         "legal_compliance": {
           "title": "Conformité légale",
-          "description": "Vous acceptez de respecter toutes les lois et réglementations applicables lors de l'utilisation de Mirael."
+          "description": "Vous acceptez de respecter toutes les lois et réglementations applicables lors de l'utilisation de {{app_name}}."
         },
         "prohibited_uses": {
           "title": "Utilisations interdites",
@@ -185,14 +185,14 @@
           "items": [
             "Soumettre du contenu illégal, nuisible, diffamatoire, harcelant, abusif ou autrement inacceptable",
             "Tenter d'accéder sans autorisation aux systèmes ou réseaux",
-            "Utiliser Mirael pour le diagnostic médical, la réponse aux urgences ou comme substitut à une thérapie professionnelle"
+            "Utiliser {{app_name}} pour le diagnostic médical, la réponse aux urgences ou comme substitut à une thérapie professionnelle"
           ]
         }
       }
     },
     "natureOfService": {
-      "title": "Ce qu'est (et n'est pas) Mirael",
-      "message": "Mirael est un outil de réflexion émotionnelle et de clarté propulsé par l'IA. Il ne s'agit pas d'un dispositif médical, d'un service de santé mentale ou d'un substitut thérapeutique.",
+      "title": "Ce qu'est (et n'est pas) {{app_name}}",
+      "message": "{{app_name}} est un outil de réflexion émotionnelle et de clarté propulsé par l'IA. Il ne s'agit pas d'un dispositif médical, d'un service de santé mentale ou d'un substitut thérapeutique.",
       "disclaimer": "Nous ne fournissons pas de conseils médicaux, psychiatriques ou psychologiques. Consultez toujours un professionnel de santé qualifié pour toute question médicale ou psychologique."
     },
     "ai_and_content": {
@@ -200,11 +200,11 @@
       "sections": {
         "ai_generated_responses": {
           "title": "Réponses générées par IA",
-          "description": "Mirael utilise l'inférence IA sans état pour générer des réponses et des réflexions. Ces résultats sont générés automatiquement et leur exactitude ou pertinence dans tous les contextes n'est pas garantie."
+          "description": "{{app_name}} utilise l'inférence IA sans état pour générer des réponses et des réflexions. Ces résultats sont générés automatiquement et leur exactitude ou pertinence dans tous les contextes n'est pas garantie."
         },
         "content_rights": {
           "title": "Vos droits sur le contenu",
-          "description": "Vous conservez la propriété du contenu que vous soumettez à Mirael. Cependant, vous nous accordez une licence non exclusive, mondiale et libre de droits pour traiter, stocker et utiliser ce contenu afin de fournir et améliorer le Service."
+          "description": "Vous conservez la propriété du contenu que vous soumettez à {{app_name}}. Cependant, vous nous accordez une licence non exclusive, mondiale et libre de droits pour traiter, stocker et utiliser ce contenu afin de fournir et améliorer le Service."
         },
         "content_moderation": {
           "title": "Modération du contenu",
@@ -224,7 +224,7 @@
       "title": "Résiliation du compte",
       "by_user": {
         "title": "Par vous",
-        "description": "Vous pouvez arrêter d'utiliser Mirael à tout moment et demander la suppression de votre compte via vos paramètres."
+        "description": "Vous pouvez arrêter d'utiliser {{app_name}} à tout moment et demander la suppression de votre compte via vos paramètres."
       },
       "by_us": {
         "title": "Par nous",
@@ -237,23 +237,23 @@
     },
     "intellectualProperty": {
       "title": "Propriété intellectuelle",
-      "ownership": "Mirael, y compris sa conception, ses fonctionnalités, ses logiciels et ses marques, est la propriété de Mirael, Inc. et est protégé par les lois sur la propriété intellectuelle.",
-      "branding": "Vous ne pouvez pas utiliser les marques ou l'image de marque de Mirael sans notre autorisation écrite préalable."
+      "ownership": "{{app_name}}, y compris sa conception, ses fonctionnalités, ses logiciels et ses marques, est la propriété de {{app_name}}, Inc. et est protégé par les lois sur la propriété intellectuelle.",
+      "branding": "Vous ne pouvez pas utiliser les marques ou l'image de marque de {{app_name}} sans notre autorisation écrite préalable."
     },
     "disclaimers": {
       "title": "Avertissements",
       "as_is_service": {
         "title": "Service « tel quel »",
-        "description": "Mirael est fourni « tel quel » et « selon disponibilité » sans aucune garantie. Nous ne garantissons pas que Mirael sera exempt d'erreurs, ininterrompu, sécurisé ou que les résultats seront fiables ou précis."
+        "description": "{{app_name}} est fourni « tel quel » et « selon disponibilité » sans aucune garantie. Nous ne garantissons pas que {{app_name}} sera exempt d'erreurs, ininterrompu, sécurisé ou que les résultats seront fiables ou précis."
       },
       "health_disclaimer": {
         "title": "Avertissement sanitaire",
-        "description": "Mirael ne remplace pas un diagnostic professionnel, un traitement ou un soutien en cas de crise. Consultez toujours des professionnels de santé qualifiés pour toute question médicale ou mentale."
+        "description": "{{app_name}} ne remplace pas un diagnostic professionnel, un traitement ou un soutien en cas de crise. Consultez toujours des professionnels de santé qualifiés pour toute question médicale ou mentale."
       }
     },
     "liability": {
       "title": "Limitation de responsabilité",
-      "message": "Dans la mesure maximale permise par la loi, Mirael, Inc. et ses affiliés ne sont pas responsables des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs.",
+      "message": "Dans la mesure maximale permise par la loi, {{app_name}}, Inc. et ses affiliés ne sont pas responsables des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs.",
       "cap": {
         "label": "Plafond de responsabilité :",
         "message": "Notre responsabilité totale pour toute réclamation découlant du Service est limitée au montant que vous nous avez payé au cours des 12 mois précédant la réclamation, ou 50 $ si aucun paiement n'a été effectué."
@@ -261,13 +261,13 @@
     },
     "indemnification": {
       "title": "Indemnisation",
-      "message": "Vous acceptez d'indemniser et de dégager de toute responsabilité Mirael, Inc. et ses affiliés de toutes réclamations, dommages, responsabilités, coûts et dépenses résultant de votre utilisation du Service, de votre violation de ces Conditions ou de toute violation de la loi ou des droits d'un tiers."
+      "message": "Vous acceptez d'indemniser et de dégager de toute responsabilité {{app_name}}, Inc. et ses affiliés de toutes réclamations, dommages, responsabilités, coûts et dépenses résultant de votre utilisation du Service, de votre violation de ces Conditions ou de toute violation de la loi ou des droits d'un tiers."
     },
     "governingLaw": {
       "title": "Droit applicable et litiges",
       "points": [
-        "Ces Conditions sont régies par les lois applicables à Mirael, Inc., sans tenir compte des principes de conflit de lois.",
-        "Les litiges seront résolus devant les tribunaux du ressort où Mirael, Inc. est enregistré, sauf si la loi exige autrement.",
+        "Ces Conditions sont régies par les lois applicables à {{app_name}}, Inc., sans tenir compte des principes de conflit de lois.",
+        "Les litiges seront résolus devant les tribunaux du ressort où {{app_name}}, Inc. est enregistré, sauf si la loi exige autrement.",
         "Nous pouvons exiger que certains litiges soient résolus par arbitrage obligatoire. Les règles d'arbitrage spécifiques seront communiquées si applicable."
       ]
     },
@@ -275,21 +275,21 @@
       "title": "Conditions supplémentaires",
       "third_party_services": {
         "title": "Services tiers",
-        "description": "Mirael peut contenir des liens ou des intégrations vers des services tiers. Nous ne sommes pas responsables du contenu, des politiques ou des pratiques de tiers."
+        "description": "{{app_name}} peut contenir des liens ou des intégrations vers des services tiers. Nous ne sommes pas responsables du contenu, des politiques ou des pratiques de tiers."
       },
       "export_controls": {
         "title": "Contrôles à l'exportation",
-        "description": "Vous ne pouvez pas utiliser ou exporter Mirael en violation des lois et règlements applicables à l'exportation."
+        "description": "Vous ne pouvez pas utiliser ou exporter {{app_name}} en violation des lois et règlements applicables à l'exportation."
       }
     },
     "changes": {
       "title": "Modifications de ces conditions",
       "message": "Nous pouvons modifier ces Conditions à tout moment. Les modifications prendront effet lorsqu'elles seront publiées ou communiquées dans le Service.",
-      "note": "Votre utilisation continue de Mirael après des modifications indique votre acceptation des Conditions mises à jour."
+      "note": "Votre utilisation continue de {{app_name}} après des modifications indique votre acceptation des Conditions mises à jour."
     },
     "entireAgreement": {
       "title": "Accord complet",
-      "message": "Ces Conditions constituent l'intégralité de l'accord entre vous et Mirael, Inc. concernant le Service et remplacent tous les accords antérieurs relatifs au même objet."
+      "message": "Ces Conditions constituent l'intégralité de l'accord entre vous et {{app_name}}, Inc. concernant le Service et remplacent tous les accords antérieurs relatifs au même objet."
     }
   }
 }

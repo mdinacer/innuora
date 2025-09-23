@@ -1,6 +1,6 @@
 {
   "automated_decision_making_and_profiling": {
-    "description": "Mirael uses automated processing (including AI inference) to generate reflection content, identify cognitive distortions, and surface themes. These processes are assistive and do not make legal, medical, or employment decisions about users.",
+    "description": "{{app_name}} uses automated processing (including AI inference) to generate reflection content, identify cognitive distortions, and surface themes. These processes are assistive and do not make legal, medical, or employment decisions about users.",
     "user_rights": "Users may request meaningful information about the logic, significance, and envisaged consequences of automated processing and can request human review where applicable."
   },
   "changes_to_policy": {
@@ -8,10 +8,10 @@
     "current_policy_version": "1.0"
   },
   "children_and_age_restrictions": {
-    "minimum_age": "Mirael is intended for adult users. We do not knowingly collect personal data from children under 16 (or the applicable local age of consent). If we learn we have collected personal data from a child under the applicable age without parental consent, we will delete it."
+    "minimum_age": "{{app_name}} is intended for adult users. We do not knowingly collect personal data from children under 16 (or the applicable local age of consent). If we learn we have collected personal data from a child under the applicable age without parental consent, we will delete it."
   },
   "contact": {
-    "data_controller": "Mirael, Inc.",
+    "data_controller": "{{app_name}}, Inc.",
     "address": "Not provided",
     "email": "privacy@mirael.app",
     "phone": "Not provided",
@@ -52,7 +52,7 @@
         "category": "Sensitive Emotional Content",
         "examples": ["Statements revealing emotional state, personal history, feelings, and interpersonal concerns"],
         "purpose": "Processing to provide reflection, identify cognitive distortions, and suggest coping actions.",
-        "note": "We treat this as sensitive in practice and apply additional safeguards, but do not label Mirael as a medical or mental health service."
+        "note": "We treat this as sensitive in practice and apply additional safeguards, but do not label {{app_name}} as a medical or mental health service."
       },
       {
         "category": "Device & Usage Data",
@@ -66,7 +66,7 @@
         "examples": [
           "Client-side state stored via Zustand and localForage (session tokens, UI state, encrypted local caches)"
         ],
-        "purpose": "Improve user experience, offline support, make Mirael appear stateful on-device."
+        "purpose": "Improve user experience, offline support, make {{app_name}} appear stateful on-device."
       },
       {
         "category": "Third-Party Data",
@@ -98,7 +98,7 @@
       "For portability requests we provide data in a common machine-readable format (JSON)."
     ]
   },
-  "disclaimer_and_limitations": "This Privacy Policy is informational and intended to communicate Mirael’s data practices. It does not constitute legal advice. Users and operators should consult counsel for jurisdiction-specific compliance, and Mirael will update implementation details as legal/regulatory requirements evolve.",
+  "disclaimer_and_limitations": "This Privacy Policy is informational and intended to communicate {{app_name}}’s data practices. It does not constitute legal advice. Users and operators should consult counsel for jurisdiction-specific compliance, and {{app_name}} will update implementation details as legal/regulatory requirements evolve.",
   "dispute_resolution_and_governing_law": {
     "description": "Any disputes will be governed by the laws applicable to the entity named as data controller and will follow the terms provided in our Terms of Service. Specific dispute and jurisdictional mechanisms may be provided in the TOS."
   },
@@ -110,10 +110,10 @@
   },
   "international_and_special_jurisdiction_provisions": {
     "eu_gdpr": "EU/EEA users may have additional rights. We will respond to GDPR rights requests and provide data processing information relevant to EU residents on request.",
-    "ccpa": "California residents have rights under the CCPA/CPRA: access, deletion, opt-out of sale (Mirael does not sell personal information). Requests can be made via privacy@mirael.app."
+    "ccpa": "California residents have rights under the CCPA/CPRA: access, deletion, opt-out of sale ({{app_name}} does not sell personal information). Requests can be made via privacy@mirael.app."
   },
   "international_transfers": {
-    "description": "Mirael is a global service and may transfer personal data to service providers or processors in other countries. When transfers occur, Mirael implements appropriate safeguards such as standard contractual clauses, data processing agreements, or relying on adequacy decisions where applicable."
+    "description": "{{app_name}} is a global service and may transfer personal data to service providers or processors in other countries. When transfers occur, {{app_name}} implements appropriate safeguards such as standard contractual clauses, data processing agreements, or relying on adequacy decisions where applicable."
   },
   "key_principles": [
     "We minimize the personal data we collect.",
@@ -159,16 +159,16 @@
   },
   "processing_details": {
     "stateless_ai_usage": {
-      "description": "Mirael uses a stateless AI inference service (e.g., GPT-4o) to process text inputs for reflection and pattern recognition. Inputs are transmitted to the API for immediate processing and the AI returns outputs which may be logged transiently for quality and debugging.",
+      "description": "{{app_name}} uses a stateless AI inference service (e.g., GPT-4o) to process text inputs for reflection and pattern recognition. Inputs are transmitted to the API for immediate processing and the AI returns outputs which may be logged transiently for quality and debugging.",
       "transmission": "Data transmitted to the AI provider is encrypted in transit.",
       "storage": "By default, the AI provider is treated as a processor; transient logs may be retained by the provider according to their policies. We will seek contracts that limit retention where technically possible."
     },
     "local_state_explanation": {
-      "description": "To provide continuity, Mirael uses client-side state persistence (Zustand + localForage). Data stored locally remains on the user’s device unless the user explicitly syncs or exports it.",
+      "description": "To provide continuity, {{app_name}} uses client-side state persistence (Zustand + localForage). Data stored locally remains on the user’s device unless the user explicitly syncs or exports it.",
       "user_control": "Users can clear local data through app settings; local storage is under user control and not automatically uploaded to our servers unless the user opts into backups or sync features."
     }
   },
-  "product": "Mirael",
+  "product": "{{app_name}}",
   "retention_timeline_examples": {
     "account_inactive": "Account + 12 months post-deletion for recovery and fraud prevention",
     "user_content_backups": "Up to 90 days in backups",
@@ -176,11 +176,11 @@
     "aggregated_metrics": "Indefinite"
   },
   "safety_and_crisis_handling": {
-    "disclaimer": "Mirael is NOT a crisis or emergency service and does not replace professional mental health care.",
+    "disclaimer": "{{app_name}} is NOT a crisis or emergency service and does not replace professional mental health care.",
     "automated_prompts": "If content suggests imminent harm or severe risk, the Service may prompt resources and recommend contacting local emergency services. Such prompts do not constitute monitoring but are safety-oriented.",
     "mandatory_disclosure": "If we believe there is an imminent threat to life or safety and are legally compelled to act, we may disclose information to emergency services or authorities as required by law."
   },
-  "scope": "Applies to all individuals who download, register for, or use Mirael. Does not create a therapeutic relationship; the Service is a self-help/emotional reflection tool.",
+  "scope": "Applies to all individuals who download, register for, or use {{app_name}}. Does not create a therapeutic relationship; the Service is a self-help/emotional reflection tool.",
   "security": {
     "measures": [
       "Encryption in transit (TLS) for all network communications",
@@ -207,7 +207,7 @@
       {
         "purpose": "Payments and billing",
         "data_shared": "Payment information (handled exclusively by third-party payment processor if payments used)",
-        "note": "Mirael does not store raw payment card data"
+        "note": "{{app_name}} does not store raw payment card data"
       },
       {
         "purpose": "Legal and safety",
@@ -217,7 +217,7 @@
     ],
     "aggregate_or_deidentified_sharing": "We may share aggregated, de-identified, or anonymized usage data for research, product development, or business purposes."
   },
-  "summary": "This Privacy Policy describes how Mirael (the “Service”, “we”, “us”, “our”) collects, uses, discloses, and protects personal information when you use the Mirael mobile and web applications designed to provide emotional reflection and clarity tools for adult users.",
+  "summary": "This Privacy Policy describes how {{app_name}} (the “Service”, “we”, “us”, “our”) collects, uses, discloses, and protects personal information when you use the {{app_name}} mobile and web applications designed to provide emotional reflection and clarity tools for adult users.",
   "third_party_services": {
     "examples": [
       {

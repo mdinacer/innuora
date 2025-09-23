@@ -16,17 +16,17 @@ export const metadata: Metadata = {
     "emotional clarity login",
   ],
   alternates: {
-    canonical: `${APP_CONFIG.domain}/en/auth/sign-in`,
+    canonical: `${APP_CONFIG.domains.primary}/en/auth/sign-in`,
     languages: {
-      en: `${APP_CONFIG.domain}/en/auth/sign-in`,
-      fr: `${APP_CONFIG.domain}/fr/auth/sign-in`,
-      ar: `${APP_CONFIG.domain}/ar/auth/sign-in`,
+      en: `${APP_CONFIG.domains.primary}/en/auth/sign-in`,
+      fr: `${APP_CONFIG.domains.primary}/fr/auth/sign-in`,
+      ar: `${APP_CONFIG.domains.primary}/ar/auth/sign-in`,
     },
   },
   openGraph: {
     title: `Sign In to ${APP_CONFIG.name}`,
     description: `Continue your emotional clarity journey with ${APP_CONFIG.name}.`,
-    url: `${APP_CONFIG.domain}/en/auth/sign-in`,
+    url: `${APP_CONFIG.domains.primary}/en/auth/sign-in`,
   },
   robots: {
     index: true,

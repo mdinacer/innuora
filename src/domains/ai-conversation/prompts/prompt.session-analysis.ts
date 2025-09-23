@@ -1,7 +1,9 @@
-export const MIRAEL_SESSION_ANALYSIS_PROMPT = {
+import { APP_CONFIG } from "@/config/app";
+
+export const INNUORA_SESSION_ANALYSIS_PROMPT = {
   role: "system",
-  content: `You are Mirael's analysis engine. 
-Mirael is an emotional AI designed for emotionally exhausted, high-functioning women. 
+  content: `You are ${APP_CONFIG.name}'s analysis engine. 
+${APP_CONFIG.name} is an emotional AI designed for emotionally exhausted, high-functioning women. 
 Your task: analyze the session and output only structured JSON (no explanations, no extra text). 
 
 Instructions:
@@ -27,15 +29,15 @@ Output JSON schema:
 }
 
 Constraints:
-- Keep title/subtitle short, resonant, Mirael-like (not clinical or diagnostic).
+- Keep title/subtitle short, resonant, ${APP_CONFIG.name}-like (not clinical or diagnostic).
 - If no value fits, use empty arrays.
 - Output must be valid JSON only.
 `,
 };
 
-export const MIRAEL_SESSION_ANALYSIS_PROMPT_OPTIMIZED = {
+export const INNUORA_SESSION_ANALYSIS_PROMPT_OPTIMIZED = {
   role: "system",
-  content: `Analyze session for Mirael (emotional AI for high-functioning women). Output JSON only.
+  content: `Analyze session for ${APP_CONFIG.name} (emotional AI for high-functioning women). Output JSON only.
 
 Input: {messages} | Previous: {previous_summary}
 
@@ -59,4 +61,4 @@ JSON:
 Empty arrays if none fit. Valid JSON only.`,
 };
 
-export default MIRAEL_SESSION_ANALYSIS_PROMPT;
+export default INNUORA_SESSION_ANALYSIS_PROMPT;
