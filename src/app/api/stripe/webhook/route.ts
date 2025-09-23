@@ -14,8 +14,8 @@ import { getStripeServer } from "@/lib/billing/stripe-client";
 import {
   InvoiceEvent,
   PaymentIntentEvent,
-  StripeWebhookEvent,
   SubscriptionEvent,
+  // StripeWebhookEvent, // TODO: Add support for additional webhook event types
 } from "@/lib/billing/stripe-webhook-types";
 import { logger } from "@/lib/logging/unified-logger";
 

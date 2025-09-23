@@ -62,3 +62,14 @@ jobs:
         env:
           NODE_ENV: production
           SKIP_ENV_VALIDATION: true
+          # Mock environment variables for build
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          DIRECT_URL: "postgresql://test:test@localhost:5432/test"
+          NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "test-key"
+          OPENAI_API_KEY: "test-key"
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_test"
+          STRIPE_SECRET_KEY: "sk_test_test"
+          STRIPE_WEBHOOK_SECRET: "whsec_test"
+          NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+          NEXT_PUBLIC_DEFAULT_MODEL_CODE: "M1"

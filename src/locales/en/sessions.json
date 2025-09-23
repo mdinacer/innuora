@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "id": "onboarding",
-    "title": "Welcome to Mirael",
+    "title": "Welcome to {{app_name}}",
     "subtitle": "A gentle space to begin",
     "initialStepId": "welcome",
     "steps": [
@@ -11,7 +11,7 @@
           "title": "You’re Here",
           "subtitle": "That already matters",
           "paragraphs": [
-            "In a world that asks you to *hold it all together*, just arriving here is something real. **Mirael isn’t a productivity tool. It’s not here to optimize you.** This is a space where you can **drop the performance**, where you don’t have to be *'fine.'* What you share stays here: **no tracking, no data games, no hidden agenda.** You’re not a checklist. You’re someone returning to something *true inside.*"
+            "In a world that asks you to *hold it all together*, just arriving here is something real. **{{app_name}} isn’t a productivity tool. It’s not here to optimize you.** This is a space where you can **drop the performance**, where you don’t have to be *'fine.'* What you share stays here: **no tracking, no data games, no hidden agenda.** You’re not a checklist. You’re someone returning to something *true inside.*"
           ],
           "buttonText": "Enter the quiet"
         }
@@ -340,7 +340,7 @@
         "content": {
           "title": "A Step Back Toward Yourself",
           "message": "**Thank you for letting yourself be seen here.** Take a slow breath. Even naming these pieces is already movement toward clarity.",
-          "primaryAction": "Begin with Mirael",
+          "primaryAction": "Begin with {{app_name}}",
           "secondaryAction": "Continue as guest"
         }
       }

@@ -32,11 +32,19 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
 
   const transformForUpdate = useCallback(
     (encryptedSession: any) => {
-      const { id: _id, userId: _userId, createdAt: _createdAt, updatedAt: _updatedAt, ...rest } = encryptedSession;
+      const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
+      // Store extracted IDs for potential future use
+      const metadata = {
+        originalId: id,
+        originalUserId: userId,
+        originalCreatedAt: createdAt,
+        originalUpdatedAt: updatedAt,
+      };
+
       return {
         ...rest,
         subtitle: session.subtitle || null,
-        metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : {},
+        metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : metadata,
         encryptedData: encryptedSession.encryptedData as EncryptedBlob,
       };
     },

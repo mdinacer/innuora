@@ -14,14 +14,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
-
 import {
   addCredits,
   adminAdjustCredits,
   checkSufficientCredits,
   deductCredits,
-  getUserCreditsBalance,
   getUserCreditHistory,
+  getUserCreditsBalance,
 } from "../credit-actions";
 
 // Mock dependencies
@@ -137,9 +136,7 @@ describe("Credit Actions", () => {
         throw new Error("Credit amount must be positive");
       });
 
-      await expect(addCredits("test-auth-id", -100, "invalid")).rejects.toThrow(
-        "Credit amount must be positive"
-      );
+      await expect(addCredits("test-auth-id", -100, "invalid")).rejects.toThrow("Credit amount must be positive");
 
       expect(mockLogger.logErrorAndThrow).toHaveBeenCalledWith(
         ERROR_CODES.VALIDATION_FAILED,
@@ -156,9 +153,7 @@ describe("Credit Actions", () => {
         throw new Error("Credit amount must be positive");
       });
 
-      await expect(addCredits("test-auth-id", 0, "invalid")).rejects.toThrow(
-        "Credit amount must be positive"
-      );
+      await expect(addCredits("test-auth-id", 0, "invalid")).rejects.toThrow("Credit amount must be positive");
     });
 
     it("should include metadata in transaction record", async () => {
@@ -170,7 +165,7 @@ describe("Credit Actions", () => {
         const mockTx = {
           user: { update: vi.fn().mockResolvedValue(mockUpdatedUser) },
           creditTransaction: {
-            create: vi.fn().mockResolvedValue(mockTransaction)
+            create: vi.fn().mockResolvedValue(mockTransaction),
           },
         };
 
@@ -255,9 +250,7 @@ describe("Credit Actions", () => {
         throw new Error("Credit amount must be positive");
       });
 
-      await expect(deductCredits("test-auth-id", -50, "invalid")).rejects.toThrow(
-        "Credit amount must be positive"
-      );
+      await expect(deductCredits("test-auth-id", -50, "invalid")).rejects.toThrow("Credit amount must be positive");
     });
 
     it("should create DEBIT transaction record with session ID", async () => {
@@ -270,7 +263,7 @@ describe("Credit Actions", () => {
         const mockTx = {
           user: { update: vi.fn().mockResolvedValue(mockUpdatedUser) },
           creditTransaction: {
-            create: vi.fn().mockResolvedValue(mockTransaction)
+            create: vi.fn().mockResolvedValue(mockTransaction),
           },
         };
 
@@ -352,7 +345,7 @@ describe("Credit Actions", () => {
         where: { userId: "user-123" },
         orderBy: { createdAt: "desc" },
         take: 50, // default limit
-        skip: 0,  // default offset
+        skip: 0, // default offset
         select: expect.objectContaining({
           id: true,
           type: true,
@@ -423,9 +416,7 @@ describe("Credit Actions", () => {
         throw new Error("Admin access required");
       });
 
-      await expect(adminAdjustCredits("user-123", "target-456", 100, "bonus")).rejects.toThrow(
-        "Admin access required"
-      );
+      await expect(adminAdjustCredits("user-123", "target-456", 100, "bonus")).rejects.toThrow("Admin access required");
 
       expect(mockLogger.logErrorAndThrow).toHaveBeenCalledWith(
         ERROR_CODES.AUTH_UNAUTHORIZED,
@@ -482,7 +473,7 @@ describe("Credit Actions", () => {
         const mockTx = {
           user: { update: vi.fn().mockResolvedValue(mockUpdatedUser) },
           creditTransaction: {
-            create: vi.fn().mockResolvedValue(mockTransaction)
+            create: vi.fn().mockResolvedValue(mockTransaction),
           },
         };
 
