@@ -150,7 +150,9 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
               {content.dataWeCollect.table.rows.map((row, index) => {
                 if (row.length !== 3) return null;
                 const [header, description, storage] = row;
-                const [_headerCol, descriptionCol, storageCol] = content.dataWeCollect.table.headers;
+                const [headerCol, descriptionCol, storageCol] = content.dataWeCollect.table.headers;
+                // Using headerCol for future table header display
+                console.log("Table header:", headerCol);
                 return (
                   <div key={index} className="space-y-2">
                     <h3 className="font-semibold text-mir-text-primary">{header}</h3>

@@ -2,8 +2,8 @@
   "advancedTester": {
     "hero": {
       "badge": "Advanced Testing",
-      "title": "Help shape Mirael's future",
-      "description": "Join our advanced testing program and provide valuable feedback as we refine Mirael's reflective AI conversations. Your insights will directly influence how we build this emotional support tool."
+      "title": "Help shape {{app_name}}'s future",
+      "description": "Join our advanced testing program and provide valuable feedback as we refine {{app_name}}'s reflective AI conversations. Your insights will directly influence how we build this emotional support tool."
     },
     "form": {
       "email": {
@@ -27,17 +27,17 @@
         "helpText": "Understanding your current strategies helps us build better complementary tools."
       },
       "source": {
-        "label": "How Did You Hear About Mirael?",
+        "label": "How Did You Hear About {{app_name}}?",
         "placeholder": "e.g., Twitter, friend referral, blog post, etc.",
         "helpText": "Helps us understand which outreach efforts are most effective."
       },
       "notes": {
         "label": "Additional Comments / Notes",
-        "placeholder": "Anything else you'd like us to know about your interest in Mirael or feedback on emotional AI tools?",
+        "placeholder": "Anything else you'd like us to know about your interest in {{app_name}} or feedback on emotional AI tools?",
         "helpText": "Share any other thoughts, questions, or specific areas you'd like to focus on during testing."
       },
       "submitButton": "Submit Application",
-      "thankYouNote": "Thank you for your interest in helping shape Mirael. We'll review applications and reach out to selected testers as we expand our program. Remember, Mirael is not therapy or a crisis service."
+      "thankYouNote": "Thank you for your interest in helping shape {{app_name}}. We'll review applications and reach out to selected testers as we expand our program. Remember, {{app_name}} is not therapy or a crisis service."
     },
     "messages": {
       "success": "Application submitted",
@@ -103,11 +103,11 @@
   "chat-ui": {
     "onboarding": {
       "header": {
-        "title": "Welcome to Mirael",
+        "title": "Welcome to {{app_name}}",
         "subtitle": "A gentle space to begin your reflection"
       },
       "hero": {
-        "title": "Welcome to Mirael",
+        "title": "Welcome to {{app_name}}",
         "subtitle": "A gentle space just for you",
         "paragraphs": [
           "**This is your private space to arrive as you are.**",
@@ -128,7 +128,7 @@
         "paragraphs": [
           "Take a moment to settle in and notice what you are feeling.",
           "This space is yours. Share freely and reflect at your own pace.",
-          "*Remember that Mirael mirrors your emotions back to help you gain clarity.*"
+          "*Remember that {{app_name}} mirrors your emotions back to help you gain clarity.*"
         ],
         "buttonText": "Start reflecting"
       },
@@ -195,11 +195,11 @@
     },
     "default": {
       "header": {
-        "title": "Mirael",
+        "title": "{{app_name}}",
         "subtitle": "A private space where you can reflect"
       },
       "hero": {
-        "title": "Mirael",
+        "title": "{{app_name}}",
         "subtitle": "A private space to reflect and connect with your emotions.",
         "paragraphs": [
           "Start a new session whenever you are ready to check in with yourself.",
@@ -232,24 +232,24 @@
     "hero": {
       "badge": "Early Access",
       "title": "A mirror for your inner world",
-      "subtitle": "Mirael helps you pause, notice patterns, and find clarity when life feels heavy. It works through reflective, emotionally attuned conversations.",
+      "subtitle": "{{app_name}} helps you pause, notice patterns, and find clarity when life feels heavy. It works through reflective, emotionally attuned conversations.",
       "cta": {
         "join": "Join Early Access",
         "demo": "See a Conversation"
       },
-      "disclaimer": "Mirael is not therapy or a crisis service. If you’re in immediate danger, contact local emergency services."
+      "disclaimer": "{{app_name}} is not therapy or a crisis service. If you’re in immediate danger, contact local emergency services."
     },
     "howItHelps": {
-      "title": "How Mirael Helps",
-      "subtitle": "Mirael is a gentle mirror that helps you explore feelings, recognize patterns, and reflect in a private space you control.",
+      "title": "How {{app_name}} Helps",
+      "subtitle": "{{app_name}} is a gentle mirror that helps you explore feelings, recognize patterns, and reflect in a private space you control.",
       "features": [
         {
           "title": "Reflective Conversations",
-          "subtitle": "Mirael reflects your emotions back to you, helping you name and understand what you are truly experiencing."
+          "subtitle": "{{app_name}} reflects your emotions back to you, helping you name and understand what you are truly experiencing."
         },
         {
           "title": "Spotting Patterns",
-          "subtitle": "Over time, Mirael highlights recurring themes in your thinking so you can notice connections you might have overlooked."
+          "subtitle": "Over time, {{app_name}} highlights recurring themes in your thinking so you can notice connections you might have overlooked."
         },
         {
           "title": "Private by Default",
@@ -258,11 +258,11 @@
       ]
     },
     "demo": {
-      "title": "What Makes Mirael Different",
-      "subtitle": "See how Mirael goes beyond generic advice by uncovering deeper stress triggers and offering clear, practical ways forward.",
+      "title": "What Makes {{app_name}} Different",
+      "subtitle": "See how {{app_name}} goes beyond generic advice by uncovering deeper stress triggers and offering clear, practical ways forward.",
       "conversation": [
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Hi, I can see this is a stressful moment for you. Let’s take a breath together. Can you tell me what’s weighing most heavily on you right now?"
         },
         {
@@ -274,7 +274,7 @@
           "text": "It sounds like you’re under a lot of pressure. Maybe breaking the deal preparation into smaller steps could help reduce stress."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "I hear how much responsibility is on your shoulders. There’s a **silent rule** here: you must succeed perfectly, or it’s a disaster. That belief can make your chest tighten and your thoughts race. What physical sensations are you noticing as you think about this deal?"
         },
         {
@@ -286,7 +286,7 @@
           "text": "Visualizing the worst case can increase anxiety. Focusing on actionable steps or your preparation might help you feel more in control."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "That’s **catastrophizing** — imagining disasters before they happen. Recognizing this pattern is the first step. You’re preparing, and preparation is what matters. Let’s identify **one thing you can control right now**."
         },
         {
@@ -298,7 +298,7 @@
           "text": "Reviewing the details can help you feel more prepared. It’s a practical step to reduce uncertainty."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactly. That’s a **tangible step**. Focusing on what’s within your control helps quiet the mental storm. Notice that preparation is competence, not failure. How does it feel to take this small step?"
         },
         {
@@ -310,7 +310,7 @@
           "text": "Sharing responsibility or talking with a colleague might help ease that feeling. You don’t have to carry everything alone."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "You’re recognizing the **pressure of carrying it alone**. What if your role was guiding the team rather than controlling everything yourself? Delegating even small tasks could lift some weight while keeping you in charge."
         },
         {
@@ -322,7 +322,7 @@
           "text": "Delegating to a trusted team member is a practical step. It can reduce your stress while maintaining oversight."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "That’s a **powerful shift** — trusting your team while staying accountable. Notice how sharing responsibility changes the tension in your body. Even small steps challenge the old rule that you must do everything perfectly."
         },
         {
@@ -334,7 +334,7 @@
           "text": "Even small changes in workload can have a positive effect on stress levels and performance."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Now, let’s explore what’s under the **surface pressure**. You’re worried about judgment and failing your team. That’s a lot of **internal pressure**. What’s the story you tell yourself when you imagine failing?"
         },
         {
@@ -346,7 +346,7 @@
           "text": "Fears of judgment are common. It might help to reframe failure as a learning opportunity rather than a reflection of your worth."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "I hear the **fear of being judged**. That’s a strong core belief influencing your stress. You’re not your mistakes — you’re a competent professional facing a challenge. If you notice this fear without acting on it, how does it shift in your body?"
         },
         {
@@ -354,7 +354,7 @@
           "text": "It’s still tense, but less like panic… more like awareness."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactly. That’s the difference between **reactive overwhelm** and **conscious awareness**. You can feel the fear without letting it control your actions. Let’s try naming one positive aspect about your preparation or skills."
         },
         {
@@ -366,7 +366,7 @@
           "text": "Recognizing your preparedness helps build confidence. Focus on your strengths to counteract anxiety."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Perfect. That’s **anchoring in competence**. Every time your mind jumps to worst-case scenarios, you can return to this grounded fact: you are prepared and capable. How does that feel?"
         },
         {
@@ -374,7 +374,7 @@
           "text": "It makes me feel a little steadier, more in control."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Now, let’s consider **what asking for support might look like**. It doesn’t mean weakness — it’s a strength. Even asking one team member for input or feedback can reduce pressure. Who could you approach safely for insight?"
         },
         {
@@ -386,7 +386,7 @@
           "text": "Getting feedback from someone trustworthy is a concrete way to ease stress and catch potential issues."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactly. That’s **strategic collaboration**. You’re not giving up control — you’re amplifying effectiveness while reducing internal pressure. Notice how even thinking about sharing feels in your body and mind."
         },
         {
@@ -398,7 +398,7 @@
           "text": "Sharing tasks and responsibilities can reduce emotional load and help maintain focus."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Before we close, let’s integrate today’s insights. You practiced **preparation, delegation, emotional awareness, and collaboration**. You challenged the old rule that you must carry everything alone and perfectly. Notice the shift: your strength isn’t in perfection, but in conscious, deliberate action."
         },
         {
@@ -410,14 +410,13 @@
           "text": "Recognizing your progress and building on it will help maintain confidence and reduce stress over time."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "You did something significant today. You acknowledged your fear, noticed your body, challenged old rules, and practiced self-compassion. That’s real strength. You can take this into the meeting tomorrow with clarity and grounded focus. You’re ready."
         }
       ],
       "legend": {
         "user": "User",
-        "generic": "Generic AI",
-        "mirael": "Mirael"
+        "generic": "Generic AI"
       },
       "insights": {
         "generic": {
@@ -429,8 +428,8 @@
             "Misses chances to offer **deeper understanding or relief**"
           ]
         },
-        "mirael": {
-          "title": "Mirael's Difference",
+        "app": {
+          "title": "{{app_name}}'s Difference",
           "points": [
             "Notices when your thoughts make situations feel **bigger or scarier** than they really are",
             "Helps you spot **black and white thinking** that leaves no room for balance",
@@ -441,44 +440,44 @@
       }
     },
     "earlyAccess": {
-      "title": "Be Among Mirael’s First Users",
-      "subtitle": "We are inviting a select group of women to join Mirael’s tester program. Share your experiences and needs to help us fine-tune Mirael so it truly sees, hears, and understands you.",
+      "title": "Be Among {{app_name}}’s First Users",
+      "subtitle": "We are inviting a select group of women to join {{app_name}}’s tester program. Share your experiences and needs to help us fine-tune {{app_name}} so it truly sees, hears, and understands you.",
       "cta": "Join the Early Circle"
     },
     "faq": {
       "title": "Frequently Asked Questions",
       "items": [
         {
-          "question": "What is Mirael?",
-          "answer": "Mirael is an emotional mirror. It helps you slow down, reflect, and see your inner world with more clarity through short, emotionally attuned conversations."
+          "question": "What is {{app_name}}?",
+          "answer": "{{app_name}} is an emotional mirror. It helps you slow down, reflect, and see your inner world with more clarity through short, emotionally attuned conversations."
         },
         {
-          "question": "How is Mirael different from therapy?",
-          "answer": "Mirael is not therapy and cannot replace professional care. It is a daily reflective companion designed to support awareness, not to diagnose or treat mental health conditions."
+          "question": "How is {{app_name}} different from therapy?",
+          "answer": "{{app_name}} is not therapy and cannot replace professional care. It is a daily reflective companion designed to support awareness, not to diagnose or treat mental health conditions."
         },
         {
-          "question": "How does Mirael actually work?",
-          "answer": "Mirael uses carefully designed prompts and conversational patterns to reflect emotions back to you. It highlights hidden pressures, recurring thoughts, and unspoken rules so you can better understand yourself."
+          "question": "How does {{app_name}} actually work?",
+          "answer": "{{app_name}} uses carefully designed prompts and conversational patterns to reflect emotions back to you. It highlights hidden pressures, recurring thoughts, and unspoken rules so you can better understand yourself."
         },
         {
           "question": "Is my data private?",
           "answer": "Yes. Your reflections belong to you. Conversations are private by design, and you will have the ability to export or delete your data."
         },
         {
-          "question": "Who is Mirael for?",
-          "answer": "Mirael is built for people who carry a lot, often appear strong on the outside, but feel emotionally drained inside. It offers them a safe space to reflect, recognize patterns, and reclaim clarity."
+          "question": "Who is {{app_name}} for?",
+          "answer": "{{app_name}} is built for people who carry a lot, often appear strong on the outside, but feel emotionally drained inside. It offers them a safe space to reflect, recognize patterns, and reclaim clarity."
         },
         {
-          "question": "Can Mirael help in a crisis?",
-          "answer": "No. Mirael is not a crisis service. If you are in immediate danger or facing a mental health emergency, please contact local emergency services or a professional hotline."
+          "question": "Can {{app_name}} help in a crisis?",
+          "answer": "No. {{app_name}} is not a crisis service. If you are in immediate danger or facing a mental health emergency, please contact local emergency services or a professional hotline."
         },
         {
           "question": "How much does it cost?",
-          "answer": "During early access, Mirael is free to use. Pricing will be introduced later as we grow with feedback from early users."
+          "answer": "During early access, {{app_name}} is free to use. Pricing will be introduced later as we grow with feedback from early users."
         },
         {
           "question": "Why should I join early access?",
-          "answer": "Early access lets you shape Mirael with us. Your feedback will directly influence how the experience evolves, and you will be among the first to benefit from new features."
+          "answer": "Early access lets you shape {{app_name}} with us. Your feedback will directly influence how the experience evolves, and you will be among the first to benefit from new features."
         }
       ]
     }
@@ -486,7 +485,7 @@
   "joinSuccess": {
     "badge": "Application Submitted",
     "title": "Thank you for joining us",
-    "message": "We have received your application for Mirael’s advanced testing program. Your interest means a lot as we continue building a space for reflection and clarity.",
+    "message": "We have received your application for {{app_name}}’s advanced testing program. Your interest means a lot as we continue building a space for reflection and clarity.",
     "nextSteps": {
       "title": "What happens next?",
       "steps": [
@@ -508,15 +507,15 @@
       "title": "Expected Timeline",
       "description": "We usually review applications within 1 to 2 weeks. Selected testers will be contacted shortly after. Because of the volume of interest, we may not reply individually to everyone."
     },
-    "closingNote": "While waiting, you are welcome to follow Mirael’s progress or reach out with any questions about the testing program.",
+    "closingNote": "While waiting, you are welcome to follow {{app_name}}’s progress or reach out with any questions about the testing program.",
     "actions": {
       "follow": "Follow Updates",
       "contact": "Contact Us",
-      "back": "Back to Mirael"
+      "back": "Back to {{app_name}}"
     }
   },
   "loading": {
-    "title": "Preparing Mirael",
+    "title": "Preparing {{app_name}}",
     "subtitle": "Setting up your emotional mirror",
     "loadingMessage": "This should only take a moment...",
     "loadedMessage": "All set"
@@ -524,7 +523,7 @@
   "policies_footer": {
     "disclaimer": {
       "label": "Important: ",
-      "message": "Mirael is not a mental health or crisis service. If you are in crisis, please contact local emergency services."
+      "message": "{{app_name}} is not a mental health or crisis service. If you are in crisis, please contact local emergency services."
     },
     "questions": "Questions about this {{currentPage}}?",
     "contact_email": "Contact us at ",
@@ -536,7 +535,7 @@
       "help": "Help",
       "support": "Support"
     },
-    "copyright": "© 2025 Mirael, Inc. All rights reserved."
+    "copyright": "© 2025 {{legal_name}}. All rights reserved."
   },
   "sessions": {
     "title": "Your Sessions",
@@ -578,8 +577,8 @@
           "placeholder": "Optional"
         },
         "aiSuggestedTitle": {
-          "label": "Let Mirael suggest a title and subtitle",
-          "description": "Mirael can create a brief, reflective title and subtitle for this session. You can edit them afterward if you want."
+          "label": "Let {{app_name}} suggest a title and subtitle",
+          "description": "{{app_name}} can create a brief, reflective title and subtitle for this session. You can edit them afterward if you want."
         },
         "persistOnCloud": {
           "label": "Store session on the cloud",

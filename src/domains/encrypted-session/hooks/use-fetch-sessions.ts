@@ -54,12 +54,14 @@ export default function useFetchSessions() {
     }
   }, [loading]);
 
-  const addChangesEntry = useCallback(async (_sessionId: string, _entry: any) => {
+  const addChangesEntry = useCallback(async (sessionId: string, entry: any) => {
     // useSessionStore.getState().setChangesMap((prev) => {
     //   const newMap = { ...prev };
     //   newMap[sessionId] = entry;
     //   return newMap;
     // });
+    // TODO: Implement changes tracking
+    console.log("Changes entry:", { sessionId, entry });
   }, []);
 
   const handleUpdates = useCallback(async () => {

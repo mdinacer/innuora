@@ -25,7 +25,7 @@ export const APP_CONFIG = {
   company: {
     legalName: "Innuora, Inc.",
     founder: "Abdenasser Mohammedi",
-    establishedYear: 2024,
+    establishedYear: 2025,
   },
 
   // Contact Information

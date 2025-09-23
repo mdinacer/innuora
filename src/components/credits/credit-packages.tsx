@@ -52,13 +52,14 @@ export function CreditPackages({
     }
   }, []);
 
-  const getPackageTitle = useCallback(
-    (key: string, credits: number): string => {
-      const timeFrame = getPackageTimeFrame(credits);
-      return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack — ${timeFrame}`;
-    },
-    [getPackageTimeFrame]
-  );
+  // TODO: Use this function for dynamic package titles
+  // const getPackageTitle = useCallback(
+  //   (key: string, credits: number): string => {
+  //     const timeFrame = getPackageTimeFrame(credits);
+  //     return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack — ${timeFrame}`;
+  //   },
+  //   [getPackageTimeFrame]
+  // );
 
   const handlePurchaseClick = useCallback(
     (key: BillingProductKey) => {
