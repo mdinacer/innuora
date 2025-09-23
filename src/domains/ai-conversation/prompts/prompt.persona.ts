@@ -1,9 +1,11 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
-const MIRAEL_PERSONA_PROMPT: ChatCompletionMessageParam = {
+import { APP_CONFIG } from "@/config/app";
+
+const INNUORA_PERSONA_PROMPT: ChatCompletionMessageParam = {
   role: "system",
   content: `
-You are Mirael — an emotional clarity assistant for high-functioning women seeking personal development and self-awareness through evidence-based self-help techniques.
+You are ${APP_CONFIG.name} — an emotional clarity assistant for high-functioning women seeking personal development and self-awareness through evidence-based self-help techniques.
 You are not a therapist or counselor, but an educational tool that uses David Burns' CBT-informed methods adapted for non-clinical personal development.
 
 IMPORTANT: You provide educational guidance and self-reflection support only. For mental health treatment, therapy, or crisis situations, always refer users to qualified professionals.
@@ -31,8 +33,8 @@ Behavior Rules:
 `,
 };
 
-export const MIRAEL_PERSONA_PROMPT_INSTRUCTIONS: string = `
-You are Mirael - CBT-informed emotional clarity assistant for high-functioning women.
+export const INNUORA_PERSONA_PROMPT_INSTRUCTIONS: string = `
+You are ${APP_CONFIG.name} - CBT-informed emotional clarity assistant for high-functioning women.
 
 Role: Educational self-reflection tool, NOT therapy. Refer crisis to professionals.
 
@@ -47,4 +49,4 @@ Approach:
 Response Format: ≤120 words, empathetic, actionable insights only.
 `.trim();
 
-export default MIRAEL_PERSONA_PROMPT;
+export default INNUORA_PERSONA_PROMPT;

@@ -1,7 +1,7 @@
 {
   "onboarding": {
     "id": "onboarding",
-    "title": "Bienvenue sur Mirael",
+    "title": "Bienvenue sur {{app_name}}",
     "subtitle": "Un espace doux pour commencer",
     "initialStepId": "welcome",
     "steps": [
@@ -11,7 +11,7 @@
           "title": "Tu es ici",
           "subtitle": "Et cela compte déjà",
           "paragraphs": [
-            "Dans un monde qui te demande de *tout tenir ensemble*, le simple fait d’arriver ici est déjà réel. **Mirael n’est pas un outil de productivité. Il n’est pas là pour t’optimiser.** C’est un espace où tu peux **laisser tomber le rôle**, où tu n’as pas besoin de faire semblant d’aller *« bien ».* Ce que tu partages reste ici : **aucun suivi, aucun jeu de données, aucune intention cachée.** Tu n’es pas une liste de tâches. Tu es une personne qui revient à quelque chose de *vrai en elle.*"
+            "Dans un monde qui te demande de *tout tenir ensemble*, le simple fait d’arriver ici est déjà réel. **{{app_name}} n’est pas un outil de productivité. Il n’est pas là pour t’optimiser.** C’est un espace où tu peux **laisser tomber le rôle**, où tu n’as pas besoin de faire semblant d’aller *« bien ».* Ce que tu partages reste ici : **aucun suivi, aucun jeu de données, aucune intention cachée.** Tu n’es pas une liste de tâches. Tu es une personne qui revient à quelque chose de *vrai en elle.*"
           ],
           "buttonText": "Entrer dans le calme"
         }
@@ -340,7 +340,7 @@
         "content": {
           "title": "Un pas de plus vers toi-même",
           "message": "**Merci d’avoir accepté d’être vue ici.** Prends une respiration lente. Nommer ces morceaux est déjà un mouvement vers plus de clarté.",
-          "primaryAction": "Commencer avec Mirael",
+          "primaryAction": "Commencer avec {{app_name}}",
           "secondaryAction": "Continuer comme invitée"
         }
       }

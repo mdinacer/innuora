@@ -1,15 +1,14 @@
 import { Metadata } from "next";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
-import appConfig from "@/constants/app-config/constants";
+import { APP_CONFIG } from "@/config/app";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "End User License Agreement (EULA) - Mirael",
-  description:
-    "Read Mirael's End User License Agreement (EULA) to understand the licensing terms for using our emotional AI companion application.",
+  title: `End User License Agreement (EULA) - ${APP_CONFIG.name}`,
+  description: `Read ${APP_CONFIG.name}'s End User License Agreement (EULA) to understand the licensing terms for using our emotional AI companion application.`,
   keywords: [
-    "Mirael EULA",
+    `${APP_CONFIG.name} EULA`,
     "end user license agreement",
     "software license",
     "app licensing",
@@ -17,11 +16,11 @@ export const metadata: Metadata = {
     "emotional AI license",
   ],
   alternates: {
-    canonical: "https://www.mirael.life/en/eula",
+    canonical: `${APP_CONFIG.domains.primary}/en/eula`,
     languages: {
-      en: "https://www.mirael.life/en/eula",
-      fr: "https://www.mirael.life/fr/eula",
-      ar: "https://www.mirael.life/ar/eula",
+      en: `${APP_CONFIG.domains.primary}/en/eula`,
+      fr: `${APP_CONFIG.domains.primary}/fr/eula`,
+      ar: `${APP_CONFIG.domains.primary}/ar/eula`,
     },
   },
   robots: {
@@ -219,8 +218,8 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
             <p className="text-mir-text-secondary mb-4">{content.contact.message}</p>
             <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15">
               <p className="font-medium text-mir-text-primary">{content.contact.supportEmail}</p>
-              <a href={`mailto:${appConfig.emails.support}`} className="text-mir-bg-accent hover:underline">
-                {appConfig.emails.support}
+              <a href={`mailto:${APP_CONFIG.contact.support}`} className="text-mir-bg-accent hover:underline">
+                {APP_CONFIG.contact.support}
               </a>
             </div>
           </div>

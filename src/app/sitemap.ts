@@ -1,7 +1,9 @@
 import { MetadataRoute } from "next";
 import { Languages } from "next/dist/lib/metadata/types/alternative-urls-types";
 
-const baseUrl = "https://mirael.life";
+import { APP_CONFIG } from "@/config/app";
+
+const baseUrl = APP_CONFIG.domains.primary;
 
 const routes = [
   { path: "", changeFrequency: "weekly", priority: 1 },

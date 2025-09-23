@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import { APP_CONFIG } from "@/config/app";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { createStoreSession, getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
@@ -72,8 +73,8 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
           placeholder: t("fields.subtitle.placeholder"),
         },
         aiSuggestedTitle: {
-          label: t("fields.aiSuggestedTitle.label"),
-          description: t("fields.aiSuggestedTitle.description"),
+          label: t("fields.aiSuggestedTitle.label", { app_name: APP_CONFIG.name }),
+          description: t("fields.aiSuggestedTitle.description", { app_name: APP_CONFIG.name }),
         },
         persistOnCloud: {
           label: t("fields.persistOnCloud.label"),

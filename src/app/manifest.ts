@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 
+import { APP_CONFIG } from "@/config/app";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Mirael — A Gentle Companion for Emotional Clarity",
-    short_name: "Mirael",
-    description:
-      "Mirael is a soft and emotionally intelligent space for high-functioning yet emotionally exhausted women to reconnect with themselves, gain clarity, and find gentle insight.",
+    name: `${APP_CONFIG.name} — ${APP_CONFIG.tagline}`,
+    short_name: APP_CONFIG.name,
+    description: APP_CONFIG.description,
     start_url: "/en",
     background_color: "#000000",
     theme_color: "#000000",

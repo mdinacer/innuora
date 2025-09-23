@@ -13,6 +13,7 @@ import CheckboxField from "@/components/input/checkbox-field";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
+import { useAnalytics } from "@/lib/analytics/use-analytics";
 import { createAndWrapContentKeyForUser } from "@/lib/crypto/webcrypto-crypto";
 import { cn } from "@/lib/utils";
 import { SignUpSchema, SignUpSchemaType } from "@/lib/zod/auth.schema";
@@ -24,6 +25,7 @@ interface Props {
 const SignUpForm: React.FC<Props> = ({}) => {
   const { t } = useTranslation("pages", { keyPrefix: "auth.sign-up" });
   const [formError, setFormError] = useState<string | null>(null);
+  const { trackConversion, trackError, trackAction } = useAnalytics();
 
   const { title, subtitle, formFields, haveAccount } = {
     title: t("title"),
@@ -71,17 +73,41 @@ const SignUpForm: React.FC<Props> = ({}) => {
 
   const { isSubmitting } = form.formState;
 
-  const handleOnSubmit = useCallback(async (data: SignUpSchemaType) => {
-    setFormError(null);
-    try {
-      const { wrappedPackage } = await createAndWrapContentKeyForUser(data.password);
-      await signUp(data, wrappedPackage);
-    } catch (error: unknown) {
-      if (error instanceof AuthError) {
-        setFormError(error.message);
+  const handleOnSubmit = useCallback(
+    async (data: SignUpSchemaType) => {
+      setFormError(null);
+
+      // Track signup attempt
+      trackAction("signup_attempt");
+
+      try {
+        const { wrappedPackage } = await createAndWrapContentKeyForUser(data.password);
+        await signUp(data, wrappedPackage);
+
+        // Track successful signup conversion
+        trackConversion("signup", {
+          metadata: {
+            hasEncryption: true,
+            method: "email_password",
+          },
+        });
+      } catch (error: unknown) {
+        if (error instanceof AuthError) {
+          setFormError(error.message);
+
+          // Track signup error for analytics
+          trackError(error, {
+            feature: "auth",
+            action: "signup",
+            metadata: {
+              errorType: "auth_error",
+            },
+          });
+        }
       }
-    }
-  }, []);
+    },
+    [trackAction, trackConversion, trackError]
+  );
 
   return (
     <div className={cn("w-full max-w-lg")}>

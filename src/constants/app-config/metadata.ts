@@ -94,11 +94,148 @@ export const METADATA: Metadata = {
     title: APP_CONFIG.name,
     startupImage: [
       {
-        url: "/assets/icons/ios/1024.png",
-        media: "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)",
+        url: "/splash_screens/iPhone_17_Pro_Max__iPhone_16_Pro_Max_landscape.png",
+        media:
+          "screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_17_Pro_Max__iPhone_16_Pro_Max_portrait.png",
+        media:
+          "screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_17_Pro__iPhone_17__iPhone_16_Pro_landscape.png",
+        media:
+          "screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_17_Pro__iPhone_17__iPhone_16_Pro_portrait.png",
+        media:
+          "screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_16_Plus__iPhone_15_Plus_landscape.png",
+        media:
+          "screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_16_Plus__iPhone_15_Plus_portrait.png",
+        media:
+          "screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_16__iPhone_15_landscape.png",
+        media:
+          "screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_16__iPhone_15_portrait.png",
+        media:
+          "screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_SE_landscape.png",
+        media:
+          "screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_SE_portrait.png",
+        media:
+          "screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_XR__iPhone_11_landscape.png",
+        media:
+          "screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_XR__iPhone_11_portrait.png",
+        media:
+          "screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_12_Pro_Max__iPhone_13_Pro_Max__iPhone_14_Plus_landscape.png",
+        media:
+          "screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_12_Pro_Max__iPhone_13_Pro_Max__iPhone_14_Plus_portrait.png",
+        media:
+          "screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_12__iPhone_12_Pro__iPhone_13__iPhone_13_Pro__iPhone_14__iPhone_15_Pro_landscape.png",
+        media:
+          "screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_12__iPhone_12_Pro__iPhone_13__iPhone_13_Pro__iPhone_14__iPhone_15_Pro_portrait.png",
+        media:
+          "screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_14_Pro__iPhone_15_Pro_Max_landscape.png",
+        media:
+          "screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_14_Pro__iPhone_15_Pro_Max_portrait.png",
+        media:
+          "screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPhone_X__iPhone_11_Pro__iPhone_12_mini__iPhone_13_mini_landscape.png",
+        media:
+          "screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPhone_X__iPhone_11_Pro__iPhone_12_mini__iPhone_13_mini_portrait.png",
+        media:
+          "screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPad_Mini_landscape.png",
+        media:
+          "screen and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPad_Mini_portrait.png",
+        media:
+          "screen and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPad_Pro_11_landscape.png",
+        media:
+          "screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPad_Pro_11_portrait.png",
+        media:
+          "screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
+      },
+      {
+        url: "/splash_screens/iPad_Pro_12.9_landscape.png",
+        media:
+          "screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)",
+      },
+      {
+        url: "/splash_screens/iPad_Pro_12.9_portrait.png",
+        media:
+          "screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
       },
     ],
   },
+  // appleWebApp: {
+  //   capable: true,
+  //   statusBarStyle: "black-translucent",
+  //   title: APP_CONFIG.name,
+  //   startupImage: [
+  //     {
+  //       url: "/assets/icons/ios/1024.png",
+  //       media: "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)",
+  //     },
+  //   ],
+  // },
 
   // Icons
   icons: {

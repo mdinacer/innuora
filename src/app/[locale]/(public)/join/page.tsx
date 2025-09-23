@@ -5,12 +5,12 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import JoinPage from "@/components/tester/join-page";
 import JoinPageSuccess from "@/components/tester/join-page-success";
+import { APP_CONFIG } from "@/config/app";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Join Beta - AI Emotional Companion for Women | Mirael",
-  description:
-    "Get early access to Mirael, the AI emotional companion for high-functioning women. Join the beta program for burnout recovery, emotional clarity, and overwhelm support.",
+  title: `Join Beta - ${APP_CONFIG.tagline} | ${APP_CONFIG.name}`,
+  description: `Get early access to ${APP_CONFIG.name}, the AI emotional companion for high-functioning women. Join the beta program for burnout recovery, emotional clarity, and overwhelm support.`,
   keywords: [
     "emotional burnout support beta",
     "women burnout recovery app beta",
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
     "emotional companion for women beta",
   ],
   alternates: {
-    canonical: "https://mirael.life/en/join",
+    canonical: `${APP_CONFIG.domains.primary}/en/join`,
     languages: {
-      fr: "https://mirael.life/fr/join",
-      ar: "https://mirael.life/ar/join",
-      "x-default": "https://mirael.life/en/join",
+      fr: `${APP_CONFIG.domains.primary}/fr/join`,
+      ar: `${APP_CONFIG.domains.primary}/ar/join`,
+      "x-default": `${APP_CONFIG.domains.primary}/en/join`,
     },
   },
 };
@@ -47,8 +47,8 @@ export default async function TesterJoinRoute({
   const pageData = {
     hero: {
       badge: t("advancedTester.hero.badge"),
-      title: t("advancedTester.hero.title"),
-      description: t("advancedTester.hero.description"),
+      title: t("advancedTester.hero.title", { app_name: APP_CONFIG.name }),
+      description: t("advancedTester.hero.description", { app_name: APP_CONFIG.name }),
     },
     form: {
       email: {
@@ -72,17 +72,17 @@ export default async function TesterJoinRoute({
         helpText: t("advancedTester.form.coping.helpText"),
       },
       source: {
-        label: t("advancedTester.form.source.label"),
+        label: t("advancedTester.form.source.label", { app_name: APP_CONFIG.name }),
         placeholder: t("advancedTester.form.source.placeholder"),
         helpText: t("advancedTester.form.source.helpText"),
       },
       notes: {
         label: t("advancedTester.form.notes.label"),
-        placeholder: t("advancedTester.form.notes.placeholder"),
+        placeholder: t("advancedTester.form.notes.placeholder", { app_name: APP_CONFIG.name }),
         helpText: t("advancedTester.form.notes.helpText"),
       },
       submitButton: t("advancedTester.form.submitButton"),
-      thankYouNote: t("advancedTester.form.thankYouNote"),
+      thankYouNote: t("advancedTester.form.thankYouNote", { app_name: APP_CONFIG.name }),
     },
     messages: {
       success: t("advancedTester.messages.success"),
@@ -93,10 +93,7 @@ export default async function TesterJoinRoute({
 
   return (
     <main className="min-h-screen  standalone:min-h-screen-safe w-screen standalone:w-full">
-      <Header
-        locale={locale as AppLocales}
-        className="sticky top-0 standalone:pt-safe  standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"
-      />
+      <Header className="sticky top-0 standalone:pt-safe standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50" />
       <Suspense fallback={<div>Loading...</div>}>
         {status && status === "success" ? (
           <JoinPageSuccess className="" locale={locale as AppLocales} />

@@ -14,7 +14,7 @@ export default async function SessionsRoute({
   return (
     <main className="relative h-screen w-screen standalone:w-full">
       <Suspense fallback={<LoadingComponent />}>
-        <Header locale={locale as AppLocales} />
+        <Header />
         <SessionsPage />
       </Suspense>
     </main>

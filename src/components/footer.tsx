@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { APP_CONFIG } from "@/config/app";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 interface Props {
@@ -12,7 +13,7 @@ export default async function Footer({ locale = "en" }: Props) {
   const { disclaimer, links, copyright } = {
     disclaimer: {
       label: t("policies_footer.disclaimer.label"),
-      message: t("policies_footer.disclaimer.message"),
+      message: t("policies_footer.disclaimer.message", { app_name: APP_CONFIG.name }),
     },
     links: {
       privacy: t("policies_footer.links.privacy"),
@@ -22,7 +23,7 @@ export default async function Footer({ locale = "en" }: Props) {
       support: t("policies_footer.links.support"),
       eula: t("policies_footer.links.eula"),
     },
-    copyright: t("policies_footer.copyright"),
+    copyright: t("policies_footer.copyright", { legal_name: APP_CONFIG.company.legalName }),
   };
   return (
     <footer className="relative border-t border-mir-border-light">

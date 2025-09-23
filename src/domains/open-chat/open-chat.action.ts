@@ -7,7 +7,7 @@ import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCredits } from "@/app/actions/credit-actions";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
-import { MIRAEL_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
+import { INNUORA_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
 import { ModulesPromptBuilder } from "@/domains/cbt-modules/modules-prompt-builder";
 import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
@@ -96,7 +96,7 @@ async function buildConversationPrompts(
 
   const fullPersonaPrompt: ChatCompletionMessageParam = {
     role: "system",
-    content: MIRAEL_PERSONA_PROMPT_INSTRUCTIONS.replace("{{TONE_DESCRIPTION}}", toneInstruction || "").replace(
+    content: INNUORA_PERSONA_PROMPT_INSTRUCTIONS.replace("{{TONE_DESCRIPTION}}", toneInstruction || "").replace(
       "{{LANGUAGE_RULES}}",
       (languagePrompt?.content as string | undefined) ?? ""
     ),

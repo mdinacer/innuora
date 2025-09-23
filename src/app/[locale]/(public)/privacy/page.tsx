@@ -2,14 +2,14 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
+import { APP_CONFIG } from "@/config/app";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Mirael",
-  description:
-    "Learn how Mirael protects your privacy and handles your data with our comprehensive privacy policy. Zero-knowledge encryption ensures your conversations remain private.",
+  title: `Privacy Policy - ${APP_CONFIG.name}`,
+  description: `Learn how ${APP_CONFIG.name} protects your privacy and handles your data with our comprehensive privacy policy. Zero-knowledge encryption ensures your conversations remain private.`,
   keywords: [
-    "Mirael privacy policy",
+    `${APP_CONFIG.name} privacy policy`,
     "data protection",
     "privacy rights",
     "zero-knowledge encryption",
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     "GDPR compliance",
   ],
   alternates: {
-    canonical: "https://www.mirael.life/en/privacy",
+    canonical: `${APP_CONFIG.domains.primary}/en/privacy`,
     languages: {
-      en: "https://www.mirael.life/en/privacy",
-      fr: "https://www.mirael.life/fr/privacy",
-      ar: "https://www.mirael.life/ar/privacy",
+      en: `${APP_CONFIG.domains.primary}/en/privacy`,
+      fr: `${APP_CONFIG.domains.primary}/fr/privacy`,
+      ar: `${APP_CONFIG.domains.primary}/ar/privacy`,
     },
   },
   robots: {
@@ -150,7 +150,9 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
               {content.dataWeCollect.table.rows.map((row, index) => {
                 if (row.length !== 3) return null;
                 const [header, description, storage] = row;
-                const [_headerCol, descriptionCol, storageCol] = content.dataWeCollect.table.headers;
+                const [headerCol, descriptionCol, storageCol] = content.dataWeCollect.table.headers;
+                // Using headerCol for future table header display
+                console.log("Table header:", headerCol);
                 return (
                   <div key={index} className="space-y-2">
                     <h3 className="font-semibold text-mir-text-primary">{header}</h3>
@@ -207,8 +209,11 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
             <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.contact.title}</h2>
             <p className="text-mir-text-secondary">
               {content.contact.message}{" "}
-              <Link href="mailto:privacy@mirael.app" className="text-mir-bg-accent text-center hover:underline">
-                privacy@mirael.life
+              <Link
+                href={`mailto:${APP_CONFIG.contact.privacy}`}
+                className="text-mir-bg-accent text-center hover:underline"
+              >
+                {APP_CONFIG.contact.privacy}
               </Link>
             </p>
           </div>

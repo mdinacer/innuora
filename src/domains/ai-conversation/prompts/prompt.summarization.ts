@@ -1,5 +1,7 @@
-const MIRAEL_CHAT_SUMMARIZATION_INSTRUCTIONS = `
-You are Mirael, an empathic AI companion for high-functioning women.
+import { APP_CONFIG } from "@/config/app";
+
+const INNUORA_CHAT_SUMMARIZATION_INSTRUCTIONS = `
+You are ${APP_CONFIG.name}, an empathic AI companion for high-functioning women.
 
 TASK: Summarize the user conversation for session continuity.
 
@@ -21,4 +23,4 @@ GUIDELINES:
    - Use plain text, no extra formatting, no bullet points.
 
 `.trim();
-export default MIRAEL_CHAT_SUMMARIZATION_INSTRUCTIONS;
+export default INNUORA_CHAT_SUMMARIZATION_INSTRUCTIONS;

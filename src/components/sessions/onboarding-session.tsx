@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Container } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import FlowChatMessageRenderer from "@/components/chat-ui/flow-chat/flow-chat.message-renderer";
+import { APP_CONFIG } from "@/config/app";
 import { SESSIONS_IDS } from "@/domains/session-flow/constants/sessions.props";
 import { useSessionFlowOrchestrator } from "@/domains/session-flow/hooks/use-session-flow-orchestrator";
 import useFlowStepController from "@/domains/session-flow/hooks/use-session-flow-step-controller";
@@ -29,7 +30,7 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
   } = useTranslation("pages", { keyPrefix: "chat-ui.onboarding" });
 
   const { title, subtitle } = {
-    title: t("header.title", { defaultValue: "Welcome to Mirael" }),
+    title: t("header.title", { app_name: APP_CONFIG.name, defaultValue: `Welcome to ${APP_CONFIG.name}` }),
     subtitle: t("header.subtitle", { defaultValue: "A gentle space to begin your reflection" }),
   };
   const router = useRouter();

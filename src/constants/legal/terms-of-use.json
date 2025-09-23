@@ -1,32 +1,32 @@
 {
   "ai_and_content": {
-    "ai_use": "Mirael uses stateless AI inference to generate reflective responses and insights. Outputs are generated automatically and are not guaranteed to be accurate or appropriate in all contexts.",
-    "user_generated_content": "You retain ownership of content you submit but grant Mirael a non-exclusive, worldwide, royalty-free license to process, store, and use such content to provide and improve the Service.",
+    "ai_use": "{{app_name}} uses stateless AI inference to generate reflective responses and insights. Outputs are generated automatically and are not guaranteed to be accurate or appropriate in all contexts.",
+    "user_generated_content": "You retain ownership of content you submit but grant {{app_name}} a non-exclusive, worldwide, royalty-free license to process, store, and use such content to provide and improve the Service.",
     "content_moderation": "We reserve the right to remove or restrict access to content that violates these Terms."
   },
   "changes_to_terms": {
     "right_to_change": "We may modify these Terms at any time. Changes will be effective when posted or when communicated to you within the Service.",
-    "continued_use": "Your continued use of Mirael after changes indicates your acceptance of the updated Terms."
+    "continued_use": "Your continued use of {{app_name}} after changes indicates your acceptance of the updated Terms."
   },
   "contact": {
-    "legal_entity": "Mirael, Inc.",
+    "legal_entity": "{{app_name}}, Inc.",
     "email": "support@mirael.app",
     "address": "Not provided",
     "phone": "Not provided"
   },
   "disclaimers": {
-    "service": "Mirael is provided on an 'as-is' and 'as-available' basis without warranties of any kind.",
-    "no_guarantees": "We do not warrant that Mirael will be error-free, uninterrupted, secure, or that results will be reliable or accurate.",
-    "health_disclaimer": "Mirael is not a substitute for professional diagnosis, treatment, or crisis support."
+    "service": "{{app_name}} is provided on an 'as-is' and 'as-available' basis without warranties of any kind.",
+    "no_guarantees": "We do not warrant that {{app_name}} will be error-free, uninterrupted, secure, or that results will be reliable or accurate.",
+    "health_disclaimer": "{{app_name}} is not a substitute for professional diagnosis, treatment, or crisis support."
   },
   "effective_date": "2025-09-02",
   "eligibility": {
     "minimum_age": "18+",
-    "requirement": "By using Mirael you represent and warrant that you are at least 18 years old (or the legal age of majority in your jurisdiction) and have the legal capacity to enter into these Terms."
+    "requirement": "By using {{app_name}} you represent and warrant that you are at least 18 years old (or the legal age of majority in your jurisdiction) and have the legal capacity to enter into these Terms."
   },
-  "entire_agreement": "These Terms constitute the entire agreement between you and Mirael, Inc. regarding the Service and supersede all prior agreements.",
+  "entire_agreement": "These Terms constitute the entire agreement between you and {{app_name}}, Inc. regarding the Service and supersede all prior agreements.",
   "export_controls": {
-    "description": "You may not use or export Mirael in violation of applicable export laws and regulations."
+    "description": "You may not use or export {{app_name}} in violation of applicable export laws and regulations."
   },
   "fees_and_payments": {
     "general": "Certain features may require a subscription or payment. Fees, billing cycles, and cancellation terms will be disclosed at the time of purchase.",
@@ -34,8 +34,8 @@
     "refunds": "Unless required by law, payments are non-refundable."
   },
   "governing_law_and_disputes": {
-    "law": "These Terms are governed by the laws applicable to Mirael, Inc. without regard to conflict of laws principles.",
-    "jurisdiction": "Disputes shall be resolved in the courts of the jurisdiction where Mirael, Inc. is registered, unless otherwise required by law.",
+    "law": "These Terms are governed by the laws applicable to {{app_name}}, Inc. without regard to conflict of laws principles.",
+    "jurisdiction": "Disputes shall be resolved in the courts of the jurisdiction where {{app_name}}, Inc. is registered, unless otherwise required by law.",
     "arbitration": "We may require certain disputes to be resolved through binding arbitration. Specific arbitration rules will be disclosed if applicable."
   },
   "how_to_contact": {
@@ -43,37 +43,37 @@
     "privacy": "privacy@mirael.app"
   },
   "indemnification": {
-    "description": "You agree to indemnify and hold harmless Mirael, Inc. and its affiliates from any claims, damages, liabilities, costs, and expenses arising out of your use of the Service, your violation of these Terms, or your violation of any law or rights of a third party."
+    "description": "You agree to indemnify and hold harmless {{app_name}}, Inc. and its affiliates from any claims, damages, liabilities, costs, and expenses arising out of your use of the Service, your violation of these Terms, or your violation of any law or rights of a third party."
   },
   "intellectual_property": {
-    "ownership": "Mirael, including its design, features, software, and trademarks, is owned by Mirael, Inc. and protected by intellectual property laws.",
-    "restrictions": "You may not use Mirael’s trademarks or branding without our prior written permission."
+    "ownership": "{{app_name}}, including its design, features, software, and trademarks, is owned by {{app_name}}, Inc. and protected by intellectual property laws.",
+    "restrictions": "You may not use {{app_name}}’s trademarks or branding without our prior written permission."
   },
   "license": {
-    "scope": "We grant you a limited, non-exclusive, non-transferable, revocable license to use Mirael for personal, non-commercial purposes in accordance with these Terms.",
+    "scope": "We grant you a limited, non-exclusive, non-transferable, revocable license to use {{app_name}} for personal, non-commercial purposes in accordance with these Terms.",
     "restrictions": [
       "Do not copy, modify, distribute, sell, or lease any part of the Service.",
       "Do not reverse engineer, decompile, or attempt to extract source code except as permitted by law.",
-      "Do not use Mirael to build competitive products or services."
+      "Do not use {{app_name}} to build competitive products or services."
     ]
   },
   "limitation_of_liability": {
-    "general": "To the maximum extent permitted by law, Mirael, Inc. and its affiliates shall not be liable for indirect, incidental, special, consequential, or punitive damages.",
+    "general": "To the maximum extent permitted by law, {{app_name}}, Inc. and its affiliates shall not be liable for indirect, incidental, special, consequential, or punitive damages.",
     "cap": "Our total liability for any claim arising out of or relating to the Service is limited to the amount you paid us in the 12 months preceding the claim, or $50 if no payment was made."
   },
   "nature_of_service": {
-    "description": "Mirael is an emotional reflection and clarity tool powered by AI. It is not a medical device, mental health service, or therapy substitute.",
+    "description": "{{app_name}} is an emotional reflection and clarity tool powered by AI. It is not a medical device, mental health service, or therapy substitute.",
     "disclaimer": "We do not provide medical, psychiatric, or psychological advice. Always seek the advice of a qualified health provider regarding mental health or medical conditions."
   },
-  "product": "Mirael",
-  "summary": "These Terms of Use (“Terms”) govern your use of Mirael (the “Service”, “we”, “us”, “our”), including the Mirael mobile and web applications. By accessing or using Mirael, you agree to be bound by these Terms. If you do not agree, you may not use the Service.",
+  "product": "{{app_name}}",
+  "summary": "These Terms of Use (“Terms”) govern your use of {{app_name}} (the “Service”, “we”, “us”, “our”), including the {{app_name}} mobile and web applications. By accessing or using {{app_name}}, you agree to be bound by these Terms. If you do not agree, you may not use the Service.",
   "termination": {
-    "by_user": "You may stop using Mirael at any time and request account deletion.",
+    "by_user": "You may stop using {{app_name}} at any time and request account deletion.",
     "by_us": "We may suspend or terminate your access if you violate these Terms, misuse the Service, or create legal risk.",
     "effect": "Upon termination, rights granted to you under these Terms will immediately cease."
   },
   "third_party_links": {
-    "description": "Mirael may contain links or integrations to third-party services. We are not responsible for third-party content, policies, or practices."
+    "description": "{{app_name}} may contain links or integrations to third-party services. We are not responsible for third-party content, policies, or practices."
   },
   "user_responsibilities": {
     "account_security": "You are responsible for maintaining the confidentiality of your login credentials and for all activities under your account.",
@@ -81,7 +81,7 @@
     "prohibited_uses": [
       "Submitting content that is unlawful, harmful, defamatory, harassing, abusive, or otherwise objectionable.",
       "Attempting to gain unauthorized access to systems or networks.",
-      "Using Mirael for medical diagnosis, emergency response, or professional therapy substitution."
+      "Using {{app_name}} for medical diagnosis, emergency response, or professional therapy substitution."
     ]
   },
   "version": "1.0"

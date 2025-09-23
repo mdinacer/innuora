@@ -1,0 +1,81 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+
+jobs:
+  test-and-build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
+      - name: Run type checking
+        run: pnpm run typecheck
+
+      - name: Run linting
+        run: pnpm run lint
+
+      - name: Run tests
+        run: pnpm run test --run
+        env:
+          NODE_ENV: test
+
+      - name: Check formatting
+        run: pnpm run format:check
+
+      - name: Build application
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+          SKIP_ENV_VALIDATION: true
+          # Use repository secrets for realistic build testing
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL || 'postgresql://test:test@localhost:5432/test' }}
+          DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL || 'postgresql://test:test@localhost:5432/test' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://test.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'test-key' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'test-key' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'test-key' }}
+          OPEN_ROUTER_API_KEY: ${{ secrets.OPEN_ROUTER_API_KEY || 'test-key' }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_test' }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY || 'sk_test_test' }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET || 'whsec_test' }}
+          STRIPE_PRICE_STARTER: ${{ secrets.STRIPE_PRICE_STARTER || 'price_test_starter' }}
+          STRIPE_PRICE_REGULAR: ${{ secrets.STRIPE_PRICE_REGULAR || 'price_test_regular' }}
+          STRIPE_PRICE_PREMIUM: ${{ secrets.STRIPE_PRICE_PREMIUM || 'price_test_premium' }}
+          NEXT_PUBLIC_APP_URL: "https://www.innuora.com"
+          NEXT_PUBLIC_DEFAULT_MODEL_CODE: "M1"
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || 'test-32-character-encryption-key!' }}

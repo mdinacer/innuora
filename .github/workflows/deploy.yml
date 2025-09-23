@@ -1,0 +1,64 @@
+name: Deploy Check
+
+on:
+  push:
+    branches: [main, dev]
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+
+jobs:
+  deployment-check:
+    name: Post-deployment Health Check
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Wait for Vercel deployment
+        run: sleep 300
+
+      - name: Health check staging (dev)
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          echo "Checking staging deployment..."
+          curl -f https://dev.innuora.com/api/health || echo "Staging health check failed"
+
+      - name: Health check production (main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Checking production deployment..."
+          curl -f https://www.innuora.com/api/health || echo "Production health check failed"
+
+      - name: Comment on commit (dev)
+        if: github.ref == 'refs/heads/dev'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `✅ **Staging deployed!**
+
+              🌐 **URL**: https://dev.innuora.com
+              ❤️ **Health**: https://dev.innuora.com/api/health`
+            })
+
+      - name: Comment on commit (main)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `🚀 **Production deployed!**
+
+              🌐 **URL**: https://www.innuora.com
+              ❤️ **Health**: https://www.innuora.com/api/health`
+            })

@@ -186,7 +186,7 @@ export class CloudSyncService {
       const sessions = encryptedStore.sessions;
 
       // Find all sessions that should be synced to cloud
-      const eligibleSessions = Object.entries(sessions).filter(([_, session]) => session.persistOnCloud === true);
+      const eligibleSessions = Object.entries(sessions).filter(([, session]) => session.persistOnCloud === true);
 
       logger.logInfo("Periodic cloud sync: Found eligible sessions", {
         operation: "cloud_sync_service_periodic_eligible",
@@ -194,7 +194,7 @@ export class CloudSyncService {
       });
 
       // Sync each eligible session
-      for (const [sessionId, _] of eligibleSessions) {
+      for (const [sessionId] of eligibleSessions) {
         try {
           await this.executeCloudSync(sessionId);
         } catch (error) {
