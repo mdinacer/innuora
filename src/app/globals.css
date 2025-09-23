@@ -48,7 +48,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   /* MIRAEL THEME */
-
+  /* 
   --color-mir-bg-primary: var(--mir-bg-primary);
   --color-mir-bg-card: var(--mir-bg-card);
   --color-mir-bg-accent: var(--mir-bg-accent);
@@ -62,9 +62,38 @@
   --color-mir-text-secondary: var(--mir-text-secondary);
   --color-mir-text-accent: var(--mir-text-accent);
   --color-mir-text-on-accent: var(--mir-text-on-accent);
-  --color-mir-border-light: var(--mir-border-light);
+  --color-mir-border-light: var(--mir-border-light); */
 
   --animate-slide-in-up: slideInUp 0.4s ease forwards;
+
+  /* Innuora theme*/
+  --color-mir-bg-primary: var(--inn-bg-primary);
+  --color-mir-bg-card: var(--inn-bg-card);
+  --color-mir-bg-accent: var(--inn-bg-accent);
+  --color-mir-bg-accent-dark: var(--inn-bg-accent-dark);
+  --color-mir-bg-secondary: var(--inn-bg-secondary);
+  --color-mir-bg-overlay: var(--inn-bg-overlay);
+  --color-mir-bg-input: var(--inn-bg-input);
+  --color-mir-bg-soft: var(--inn-bg-soft);
+  --color-mir-bg-suggestion: var(--inn-bg-suggestion);
+  --color-mir-bg-flame: var(--inn-bg-flame);
+  --color-mir-bg-flame-dark: var(--inn-bg-flame-dark);
+
+  --color-mir-text-primary: var(--inn-text-primary);
+  --color-mir-text-secondary: var(--inn-text-secondary);
+  --color-mir-text-tertiary: var(--inn-text-tertiary);
+  --color-mir-text-on-accent: var(--inn-text-on-accent);
+
+  --color-mir-border-light: var(--inn-border-light);
+  --color-mir-border-hover: var(--inn-border-hover);
+
+  --color-mir-glass-bg: var(--inn-glass-bg);
+  --color-mir-glass-border: var(--inn-glass-border);
+
+  /* Gradients as CSS properties for Tailwind */
+  --gradient-mir-primary: var(--inn-gradient-primary);
+  --gradient-mir-flame: var(--inn-gradient-flame);
+  --gradient-mir-hero: var(--inn-gradient-hero);
 
   @keyframes slideInUp {
     from {
@@ -104,6 +133,35 @@
 }
 
 :root {
+  /* INNUORA LIGHT THEME - Inverted with blue accents */
+  --inn-bg-primary: #f8fafc; /* Very light blue-gray */
+  --inn-bg-card: #ffffff; /* Pure white for cards */
+  --inn-bg-accent: #00bcd4; /* Same bright cyan accent */
+  --inn-bg-accent-dark: #0097a7; /* Darker cyan for hover */
+  --inn-bg-secondary: #e2e8f0; /* Light blue-gray secondary */
+  --inn-bg-overlay: rgba(248, 250, 252, 0.95); /* Light overlay */
+  --inn-bg-input: #f1f5f9; /* Light input background */
+  --inn-bg-soft: #f0f9ff; /* Very light blue for soft sections */
+  --inn-bg-suggestion: #e2e8f0; /* Light suggestion backgrounds */
+  --inn-bg-flame: #ff9800; /* Same orange flame */
+  --inn-bg-flame-dark: #f57c00; /* Darker orange */
+
+  --inn-text-primary: #1e293b; /* Dark blue-gray for primary text */
+  --inn-text-secondary: #64748b; /* Medium blue-gray for secondary */
+  --inn-text-tertiary: #94a3b8; /* Light blue-gray for tertiary */
+  --inn-text-on-accent: #ffffff; /* White text on accents */
+
+  --inn-border-light: #e2e8f0; /* Light borders */
+  --inn-border-hover: #cbd5e1; /* Hover borders */
+
+  /* Light theme gradients */
+  --inn-gradient-primary: linear-gradient(135deg, #00bcd4 0%, #26c6da 100%);
+  --inn-gradient-flame: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+  --inn-gradient-hero: radial-gradient(ellipse at top, #f0f9ff 0%, #f8fafc 100%);
+
+  /* Light glass morphism */
+  --inn-glass-bg: rgba(255, 255, 255, 0.8);
+  --inn-glass-border: rgba(226, 232, 240, 0.5);
   /* MIRAEL THEME */
   --mir-bg-primary: #f5f3f0;
   --mir-bg-card: #ffffff;
@@ -156,6 +214,36 @@
 }
 
 .dark {
+  /* INNUORA THEME - Based on lotus logo colors */
+  --inn-bg-primary: #0a1628; /* Deep navy from logo background */
+  --inn-bg-card: #1a2332; /* Slightly lighter navy for cards */
+  --inn-bg-accent: #00bcd4; /* Bright cyan from lotus petals */
+  --inn-bg-accent-dark: #0097a7; /* Darker cyan for hover states */
+  --inn-bg-secondary: #2a3441; /* Medium blue-gray for secondary elements */
+  --inn-bg-overlay: rgba(10, 22, 40, 0.95); /* Dark overlay with primary color */
+  --inn-bg-input: #233040; /* Input background */
+  --inn-bg-soft: #1e2a38; /* Soft background for subtle sections */
+  --inn-bg-suggestion: #334155; /* Suggestion/hover backgrounds */
+  --inn-bg-flame: #ff9800; /* Orange flame color for accents */
+  --inn-bg-flame-dark: #f57c00; /* Darker orange for interactions */
+
+  --inn-text-primary: #ffffff; /* Primary white text */
+  --inn-text-secondary: #94a3b8; /* Secondary blue-gray text */
+  --inn-text-tertiary: #64748b; /* Tertiary text for subtle content */
+  --inn-text-on-accent: #ffffff; /* White text on accent backgrounds */
+
+  --inn-border-light: #334155; /* Light borders matching the blue theme */
+  --inn-border-hover: #475569; /* Hover state for borders */
+
+  /* Gradients */
+  --inn-gradient-primary: linear-gradient(135deg, #00bcd4 0%, #26c6da 100%);
+  --inn-gradient-flame: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+  --inn-gradient-hero: radial-gradient(ellipse at top, #1e2a38 0%, #0a1628 100%);
+
+  /* Glass morphism */
+  --inn-glass-bg: rgba(26, 35, 50, 0.8);
+  --inn-glass-border: rgba(51, 65, 85, 0.5);
+
   /* MIRAEL THEME */
   --mir-bg-primary: #1c1c1e;
   --mir-bg-card: #2c2c2e;
