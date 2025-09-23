@@ -1,9 +1,10 @@
 import { Metadata } from "next";
 
 import SignUpForm from "@/components/auth/sign-up-form";
+import { APP_CONFIG } from "@/config/app";
 
 export const metadata: Metadata = {
-  title: "Create Account - AI Emotional Companion for Women | Mirael",
+  title: `Create Account - ${APP_CONFIG.tagline} | ${APP_CONFIG.name}`,
   description:
     "Create your free account to access your AI emotional companion. Join high-functioning women gaining emotional clarity, pattern recognition, and overwhelm support.",
   keywords: [
@@ -17,34 +18,34 @@ export const metadata: Metadata = {
     "emotional clarity app registration",
     "support for overwhelmed women signup",
     "emotional companion for women signup",
-    "Mirael sign up",
+    `${APP_CONFIG.name} sign up`,
     "women emotional wellness registration",
   ],
   alternates: {
-    canonical: "https://www.mirael.life/en/auth/sign-up",
+    canonical: `${APP_CONFIG.domain}/en/auth/sign-up`,
     languages: {
-      en: "https://www.mirael.life/en/auth/sign-up",
-      fr: "https://www.mirael.life/fr/auth/sign-up",
-      ar: "https://www.mirael.life/ar/auth/sign-up",
+      en: `${APP_CONFIG.domain}/en/auth/sign-up`,
+      fr: `${APP_CONFIG.domain}/fr/auth/sign-up`,
+      ar: `${APP_CONFIG.domain}/ar/auth/sign-up`,
     },
   },
   openGraph: {
-    title: "Join Mirael - Start Your Emotional Clarity Journey",
-    description: "Create your free account and begin exploring emotional awareness with Mirael's AI companion.",
-    url: "https://www.mirael.life/en/auth/sign-up",
+    title: `Join ${APP_CONFIG.name} - Start Your Emotional Clarity Journey`,
+    description: `Create your free account and begin exploring emotional awareness with ${APP_CONFIG.name}'s AI companion.`,
+    url: `${APP_CONFIG.domain}/en/auth/sign-up`,
     images: [
       {
         url: "/og/mirael-cover.png",
         width: 1200,
         height: 630,
-        alt: "Join Mirael for emotional clarity",
+        alt: `Join ${APP_CONFIG.name} for emotional clarity`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Join Mirael - Emotional AI Companion",
-    description: "Start your free account and discover emotional clarity with Mirael.",
+    title: `Join ${APP_CONFIG.name} - Emotional AI Companion`,
+    description: `Start your free account and discover emotional clarity with ${APP_CONFIG.name}.`,
     images: ["/og/mirael-cover.png"],
   },
   robots: {

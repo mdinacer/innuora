@@ -1,16 +1,17 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { APP_CONFIG } from "@/config/app";
 
 export const metadata: Metadata = {
-  title: "Reset Password - Mirael",
-  description: "Reset your Mirael account password to regain access to your emotional clarity journey.",
-  keywords: ["Mirael password reset", "forgot password", "account recovery", "reset login", "emotional AI access"],
+  title: `Reset Password - ${APP_CONFIG.name}`,
+  description: `Reset your ${APP_CONFIG.name} account password to regain access to your emotional clarity journey.`,
+  keywords: [`${APP_CONFIG.name} password reset`, "forgot password", "account recovery", "reset login", "emotional AI access"],
   alternates: {
-    canonical: "https://www.mirael.life/en/auth/password-reset",
+    canonical: `${APP_CONFIG.domain}/en/auth/password-reset`,
     languages: {
-      en: "https://www.mirael.life/en/auth/password-reset",
-      fr: "https://www.mirael.life/fr/auth/password-reset",
-      ar: "https://www.mirael.life/ar/auth/password-reset",
+      en: `${APP_CONFIG.domain}/en/auth/password-reset`,
+      fr: `${APP_CONFIG.domain}/fr/auth/password-reset`,
+      ar: `${APP_CONFIG.domain}/ar/auth/password-reset`,
     },
   },
   robots: {

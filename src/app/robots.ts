@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { APP_CONFIG } from "@/config/app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://mirael.life/sitemap.xml",
+    sitemap: `${APP_CONFIG.domain}/sitemap.xml`,
   };
 }

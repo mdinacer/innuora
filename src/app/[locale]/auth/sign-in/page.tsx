@@ -1,12 +1,13 @@
 import { Metadata } from "next";
 
 import SignInForm from "@/components/auth/sign-in-form";
+import { APP_CONFIG } from "@/config/app";
 
 export const metadata: Metadata = {
-  title: "Sign In - Mirael",
-  description: "Sign in to your Mirael account to continue your emotional clarity and self-reflection journey.",
+  title: `Sign In - ${APP_CONFIG.name}`,
+  description: `Sign in to your ${APP_CONFIG.name} account to continue your emotional clarity and self-reflection journey.`,
   keywords: [
-    "Mirael sign in",
+    `${APP_CONFIG.name} sign in`,
     "login",
     "account access",
     "emotional AI",
@@ -15,17 +16,17 @@ export const metadata: Metadata = {
     "emotional clarity login",
   ],
   alternates: {
-    canonical: "https://www.mirael.life/en/auth/sign-in",
+    canonical: `${APP_CONFIG.domain}/en/auth/sign-in`,
     languages: {
-      en: "https://www.mirael.life/en/auth/sign-in",
-      fr: "https://www.mirael.life/fr/auth/sign-in",
-      ar: "https://www.mirael.life/ar/auth/sign-in",
+      en: `${APP_CONFIG.domain}/en/auth/sign-in`,
+      fr: `${APP_CONFIG.domain}/fr/auth/sign-in`,
+      ar: `${APP_CONFIG.domain}/ar/auth/sign-in`,
     },
   },
   openGraph: {
-    title: "Sign In to Mirael",
-    description: "Continue your emotional clarity journey with Mirael.",
-    url: "https://www.mirael.life/en/auth/sign-in",
+    title: `Sign In to ${APP_CONFIG.name}`,
+    description: `Continue your emotional clarity journey with ${APP_CONFIG.name}.`,
+    url: `${APP_CONFIG.domain}/en/auth/sign-in`,
   },
   robots: {
     index: true,
