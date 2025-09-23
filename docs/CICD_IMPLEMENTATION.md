@@ -2,7 +2,7 @@
 
 ## Overview
 
-Successfully implemented and enhanced a comprehensive CI/CD pipeline for the Mirael project with modern best practices, automated testing, deployment, and monitoring capabilities.
+Successfully implemented and enhanced a comprehensive CI/CD pipeline for the Innuora project with modern best practices, automated testing, deployment, and monitoring capabilities.
 
 ## ✅ Implementation Summary
 
