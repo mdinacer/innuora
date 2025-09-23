@@ -207,7 +207,7 @@ export const BillingUtils = {
   /**
    * Calculate platform fee (if any)
    */
-  calculatePlatformFee: (_amountCents: number): number => {
+  calculatePlatformFee: (): number => {
     // Currently no platform fee, but ready for future implementation
     return 0;
   },

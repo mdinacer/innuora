@@ -5,9 +5,16 @@
  * with automatic session and user context.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
-import { AnalyticsEvent, AnalyticsProperties, analytics, trackConversion, trackError, trackUserAction } from './analytics';
+import {
+  analytics,
+  AnalyticsEvent,
+  AnalyticsProperties,
+  trackConversion,
+  trackError,
+  trackUserAction,
+} from "./analytics";
 
 export function useAnalytics() {
   // Track generic analytics events
@@ -22,7 +29,7 @@ export function useAnalytics() {
 
   // Track business conversions
   const trackConversionEvent = useCallback(
-    (type: 'signup' | 'purchase' | 'retention' | 'onboarding', properties?: AnalyticsProperties) => {
+    (type: "signup" | "purchase" | "retention" | "onboarding", properties?: AnalyticsProperties) => {
       trackConversion(type, properties);
     },
     []
@@ -44,17 +51,20 @@ export function useAnalytics() {
   }, []);
 
   // Track page views or component mounts
-  const trackPageView = useCallback((page: string, properties?: AnalyticsProperties) => {
-    trackAction('page_view', {
-      ...properties,
-      feature: 'navigation',
-      action: 'page_view',
-      metadata: {
-        ...properties?.metadata,
-        page,
-      },
-    });
-  }, [trackAction]);
+  const trackPageView = useCallback(
+    (page: string, properties?: AnalyticsProperties) => {
+      trackAction("page_view", {
+        ...properties,
+        feature: "navigation",
+        action: "page_view",
+        metadata: {
+          ...properties?.metadata,
+          page,
+        },
+      });
+    },
+    [trackAction]
+  );
 
   return {
     track,

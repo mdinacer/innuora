@@ -5,12 +5,12 @@
  * for production observability and business intelligence.
  */
 
-import { analytics } from './analytics';
+import { analytics } from "./analytics";
 
 interface PerformanceMetric {
   name: string;
   value: number;
-  unit: 'ms' | 'bytes' | 'count' | '%';
+  unit: "ms" | "bytes" | "count" | "%";
   timestamp: Date;
 }
 
@@ -19,7 +19,7 @@ interface ErrorMetric {
   context: string;
   userId?: string;
   sessionId?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
 }
 
 class PerformanceMonitor {
@@ -46,12 +46,15 @@ class PerformanceMonitor {
     this.startTimes.delete(operationName);
 
     // Track performance metric
-    this.recordMetric({
-      name: operationName,
-      value: duration,
-      unit: 'ms',
-      timestamp: new Date(),
-    }, metadata);
+    this.recordMetric(
+      {
+        name: operationName,
+        value: duration,
+        unit: "ms",
+        timestamp: new Date(),
+      },
+      metadata
+    );
 
     return duration;
   }
@@ -61,8 +64,8 @@ class PerformanceMonitor {
    */
   recordMetric(metric: PerformanceMetric, metadata?: Record<string, any>): void {
     // Track performance for analytics
-    analytics.track('feature_used', {
-      feature: 'performance',
+    analytics.track("feature_used", {
+      feature: "performance",
       action: metric.name,
       metadata: {
         ...metadata,
@@ -73,7 +76,8 @@ class PerformanceMonitor {
     });
 
     // Log slow operations for monitoring
-    if (metric.unit === 'ms' && metric.value > 5000) { // Operations taking more than 5 seconds
+    if (metric.unit === "ms" && metric.value > 5000) {
+      // Operations taking more than 5 seconds
       console.warn(`Slow operation detected: ${metric.name} took ${metric.value}ms`);
     }
   }
@@ -94,8 +98,8 @@ class PerformanceMonitor {
     });
 
     // Log critical errors immediately
-    if (errorMetric.severity === 'critical') {
-      console.error('CRITICAL ERROR:', {
+    if (errorMetric.severity === "critical") {
+      console.error("CRITICAL ERROR:", {
         error: errorMetric.error.message,
         context: errorMetric.context,
         stack: errorMetric.error.stack,
@@ -107,31 +111,31 @@ class PerformanceMonitor {
    * Monitor Web Vitals (Core Web Vitals for user experience)
    */
   trackWebVitals(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Track page load performance
-    window.addEventListener('load', () => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    window.addEventListener("load", () => {
+      const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
 
       if (navigation) {
         this.recordMetric({
-          name: 'page_load_time',
+          name: "page_load_time",
           value: navigation.loadEventEnd - navigation.fetchStart,
-          unit: 'ms',
+          unit: "ms",
           timestamp: new Date(),
         });
 
         this.recordMetric({
-          name: 'dom_content_loaded',
+          name: "dom_content_loaded",
           value: navigation.domContentLoadedEventEnd - navigation.fetchStart,
-          unit: 'ms',
+          unit: "ms",
           timestamp: new Date(),
         });
       }
     });
 
     // Track largest contentful paint (LCP)
-    if ('PerformanceObserver' in window) {
+    if ("PerformanceObserver" in window) {
       try {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -139,18 +143,18 @@ class PerformanceMonitor {
 
           if (lastEntry) {
             this.recordMetric({
-              name: 'largest_contentful_paint',
+              name: "largest_contentful_paint",
               value: lastEntry.startTime,
-              unit: 'ms',
+              unit: "ms",
               timestamp: new Date(),
             });
           }
         });
 
-        observer.observe({ entryTypes: ['largest-contentful-paint'] });
-      } catch (error) {
+        observer.observe({ entryTypes: ["largest-contentful-paint"] });
+      } catch {
         // Some browsers might not support all performance APIs
-        console.warn('Performance observer not fully supported');
+        console.warn("Performance observer not fully supported");
       }
     }
   }
@@ -159,36 +163,42 @@ class PerformanceMonitor {
    * Track API response times
    */
   trackApiCall(endpoint: string, method: string, duration: number, status: number): void {
-    this.recordMetric({
-      name: 'api_response_time',
-      value: duration,
-      unit: 'ms',
-      timestamp: new Date(),
-    }, {
-      endpoint,
-      method,
-      status,
-      isSuccess: status >= 200 && status < 300,
-    });
+    this.recordMetric(
+      {
+        name: "api_response_time",
+        value: duration,
+        unit: "ms",
+        timestamp: new Date(),
+      },
+      {
+        endpoint,
+        method,
+        status,
+        isSuccess: status >= 200 && status < 300,
+      }
+    );
   }
 
   /**
    * Track memory usage (if available)
    */
   trackMemoryUsage(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const memory = (performance as any).memory;
     if (memory) {
-      this.recordMetric({
-        name: 'memory_usage',
-        value: memory.usedJSHeapSize,
-        unit: 'bytes',
-        timestamp: new Date(),
-      }, {
-        totalHeapSize: memory.totalJSHeapSize,
-        heapLimit: memory.jsHeapSizeLimit,
-      });
+      this.recordMetric(
+        {
+          name: "memory_usage",
+          value: memory.usedJSHeapSize,
+          unit: "bytes",
+          timestamp: new Date(),
+        },
+        {
+          totalHeapSize: memory.totalJSHeapSize,
+          heapLimit: memory.jsHeapSizeLimit,
+        }
+      );
     }
   }
 
@@ -212,7 +222,7 @@ class PerformanceMonitor {
       this.recordError({
         error: error as Error,
         context: operationName,
-        severity: 'medium',
+        severity: "medium",
       });
 
       throw error;
@@ -222,11 +232,7 @@ class PerformanceMonitor {
   /**
    * Measure and track a synchronous function execution time
    */
-  measure<T>(
-    operationName: string,
-    operation: () => T,
-    metadata?: Record<string, any>
-  ): T {
+  measure<T>(operationName: string, operation: () => T, metadata?: Record<string, any>): T {
     this.startTimer(operationName);
 
     try {
@@ -239,7 +245,7 @@ class PerformanceMonitor {
       this.recordError({
         error: error as Error,
         context: operationName,
-        severity: 'medium',
+        severity: "medium",
       });
 
       throw error;
@@ -252,20 +258,27 @@ export const performanceMonitor = new PerformanceMonitor();
 
 // Convenience functions
 export const startTimer = (operation: string) => performanceMonitor.startTimer(operation);
-export const endTimer = (operation: string, metadata?: Record<string, any>) => performanceMonitor.endTimer(operation, metadata);
-export const recordError = (error: Error, context: string, severity: 'low' | 'medium' | 'high' | 'critical' = 'medium') =>
-  performanceMonitor.recordError({ error, context, severity });
+export const endTimer = (operation: string, metadata?: Record<string, any>) =>
+  performanceMonitor.endTimer(operation, metadata);
+export const recordError = (
+  error: Error,
+  context: string,
+  severity: "low" | "medium" | "high" | "critical" = "medium"
+) => performanceMonitor.recordError({ error, context, severity });
 export const measureAsync = <T>(name: string, fn: () => Promise<T>, metadata?: Record<string, any>) =>
   performanceMonitor.measureAsync(name, fn, metadata);
 export const measure = <T>(name: string, fn: () => T, metadata?: Record<string, any>) =>
   performanceMonitor.measure(name, fn, metadata);
 
 // Auto-initialize web vitals tracking in browser
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   performanceMonitor.trackWebVitals();
 
   // Track memory usage periodically (every 5 minutes)
-  setInterval(() => {
-    performanceMonitor.trackMemoryUsage();
-  }, 5 * 60 * 1000);
+  setInterval(
+    () => {
+      performanceMonitor.trackMemoryUsage();
+    },
+    5 * 60 * 1000
+  );
 }

@@ -9,16 +9,16 @@ import { logger } from "@/lib/logging/unified-logger";
 
 // Analytics event types for business intelligence
 export type AnalyticsEvent =
-  | 'user_signup'
-  | 'user_signin'
-  | 'session_start'
-  | 'session_end'
-  | 'credits_purchased'
-  | 'ai_message_sent'
-  | 'session_created'
-  | 'onboarding_completed'
-  | 'error_encountered'
-  | 'feature_used';
+  | "user_signup"
+  | "user_signin"
+  | "session_start"
+  | "session_end"
+  | "credits_purchased"
+  | "ai_message_sent"
+  | "session_created"
+  | "onboarding_completed"
+  | "error_encountered"
+  | "feature_used";
 
 // Event properties (non-sensitive data only)
 export interface AnalyticsProperties {
@@ -48,7 +48,7 @@ export interface AnalyticsProperties {
 // Analytics configuration
 interface AnalyticsConfig {
   enabled: boolean;
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
   sampleRate: number; // 0-1, percentage of events to track
 }
 
@@ -57,9 +57,9 @@ class AnalyticsService {
 
   constructor() {
     this.config = {
-      enabled: process.env.NODE_ENV === 'production' || process.env.ENABLE_ANALYTICS === 'true',
-      environment: (process.env.NODE_ENV as any) || 'development',
-      sampleRate: parseFloat(process.env.ANALYTICS_SAMPLE_RATE || '1.0'),
+      enabled: process.env.NODE_ENV === "production" || process.env.ENABLE_ANALYTICS === "true",
+      environment: (process.env.NODE_ENV as any) || "development",
+      sampleRate: parseFloat(process.env.ANALYTICS_SAMPLE_RATE || "1.0"),
     };
   }
 
@@ -73,7 +73,7 @@ class AnalyticsService {
     try {
       // Log to audit system for business intelligence
       await logger.logSuccess(`Analytics: ${event}`, {
-        operation: 'analytics_track',
+        operation: "analytics_track",
         userId: properties.userId,
         sessionId: properties.sessionId,
         metadata: {
@@ -85,13 +85,12 @@ class AnalyticsService {
       });
 
       // In production, this could also send to external analytics services
-      if (this.config.environment === 'production') {
+      if (this.config.environment === "production") {
         await this.sendToExternalServices(event, properties);
       }
-
     } catch (error) {
       // Don't let analytics failures break the user experience
-      console.warn('Analytics tracking failed:', error);
+      console.warn("Analytics tracking failed:", error);
     }
   }
 
@@ -99,12 +98,12 @@ class AnalyticsService {
    * Track conversion events for business metrics
    */
   async trackConversion(
-    event: 'signup' | 'purchase' | 'retention' | 'onboarding',
+    event: "signup" | "purchase" | "retention" | "onboarding",
     properties: AnalyticsProperties = {}
   ): Promise<void> {
-    await this.track('feature_used', {
+    await this.track("feature_used", {
       ...properties,
-      feature: 'conversion',
+      feature: "conversion",
       action: event,
     });
   }
@@ -113,7 +112,7 @@ class AnalyticsService {
    * Track feature usage for product insights
    */
   async trackFeature(feature: string, action: string, properties: AnalyticsProperties = {}): Promise<void> {
-    await this.track('feature_used', {
+    await this.track("feature_used", {
       ...properties,
       feature,
       action,
@@ -124,9 +123,9 @@ class AnalyticsService {
    * Track business metrics (revenue, usage, etc.)
    */
   async trackBusiness(metric: string, value: number, properties: AnalyticsProperties = {}): Promise<void> {
-    await this.track('feature_used', {
+    await this.track("feature_used", {
       ...properties,
-      feature: 'business_metric',
+      feature: "business_metric",
       action: metric,
       metadata: {
         ...properties.metadata,
@@ -139,7 +138,7 @@ class AnalyticsService {
    * Track user session metrics
    */
   async trackSession(
-    action: 'start' | 'end' | 'message_sent',
+    action: "start" | "end" | "message_sent",
     sessionMetrics: {
       sessionId: string;
       userId: string;
@@ -149,8 +148,7 @@ class AnalyticsService {
       modelUsed?: string;
     }
   ): Promise<void> {
-    const event = action === 'start' ? 'session_start' :
-                  action === 'end' ? 'session_end' : 'ai_message_sent';
+    const event = action === "start" ? "session_start" : action === "end" ? "session_end" : "ai_message_sent";
 
     await this.track(event, {
       userId: sessionMetrics.userId,
@@ -166,13 +164,13 @@ class AnalyticsService {
    * Track errors for monitoring and improvement
    */
   async trackError(error: Error, context: AnalyticsProperties = {}): Promise<void> {
-    await this.track('error_encountered', {
+    await this.track("error_encountered", {
       ...context,
       errorCode: error.name,
       metadata: {
         ...context.metadata,
         errorMessage: error.message,
-        stack: error.stack ? error.stack.substring(0, 500) : 'No stack trace', // Truncate for storage
+        stack: error.stack ? error.stack.substring(0, 500) : "No stack trace", // Truncate for storage
       },
     });
   }
@@ -196,11 +194,13 @@ class AnalyticsService {
 
       for (const [key, value] of Object.entries(sanitized.metadata)) {
         // Skip fields that might contain sensitive data
-        if (!key.toLowerCase().includes('password') &&
-            !key.toLowerCase().includes('token') &&
-            !key.toLowerCase().includes('secret') &&
-            !key.toLowerCase().includes('email') &&
-            !key.toLowerCase().includes('phone')) {
+        if (
+          !key.toLowerCase().includes("password") &&
+          !key.toLowerCase().includes("token") &&
+          !key.toLowerCase().includes("secret") &&
+          !key.toLowerCase().includes("email") &&
+          !key.toLowerCase().includes("phone")
+        ) {
           cleanMetadata[key] = value;
         }
       }
@@ -216,8 +216,8 @@ class AnalyticsService {
    */
   private async sendToExternalServices(event: AnalyticsEvent, properties: AnalyticsProperties): Promise<void> {
     // Vercel Analytics integration
-    if (typeof window !== 'undefined' && (window as any).va) {
-      (window as any).va('track', event, properties);
+    if (typeof window !== "undefined" && (window as any).va) {
+      (window as any).va("track", event, properties);
     }
 
     // Future: Add PostHog, Mixpanel, or other analytics services here
@@ -230,15 +230,16 @@ export const analytics = new AnalyticsService();
 
 // Convenience functions for common tracking scenarios
 export const trackUserAction = (action: string, properties?: AnalyticsProperties) =>
-  analytics.trackFeature('user_interaction', action, properties);
+  analytics.trackFeature("user_interaction", action, properties);
 
-export const trackConversion = (type: 'signup' | 'purchase' | 'retention' | 'onboarding', properties?: AnalyticsProperties) =>
-  analytics.trackConversion(type, properties);
+export const trackConversion = (
+  type: "signup" | "purchase" | "retention" | "onboarding",
+  properties?: AnalyticsProperties
+) => analytics.trackConversion(type, properties);
 
-export const trackError = (error: Error, context?: AnalyticsProperties) =>
-  analytics.trackError(error, context);
+export const trackError = (error: Error, context?: AnalyticsProperties) => analytics.trackError(error, context);
 
 export const trackSession = (
-  action: 'start' | 'end' | 'message_sent',
+  action: "start" | "end" | "message_sent",
   metrics: Parameters<typeof analytics.trackSession>[1]
 ) => analytics.trackSession(action, metrics);

@@ -97,7 +97,7 @@ export class TherapeuticAnalysisEngine {
     });
 
     const recurringThemes = Object.entries(themeCounts)
-      .filter(([_theme, count]) => count > 1)
+      .filter(([, count]) => count > 1)
       .map(([theme]) => theme);
 
     return {

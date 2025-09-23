@@ -5,10 +5,10 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAnalytics } from "@/lib/analytics/use-analytics";
 import { BILLING_PRODUCTS, BillingProductKey } from "@/lib/billing/billing-config";
 import { CreditUXUtils } from "@/lib/credits/credit-config";
-import { formatCredits, formatUSD } from "@/lib/credits/credits-utils";
-import { useAnalytics } from "@/lib/analytics/use-analytics";
+import { formatCredits } from "@/lib/credits/credits-utils";
 import PaymentModal from "../billing/payment-modal";
 
 interface CreditPackagesProps {
@@ -68,14 +68,14 @@ export function CreditPackages({
       const packageInfo = BILLING_PRODUCTS[key];
 
       // Track purchase intent for business analytics
-      trackAction('purchase_intent', {
+      trackAction("purchase_intent", {
         userId,
         metadata: {
           package: key,
           credits: packageInfo.credits,
           price: packageInfo.price,
           isPopular: packageInfo.popular || false,
-        }
+        },
       });
 
       if (userId) {
@@ -98,7 +98,7 @@ export function CreditPackages({
       if (selectedProduct) {
         const packageInfo = BILLING_PRODUCTS[selectedProduct];
 
-        trackConversion('purchase', {
+        trackConversion("purchase", {
           userId,
           creditsAmount: result.creditsAdded,
           metadata: {
@@ -107,17 +107,17 @@ export function CreditPackages({
             price: packageInfo.price,
             newBalance: result.newBalance,
             isPopular: packageInfo.popular || false,
-          }
+          },
         });
 
         // Track business revenue metrics
-        trackBusiness('revenue', packageInfo.price, {
+        trackBusiness("revenue", packageInfo.price, {
           userId,
           metadata: {
             package: selectedProduct,
             credits: packageInfo.credits,
             priceUSD: packageInfo.price,
-          }
+          },
         });
       }
 

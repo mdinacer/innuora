@@ -5,12 +5,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import {
-  CrisisLevel,
-  EmotionalIntensity,
-  TherapeuticAnalysis,
-} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { SessionAnalysis } from "../session-analysis.types";
+import { CrisisLevel, TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { combineToSessionAnalysis } from "../session-analysis.utils";
 
 describe("Session Analysis Utils", () => {
