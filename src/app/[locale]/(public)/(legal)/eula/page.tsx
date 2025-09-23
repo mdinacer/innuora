@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 
-import PoliciesFooter from "@/components/policies/policies.footer";
 import { APP_CONFIG } from "@/config/app";
-import initTranslations, { AppLocales } from "@/lib/i18n";
+import initTranslations from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: `End User License Agreement (EULA) - ${APP_CONFIG.name}`,
@@ -37,55 +36,59 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
   const content = {
     hero: {
       headline: t("eula.hero.headline"),
-      description: t("eula.hero.description"),
+      description: t("eula.hero.description", { app_name: APP_CONFIG.name }),
       lastUpdated: t("eula.lastUpdated"),
     },
     notice: {
       title: t("eula.notice.title"),
-      message: t("eula.notice.message"),
-      warning: t("eula.notice.warning"),
+      message: t("eula.notice.message", { app_name: APP_CONFIG.name }),
+      warning: t("eula.notice.warning", { app_name: APP_CONFIG.name }),
     },
     acceptance: {
       title: t("eula.acceptance.title"),
-      message: t("eula.acceptance.message"),
+      message: t("eula.acceptance.message", { app_name: APP_CONFIG.name }),
     },
     licenseGrant: {
       title: t("eula.licenseGrant.title"),
-      message: t("eula.licenseGrant.message"),
+      message: t("eula.licenseGrant.message", { app_name: APP_CONFIG.name }),
     },
     licenseRestrictions: {
       title: t("eula.licenseRestrictions.title"),
       message: t("eula.licenseRestrictions.message"),
-      items: t("eula.licenseRestrictions.items", { returnObjects: true, defaultValue: [] }) as string[],
+      items: t("eula.licenseRestrictions.items", {
+        returnObjects: true,
+        defaultValue: [],
+        app_name: APP_CONFIG.name,
+      }) as string[],
     },
     intellectualProperty: {
       title: t("eula.intellectualProperty.title"),
-      message: t("eula.intellectualProperty.message"),
+      message: t("eula.intellectualProperty.message", { app_name: APP_CONFIG.name }),
     },
     updates: {
       title: t("eula.updates.title"),
-      message: t("eula.updates.message"),
+      message: t("eula.updates.message", { app_name: APP_CONFIG.name }),
     },
     termination: {
       title: t("eula.termination.title"),
-      message: t("eula.termination.message"),
+      message: t("eula.termination.message", { app_name: APP_CONFIG.name }),
       uponTermination: {
         label: t("eula.termination.uponTermination.label"),
-        message: t("eula.termination.uponTermination.message"),
+        message: t("eula.termination.uponTermination.message", { app_name: APP_CONFIG.name }),
       },
     },
     disclaimer: {
       title: t("eula.disclaimer.title"),
-      message: t("eula.disclaimer.message"),
+      message: t("eula.disclaimer.message", { app_name: APP_CONFIG.name }),
       note: t("eula.disclaimer.note"),
     },
     liability: {
       title: t("eula.liability.title"),
-      message: t("eula.liability.message"),
+      message: t("eula.liability.message", { app_name: APP_CONFIG.name }),
     },
     governingLaw: {
       title: t("eula.governingLaw.title"),
-      message: t("eula.governingLaw.message"),
+      message: t("eula.governingLaw.message", { app_name: APP_CONFIG.name }),
     },
     contact: {
       title: t("eula.contact.title"),
@@ -94,8 +97,8 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
     },
     summary: {
       title: t("eula.summary.title"),
-      message: t("eula.summary.message"),
-      acknowledgment: t("eula.summary.acknowledgment"),
+      message: t("eula.summary.message", { app_name: APP_CONFIG.name }),
+      acknowledgment: t("eula.summary.acknowledgment", { app_name: APP_CONFIG.name }),
     },
   };
   return (
@@ -234,7 +237,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
           </div>
         </section>
       </div>
-      <PoliciesFooter locale={locale as AppLocales} currentPage="eula" />
+      {/* <PoliciesFooter locale={locale as AppLocales} currentPage="eula" /> */}
     </main>
   );
 }
