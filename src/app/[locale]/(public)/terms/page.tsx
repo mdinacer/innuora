@@ -2,15 +2,15 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
-import appConfig from "@/constants/app-config/constants";
+import { APP_CONFIG } from "@/config/app";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Terms of Use - Mirael",
+  title: `Terms of Use - ${APP_CONFIG.name}`,
   description:
-    "Read Mirael's Terms of Use to understand your rights and responsibilities when using our emotional AI companion platform.",
+    `Read ${APP_CONFIG.name}'s Terms of Use to understand your rights and responsibilities when using our emotional AI companion platform.`,
   keywords: [
-    "Mirael terms of use",
+    `${APP_CONFIG.name} terms of use`,
     "terms and conditions",
     "user agreement",
     "legal terms",
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     "app terms",
   ],
   alternates: {
-    canonical: "https://www.mirael.life/en/terms",
+    canonical: `${APP_CONFIG.domain}/en/terms`,
     languages: {
-      en: "https://www.mirael.life/en/terms",
-      fr: "https://www.mirael.life/fr/terms",
-      ar: "https://www.mirael.life/ar/terms",
+      en: `${APP_CONFIG.domain}/en/terms`,
+      fr: `${APP_CONFIG.domain}/fr/terms`,
+      ar: `${APP_CONFIG.domain}/ar/terms`,
     },
   },
   robots: {
@@ -229,18 +229,18 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             <div className="space-y-2 text-muted-foreground">
               <p className="space-x-2 rtl:space-x-reverse">
                 <strong className="text-mir-text-primary">{content.contact.entity}</strong>
-                <span>{appConfig.legalEntity}</span>
+                <span>{APP_CONFIG.legalEntity}</span>
               </p>
               <p className="space-x-2 rtl:space-x-reverse">
                 <strong className="text-mir-text-primary">{content.contact.support}</strong>
-                <Link href="mailto:support@mirael.life" className="text-mir-bg-accent hover:underline">
-                  {appConfig.emails.support}
+                <Link href={`mailto:${APP_CONFIG.contact.support}`} className="text-mir-bg-accent hover:underline">
+                  {APP_CONFIG.contact.support}
                 </Link>
               </p>
               <p className="space-x-2 rtl:space-x-reverse">
                 <strong className="text-mir-text-primary">{content.contact.privacy}</strong>
-                <Link href="mailto:privacy@mirael.life" className="text-mir-bg-accent hover:underline">
-                  {appConfig.emails.privacy}
+                <Link href={`mailto:${APP_CONFIG.contact.privacy}`} className="text-mir-bg-accent hover:underline">
+                  {APP_CONFIG.contact.privacy}
                 </Link>
               </p>
             </div>
@@ -253,7 +253,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.eligibility.title}</h2>
             <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15 mb-4">
               <p className="text-sm font-semibold text-mir-text-primary space-x-2 rtl:space-x-reverse">
-                <span>{content.eligibility.ageRequirement}</span> {appConfig.ageEligibility}
+                <span>{content.eligibility.ageRequirement}</span> {APP_CONFIG.minAge}+
               </p>
             </div>
             <p className="text-muted-foreground">{content.eligibility.message}</p>

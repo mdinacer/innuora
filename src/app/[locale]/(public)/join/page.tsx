@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { APP_CONFIG } from "@/config/app";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
@@ -8,9 +9,9 @@ import JoinPageSuccess from "@/components/tester/join-page-success";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Join Beta - AI Emotional Companion for Women | Mirael",
+  title: `Join Beta - ${APP_CONFIG.tagline} | ${APP_CONFIG.name}`,
   description:
-    "Get early access to Mirael, the AI emotional companion for high-functioning women. Join the beta program for burnout recovery, emotional clarity, and overwhelm support.",
+    `Get early access to ${APP_CONFIG.name}, the AI emotional companion for high-functioning women. Join the beta program for burnout recovery, emotional clarity, and overwhelm support.`,
   keywords: [
     "emotional burnout support beta",
     "women burnout recovery app beta",
@@ -24,11 +25,11 @@ export const metadata: Metadata = {
     "emotional companion for women beta",
   ],
   alternates: {
-    canonical: "https://mirael.life/en/join",
+    canonical: `${APP_CONFIG.domain}/en/join`,
     languages: {
-      fr: "https://mirael.life/fr/join",
-      ar: "https://mirael.life/ar/join",
-      "x-default": "https://mirael.life/en/join",
+      fr: `${APP_CONFIG.domain}/fr/join`,
+      ar: `${APP_CONFIG.domain}/ar/join`,
+      "x-default": `${APP_CONFIG.domain}/en/join`,
     },
   },
 };

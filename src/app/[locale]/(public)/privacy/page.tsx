@@ -1,15 +1,16 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { APP_CONFIG } from "@/config/app";
 
 import PoliciesFooter from "@/components/policies/policies.footer";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Mirael",
+  title: `Privacy Policy - ${APP_CONFIG.name}`,
   description:
-    "Learn how Mirael protects your privacy and handles your data with our comprehensive privacy policy. Zero-knowledge encryption ensures your conversations remain private.",
+    `Learn how ${APP_CONFIG.name} protects your privacy and handles your data with our comprehensive privacy policy. Zero-knowledge encryption ensures your conversations remain private.`,
   keywords: [
-    "Mirael privacy policy",
+    `${APP_CONFIG.name} privacy policy`,
     "data protection",
     "privacy rights",
     "zero-knowledge encryption",
@@ -18,11 +19,11 @@ export const metadata: Metadata = {
     "GDPR compliance",
   ],
   alternates: {
-    canonical: "https://www.mirael.life/en/privacy",
+    canonical: `${APP_CONFIG.domain}/en/privacy`,
     languages: {
-      en: "https://www.mirael.life/en/privacy",
-      fr: "https://www.mirael.life/fr/privacy",
-      ar: "https://www.mirael.life/ar/privacy",
+      en: `${APP_CONFIG.domain}/en/privacy`,
+      fr: `${APP_CONFIG.domain}/fr/privacy`,
+      ar: `${APP_CONFIG.domain}/ar/privacy`,
     },
   },
   robots: {
@@ -209,8 +210,8 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
             <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.contact.title}</h2>
             <p className="text-mir-text-secondary">
               {content.contact.message}{" "}
-              <Link href="mailto:privacy@mirael.app" className="text-mir-bg-accent text-center hover:underline">
-                privacy@mirael.life
+              <Link href={`mailto:${APP_CONFIG.contact.privacy}`} className="text-mir-bg-accent text-center hover:underline">
+                {APP_CONFIG.contact.privacy}
               </Link>
             </p>
           </div>
