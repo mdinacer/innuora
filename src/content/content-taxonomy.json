@@ -1,0 +1,356 @@
+{
+  "contentTaxonomy": {
+    "primaryCategories": {
+      "cognitive-behavioral-therapy": {
+        "title": "Cognitive Behavioral Therapy",
+        "description": "Understanding and applying CBT principles",
+        "priority": "high",
+        "searchVolume": 45000,
+        "articles": [
+          {
+            "slug": "what-is-cognitive-behavioral-therapy",
+            "title": "What is Cognitive Behavioral Therapy? A Complete Guide",
+            "intent": "informational",
+            "keywords": ["what is CBT", "cognitive behavioral therapy", "CBT therapy"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "cognitive-distortions-guide",
+            "title": "The 10 Most Common Cognitive Distortions and How to Overcome Them",
+            "intent": "informational/actionable",
+            "keywords": ["cognitive distortions", "thinking errors", "negative thoughts"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "cbt-techniques-beginners",
+            "title": "7 Essential CBT Techniques Every Beginner Should Know",
+            "intent": "actionable",
+            "keywords": ["CBT techniques", "cognitive therapy exercises", "thought challenging"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "thought-records-guide",
+            "title": "How to Use Thought Records: Step-by-Step CBT Worksheet",
+            "intent": "actionable",
+            "keywords": ["thought record", "CBT worksheet", "thought challenging"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "behavioral-experiments-cbt",
+            "title": "Behavioral Experiments in CBT: Testing Your Anxious Thoughts",
+            "intent": "advanced/actionable",
+            "keywords": ["behavioral experiments", "exposure therapy", "anxiety treatment"],
+            "difficulty": "high"
+          }
+        ]
+      },
+      "anxiety-management": {
+        "title": "Anxiety Management",
+        "description": "Practical strategies for managing anxiety and worry",
+        "priority": "high",
+        "searchVolume": 33000,
+        "articles": [
+          {
+            "slug": "generalized-anxiety-disorder-help",
+            "title": "Living with Generalized Anxiety Disorder: A Complete Guide",
+            "intent": "informational/supportive",
+            "keywords": ["generalized anxiety disorder", "GAD", "chronic worry"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "anxiety-breathing-techniques",
+            "title": "5 Breathing Techniques That Actually Work for Anxiety",
+            "intent": "actionable",
+            "keywords": ["breathing exercises anxiety", "anxiety relief", "panic attack breathing"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "social-anxiety-strategies",
+            "title": "Overcoming Social Anxiety: Evidence-Based Strategies That Work",
+            "intent": "actionable",
+            "keywords": ["social anxiety", "social phobia", "social confidence"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "panic-attacks-guide",
+            "title": "How to Stop a Panic Attack: 8 Techniques That Work",
+            "intent": "actionable/emergency",
+            "keywords": ["panic attack help", "how to stop panic attack", "panic disorder"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "workplace-anxiety-management",
+            "title": "Managing Workplace Anxiety: Professional Strategies for Success",
+            "intent": "actionable/professional",
+            "keywords": ["workplace anxiety", "work stress", "job anxiety"],
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "depression-support": {
+        "title": "Depression Support",
+        "description": "Understanding and coping with depression",
+        "priority": "high",
+        "searchVolume": 27000,
+        "articles": [
+          {
+            "slug": "understanding-depression-symptoms",
+            "title": "Understanding Depression: Symptoms, Types, and Treatment Options",
+            "intent": "informational",
+            "keywords": ["depression symptoms", "major depression", "clinical depression"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "depression-self-help-strategies",
+            "title": "10 Evidence-Based Self-Help Strategies for Depression",
+            "intent": "actionable",
+            "keywords": ["depression self help", "dealing with depression", "depression coping"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "seasonal-depression-guide",
+            "title": "Seasonal Depression (SAD): Causes, Symptoms, and Treatment",
+            "intent": "informational/seasonal",
+            "keywords": ["seasonal depression", "SAD", "winter depression"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "depression-motivation-tips",
+            "title": "Finding Motivation When Depressed: 12 Practical Strategies",
+            "intent": "actionable/motivational",
+            "keywords": ["depression motivation", "depression energy", "feeling unmotivated"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "postpartum-depression-support",
+            "title": "Postpartum Depression: Recognition, Support, and Recovery",
+            "intent": "supportive/informational",
+            "keywords": ["postpartum depression", "new mom depression", "maternal mental health"],
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "stress-management": {
+        "title": "Stress Management",
+        "description": "Techniques for managing stress and overwhelm",
+        "priority": "high",
+        "searchVolume": 22000,
+        "articles": [
+          {
+            "slug": "chronic-stress-effects-solutions",
+            "title": "The Hidden Effects of Chronic Stress and How to Break Free",
+            "intent": "informational/actionable",
+            "keywords": ["chronic stress", "stress effects", "stress management"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "stress-reduction-techniques",
+            "title": "15 Science-Backed Stress Reduction Techniques for Daily Life",
+            "intent": "actionable",
+            "keywords": ["stress reduction", "stress relief", "relaxation techniques"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "work-life-balance-stress",
+            "title": "Achieving Work-Life Balance: Managing Professional Stress",
+            "intent": "professional/actionable",
+            "keywords": ["work life balance", "work stress", "burnout prevention"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "overwhelm-management-guide",
+            "title": "Feeling Overwhelmed? A Step-by-Step Recovery Guide",
+            "intent": "actionable/supportive",
+            "keywords": ["feeling overwhelmed", "overwhelm relief", "too much stress"],
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "relationship-patterns": {
+        "title": "Relationship Patterns",
+        "description": "Understanding interpersonal dynamics and communication",
+        "priority": "medium",
+        "searchVolume": 15000,
+        "articles": [
+          {
+            "slug": "attachment-styles-relationships",
+            "title": "Understanding Attachment Styles in Adult Relationships",
+            "intent": "informational/relationship",
+            "keywords": ["attachment styles", "relationship patterns", "attachment theory"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "communication-skills-relationships",
+            "title": "Essential Communication Skills for Healthy Relationships",
+            "intent": "actionable/relationship",
+            "keywords": ["communication skills", "relationship communication", "conflict resolution"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "setting-boundaries-guide",
+            "title": "How to Set Healthy Boundaries: A Complete Guide",
+            "intent": "actionable",
+            "keywords": ["setting boundaries", "healthy boundaries", "boundary setting"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "codependency-recovery",
+            "title": "Breaking Free from Codependency: A Recovery Guide",
+            "intent": "actionable/recovery",
+            "keywords": ["codependency", "codependent relationships", "relationship recovery"],
+            "difficulty": "high"
+          }
+        ]
+      },
+      "self-compassion": {
+        "title": "Self-Compassion",
+        "description": "Developing kindness and acceptance toward yourself",
+        "priority": "medium",
+        "searchVolume": 12000,
+        "articles": [
+          {
+            "slug": "what-is-self-compassion",
+            "title": "What is Self-Compassion? A Guide to Being Kind to Yourself",
+            "intent": "informational",
+            "keywords": ["self compassion", "self kindness", "self acceptance"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "self-compassion-exercises",
+            "title": "7 Powerful Self-Compassion Exercises for Daily Practice",
+            "intent": "actionable",
+            "keywords": ["self compassion exercises", "self kindness practice", "self love"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "inner-critic-management",
+            "title": "Taming Your Inner Critic: From Self-Attack to Self-Support",
+            "intent": "actionable/transformational",
+            "keywords": ["inner critic", "negative self talk", "self criticism"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "perfectionism-recovery",
+            "title": "Recovering from Perfectionism: Embracing Good Enough",
+            "intent": "actionable/recovery",
+            "keywords": ["perfectionism", "perfectionist recovery", "letting go control"],
+            "difficulty": "high"
+          }
+        ]
+      },
+      "mindfulness-techniques": {
+        "title": "Mindfulness Techniques",
+        "description": "Present-moment awareness and meditation practices",
+        "priority": "medium",
+        "searchVolume": 18000,
+        "articles": [
+          {
+            "slug": "mindfulness-meditation-beginners",
+            "title": "Mindfulness Meditation for Beginners: A Complete Guide",
+            "intent": "instructional",
+            "keywords": ["mindfulness meditation", "meditation beginners", "mindfulness practice"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "mindfulness-anxiety-techniques",
+            "title": "Using Mindfulness to Manage Anxiety: 6 Proven Techniques",
+            "intent": "actionable",
+            "keywords": ["mindfulness anxiety", "mindful breathing", "anxiety mindfulness"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "body-scan-meditation-guide",
+            "title": "Body Scan Meditation: Complete Guide and Benefits",
+            "intent": "instructional",
+            "keywords": ["body scan meditation", "progressive relaxation", "mindful body awareness"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "mindful-eating-practices",
+            "title": "Mindful Eating: Transform Your Relationship with Food",
+            "intent": "actionable/lifestyle",
+            "keywords": ["mindful eating", "emotional eating", "conscious eating"],
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "mood-tracking": {
+        "title": "Mood Tracking",
+        "description": "Understanding and monitoring emotional patterns",
+        "priority": "medium",
+        "searchVolume": 8000,
+        "articles": [
+          {
+            "slug": "mood-tracking-benefits-guide",
+            "title": "The Science of Mood Tracking: Why It Works and How to Start",
+            "intent": "informational/actionable",
+            "keywords": ["mood tracking", "emotional awareness", "mood journal"],
+            "difficulty": "low"
+          },
+          {
+            "slug": "emotional-patterns-recognition",
+            "title": "Recognizing Your Emotional Patterns: A Data-Driven Approach",
+            "intent": "analytical/actionable",
+            "keywords": ["emotional patterns", "mood patterns", "emotional intelligence"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "mood-tracking-depression-anxiety",
+            "title": "Using Mood Tracking for Depression and Anxiety Management",
+            "intent": "therapeutic/actionable",
+            "keywords": ["mood tracking depression", "anxiety mood tracking", "mental health tracking"],
+            "difficulty": "medium"
+          },
+          {
+            "slug": "ai-mood-insights-guide",
+            "title": "How AI-Powered Mood Insights Can Transform Your Mental Health",
+            "intent": "innovative/educational",
+            "keywords": ["AI mood tracking", "mental health AI", "emotional AI insights"],
+            "difficulty": "medium"
+          }
+        ]
+      }
+    },
+    "longTailOpportunities": {
+      "cbt-specific": [
+        "CBT for perfectionism",
+        "CBT for social anxiety",
+        "CBT for depression relapse prevention",
+        "CBT for chronic pain",
+        "CBT techniques for teens"
+      ],
+      "problem-specific": [
+        "How to overcome people pleasing",
+        "How to stop catastrophic thinking",
+        "How to build confidence",
+        "How to manage rejection sensitivity",
+        "How to cope with uncertainty"
+      ],
+      "concept-specific": [
+        "Understanding emotional regulation",
+        "Cognitive flexibility explained",
+        "Emotional intelligence development",
+        "Trauma-informed self-care",
+        "Neuroplasticity and mental health"
+      ]
+    },
+    "contentPillars": {
+      "education": {
+        "purpose": "Establish authority and trust",
+        "examples": ["What is CBT?", "Understanding depression", "Types of anxiety disorders"]
+      },
+      "actionable": {
+        "purpose": "Demonstrate value and drive engagement",
+        "examples": ["CBT worksheets", "Step-by-step guides", "Daily practices"]
+      },
+      "innovative": {
+        "purpose": "Showcase AI capabilities and differentiation",
+        "examples": ["AI pattern recognition", "Personalized insights", "Predictive mental health"]
+      },
+      "supportive": {
+        "purpose": "Build community and emotional connection",
+        "examples": ["Recovery stories", "Validation content", "Crisis resources"]
+      }
+    }
+  }
+}

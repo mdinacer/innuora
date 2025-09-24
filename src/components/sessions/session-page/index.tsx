@@ -9,6 +9,7 @@ import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-c
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
 import LoadingComponent from "@/components/loading-component";
+import { PostSessionMoodPrompt } from "@/components/mood/mood-integration-hooks";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
 import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
@@ -24,6 +25,8 @@ interface Props {
 const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
   const [creditsError, setCreditsError] = useState<{ error: string; cost: number } | null>(null);
+  const [showPostSessionMood, setShowPostSessionMood] = useState(false);
+  const [sessionEnded, setSessionEnded] = useState(false);
 
   const [decryptedSession, setDecryptedSession] = useState<Session | null>(null);
   const {
@@ -70,15 +73,31 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
       switch (action) {
         case "reset":
           resetSession();
+          setSessionEnded(false);
+          setShowPostSessionMood(false);
           break;
         case "end":
-          router.push("/sessions");
+          // Check if session has meaningful content before showing mood prompt
+          // We need both user and AI messages for it to be meaningful
+          const userMessages = messages?.filter((m) => m.role === "user") || [];
+          const hasUserInput = userMessages.length > 0;
+          const hasConversation = messages && messages.length > 2;
+
+          // Show mood prompt if user has actively participated in conversation
+          if (hasUserInput && hasConversation && session?.userId) {
+            setSessionEnded(true);
+            setShowPostSessionMood(true);
+          } else {
+            // No meaningful conversation or not logged in, just navigate away
+            router.push("/sessions");
+          }
           break;
         case "export":
+          // TODO: Implement session export functionality
           break;
       }
     },
-    [resetSession, router]
+    [resetSession, router, messages, session?.userId]
   );
 
   const handleProcessMessage = useCallback(
@@ -147,6 +166,23 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
         <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
           <InsufficientCreditsWarning onPurchaseClick={() => router.push("/pricing")} />
         </div>
+      )}
+
+      {/* Post-Session Mood Prompt */}
+      {showPostSessionMood && sessionEnded && (
+        <PostSessionMoodPrompt
+          sessionId={sessionId}
+          onComplete={() => {
+            setShowPostSessionMood(false);
+            setSessionEnded(false);
+            router.push("/sessions");
+          }}
+          onDismiss={() => {
+            setShowPostSessionMood(false);
+            setSessionEnded(false);
+            router.push("/sessions");
+          }}
+        />
       )}
 
       <Container

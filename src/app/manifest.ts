@@ -8,13 +8,13 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: APP_CONFIG.name,
     description: APP_CONFIG.description,
     start_url: "/en",
-    background_color: "#000000",
-    theme_color: "#000000",
+    background_color: "#ffffff",
+    theme_color: "#6366f1",
     display: "standalone",
     orientation: "portrait",
     scope: "/",
     id: "/",
-    categories: ["health", "wellness", "lifestyle"],
+    categories: ["health", "wellness", "lifestyle", "productivity"],
     lang: "en",
     icons: [
       // iOS Icons
@@ -63,6 +63,48 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
     ],
+    shortcuts: [
+      {
+        name: "Start New Session",
+        short_name: "New Session",
+        description: "Begin a new therapeutic conversation",
+        url: "/en/sessions/new",
+        icons: [
+          {
+            src: "/assets/icons/ios/192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+        ],
+      },
+      {
+        name: "View Insights",
+        short_name: "Insights",
+        description: "Review your emotional patterns and insights",
+        url: "/en/insights",
+        icons: [
+          {
+            src: "/assets/icons/ios/192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+        ],
+      },
+      {
+        name: "My Sessions",
+        short_name: "Sessions",
+        description: "Access your conversation history",
+        url: "/en/sessions",
+        icons: [
+          {
+            src: "/assets/icons/ios/192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+        ],
+      },
+    ],
+    display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
   };
 }
 

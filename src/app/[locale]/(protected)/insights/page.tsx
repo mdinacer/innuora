@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
-import AdvancedInsightsDashboard from "@/components/insights/advanced-insights-dashboard";
+import IntegratedInsightsPage from "@/components/insights/integrated-insights-page";
 import { APP_CONFIG } from "@/config/app";
 import { AdvancedInsightsProfile } from "@/domains/insights/advanced-insights.types";
 
@@ -397,9 +397,5 @@ export default async function InsightsPage() {
   // Get advanced mock insights data (will be replaced with real data fetching)
   const insights = getAdvancedMockInsights();
 
-  return (
-    <main className="min-h-screen bg-slate-50">
-      <AdvancedInsightsDashboard insights={insights} />
-    </main>
-  );
+  return <IntegratedInsightsPage insights={insights} />;
 }

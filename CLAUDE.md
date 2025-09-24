@@ -885,6 +885,7 @@ This documentation provides a comprehensive overview of the Innuora project arch
 - **✅ Completed**: `src/domains/insights/content-ecosystem.types.ts` & `components/insights/content-recommendations.tsx` - SEO-ready content linking system
 
 **🔥 COMPETITIVE MOAT FEATURES:**
+
 - **Adaptive Progression**: System learns user completion patterns and adjusts difficulty (75%/85% advancement thresholds)
 - **Dynamic Context Nudging**: Sunday evening anxiety, family topic avoidance, perfectionism spikes detected and addressed
 - **Insight-to-Action Pipeline**: "Oh!" moments immediately followed by personalized CBT exercises
@@ -916,10 +917,12 @@ This documentation provides a comprehensive overview of the Innuora project arch
 - 🎯 **NEXT STEP**: Content creation for educational articles (SEO growth) OR continue with authentication testing
 
 **Priority Focus**: Two viable paths forward:
+
 1. **Growth Focus**: Create educational article content using the content ecosystem we built (drives SEO and user acquisition)
 2. **Security Focus**: Continue with authentication flow tests (`src/app/actions/__tests__/auth-actions.test.ts`)
 
 **Major Achievement**: We've built a sophisticated competitive moat system that transforms psychological insights into actionable guidance with adaptive learning. This system:
+
 - Creates network effects (gets smarter with each user)
 - Provides real-time contextual nudging
 - Links insights to educational content for SEO growth
