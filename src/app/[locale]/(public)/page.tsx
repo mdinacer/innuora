@@ -15,9 +15,9 @@ type Conversation = {
 };
 
 export const metadata: Metadata = {
-  title: `AI Emotional Companion for High-Functioning Women | ${APP_CONFIG.name}`,
+  title: `AI Emotional Companion for High-Functioning Women | ${APP_CONFIG.name} — Burnout & Clarity Support`,
   description:
-    "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Gain emotional clarity through reflective conversations that reveal patterns and challenge cognitive distortions.",
+    "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Gain emotional clarity through reflective conversations that uncover silent rules, reveal patterns, and challenge cognitive distortions.",
   keywords: [
     // Primary - Core problems this solves
     "emotional burnout support",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `${APP_CONFIG.name} — Emotional AI Companion for High-Functioning Women`,
-    description: `Navigate overwhelm and perfectionism with ${APP_CONFIG.name}, the AI companion for emotional clarity and insight.`,
+    description: `Navigate emotional burnout, uncover silent rules, and gain clarity with ${APP_CONFIG.name}, the AI companion empowering high-functioning women to reflect, understand patterns, and regain emotional balance.`,
     url: APP_CONFIG.domains.primary,
     siteName: APP_CONFIG.name,
     images: [{ url: "/og/innuora-cover.png", width: 1200, height: 630, alt: `${APP_CONFIG.name} Open Graph Cover` }],
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${APP_CONFIG.name} — Emotional AI Companion`,
-    description: `Gain clarity, process overwhelm, and manage perfectionism with ${APP_CONFIG.name}, the AI companion for emotional insight.`,
+    description: `Gain emotional clarity, uncover hidden patterns, and navigate burnout with ${APP_CONFIG.name}, the AI companion empowering high-functioning women to reflect and regain balance.`,
     images: ["/og/innuora-cover.png"],
     creator: APP_CONFIG.social.twitter.creator,
   },
