@@ -7,6 +7,13 @@ export interface EmotionalTrigger {
   averageDelay: number; // messages between trigger and response
   context: string; // AI-generated explanation
   lastSeen: Date;
+  // NEW: Predictive fields
+  nextPrediction?: {
+    timeframe: string; // "Sunday evening, next 2-3 days"
+    likelihood: number; // 0-100
+    earlyWarningMinutes: number; // how far ahead to warn
+    preventionOpportunity: number; // 0-100 how preventable
+  };
 }
 
 export interface BehavioralWiring {

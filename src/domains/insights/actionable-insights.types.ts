@@ -40,6 +40,7 @@ export interface ActionableInsight {
   completedAt?: Date;
   userNotes?: string;
   effectivenessRating?: number; // 1-10 user rating
+  confidence?: number; // 0-100 system confidence in this insight
 }
 
 export interface ActionInstruction {
@@ -125,4 +126,16 @@ export interface ActionTemplate {
   name: string;
   applicablePatterns: string[];
   template: Omit<ActionableInsight, "id" | "sourceInsightId" | "sourceInsightType" | "isCompleted">;
+}
+
+// Exercise result interface for learning system
+export interface ExerciseResult {
+  exerciseType: string;
+  userInput?: string;
+  beforeRating?: number;
+  afterRating?: number;
+  observedChanges?: string[];
+  completedSteps: number[];
+  timeSpent: number;
+  userReflection: string;
 }
