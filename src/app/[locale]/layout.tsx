@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { dir } from "i18next";
 
 import AuthListener from "@/components/auth/auth-listener";
+import { BackgroundGradientAnimation } from "@/components/background-gradient-animation";
 import { DynamicEffects } from "@/components/dynamic-loaders";
 import { PWAInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
@@ -50,6 +51,7 @@ export default async function RootLayout({
             <AuthListener />
             <ServiceWorkerRegistration />
             <DynamicEffects.BackgroundBeams className="hidden md:block" />
+            {/* <BackgroundGradientAnimation interactive={false} /> */}
             {children}
             <Toaster />
             <PWAInstallPrompt variant="floating" autoShow showDelay={5000} />

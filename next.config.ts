@@ -15,6 +15,45 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
 
+  // Bundle optimization settings
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Enable aggressive tree shaking
+      config.optimization = {
+        ...config.optimization,
+        usedExports: true,
+        sideEffects: false,
+        // Split chunks more aggressively
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          chunks: "all",
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: "vendors",
+              priority: 10,
+              chunks: "all",
+            },
+            ai: {
+              test: /[\\/]node_modules[\\/](openai|js-tiktoken)[\\/]/,
+              name: "ai",
+              priority: 20,
+              chunks: "all",
+            },
+            ui: {
+              test: /[\\/]node_modules[\\/](@radix-ui|lucide-react)[\\/]/,
+              name: "ui",
+              priority: 15,
+              chunks: "all",
+            },
+          },
+        },
+      };
+    }
+    return config;
+  },
+
   // Enable experimental features for better SEO and bundle optimization
   experimental: {
     optimizePackageImports: [
@@ -32,6 +71,10 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-tabs",
       "date-fns",
       "react-hook-form",
+      "react-markdown",
+      "zod",
+      "@stripe/react-stripe-js",
+      "@stripe/stripe-js",
     ],
   },
 

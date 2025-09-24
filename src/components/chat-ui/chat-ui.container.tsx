@@ -88,6 +88,7 @@ const ChatUIContainer = <T,>({
         headerActions={headerActions}
         className="absolute top-0 inset-x-0 bg-inn-bg-card/30 backdrop-blur-lg backdrop-saturate-150"
       />
+
       <MessagesContainer ref={messagesContainerRef} className="pt-[120px] pb-[100px] flex flex-col">
         {welcomeMessage}
         {messages.map(renderItem)}

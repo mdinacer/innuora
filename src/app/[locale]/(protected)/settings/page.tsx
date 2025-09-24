@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import SettingsPage from "@/components/settings/settings-page";
+import { DynamicPages } from "@/components/dynamic-loaders";
 import { createClient } from "@/lib/supabase/server";
 
 // =========================
@@ -37,7 +37,7 @@ export default async function Settings() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <SettingsPage
+      <DynamicPages.SettingsPage
         userId={user.id}
         userEmail={user.email}
         userName={user.user_metadata?.name || user.user_metadata?.full_name}

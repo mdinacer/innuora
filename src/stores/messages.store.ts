@@ -30,7 +30,6 @@ export const useSessionMessagesStore = create<MessagesStoreState>()(
   devtools(
     (set) => ({
       sessionMessages: {},
-      hasHydrated: false,
       // Session-level
       createSession: (sessionId) =>
         set(

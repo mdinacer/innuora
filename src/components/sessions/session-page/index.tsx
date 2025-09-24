@@ -28,7 +28,6 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const [showPostSessionMood, setShowPostSessionMood] = useState(false);
   const [sessionEnded, setSessionEnded] = useState(false);
 
-  const [decryptedSession, setDecryptedSession] = useState<Session | null>(null);
   const {
     t,
     i18n: { language },
@@ -126,22 +125,6 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     },
     [processMessage]
   );
-
-  // Subscribe to encrypted session store changes
-  const encryptedSession = useSessionStore((state) => state.sessions[sessionId]);
-
-  const handleGetDecryptedSession = useCallback(async () => {
-    if (!encryptedSession) {
-      setDecryptedSession(null);
-      return;
-    }
-    const decryptedData = await decryptSession(encryptedSession);
-    setDecryptedSession(decryptedData);
-  }, [encryptedSession]);
-
-  useEffect(() => {
-    handleGetDecryptedSession();
-  }, [handleGetDecryptedSession]);
 
   if (!hasHydrated) {
     return <LoadingComponent />;
