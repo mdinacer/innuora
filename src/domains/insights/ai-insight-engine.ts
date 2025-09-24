@@ -52,7 +52,7 @@ export class AIInsightEngine {
   static async detectEmotionalTriggers(sessions: SessionData[]): Promise<EmotionalTrigger[]> {
     const promptData = this.buildTriggerAnalysisPrompt(sessions);
 
-    const prompt = `Analyze these therapy session patterns to identify emotional triggers the user might not be aware of.
+    const prompt = `Analyze these therapy session patterns to identify emotional triggers and PREDICT when they'll happen next.
 
 ${promptData}
 
@@ -60,6 +60,7 @@ Instructions:
 - Look for words, phrases, topics, or people that consistently precede emotional intensity spikes
 - Identify patterns the user hasn't explicitly connected
 - Focus on unconscious triggers (things that happen automatically)
+- **PREDICT when each trigger is likely to occur next based on temporal patterns**
 - Calculate confidence based on frequency and consistency
 
 Return a JSON array of triggers with this structure:
@@ -71,7 +72,13 @@ Return a JSON array of triggers with this structure:
   "occurrences": 12,
   "averageDelay": 2,
   "context": "Brief explanation of the pattern",
-  "lastSeen": "2024-01-15"
+  "lastSeen": "2024-01-15",
+  "nextPrediction": {
+    "timeframe": "Sunday evening, next 2-3 days",
+    "likelihood": 78,
+    "earlyWarningMinutes": 30,
+    "preventionOpportunity": 85
+  }
 }`;
 
     // Would call GPT-3.5-turbo for fast pattern detection

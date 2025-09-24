@@ -49,9 +49,9 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
             <AuthListener />
-            {/* <ServiceWorkerRegistration /> */}
+            <ServiceWorkerRegistration />
             <DynamicEffects.BackgroundBeams className="hidden md:block" />
-            <BackgroundGradientAnimation interactive={false} />
+            {/* <BackgroundGradientAnimation interactive={false} /> */}
             {children}
             <Toaster />
             <PWAInstallPrompt variant="floating" autoShow showDelay={5000} />
