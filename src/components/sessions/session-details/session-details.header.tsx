@@ -24,20 +24,20 @@ const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
   return (
     <div className={cn("mb-8", className)}>
       <div className="flex items-center gap-x-6 mb-6">
-        <div className="w-12 hidden md:flex h-12 shrink-0 rounded-full bg-mir-bg-soft border border-mir-bg-accent/25  items-center justify-center">
-          <TextIcon className="size-6 text-mir-bg-accent" />
+        <div className="w-12 hidden md:flex h-12 shrink-0 rounded-full bg-inn-bg-soft border border-inn-bg-accent/25  items-center justify-center">
+          <TextIcon className="size-6 text-inn-bg-accent" />
         </div>
         <div>
           <h1
             id="sessionTitle"
-            className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight cursor-pointer hover:text-mir-bg-accent transition"
+            className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight cursor-pointer hover:text-inn-bg-accent transition"
           >
             {title}
           </h1>
 
           <p
             id="sessionSubtitle"
-            className="text-lg text-mir-text-secondary cursor-pointer hover:text-mir-text-primary transition"
+            className="text-lg text-inn-text-secondary cursor-pointer hover:text-inn-text-primary transition"
           >
             {subtitle}
           </p>
@@ -51,18 +51,18 @@ const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
           icon={MessageSquareTextIcon}
           title="Messages"
           value={session.metadata?.messageCount ?? 0}
-          classNames={{ icon: "text-mir-bg-accent" }}
+          classNames={{ icon: "text-inn-bg-accent" }}
         />
         <InfoCard
           icon={CoinsIcon}
           title="Credits Used"
           value={CreditUtils.formatCreditsForDisplay(session.metadata?.creditsUsed ?? 0)}
-          classNames={{ icon: "text-mir-bg-accent" }}
+          classNames={{ icon: "text-inn-bg-accent" }}
         />
       </div>
 
       {/* <!-- Session Timestamps --> */}
-      <div className="flex flex-col sm:flex-row gap-4 text-sm text-mir-text-secondary mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 text-sm text-inn-text-secondary mb-6">
         <div className="flex items-center gap-2">
           <ArrowDownIcon className="size-4" />
           <span>Created: {format(new Date(createdAt), "PPPp", { locale: fnsLocale })}</span>

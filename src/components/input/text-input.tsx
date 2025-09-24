@@ -20,7 +20,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     return (
       <div className={className}>
         {label && (
-          <label htmlFor={id} className="block text-sm font-medium text-mir-text-primary mb-2">
+          <label htmlFor={id} className="block text-sm font-medium text-inn-text-primary mb-2">
             {label} {required && <span className="text-red-500">*</span>}
           </label>
         )}
@@ -31,12 +31,12 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           required={required}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : helperText ? helperId : undefined}
-          className={`w-full rounded-2xl border px-4 py-3 text-mir-text-primary placeholder-mir-text-secondary outline-none transition 
-            focus:border-mir-bg-accent focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20
-            ${error ? "border-red-500 focus:ring-red-500" : "border-mir-border-light bg-mir-bg-input"}`}
+          className={`w-full rounded-2xl border px-4 py-3 text-inn-text-primary placeholder-inn-text-secondary outline-none transition 
+            focus:border-inn-bg-accent focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-20
+            ${error ? "border-red-500 focus:ring-red-500" : "border-inn-border-light bg-inn-bg-input"}`}
         />
         {helperText && !error && (
-          <p id={helperId} className="mt-1 text-sm text-mir-text-secondary">
+          <p id={helperId} className="mt-1 text-sm text-inn-text-secondary">
             {helperText}
           </p>
         )}

@@ -22,11 +22,11 @@ const ChatUIThemeToggle = () => {
       onClick={() => setTheme(currentTheme === "dark" ? "light" : "dark")}
       className={cn(
         "theme-toggle",
-        "size-9 bg-mir-bg-input",
+        "size-9 bg-inn-bg-input",
         "flex items-center justify-center",
         "border-none rounded-xl cursor-pointer",
         "transition-all duration-300 ease-in",
-        "hover:bg-mir-border-light hover:scale-105"
+        "hover:bg-inn-border-light hover:scale-105"
       )}
     >
       {currentTheme === "dark" ? (

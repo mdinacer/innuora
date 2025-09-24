@@ -58,28 +58,28 @@ const OpenChatModelSelector: React.FC<Props> = ({ className, defaultModel = MODE
         <button
           className={cn(
             "model-toggle",
-            "bg-mir-bg-input border-none rounded-[12px] py-2 px-3 cursor-pointer",
-            "flex items-center justify-between gap-2 text-sm font-medium text-mir-text-primary min-w-[200px]",
+            "bg-inn-bg-input border-none rounded-[12px] py-2 px-3 cursor-pointer",
+            "flex items-center justify-between gap-2 text-sm font-medium text-inn-text-primary min-w-[200px]",
             "transition-all duration-200 ease-in",
-            "hover:bg-mir-border-light",
+            "hover:bg-inn-border-light",
             className
           )}
         >
           <div className="flex items-center gap-1.5">
-            <div className="size-5 shrink-0 rounded-full bg-mir-bg-accent flex items-center justify-center text-sm font-bold text-white">
+            <div className="size-5 shrink-0 rounded-full bg-inn-bg-accent flex items-center justify-center text-sm font-bold text-white">
               {data[model].label.slice(0, 1)}
             </div>
 
             <span id="selectedModelName">Standard</span>
           </div>
 
-          <ChevronDownIcon className="size-3 text-mir-text-secondary transition-all duration-200 ease-in" />
+          <ChevronDownIcon className="size-3 text-inn-text-secondary transition-all duration-200 ease-in" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
           "model-dropdown",
-          "bg-mir-bg-card border border-mir-border-light rounded-2xl shadow-[0_4px_20px] shadow-black/8",
+          "bg-inn-bg-card border border-inn-border-light rounded-2xl shadow-[0_4px_20px] shadow-black/8",
           "overflow-hidden min-w-[260px] max-w-80 p-0"
         )}
         align="start"
@@ -93,11 +93,11 @@ const OpenChatModelSelector: React.FC<Props> = ({ className, defaultModel = MODE
                 "gap-3 p-4 cursor-pointer",
                 "border-none bg-none w-full ltr:text-left rtl:text-right",
                 "transition-all duration-200 ease-in",
-                "border-b border-b-mir-border-light last:border-b-0",
-                "hover:!bg-mir-bg-input",
+                "border-b border-b-inn-border-light last:border-b-0",
+                "hover:!bg-inn-bg-input",
                 "first:rounded-b-none last:rounded-t-none",
                 {
-                  "bg-mir-bg-accent text-white": isSelected,
+                  "bg-inn-bg-accent text-white": isSelected,
                 }
               )}
               onClick={() => handleModelSelect(value)}
@@ -106,7 +106,7 @@ const OpenChatModelSelector: React.FC<Props> = ({ className, defaultModel = MODE
                 <div
                   className={cn(
                     "model-option-title font-semibold",
-                    isSelected ? "text-white" : "text-mir-text-primary"
+                    isSelected ? "text-white" : "text-inn-text-primary"
                   )}
                 >
                   {data[value].label}

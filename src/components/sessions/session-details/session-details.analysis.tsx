@@ -42,7 +42,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
     <Card className={className}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <ChartBarIcon className="size-5 text-mir-bg-accent" />
+          <ChartBarIcon className="size-5 text-inn-bg-accent" />
           <h2 className="text-xl font-bold">Session Analysis</h2>
           {aggregatedAnalysis && (
             <Badge variant="orange" className="uppercase">
@@ -91,7 +91,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
               <ul className="list-disc pl-5">
                 {topN(aggregatedAnalysis.distortions).map((d, i) => (
                   <li key={i} className="mb-1 list-item">
-                    <Link href={`/learn/distortions/${d.type}`} className="underline text-mir-accent capitalize">
+                    <Link href={`/learn/distortions/${d.type}`} className="underline text-inn-accent capitalize">
                       {d.type.replace(/_/g, " ").replace(/-/g, " ")}
                     </Link>{" "}
                     — <Badge>{d.severity}</Badge>, <Badge variant="info">{d.count} times</Badge>
@@ -129,7 +129,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
           <p className="text-sm mt-6">
             👉 Next step: Explore{" "}
             {topDistortion && (
-              <Link href={`/learn/distortions/${topDistortion.type}`} className="underline text-mir-accent">
+              <Link href={`/learn/distortions/${topDistortion.type}`} className="underline text-inn-accent">
                 reframing {topDistortion.type.replace(/_/g, " ")}
               </Link>
             )}
@@ -137,7 +137,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
               <>
                 {" "}
                 and{" "}
-                <Link href={`/learn/themes/${topTheme.theme}`} className="underline text-mir-accent">
+                <Link href={`/learn/themes/${topTheme.theme}`} className="underline text-inn-accent">
                   working through {topTheme.theme.replace(/_/g, " ")}
                 </Link>
               </>

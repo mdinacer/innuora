@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 const badgeVariants = cva("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition", {
   variants: {
     variant: {
-      default: "bg-mir-bg-input text-mir-text-secondary",
-      accent: "bg-mir-bg-soft border border-mir-bg-accent/25 text-mir-text-primary",
-      neutral: "bg-mir-bg-input text-mir-text-primary",
+      default: "bg-inn-bg-input text-inn-text-secondary",
+      accent: "bg-inn-bg-soft border border-inn-bg-accent/25 text-inn-text-primary",
+      neutral: "bg-inn-bg-input text-inn-text-primary",
       success:
         "bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300",
       warning:

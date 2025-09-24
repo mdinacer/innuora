@@ -27,12 +27,12 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
       className={cn(
         "option-item w-full p-4 mb-2 rounded-[12px] text-base cursor-pointer",
         "ltr:text-left rtl:text-right",
-        "border border-mir-border-light bg-mir-bg-input",
-        "bg-mir-bg-card transition-all duration-200 ease-in-out",
-        "hover:not-disabled:border-mir-bg-accent hover:not-disabled:bg-mir-bg-card",
+        "border border-inn-border-light bg-inn-bg-input",
+        "bg-inn-bg-card transition-all duration-200 ease-in-out",
+        "hover:not-disabled:border-inn-bg-accent hover:not-disabled:bg-inn-bg-card",
         isVisible ? "block animate-fade-in" : "hidden",
         {
-          "border-mir-bg-accent bg-mir-bg-card text-mir-bg-accent shadow-[0_0_0_1px] shadow-mir-bg-accent": isSelected,
+          "border-inn-bg-accent bg-inn-bg-card text-inn-bg-accent shadow-[0_0_0_1px] shadow-inn-bg-accent": isSelected,
         },
         "disabled:opacity-50 disabled:cursor-not-allowed",
         className
@@ -44,13 +44,13 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
           <div
             className={cn(
               "option-checkbox",
-              "size-5  border-2 border-mir-border-light",
+              "size-5  border-2 border-inn-border-light",
               "flex items-center justify-center",
               "rounded-full shrink-0",
               "transition-all duration-200 ease-in",
 
               {
-                "border-mir-bg-accent bg-mir-bg-accent ": isSelected,
+                "border-inn-bg-accent bg-inn-bg-accent ": isSelected,
               }
             )}
           >
@@ -62,7 +62,7 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
             className={cn(
               "option-description",
               "text-sm rtl:text-lg  mt-1 leading-[1.4]",
-              isSelected ? "text-mir-bg-accent/70" : "text-mir-text-secondary"
+              isSelected ? "text-inn-bg-accent/70" : "text-inn-text-secondary"
             )}
           >
             {description}
@@ -131,7 +131,7 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
       />
 
       <h3
-        className={cn("card-title", " text-2xl font-bold text-mir-text-primary mb-2 leading-[1.3] -tracking-[0.3px]")}
+        className={cn("card-title", " text-2xl font-bold text-inn-text-primary mb-2 leading-[1.3] -tracking-[0.3px]")}
       >
         {label}
       </h3>
@@ -155,11 +155,11 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
           <button
             className={cn(
               "show-more-btn",
-              "bg-transparent border border-mir-border-light",
+              "bg-transparent border border-inn-border-light",
               "py-2 px-4 rounded-2xl text-sm rtl:text-base rtl:font-arabic-body font-medium cursor-pointer",
               "transition-all duration-200 ease-in-out",
               " inline-flex items-center gap-1.5",
-              "hover:border-mir-bg-accent hover:text-mir-bg-accent"
+              "hover:border-inn-bg-accent hover:text-inn-bg-accent"
             )}
             onClick={() => setCollapsed((prev) => !prev)}
           >
@@ -168,14 +168,14 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
           </button>
         </div>
       )}
-      <div className="input-hint mb-4 text-mir-text-primary/70">{hint}</div>
+      <div className="input-hint mb-4 text-inn-text-primary/70">{hint}</div>
 
       <button
         className={cn(
           "action-btn primary",
           "w-full py-3.5 px-5 rounded-[12px] border-none font-semibold cursor-pointer",
           "transition-all duration-200 ease-in-out",
-          "bg-mir-bg-accent text-white",
+          "bg-inn-bg-accent text-white",
           "hover:bg-[#ff5a4a]",
           "disabled:opacity-50 disabled:cursor-not-allowed"
         )}

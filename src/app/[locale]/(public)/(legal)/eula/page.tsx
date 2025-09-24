@@ -102,21 +102,21 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
     },
   };
   return (
-    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h1 className="rtl:font-arabic text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
           {content.hero.headline}
         </h1>
-        <p className="text-lg md:text-xl text-mir-text-secondary max-w-2xl mx-auto mb-6">{content.hero.description}</p>
-        <div className="inline-flex items-center gap-2 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] font-semibold text-mir-bg-accent">
+        <p className="text-lg md:text-xl text-inn-text-secondary max-w-2xl mx-auto mb-6">{content.hero.description}</p>
+        <div className="inline-flex items-center gap-2 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-[13px] font-semibold text-inn-bg-accent">
           {content.hero.lastUpdated}
         </div>
       </section>
 
       {/* <!-- Agreement Notice --> */}
       <section className="max-w-4xl mx-auto px-6 pb-12">
-        <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
+        <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
           <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.notice.title}</h2>
           <p className="mb-4 opacity-90">{content.notice.message}</p>
           <p className="text-sm opacity-80">{content.notice.warning}</p>
@@ -127,29 +127,29 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
       <div className="max-w-4xl mx-auto px-6 pb-16">
         {/* <!-- Acceptance of Agreement --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.acceptance.title}</h2>
-            <p className="text-mir-text-secondary">{content.acceptance.message}</p>
+            <p className="text-inn-text-secondary">{content.acceptance.message}</p>
           </div>
         </section>
 
         {/* <!-- License Grant --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.licenseGrant.title}</h2>
-            <p className="text-mir-text-secondary">{content.licenseGrant.message}</p>
+            <p className="text-inn-text-secondary">{content.licenseGrant.message}</p>
           </div>
         </section>
 
         {/* <!-- License Restrictions --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.licenseRestrictions.title}</h2>
-            <p className="text-mir-text-secondary mb-4">{content.licenseRestrictions.message}</p>
-            <ul className="space-y-3 text-mir-text-secondary">
+            <p className="text-inn-text-secondary mb-4">{content.licenseRestrictions.message}</p>
+            <ul className="space-y-3 text-inn-text-secondary">
               {content.licenseRestrictions.items.map((item, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-mir-bg-accent mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-inn-bg-accent mt-2 flex-shrink-0"></div>
                   <span>{item}</span>
                 </li>
               ))}
@@ -159,27 +159,27 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
 
         {/* <!-- Intellectual Property Ownership --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.intellectualProperty.title}</h2>
-            <p className="text-mir-text-secondary">{content.intellectualProperty.message}</p>
+            <p className="text-inn-text-secondary">{content.intellectualProperty.message}</p>
           </div>
         </section>
 
         {/* <!-- Updates and Modifications --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.updates.title}</h2>
-            <p className="text-mir-text-secondary">{content.updates.message}</p>
+            <p className="text-inn-text-secondary">{content.updates.message}</p>
           </div>
         </section>
 
         {/* <!-- Termination --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.termination.title}</h2>
-            <p className="text-mir-text-secondary mb-3">{content.termination.message}</p>
-            <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15">
-              <p className="text-sm text-mir-text-secondary">
+            <p className="text-inn-text-secondary mb-3">{content.termination.message}</p>
+            <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
+              <p className="text-sm text-inn-text-secondary">
                 <strong>{content.termination.uponTermination.label}</strong>{" "}
                 {content.termination.uponTermination.message}
               </p>
@@ -189,39 +189,39 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
 
         {/* <!-- Disclaimer of Warranties --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.disclaimer.title}</h2>
-            <p className="text-mir-text-secondary">{content.disclaimer.message}</p>
-            <div className="mt-4 p-4 rounded-xl bg-mir-bg-input">
-              <p className="text-sm text-mir-text-secondary">{content.disclaimer.note}</p>
+            <p className="text-inn-text-secondary">{content.disclaimer.message}</p>
+            <div className="mt-4 p-4 rounded-xl bg-inn-bg-input">
+              <p className="text-sm text-inn-text-secondary">{content.disclaimer.note}</p>
             </div>
           </div>
         </section>
 
         {/* <!-- Limitation of Liability --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.liability.title}</h2>
-            <p className="text-mir-text-secondary">{content.liability.message}</p>
+            <p className="text-inn-text-secondary">{content.liability.message}</p>
           </div>
         </section>
 
         {/* <!-- Governing Law --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.governingLaw.title}</h2>
-            <p className="text-mir-text-secondary">{content.governingLaw.message}</p>
+            <p className="text-inn-text-secondary">{content.governingLaw.message}</p>
           </div>
         </section>
 
         {/* <!-- Contact Information --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.contact.title}</h2>
-            <p className="text-mir-text-secondary mb-4">{content.contact.message}</p>
-            <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15">
-              <p className="font-medium text-mir-text-primary">{content.contact.supportEmail}</p>
-              <a href={`mailto:${APP_CONFIG.contact.support}`} className="text-mir-bg-accent hover:underline">
+            <p className="text-inn-text-secondary mb-4">{content.contact.message}</p>
+            <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
+              <p className="font-medium text-inn-text-primary">{content.contact.supportEmail}</p>
+              <a href={`mailto:${APP_CONFIG.contact.support}`} className="text-inn-bg-accent hover:underline">
                 {APP_CONFIG.contact.support}
               </a>
             </div>
@@ -230,7 +230,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
 
         {/* <!-- Summary Notice --> */}
         <section className="mb-12">
-          <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
+          <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.summary.title}</h2>
             <p className="mb-4 opacity-90">{content.summary.message}</p>
             <p className="text-sm opacity-80">{content.summary.acknowledgment}</p>

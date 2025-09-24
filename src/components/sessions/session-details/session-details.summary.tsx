@@ -79,7 +79,7 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
     <Card className={className}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <FileTextIcon className="size-5 text-mir-bg-accent" />
+          <FileTextIcon className="size-5 text-inn-bg-accent" />
           <h2 className="text-xl font-bold">Session Summary</h2>
         </div>
         {!summary && !continuitySummary && aggregatedAnalysis && memoryStore && (
@@ -90,7 +90,7 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
       </div>
 
       {!continuitySummary && !summary && (!aggregatedAnalysis || !memoryStore) && (
-        <div className="text-mir-text-secondary text-sm p-4 bg-mir-bg-secondary rounded-lg">
+        <div className="text-inn-text-secondary text-sm p-4 bg-inn-bg-secondary rounded-lg">
           <p>
             Session summaries are available after you've had some conversation rounds with analysis and memory
             collection.
@@ -110,7 +110,7 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
             </ReactMarkdown>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 text-sm text-mir-text-secondary mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 text-sm text-inn-text-secondary mb-6">
             <div className="flex items-center gap-2">
               <ArrowDownIcon className="size-4" />
               <span>Created: {format(new Date(continuitySummary?.updatedAt), "PPPp", { locale: fnsLocale })}</span>

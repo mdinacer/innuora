@@ -44,7 +44,7 @@ const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
       />
 
       <h3
-        className={cn("card-title", " text-2xl font-bold text-mir-text-primary mb-2 leading-[1.3] -tracking-[0.3px]")}
+        className={cn("card-title", " text-2xl font-bold text-inn-text-primary mb-2 leading-[1.3] -tracking-[0.3px]")}
       >
         {label}
       </h3>
@@ -52,12 +52,12 @@ const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
         <textarea
           className={cn(
             "input-field",
-            " w-full bg-mir-bg-card min-h-20 max-h-28",
-            "border border-mir-border-light rounded-[12px]",
+            " w-full bg-inn-bg-card min-h-20 max-h-28",
+            "border border-inn-border-light rounded-[12px]",
             "py-3 px-4 resize-y mb-3",
             "transition-all duration-300 ease-in",
-            "focus:outline-none focus:border-mir-bg-accent focus:shadow-[0_0_0_3px] focus:shadow-mir-bg-accent/10",
-            "placeholder:text-mir-text-secondary"
+            "focus:outline-none focus:border-inn-bg-accent focus:shadow-[0_0_0_3px] focus:shadow-inn-bg-accent/10",
+            "placeholder:text-inn-text-secondary"
           )}
           placeholder={placeholder}
           maxLength={charLimit}
@@ -65,8 +65,8 @@ const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleOnKeyDown}
         />
-        <div className="char-counter text-right text-xs text-mir-text-secondary mb-3">0/{charLimit}</div>
-        <div className="input-hint mb-3 text-mir-text-primary/70">{hint}</div>
+        <div className="char-counter text-right text-xs text-inn-text-secondary mb-3">0/{charLimit}</div>
+        <div className="input-hint mb-3 text-inn-text-primary/70">{hint}</div>
         <button
           disabled={inputValue.length === 0}
           onClick={handleUserInput}
@@ -75,7 +75,7 @@ const FlowChatUserInput: React.FC<Props> = ({ message, onUserInput }) => {
             "w-full  py-3 px-4 rounded-[12px]",
             "font-semibold cursor-pointer border-none",
             "transition-all duration-200 ease-in",
-            "text-white bg-mir-bg-accent",
+            "text-white bg-inn-bg-accent",
             "hover:-translate-y-[1px]",
             "disabled:opacity-60 disabled:cursor-not-allowed"
           )}

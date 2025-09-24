@@ -31,7 +31,7 @@ const FlowChatEnd: React.FC<Props> = ({ message, isDisabled = false, onAction })
             "disabled:opacity-70 disabled:cursor-not-allowed",
             "w-full py-3.5 px-5 rounded-[12px] border-none font-semibold cursor-pointer",
             "transition-all duration-200 ease-in-out",
-            "bg-white text-mir-bg-accent",
+            "bg-white text-inn-bg-accent",
             "not-disabled:hover:bg-white/80",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}

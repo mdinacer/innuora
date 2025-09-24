@@ -59,20 +59,20 @@ const LanguageSwitcher = () => {
   return (
     <>
       {isSwitching && (
-        <div className="fixed inset-0 z-[900] flex items-center justify-center bg-mir-bg-primary/90 backdrop-blur-md animate-fade-in"></div>
+        <div className="fixed inset-0 z-[900] flex items-center justify-center bg-inn-bg-primary/90 backdrop-blur-md animate-fade-in"></div>
       )}
 
-      <div className="grid grid-cols-3 gap-1 rounded-2xl border border-mir-border-light/50 bg-mir-bg-card/50 p-1">
+      <div className="grid grid-cols-3 gap-1 rounded-2xl border border-inn-border-light/50 bg-inn-bg-card/50 p-1">
         {languages.map((locale) => (
           <button
             key={locale.value}
             disabled={language === locale.value || isSwitching}
             onClick={() => changeLanguage(locale.value as AppLocales)}
             className={cn(
-              "px-3 py-1.5 rtl:font-arabic rtl:font-medium text-sm font-medium text-mir-text-secondary hover:text-mir-text-primary transition-all",
+              "px-3 py-1.5 rtl:font-arabic rtl:font-medium text-sm font-medium text-inn-text-secondary hover:text-inn-text-primary transition-all",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               {
-                "bg-mir-bg-accent text-white rounded-xl": locale.value === language,
+                "bg-inn-bg-accent text-white rounded-xl": locale.value === language,
               }
             )}
           >

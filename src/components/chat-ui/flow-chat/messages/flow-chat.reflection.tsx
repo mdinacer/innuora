@@ -20,7 +20,7 @@ const FlowChatReflection: React.FC<Props> = ({ message }) => {
       />
       <h3 className={cn("card-title", " text-2xl font-bold  mb-2 leading-[1.3] -tracking-[0.3px]")}>{title}</h3>
       <p className={cn("card-content", "mb-4")}>{reflection}</p>
-      {error && <p className={"mb-4 text-mir-bg-accent text-base font-medium"}>{error}</p>}
+      {error && <p className={"mb-4 text-inn-bg-accent text-base font-medium"}>{error}</p>}
     </>
   );
 };

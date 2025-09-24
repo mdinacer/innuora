@@ -29,6 +29,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const { t } = useTranslation("pages", { keyPrefix: "auth.sign-in" });
   const [formError, setFormError] = useState<string | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const { title, subtitle, formFields, no_account } = {
     title: t("title"),
@@ -91,6 +92,8 @@ const SignInForm: React.FC<Props> = ({ className }) => {
           });
         }
 
+        // Mark as signed in to keep button disabled during redirect
+        setIsSignedIn(true);
         router.push("/sessions");
       } catch (error: unknown) {
         if (error instanceof AuthError) {
@@ -103,6 +106,9 @@ const SignInForm: React.FC<Props> = ({ className }) => {
             },
           });
         } else {
+          // Handle general errors (validation, network, crypto, etc.)
+          const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred during sign in";
+          setFormError(errorMessage);
           logger.logWarning("Unexpected error during sign-in", {
             operation: "auth_signin_unexpected_error",
             metadata: {
@@ -121,7 +127,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
       {/* <!-- Welcome Header --> */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-3">{title}</h1>
-        <p className="text-mir-text-secondary">{subtitle}</p>
+        <p className="text-inn-text-secondary">{subtitle}</p>
       </div>
 
       {formError && (
@@ -140,7 +146,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
       )}
 
       {/* <!-- Sign In Form --> */}
-      <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-card">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSignIn)} className="space-y-6">
             {/* <!-- Email Field --> */}
@@ -165,7 +171,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
             <div className="text-right">
               <CheckboxField name="remember" control={form.control} label={formFields.remember} />
 
-              <Link href="/auth/forgot-password" className="text-sm text-mir-bg-accent hover:underline">
+              <Link href="/auth/forgot-password" className="text-sm text-inn-bg-accent hover:underline">
                 {formFields.forgot_password}
               </Link>
             </div>
@@ -173,17 +179,17 @@ const SignInForm: React.FC<Props> = ({ className }) => {
             {/* <!-- Submit Button --> */}
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSignedIn}
               className={cn(
-                "w-full rounded-2xl inline-flex items-center gap-x-2 justify-center bg-mir-bg-accent  focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-50",
+                "w-full rounded-2xl inline-flex items-center gap-x-2 justify-center bg-inn-bg-accent  focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50",
                 "px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none",
-                "disabled:opacity-50 disabled:cursor-not-allowed"
+                "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               )}
             >
-              {isSubmitting && (
+              {(isSubmitting || isSignedIn) && (
                 <div className="size-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
               )}
-              {formFields.submit}
+              {isSignedIn ? "Signing in..." : formFields.submit}
             </button>
           </form>
         </Form>
@@ -191,9 +197,9 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
       {/* <!-- Sign Up Link --> */}
       <div className="text-center mt-6">
-        <p className="text-mir-text-secondary inline-flex gap-x-2">
+        <p className="text-inn-text-secondary inline-flex gap-x-2">
           <span>{no_account.text}</span>
-          <Link href="/auth/sign-up" className="text-mir-bg-accent font-medium hover:underline">
+          <Link href="/auth/sign-up" className="text-inn-bg-accent font-medium hover:underline">
             {no_account.link}
           </Link>
         </p>
