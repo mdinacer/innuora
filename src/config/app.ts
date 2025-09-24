@@ -10,7 +10,7 @@
 export const APP_CONFIG = {
   // Brand Identity
   name: "Innuora",
-  tagline: "AI Emotional Companion for High-Functioning Women",
+  tagline: "AI Emotional Companion Guiding High-Functioning Women Through Burnout and Overwhelm",
   description:
     "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Get clarity through emotionally attuned conversations that reflect patterns, challenge cognitive distortions, and help you understand what's beneath the surface.",
 
