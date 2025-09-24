@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     description: `Navigate overwhelm and perfectionism with ${APP_CONFIG.name}, the AI companion for emotional clarity and insight.`,
     url: APP_CONFIG.domains.primary,
     siteName: APP_CONFIG.name,
-    images: [{ url: "/og/app-cover.png", width: 1200, height: 630, alt: `${APP_CONFIG.name} Open Graph Cover` }],
+    images: [{ url: "/og/innuora-cover.png", width: 1200, height: 630, alt: `${APP_CONFIG.name} Open Graph Cover` }],
     locale: "en_US",
     type: "website",
   },
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${APP_CONFIG.name} — Emotional AI Companion`,
     description: `Gain clarity, process overwhelm, and manage perfectionism with ${APP_CONFIG.name}, the AI companion for emotional insight.`,
-    images: ["/og/app-cover.png"],
+    images: ["/og/innuora-cover.png"],
     creator: APP_CONFIG.social.twitter.creator,
   },
   alternates: {
@@ -108,7 +108,7 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
     return (
       <div className="flex justify-start">
         <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
-          <div className="size-7 font-sans sm:size-9 rounded-full border border-inn-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
+          <div className=" font-sans  rounded-full hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
             <Image src="/assets/logo.png" alt="AI" width={24} height={24} className="object-cover object-center" />
           </div>
           <div className="flex flex-col sm:gap-1 gap-3">
