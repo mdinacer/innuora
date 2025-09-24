@@ -1,4 +1,5 @@
 import { AiModel } from "@/types/ai-model.types";
+import { ActionableInsight, ExerciseResult } from "./actionable-insights.types";
 import {
   AdvancedInsightsProfile,
   AvoidancePattern,
@@ -7,7 +8,6 @@ import {
   ProgressBlindSpot,
   RecoverySignature,
 } from "./advanced-insights.types";
-import { ActionableInsight, ExerciseResult } from "./actionable-insights.types";
 
 // Extended types for predictive intelligence
 export interface PredictivePattern {
@@ -152,7 +152,7 @@ export class PredictiveInsightIntelligence {
     const profile = { ...currentProfile };
 
     // Analyze effectiveness by action type
-    recentFeedback.forEach(result => {
+    recentFeedback.forEach((result) => {
       const effectiveness = this.calculateEffectiveness(result);
       const actionType = result.exerciseType;
 
@@ -248,7 +248,8 @@ export class PredictiveInsightIntelligence {
 
     // Generate predictive insights
     for (const pattern of predictivePatterns) {
-      if (pattern.preventionOpportunity > 60) { // high prevention opportunity
+      if (pattern.preventionOpportunity > 60) {
+        // high prevention opportunity
         const preventiveInsight = await this.generatePreventiveInsight(pattern, learningProfile);
         if (preventiveInsight) {
           insights.push(preventiveInsight);
@@ -298,7 +299,8 @@ export class PredictiveInsightIntelligence {
     }
 
     // Factor in time spent (engagement indicator)
-    if (result.timeSpent > 180) { // 3+ minutes indicates engagement
+    if (result.timeSpent > 180) {
+      // 3+ minutes indicates engagement
       effectiveness += 10;
     }
 
@@ -332,7 +334,8 @@ export class PredictiveInsightIntelligence {
       profile.personalityWeights.openness += 0.05;
     }
 
-    if (result.timeSpent > 300) { // 5+ minutes
+    if (result.timeSpent > 300) {
+      // 5+ minutes
       // User willing to spend time on deep work - higher conscientiousness
       profile.personalityWeights.conscientiousness += 0.03;
     }
@@ -343,7 +346,7 @@ export class PredictiveInsightIntelligence {
     }
 
     // Keep weights in bounds [0, 1]
-    Object.keys(profile.personalityWeights).forEach(key => {
+    Object.keys(profile.personalityWeights).forEach((key) => {
       const typedKey = key as keyof typeof profile.personalityWeights;
       profile.personalityWeights[typedKey] = Math.min(1, Math.max(0, profile.personalityWeights[typedKey]));
     });
@@ -406,14 +409,12 @@ export class PredictiveInsightIntelligence {
 
   private static hasContextualTriggers(wiring: BehavioralWiring, recentStressors: string[]): boolean {
     // Check if current context matches wiring triggers
-    return recentStressors.some(stressor =>
-      wiring.coreBeliefTrigger.toLowerCase().includes(stressor.toLowerCase())
-    );
+    return recentStressors.some((stressor) => wiring.coreBeliefTrigger.toLowerCase().includes(stressor.toLowerCase()));
   }
 
   private static identifyEmotionalCascades(insights: AdvancedInsightsProfile): PredictivePattern[] {
     // Identify chains of emotional reactions
-    return insights.behavioralWiring.map(wiring => ({
+    return insights.behavioralWiring.map((wiring) => ({
       id: `cascade-${wiring.id}`,
       type: "emotional_cascade" as const,
       pattern: `${wiring.coreBeliefTrigger} → ${wiring.automaticBehavior} → emotional escalation`,
@@ -448,7 +449,8 @@ export class PredictiveInsightIntelligence {
 
     // Adjust time commitment based on user engagement patterns
     if (profile.preferredInsightDepth === "deep") {
-      adaptedInsight.timeCommitment = insight.timeCommitment === "2-5 minutes" ? "10-15 minutes" : insight.timeCommitment;
+      adaptedInsight.timeCommitment =
+        insight.timeCommitment === "2-5 minutes" ? "10-15 minutes" : insight.timeCommitment;
     }
 
     return adaptedInsight;
@@ -475,8 +477,8 @@ export class PredictiveInsightIntelligence {
         {
           step: 1,
           instruction: `Notice that ${pattern.nextLikelyTrigger} may be approaching`,
-          tip: "Awareness is the first step to prevention"
-        }
+          tip: "Awareness is the first step to prevention",
+        },
       ],
       expectedOutcome: "Prevention of automatic emotional pattern",
       isCompleted: false,
@@ -498,7 +500,7 @@ export class PredictiveInsightIntelligence {
     // Calculate minutes until pattern is predicted to manifest
     if (pattern.type === "temporal" && pattern.timeOfDay) {
       const currentHour = new Date().getHours();
-      const nextTriggerHour = pattern.timeOfDay.find(hour => hour > currentHour) || pattern.timeOfDay[0];
+      const nextTriggerHour = pattern.timeOfDay.find((hour) => hour > currentHour) || pattern.timeOfDay[0];
       return (nextTriggerHour - currentHour) * 60;
     }
 
@@ -532,22 +534,4 @@ export interface AnticipatorNudge {
   suggestedAction: string;
   dismissable: boolean;
   timestamp: Date;
-}
-
-// Extended ExerciseResult interface to support learning
-export interface ExerciseResult {
-  exerciseType: string;
-  userInput?: string;
-  beforeRating?: number;
-  afterRating?: number;
-  observedChanges?: string[];
-  completedSteps: number[];
-  timeSpent: number;
-  userReflection: string;
-
-  // New fields for learning
-  contextualFactors?: string[];
-  emotionalState?: string;
-  interventionEffectiveness?: number;
-  willUseAgain?: boolean;
 }

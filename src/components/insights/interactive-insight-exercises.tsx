@@ -27,7 +27,7 @@ export const InteractiveInsightExercises: React.FC<InteractiveExerciseProps> = (
   onConfidenceUpdate,
 }) => {
   const [currentExercise, setCurrentExercise] = useState<string | null>(null);
-  const [exerciseState, setExerciseState] = useState<'ready' | 'in_progress' | 'completed'>('ready');
+  const [exerciseState, setExerciseState] = useState<"ready" | "in_progress" | "completed">("ready");
   const [exerciseData, setExerciseData] = useState<Partial<ExerciseResult>>({
     completedSteps: [],
     timeSpent: 0,
@@ -40,9 +40,13 @@ export const InteractiveInsightExercises: React.FC<InteractiveExerciseProps> = (
       case "awareness_practice":
         return <AwarenessPracticeExercise insight={insight} state={exerciseState} onStateChange={handleStateChange} />;
       case "exercise":
-        return <CognitiveRestructuringExercise insight={insight} state={exerciseState} onStateChange={handleStateChange} />;
+        return (
+          <CognitiveRestructuringExercise insight={insight} state={exerciseState} onStateChange={handleStateChange} />
+        );
       case "behavioral_experiment":
-        return <BehavioralExperimentExercise insight={insight} state={exerciseState} onStateChange={handleStateChange} />;
+        return (
+          <BehavioralExperimentExercise insight={insight} state={exerciseState} onStateChange={handleStateChange} />
+        );
       case "reflection":
         return <ReflectionExercise insight={insight} state={exerciseState} onStateChange={handleStateChange} />;
       default:
@@ -50,15 +54,15 @@ export const InteractiveInsightExercises: React.FC<InteractiveExerciseProps> = (
     }
   };
 
-  const handleStateChange = (newState: 'ready' | 'in_progress' | 'completed', data?: Partial<ExerciseResult>) => {
+  const handleStateChange = (newState: "ready" | "in_progress" | "completed", data?: Partial<ExerciseResult>) => {
     setExerciseState(newState);
     if (data) {
-      setExerciseData(prev => ({ ...prev, ...data }));
+      setExerciseData((prev) => ({ ...prev, ...data }));
     }
 
-    if (newState === 'in_progress' && !startTime) {
+    if (newState === "in_progress" && !startTime) {
       setStartTime(Date.now());
-    } else if (newState === 'completed' && startTime) {
+    } else if (newState === "completed" && startTime) {
       const timeSpent = Math.round((Date.now() - startTime) / 1000);
       const finalData = { ...exerciseData, ...data, timeSpent };
       onExerciseComplete(insight.id, finalData as ExerciseResult);
@@ -67,18 +71,18 @@ export const InteractiveInsightExercises: React.FC<InteractiveExerciseProps> = (
 
   const startExercise = (exerciseType: string) => {
     setCurrentExercise(exerciseType);
-    setExerciseState('in_progress');
+    setExerciseState("in_progress");
     setStartTime(Date.now());
   };
 
   const resetExercise = () => {
     setCurrentExercise(null);
-    setExerciseState('ready');
+    setExerciseState("ready");
     setStartTime(null);
     setExerciseData({ completedSteps: [], timeSpent: 0 });
   };
 
-  if (currentExercise && exerciseState !== 'ready') {
+  if (currentExercise && exerciseState !== "ready") {
     return (
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-4">
         <div className="flex items-center justify-between">
@@ -115,15 +119,12 @@ export const InteractiveInsightExercises: React.FC<InteractiveExerciseProps> = (
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <Button
-          onClick={() => startExercise('quick_practice')}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-        >
+        <Button onClick={() => startExercise("quick_practice")} className="bg-blue-600 hover:bg-blue-700 text-white">
           <Clock className="size-4 mr-2" />
           2-Minute Practice
         </Button>
         <Button
-          onClick={() => startExercise('guided_exercise')}
+          onClick={() => startExercise("guided_exercise")}
           variant="outline"
           className="border-purple-200 text-purple-700 hover:bg-purple-50"
         >
@@ -138,8 +139,8 @@ export const InteractiveInsightExercises: React.FC<InteractiveExerciseProps> = (
 // Awareness Practice Exercise Component
 const AwarenessPracticeExercise: React.FC<{
   insight: ActionableInsight;
-  state: 'ready' | 'in_progress' | 'completed';
-  onStateChange: (state: 'ready' | 'in_progress' | 'completed', data?: Partial<ExerciseResult>) => void;
+  state: "ready" | "in_progress" | "completed";
+  onStateChange: (state: "ready" | "in_progress" | "completed", data?: Partial<ExerciseResult>) => void;
 }> = ({ insight, state, onStateChange }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [beforeRating, setBeforeRating] = useState<number | null>(null);
@@ -159,9 +160,7 @@ const AwarenessPracticeExercise: React.FC<{
                 key={rating}
                 onClick={() => setBeforeRating(rating)}
                 className={`size-8 rounded text-xs font-medium transition-colors ${
-                  beforeRating === rating
-                    ? "bg-blue-500 text-white"
-                    : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                  beforeRating === rating ? "bg-blue-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300"
                 }`}
               >
                 {rating}
@@ -203,9 +202,7 @@ const AwarenessPracticeExercise: React.FC<{
                 key={rating}
                 onClick={() => setAfterRating(rating)}
                 className={`size-8 rounded text-xs font-medium transition-colors ${
-                  afterRating === rating
-                    ? "bg-green-500 text-white"
-                    : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                  afterRating === rating ? "bg-green-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300"
                 }`}
               >
                 {rating}
@@ -236,8 +233,8 @@ const AwarenessPracticeExercise: React.FC<{
       setCurrentStep(currentStep + 1);
     } else {
       // Complete the exercise
-      onStateChange('completed', {
-        exerciseType: 'awareness_practice',
+      onStateChange("completed", {
+        exerciseType: "awareness_practice",
         beforeRating: beforeRating || 0,
         afterRating: afterRating || 0,
         observedChanges: observations ? [observations] : [],
@@ -249,11 +246,16 @@ const AwarenessPracticeExercise: React.FC<{
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0: return beforeRating !== null;
-      case 1: return observations.trim().length > 0;
-      case 2: return afterRating !== null;
-      case 3: return reflection.trim().length > 0;
-      default: return true;
+      case 0:
+        return beforeRating !== null;
+      case 1:
+        return observations.trim().length > 0;
+      case 2:
+        return afterRating !== null;
+      case 3:
+        return reflection.trim().length > 0;
+      default:
+        return true;
     }
   };
 
@@ -262,12 +264,7 @@ const AwarenessPracticeExercise: React.FC<{
       {/* Progress indicator */}
       <div className="flex items-center gap-2">
         {steps.map((_, index) => (
-          <div
-            key={index}
-            className={`size-3 rounded-full ${
-              index <= currentStep ? "bg-blue-500" : "bg-slate-200"
-            }`}
-          />
+          <div key={index} className={`size-3 rounded-full ${index <= currentStep ? "bg-blue-500" : "bg-slate-200"}`} />
         ))}
         <span className="text-sm text-slate-600 ml-2">
           Step {currentStep + 1} of {steps.length}
@@ -298,8 +295,8 @@ const AwarenessPracticeExercise: React.FC<{
 // Cognitive Restructuring Exercise Component
 const CognitiveRestructuringExercise: React.FC<{
   insight: ActionableInsight;
-  state: 'ready' | 'in_progress' | 'completed';
-  onStateChange: (state: 'ready' | 'in_progress' | 'completed', data?: Partial<ExerciseResult>) => void;
+  state: "ready" | "in_progress" | "completed";
+  onStateChange: (state: "ready" | "in_progress" | "completed", data?: Partial<ExerciseResult>) => void;
 }> = ({ insight, state, onStateChange }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [automaticThought, setAutomaticThought] = useState("");
@@ -319,7 +316,7 @@ const CognitiveRestructuringExercise: React.FC<{
     "Should statements",
     "Labeling",
     "Personalization",
-    "Fortune telling"
+    "Fortune telling",
   ];
 
   const steps = [
@@ -431,8 +428,8 @@ const CognitiveRestructuringExercise: React.FC<{
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      onStateChange('completed', {
-        exerciseType: 'cognitive_restructuring',
+      onStateChange("completed", {
+        exerciseType: "cognitive_restructuring",
         userInput: automaticThought,
         beforeRating: emotionIntensity || 0,
         afterRating: newIntensity || 0,
@@ -445,11 +442,16 @@ const CognitiveRestructuringExercise: React.FC<{
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0: return automaticThought.trim().length > 0 && emotionIntensity !== null;
-      case 1: return identifiedDistortion.length > 0;
-      case 2: return balancedThought.trim().length > 0;
-      case 3: return newIntensity !== null && reflection.trim().length > 0;
-      default: return true;
+      case 0:
+        return automaticThought.trim().length > 0 && emotionIntensity !== null;
+      case 1:
+        return identifiedDistortion.length > 0;
+      case 2:
+        return balancedThought.trim().length > 0;
+      case 3:
+        return newIntensity !== null && reflection.trim().length > 0;
+      default:
+        return true;
     }
   };
 
@@ -458,12 +460,7 @@ const CognitiveRestructuringExercise: React.FC<{
       {/* Progress indicator */}
       <div className="flex items-center gap-2">
         {steps.map((_, index) => (
-          <div
-            key={index}
-            className={`size-3 rounded-full ${
-              index <= currentStep ? "bg-blue-500" : "bg-slate-200"
-            }`}
-          />
+          <div key={index} className={`size-3 rounded-full ${index <= currentStep ? "bg-blue-500" : "bg-slate-200"}`} />
         ))}
         <span className="text-sm text-slate-600 ml-2">
           Step {currentStep + 1} of {steps.length}
@@ -494,8 +491,8 @@ const CognitiveRestructuringExercise: React.FC<{
 // Behavioral Experiment Exercise Component
 const BehavioralExperimentExercise: React.FC<{
   insight: ActionableInsight;
-  state: 'ready' | 'in_progress' | 'completed';
-  onStateChange: (state: 'ready' | 'in_progress' | 'completed', data?: Partial<ExerciseResult>) => void;
+  state: "ready" | "in_progress" | "completed";
+  onStateChange: (state: "ready" | "in_progress" | "completed", data?: Partial<ExerciseResult>) => void;
 }> = ({ insight, state, onStateChange }) => {
   const [prediction, setPrediction] = useState("");
   const [anxietyBefore, setAnxietyBefore] = useState<number | null>(null);
@@ -504,8 +501,8 @@ const BehavioralExperimentExercise: React.FC<{
   const [learnings, setLearnings] = useState("");
 
   const handleComplete = () => {
-    onStateChange('completed', {
-      exerciseType: 'behavioral_experiment',
+    onStateChange("completed", {
+      exerciseType: "behavioral_experiment",
       userInput: prediction,
       beforeRating: anxietyBefore || 0,
       afterRating: anxietyAfter || 0,
@@ -526,10 +523,11 @@ const BehavioralExperimentExercise: React.FC<{
 
       <div className="space-y-4">
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">
+          <label htmlFor="prediction" className="text-sm font-medium text-slate-700 block mb-2">
             What do you predict will happen if you try this?
           </label>
           <textarea
+            id="prediction"
             value={prediction}
             onChange={(e) => setPrediction(e.target.value)}
             placeholder="Be specific about what you think will happen..."
@@ -539,18 +537,16 @@ const BehavioralExperimentExercise: React.FC<{
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">
+          <label htmlFor="anxiety" className="text-sm font-medium text-slate-700 block mb-2">
             Anxiety level right now (1-10):
           </label>
-          <div className="flex gap-1">
+          <div id="anxiety" className="flex gap-1">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
               <button
                 key={rating}
                 onClick={() => setAnxietyBefore(rating)}
                 className={`size-8 rounded text-xs font-medium transition-colors ${
-                  anxietyBefore === rating
-                    ? "bg-red-500 text-white"
-                    : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                  anxietyBefore === rating ? "bg-red-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300"
                 }`}
               >
                 {rating}
@@ -567,10 +563,11 @@ const BehavioralExperimentExercise: React.FC<{
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">
+          <label htmlFor="actual-outcome" className="text-sm font-medium text-slate-700 block mb-2">
             What actually happened?
           </label>
           <textarea
+            id="actual-outcome"
             value={actualOutcome}
             onChange={(e) => setActualOutcome(e.target.value)}
             placeholder="Describe the actual results - not what you expected, but what really occurred..."
@@ -580,18 +577,16 @@ const BehavioralExperimentExercise: React.FC<{
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">
+          <label htmlFor="anxiety-after" className="text-sm font-medium text-slate-700 block mb-2">
             Anxiety level after (1-10):
           </label>
-          <div className="flex gap-1">
+          <div id="anxiety-after" className="flex gap-1">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
               <button
                 key={rating}
                 onClick={() => setAnxietyAfter(rating)}
                 className={`size-8 rounded text-xs font-medium transition-colors ${
-                  anxietyAfter === rating
-                    ? "bg-green-500 text-white"
-                    : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                  anxietyAfter === rating ? "bg-green-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300"
                 }`}
               >
                 {rating}
@@ -601,10 +596,11 @@ const BehavioralExperimentExercise: React.FC<{
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">
+          <label htmlFor="learnings" className="text-sm font-medium text-slate-700 block mb-2">
             What did you learn?
           </label>
           <textarea
+            id="learnings"
             value={learnings}
             onChange={(e) => setLearnings(e.target.value)}
             placeholder="How did this compare to your prediction? What insights did you gain?"
@@ -628,8 +624,8 @@ const BehavioralExperimentExercise: React.FC<{
 // Reflection Exercise Component
 const ReflectionExercise: React.FC<{
   insight: ActionableInsight;
-  state: 'ready' | 'in_progress' | 'completed';
-  onStateChange: (state: 'ready' | 'in_progress' | 'completed', data?: Partial<ExerciseResult>) => void;
+  state: "ready" | "in_progress" | "completed";
+  onStateChange: (state: "ready" | "in_progress" | "completed", data?: Partial<ExerciseResult>) => void;
 }> = ({ insight, state, onStateChange }) => {
   const [reflections, setReflections] = useState<string[]>(insight.instructions.map(() => ""));
   const [overallInsight, setOverallInsight] = useState("");
@@ -641,15 +637,15 @@ const ReflectionExercise: React.FC<{
   };
 
   const handleComplete = () => {
-    onStateChange('completed', {
-      exerciseType: 'reflection',
+    onStateChange("completed", {
+      exerciseType: "reflection",
       observedChanges: reflections,
       userReflection: overallInsight,
       completedSteps: insight.instructions.map((_, i) => i),
     });
   };
 
-  const canComplete = reflections.every(r => r.trim().length > 0) && overallInsight.trim().length > 0;
+  const canComplete = reflections.every((r) => r.trim().length > 0) && overallInsight.trim().length > 0;
 
   return (
     <div className="space-y-4">
@@ -687,11 +683,7 @@ const ReflectionExercise: React.FC<{
         />
       </div>
 
-      <Button
-        onClick={handleComplete}
-        disabled={!canComplete}
-        className="w-full bg-purple-600 hover:bg-purple-700"
-      >
+      <Button onClick={handleComplete} disabled={!canComplete} className="w-full bg-purple-600 hover:bg-purple-700">
         Complete Reflection
       </Button>
     </div>
@@ -701,15 +693,15 @@ const ReflectionExercise: React.FC<{
 // General Exercise Component (fallback)
 const GeneralExercise: React.FC<{
   insight: ActionableInsight;
-  state: 'ready' | 'in_progress' | 'completed';
-  onStateChange: (state: 'ready' | 'in_progress' | 'completed', data?: Partial<ExerciseResult>) => void;
+  state: "ready" | "in_progress" | "completed";
+  onStateChange: (state: "ready" | "in_progress" | "completed", data?: Partial<ExerciseResult>) => void;
 }> = ({ insight, state, onStateChange }) => {
   const [notes, setNotes] = useState("");
   const [confidence, setConfidence] = useState<number | null>(null);
 
   const handleComplete = () => {
-    onStateChange('completed', {
-      exerciseType: 'general_practice',
+    onStateChange("completed", {
+      exerciseType: "general_practice",
       userReflection: notes,
       afterRating: confidence || 0,
       completedSteps: [0],
@@ -727,10 +719,11 @@ const GeneralExercise: React.FC<{
       </div>
 
       <div>
-        <label className="text-sm font-medium text-slate-700 block mb-2">
+        <label htmlFor="notes" className="text-sm font-medium text-slate-700 block mb-2">
           How did it go? What did you notice?
         </label>
         <textarea
+          id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Describe your experience with this practice..."
@@ -740,18 +733,16 @@ const GeneralExercise: React.FC<{
       </div>
 
       <div>
-        <label className="text-sm font-medium text-slate-700 block mb-2">
+        <label htmlFor="confidence" className="text-sm font-medium text-slate-700 block mb-2">
           How confident do you feel about using this technique? (1-10)
         </label>
-        <div className="flex gap-1">
+        <div id="confidence" className="flex gap-1">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
             <button
               key={rating}
               onClick={() => setConfidence(rating)}
               className={`size-8 rounded text-xs font-medium transition-colors ${
-                confidence === rating
-                  ? "bg-green-500 text-white"
-                  : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                confidence === rating ? "bg-green-500 text-white" : "bg-slate-200 text-slate-600 hover:bg-slate-300"
               }`}
             >
               {rating}
@@ -760,11 +751,7 @@ const GeneralExercise: React.FC<{
         </div>
       </div>
 
-      <Button
-        onClick={handleComplete}
-        disabled={!notes.trim() || confidence === null}
-        className="w-full"
-      >
+      <Button onClick={handleComplete} disabled={!notes.trim() || confidence === null} className="w-full">
         Complete Practice
       </Button>
     </div>

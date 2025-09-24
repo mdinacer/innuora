@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { AlertTriangle, X, Clock, Lightbulb } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { AlertTriangle, Clock, Lightbulb, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { EmotionalTrigger } from "@/domains/insights/advanced-insights.types";
 
@@ -16,7 +17,7 @@ export const SimplePredictiveNudge: React.FC<Props> = ({ triggers, onDismiss, on
   useEffect(() => {
     const checkPredictions = () => {
       const now = new Date();
-      const imminentTriggers = triggers.filter(trigger => {
+      const imminentTriggers = triggers.filter((trigger) => {
         if (!trigger.nextPrediction) return false;
 
         // Simple check for imminent patterns (would be more sophisticated in real implementation)
@@ -30,8 +31,8 @@ export const SimplePredictiveNudge: React.FC<Props> = ({ triggers, onDismiss, on
       });
 
       // Show nudges for imminent triggers
-      imminentTriggers.forEach(trigger => {
-        setVisibleNudges(prev => [...prev, trigger.trigger]);
+      imminentTriggers.forEach((trigger) => {
+        setVisibleNudges((prev) => [...prev, trigger.trigger]);
       });
     };
 
@@ -42,13 +43,11 @@ export const SimplePredictiveNudge: React.FC<Props> = ({ triggers, onDismiss, on
   }, [triggers, visibleNudges]);
 
   const getImminentTriggers = () => {
-    return triggers.filter(trigger =>
-      visibleNudges.includes(trigger.trigger) && trigger.nextPrediction
-    );
+    return triggers.filter((trigger) => visibleNudges.includes(trigger.trigger) && trigger.nextPrediction);
   };
 
   const handleDismiss = (triggerId: string) => {
-    setVisibleNudges(prev => prev.filter(id => id !== triggerId));
+    setVisibleNudges((prev) => prev.filter((id) => id !== triggerId));
     onDismiss(triggerId);
   };
 
@@ -73,19 +72,14 @@ export const SimplePredictiveNudge: React.FC<Props> = ({ triggers, onDismiss, on
               <AlertTriangle className="size-4 text-amber-600" />
               <h4 className="font-medium text-amber-900 text-sm">Pattern Alert</h4>
             </div>
-            <button
-              onClick={() => handleDismiss(trigger.trigger)}
-              className="text-amber-600 hover:text-amber-800"
-            >
+            <button onClick={() => handleDismiss(trigger.trigger)} className="text-amber-600 hover:text-amber-800">
               <X className="size-4" />
             </button>
           </div>
 
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-amber-800 font-medium">
-                Your "{trigger.trigger}" pattern may be starting
-              </p>
+              <p className="text-sm text-amber-800 font-medium">Your "{trigger.trigger}" pattern may be starting</p>
               <div className="flex items-center gap-4 mt-1 text-xs text-amber-700">
                 <div className="flex items-center gap-1">
                   <Clock className="size-3" />
@@ -135,7 +129,7 @@ export const usePredictiveNudges = (triggers: EmotionalTrigger[]) => {
   const [dismissedNudges, setDismissedNudges] = useState<Set<string>>(new Set());
 
   const handleDismiss = (triggerId: string) => {
-    setDismissedNudges(prev => new Set([...prev, triggerId]));
+    setDismissedNudges((prev) => new Set([...prev, triggerId]));
     // Could store in localStorage or send to backend
   };
 
@@ -145,9 +139,7 @@ export const usePredictiveNudges = (triggers: EmotionalTrigger[]) => {
     // Could send to analytics or backend for learning
   };
 
-  const activeTriggers = triggers.filter(trigger =>
-    !dismissedNudges.has(trigger.trigger)
-  );
+  const activeTriggers = triggers.filter((trigger) => !dismissedNudges.has(trigger.trigger));
 
   return {
     activeTriggers,

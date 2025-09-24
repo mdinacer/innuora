@@ -1,5 +1,6 @@
 import React from "react";
-import { TrendingUp, AlertTriangle, Clock } from "lucide-react";
+import { AlertTriangle, Clock, TrendingUp } from "lucide-react";
+
 import { EmotionalTrigger, ProgressBlindSpot } from "@/domains/insights/advanced-insights.types";
 
 interface Props {
@@ -10,12 +11,12 @@ interface Props {
 export const SimpleProgressVisual: React.FC<Props> = ({ emotionalTriggers, progressBlindSpots }) => {
   // Get predictions that are happening soon (next 24 hours)
   const upcomingPredictions = emotionalTriggers.filter(
-    trigger =>
-      trigger.nextPrediction &&
-      trigger.nextPrediction.likelihood > 60 &&
-      trigger.nextPrediction.timeframe.includes("today") ||
-      trigger.nextPrediction.timeframe.includes("tomorrow") ||
-      trigger.nextPrediction.timeframe.includes("next few hours")
+    (trigger) =>
+      (trigger.nextPrediction &&
+        trigger.nextPrediction.likelihood > 60 &&
+        trigger.nextPrediction.timeframe.includes("today")) ||
+      trigger.nextPrediction?.timeframe.includes("tomorrow") ||
+      trigger.nextPrediction?.timeframe.includes("next few hours")
   );
 
   return (
@@ -80,9 +81,7 @@ export const SimpleProgressVisual: React.FC<Props> = ({ emotionalTriggers, progr
             <div key={index} className="flex items-center gap-2 text-sm">
               <div className="w-2 h-2 rounded-full bg-blue-500" />
               <span className="text-slate-700">{trigger.trigger}</span>
-              <span className="text-slate-500 text-xs ml-auto">
-                {trigger.occurrences} times
-              </span>
+              <span className="text-slate-500 text-xs ml-auto">{trigger.occurrences} times</span>
             </div>
           ))}
         </div>

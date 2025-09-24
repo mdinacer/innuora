@@ -1,7 +1,7 @@
 import { ChatMessage } from "@/types/flow-chat-messages.types";
+import { ActionableInsight, ExerciseResult } from "./actionable-insights.types";
 import { AdaptiveConfidenceEngine } from "./adaptive-confidence-engine";
 import { AdvancedInsightsProfile } from "./advanced-insights.types";
-import { ActionableInsight, ExerciseResult } from "./actionable-insights.types";
 import { AIInsightEngine } from "./ai-insight-engine";
 import { InsightsActionEngine } from "./insights-action-engine";
 import {
@@ -41,7 +41,7 @@ export class InsightOrchestrationEngine {
       learningProfile,
       {
         ...currentContext,
-        recentStressors: currentContext.recentStressors || []
+        recentStressors: currentContext.recentStressors || [],
       }
     );
 
@@ -60,21 +60,14 @@ export class InsightOrchestrationEngine {
     );
 
     // Step 5: Create learning events for future improvement
-    const learningEvents = this.createLearningEvents(
-      userId,
-      rawInsights,
-      intelligentResult,
-      currentContext
-    );
+    const learningEvents = this.createLearningEvents(userId, rawInsights, intelligentResult, currentContext);
 
     // Step 6: Update user's learning profile
-    const updatedLearningProfile = this.updateLearningProfile(
-      learningProfile,
-      userFeedbackHistory,
-      learningEvents
-    );
+    const updatedLearningProfile = this.updateLearningProfile(learningProfile, userFeedbackHistory, learningEvents);
 
-    console.log(`[InsightOrchestration] Generated ${insightsWithConfidence.length} insights with ${immediateNudges.length} nudges`);
+    console.log(
+      `[InsightOrchestration] Generated ${insightsWithConfidence.length} insights with ${immediateNudges.length} nudges`
+    );
 
     return {
       insights: insightsWithConfidence,
@@ -132,11 +125,7 @@ export class InsightOrchestrationEngine {
     );
 
     // Generate follow-up insights based on this feedback
-    const followUpInsights = await this.generateFollowUpInsights(
-      exerciseResult,
-      userFeedback,
-      updatedProfile
-    );
+    const followUpInsights = await this.generateFollowUpInsights(exerciseResult, userFeedback, updatedProfile);
 
     return {
       confidenceAdjustment,
@@ -164,23 +153,13 @@ export class InsightOrchestrationEngine {
     const emergingTriggers = await this.detectEmergingTriggers(recentMessages);
 
     // Check if any predictive patterns are about to manifest
-    const imminentPatterns = this.identifyImminentPatterns(
-      currentPredictivePatterns,
-      emergingTriggers,
-      new Date()
-    );
+    const imminentPatterns = this.identifyImminentPatterns(currentPredictivePatterns, emergingTriggers, new Date());
 
     // Generate immediate interventions if needed
-    const immediateInterventions = await this.generateImmediateInterventions(
-      imminentPatterns,
-      learningProfile
-    );
+    const immediateInterventions = await this.generateImmediateInterventions(imminentPatterns, learningProfile);
 
     // Calculate current emotional state probability
-    const emotionalStatePredictin = this.predictEmotionalState(
-      recentMessages,
-      imminentPatterns
-    );
+    const emotionalStatePredictin = this.predictEmotionalState(recentMessages, imminentPatterns);
 
     return {
       emergingTriggers,
@@ -246,9 +225,7 @@ export class InsightOrchestrationEngine {
       contextualFactors
     );
 
-    return [...adaptedInsights, ...predictiveInsights].sort((a, b) =>
-      (b.confidence || 50) - (a.confidence || 50)
-    );
+    return [...adaptedInsights, ...predictiveInsights].sort((a, b) => (b.confidence || 50) - (a.confidence || 50));
   }
 
   // Private helper methods for data processing and intelligence
@@ -260,10 +237,7 @@ export class InsightOrchestrationEngine {
     const aiSessions = this.convertToAISessionFormat(sessionData);
 
     // Use AI engine to extract patterns
-    return await AIInsightEngine.generateAdvancedInsights(
-      sessionData.userId,
-      aiSessions
-    );
+    return await AIInsightEngine.generateAdvancedInsights(sessionData.userId, aiSessions);
   }
 
   private static async enhanceInsightsWithConfidence(
@@ -273,15 +247,12 @@ export class InsightOrchestrationEngine {
   ): Promise<EnhancedActionableInsight[]> {
     return Promise.all(
       insights.map(async (insight) => {
-        const contextualConfidence = AdaptiveConfidenceEngine.adjustConfidenceForContext(
-          insight.confidence || 50,
-          {
-            currentStressLevel: context.currentStressLevel,
-            timeOfDay: context.timeOfDay,
-            recentTriggers: context.recentTriggers,
-            energyLevel: context.energyLevel,
-          }
-        );
+        const contextualConfidence = AdaptiveConfidenceEngine.adjustConfidenceForContext(insight.confidence || 50, {
+          currentStressLevel: context.currentStressLevel,
+          timeOfDay: context.timeOfDay,
+          recentTriggers: context.recentTriggers,
+          energyLevel: context.energyLevel,
+        });
 
         return {
           ...insight,
@@ -309,12 +280,7 @@ export class InsightOrchestrationEngine {
 
       // Generate intervention if pattern is imminent (< 30 minutes)
       if (timeUntilTrigger > 0 && timeUntilTrigger <= 30) {
-        const nudge = await this.createContextualNudge(
-          pattern,
-          timeUntilTrigger,
-          profile,
-          context
-        );
+        const nudge = await this.createContextualNudge(pattern, timeUntilTrigger, profile, context);
         if (nudge) nudges.push(nudge);
       }
     }
@@ -384,10 +350,7 @@ export class InsightOrchestrationEngine {
     return Math.min(100, confidence);
   }
 
-  private static calculatePredictionAccuracy(
-    result: ExerciseResult,
-    feedback: UserFeedback
-  ): number {
+  private static calculatePredictionAccuracy(result: ExerciseResult, feedback: UserFeedback): number {
     let accuracy = 50;
 
     // High completion rate indicates good prediction
@@ -400,7 +363,8 @@ export class InsightOrchestrationEngine {
     }
 
     // Time spent indicates engagement (accurate prediction)
-    if (result.timeSpent > 300) { // 5 minutes
+    if (result.timeSpent > 300) {
+      // 5 minutes
       accuracy += 10;
     }
 
@@ -414,10 +378,7 @@ export class InsightOrchestrationEngine {
     return Math.min(100, Math.max(0, 50 + improvement * 10));
   }
 
-  private static generateFeedbackInsight(
-    result: ExerciseResult,
-    feedback: UserFeedback
-  ): string {
+  private static generateFeedbackInsight(result: ExerciseResult, feedback: UserFeedback): string {
     if (feedback.effectivenessRating && feedback.effectivenessRating > 8) {
       return `High effectiveness insight: ${result.exerciseType} works very well for this user`;
     } else if (feedback.effectivenessRating && feedback.effectivenessRating < 4) {
@@ -467,13 +428,14 @@ export class InsightOrchestrationEngine {
 
   private static async detectEmergingTriggers(messages: ChatMessage[]): Promise<string[]> {
     // Analyze recent messages for trigger words/patterns
-    const recentContent = messages.slice(-5).map(m => m.content).join(" ");
+    const recentContent = messages
+      .slice(-5)
+      .map((m) => m.content)
+      .join(" ");
 
     // Simple keyword detection - would be more sophisticated with AI
     const triggerKeywords = ["stressed", "anxious", "overwhelmed", "frustrated", "family", "work"];
-    return triggerKeywords.filter(keyword =>
-      recentContent.toLowerCase().includes(keyword)
-    );
+    return triggerKeywords.filter((keyword) => recentContent.toLowerCase().includes(keyword));
   }
 
   private static identifyImminentPatterns(
@@ -481,9 +443,9 @@ export class InsightOrchestrationEngine {
     emergingTriggers: string[],
     currentTime: Date
   ): PredictivePattern[] {
-    return patterns.filter(pattern => {
+    return patterns.filter((pattern) => {
       // Check if triggers match pattern triggers
-      const hasMatchingTrigger = emergingTriggers.some(trigger =>
+      const hasMatchingTrigger = emergingTriggers.some((trigger) =>
         pattern.nextLikelyTrigger?.toLowerCase().includes(trigger.toLowerCase())
       );
 
@@ -499,7 +461,7 @@ export class InsightOrchestrationEngine {
     profile: AdaptiveLearningProfile
   ): Promise<AnticipatorNudge[]> {
     return Promise.all(
-      patterns.map(async pattern => ({
+      patterns.map(async (pattern) => ({
         id: `immediate-${pattern.id}`,
         patternId: pattern.id,
         message: `Your ${pattern.nextLikelyTrigger} pattern may be activating`,
@@ -542,7 +504,8 @@ export class InsightOrchestrationEngine {
 
     // Stress level appropriateness
     if (context.currentStressLevel && context.currentStressLevel > 7) {
-      if (insight.difficulty === "beginner") fit += 15; // easier exercises when stressed
+      if (insight.difficulty === "beginner")
+        fit += 15; // easier exercises when stressed
       else fit -= 10; // harder exercises less appropriate when stressed
     }
 
@@ -600,10 +563,7 @@ export class InsightOrchestrationEngine {
     return adapted;
   }
 
-  private static generateAdaptationExplanation(
-    original: ActionableInsight,
-    adapted: ActionableInsight
-  ): string {
+  private static generateAdaptationExplanation(original: ActionableInsight, adapted: ActionableInsight): string {
     const changes: string[] = [];
 
     if (original.difficulty !== adapted.difficulty) {
@@ -641,8 +601,8 @@ export class InsightOrchestrationEngine {
             {
               step: 1,
               instruction: "Notice the early signs of this pattern",
-              tip: "Awareness allows you to respond instead of react"
-            }
+              tip: "Awareness allows you to respond instead of react",
+            },
           ],
           expectedOutcome: "Prevention of automatic emotional escalation",
           confidence: pattern.confidence,
@@ -658,13 +618,15 @@ export class InsightOrchestrationEngine {
 
   private static convertToAISessionFormat(sessionData: ProcessedSessionData): any[] {
     // Convert to format expected by AIInsightEngine
-    return [{
-      id: sessionData.sessionId,
-      date: new Date(),
-      messages: sessionData.messages,
-      analysisSnapshots: sessionData.analysisSnapshots,
-      memory: sessionData.memory || "",
-    }];
+    return [
+      {
+        id: sessionData.sessionId,
+        date: new Date(),
+        messages: sessionData.messages,
+        analysisSnapshots: sessionData.analysisSnapshots,
+        memory: sessionData.memory || "",
+      },
+    ];
   }
 
   private static calculateTimeUntilPattern(pattern: PredictivePattern, context: UserContext): number {

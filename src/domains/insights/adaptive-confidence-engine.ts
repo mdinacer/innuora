@@ -98,7 +98,7 @@ export class AdaptiveConfidenceEngine {
     if (actualOutcome.actualTiming && actualOutcome.didTriggerOccur) {
       const predictedTime = new Date(Date.now() + pattern.anticipationWindow * 60000);
       const timingDiff = Math.abs(actualOutcome.actualTiming.getTime() - predictedTime.getTime());
-      const timingAccuracy = Math.max(0, 100 - (timingDiff / 60000)); // penalize by minutes off
+      const timingAccuracy = Math.max(0, 100 - timingDiff / 60000); // penalize by minutes off
       accuracyScore += timingAccuracy * 0.4; // 40% weight on timing
     }
 
@@ -107,7 +107,7 @@ export class AdaptiveConfidenceEngine {
       accuracyScore += 40; // correctly predicted occurrence
     } else if (!actualOutcome.didTriggerOccur && pattern.confidence < 30) {
       accuracyScore += 40; // correctly predicted non-occurrence
-    } else if (actualOutcome.didTriggerOccur !== (pattern.confidence > 50)) {
+    } else if (actualOutcome.didTriggerOccur !== pattern.confidence > 50) {
       accuracyScore -= 30; // wrong prediction
     }
 
@@ -129,7 +129,7 @@ export class AdaptiveConfidenceEngine {
     // Create learning event
     const learningEvent: PredictiveInsightEvent = {
       id: `accuracy-${pattern.id}-${Date.now()}`,
-      userId: pattern.id.split('-')[0], // assume user ID is in pattern ID
+      userId: pattern.id.split("-")[0], // assume user ID is in pattern ID
       type: "calibration",
       predictionAccuracy: accuracyScore,
       confidenceAdjustment: updatedPattern.confidence - pattern.confidence,
@@ -177,11 +177,11 @@ export class AdaptiveConfidenceEngine {
 
     // Weighted combination of factors
     const weights = {
-      raw: 0.3,          // base insight quality
-      historical: 0.25,  // past user success
-      contextual: 0.2,   // current situation fit
+      raw: 0.3, // base insight quality
+      historical: 0.25, // past user success
+      contextual: 0.2, // current situation fit
       personality: 0.15, // personality alignment
-      temporal: 0.05,    // timing appropriateness
+      temporal: 0.05, // timing appropriateness
       calibration: 0.05, // overall calibration
     };
 
@@ -209,17 +209,16 @@ export class AdaptiveConfidenceEngine {
   ): AdaptiveLearningProfile {
     const updatedProfile = { ...profile };
     const recentPredictions = recentEvents.filter(
-      event => event.type === "prediction" &&
-      event.timestamp > new Date(Date.now() - timeWindow * 24 * 60 * 60 * 1000)
+      (event) =>
+        event.type === "prediction" && event.timestamp > new Date(Date.now() - timeWindow * 24 * 60 * 60 * 1000)
     );
 
     const recentOutcomes = recentEvents.filter(
-      event => event.type === "outcome" &&
-      event.timestamp > new Date(Date.now() - timeWindow * 24 * 60 * 60 * 1000)
+      (event) => event.type === "outcome" && event.timestamp > new Date(Date.now() - timeWindow * 24 * 60 * 60 * 1000)
     );
 
     // Update success/failure counts
-    recentOutcomes.forEach(outcome => {
+    recentOutcomes.forEach((outcome) => {
       if (outcome.predictionAccuracy && outcome.predictionAccuracy > 70) {
         updatedProfile.successfulPredictions++;
       } else {
@@ -249,10 +248,10 @@ export class AdaptiveConfidenceEngine {
     baseConfidence: number,
     contextFactors: {
       currentStressLevel?: number; // 1-10
-      timeOfDay?: number;         // 0-23
-      recentTriggers?: string[];  // recent emotional triggers
+      timeOfDay?: number; // 0-23
+      recentTriggers?: string[]; // recent emotional triggers
       socialContext?: "alone" | "with_others" | "work" | "family";
-      energyLevel?: number;       // 1-10
+      energyLevel?: number; // 1-10
     }
   ): number {
     let adjustedConfidence = baseConfidence;
@@ -313,9 +312,7 @@ export class AdaptiveConfidenceEngine {
 
     // Emotional words indicate processing
     const emotionalWords = ["feel", "felt", "emotion", "realize", "understand", "insight"];
-    const emotionCount = emotionalWords.filter(word =>
-      reflection.toLowerCase().includes(word)
-    ).length;
+    const emotionCount = emotionalWords.filter((word) => reflection.toLowerCase().includes(word)).length;
     quality += emotionCount * 2;
 
     // Future planning indicates integration
@@ -352,7 +349,7 @@ export class AdaptiveConfidenceEngine {
   private static analyzeEngagementPatterns(events: PredictiveInsightEvent[]): Map<number, number> {
     const engagementByHour = new Map<number, number>();
 
-    events.forEach(event => {
+    events.forEach((event) => {
       if (event.userResponse === "engaged") {
         const hour = event.timestamp.getHours();
         engagementByHour.set(hour, (engagementByHour.get(hour) || 0) + 1);
@@ -399,9 +396,7 @@ export class AdaptiveConfidenceEngine {
   private static calculateAverageAccuracy(outcomes: PredictiveInsightEvent[]): number {
     if (outcomes.length === 0) return 50;
 
-    const totalAccuracy = outcomes.reduce((sum, outcome) =>
-      sum + (outcome.predictionAccuracy || 0), 0
-    );
+    const totalAccuracy = outcomes.reduce((sum, outcome) => sum + (outcome.predictionAccuracy || 0), 0);
 
     return totalAccuracy / outcomes.length;
   }
@@ -488,7 +483,11 @@ export class ConfidenceExplanationEngine {
 
     const detailBreakdown = [
       { factor: "Pattern Strength", contribution: factors.raw, description: "How clear this pattern is" },
-      { factor: "Your Success Rate", contribution: factors.historical, description: "How well this usually works for you" },
+      {
+        factor: "Your Success Rate",
+        contribution: factors.historical,
+        description: "How well this usually works for you",
+      },
       { factor: "Current Fit", contribution: factors.contextual, description: "How relevant this is right now" },
       { factor: "Personal Match", contribution: factors.personality, description: "How this fits your style" },
       { factor: "Timing", contribution: factors.temporal, description: "Whether now is a good time" },
