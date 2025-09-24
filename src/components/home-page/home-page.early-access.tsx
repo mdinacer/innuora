@@ -16,7 +16,7 @@ const HomePageEarlyAccess = () => {
           />
           <button
             type="submit"
-            className="rounded-2xl bg-white px-6 py-3 font-semibold text-mir-bg-accent transition hover:translate-y-[-1px]"
+            className="rounded-2xl bg-white px-6 py-3 font-semibold text-inn-bg-accent transition hover:translate-y-[-1px]"
           >
             Request access
           </button>

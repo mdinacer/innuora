@@ -4,17 +4,15 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SendIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { CreditsBalance } from "@/components/credits";
 import { cn } from "@/lib/utils";
 
 interface Props {
   className?: string;
   isLoading?: boolean;
   onSendMessage: (value: string) => void;
-  userId?: string;
 }
 
-const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage, userId }) => {
+const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
   const { t } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.input" });
 
   const { label, placeholder, actionTitle } = useMemo(
@@ -52,14 +50,14 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
   const isDisabled = inputValue.length === 0 || isLoading;
 
   return (
-    <div className={cn("p-6 pt-0 bg-mir-bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
+    <div className={cn("p-6 pt-0 bg-inn-bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
       <div
         className={cn(
           "flex gap-3 items-center",
-          "bg-mir-bg-input",
+          "bg-inn-bg-input",
           "rounded-3xl p-1",
           "transition-all duration-300 ease-in-out",
-          "focus-within:bg-mir-border-light",
+          "focus-within:bg-inn-border-light",
           "rtl:pl-4 ltr:pr-4"
         )}
       >
@@ -67,7 +65,7 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           ref={inputRef}
           className={cn(
             "flex-1 bg-transparent border-none focus:outline-none py-3.5 px-4",
-            "resize-none min-h-6 max-h-[100px] leading-6 placeholder:text-mir-text-secondary"
+            "resize-none min-h-6 max-h-[100px] leading-6 placeholder:text-inn-text-secondary"
           )}
           rows={1}
           value={inputValue}
@@ -85,26 +83,15 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           title={actionTitle}
           className={cn(
             "size-10 border-none rounded-full flex items-center justify-center",
-            "bg-mir-bg-accent",
+            "bg-inn-bg-accent",
             "cursor-pointer transition-all duration-300 ease-in-out shrink-0",
-            "hover:not-disabled:scale-105 hover:not-disabled:shadow-[0_4px_12px] shadow-mir-bg-accent/40",
+            "hover:not-disabled:scale-105 hover:not-disabled:shadow-[0_4px_12px] shadow-inn-bg-accent/40",
             "disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
           )}
         >
           <SendIcon className="size-[18px] text-white shrink-0" />
         </button>
       </div>
-
-      {/* General Cost Context */}
-      {userId && (
-        <div className="mt-2 px-4">
-          <div className="text-xs text-mir-text-secondary opacity-75 flex items-center gap-2">
-            <span>Affordable therapeutic support</span>
-            <span>•</span>
-            <CreditsBalance className="inline" />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -25,16 +25,16 @@ export default async function PoliciesFooter({
     copyright: t("policies_footer.copyright"),
   };
   return (
-    <footer className="border-t border-mir-border-light">
-      <div className="max-w-6xl mx-auto px-6 py-10 text-center text-sm text-mir-text-secondary">
+    <footer className="border-t border-inn-border-light">
+      <div className="max-w-6xl mx-auto px-6 py-10 text-center text-sm text-inn-text-secondary">
         <p className="mb-3">
           <strong>{questions}</strong> {contactEmail}
-          <a href="mailto:privacy@mirael.life" className="text-mir-bg-accent hover:underline">
+          <a href="mailto:privacy@mirael.life" className="text-inn-bg-accent hover:underline">
             privacy@mirael.life
           </a>
         </p>
 
-        <div className="flex justify-center text-mir-text-secondary [&>a]:hover:text-mir-bg-accent [&>a]:hover:underline [&>a]:hover:underline-offset-2 gap-6 flex-wrap mb-3">
+        <div className="flex justify-center text-inn-text-secondary [&>a]:hover:text-inn-bg-accent [&>a]:hover:underline [&>a]:hover:underline-offset-2 gap-6 flex-wrap mb-3">
           {currentPage !== "privacy" && <Link href="/privacy">{links.privacy}</Link>}
           {currentPage !== "terms" && <Link href="/terms">{links.terms}</Link>}
           {currentPage !== "eula" && <Link href="/eula">{links.eula}</Link>}

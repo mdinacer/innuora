@@ -13,7 +13,7 @@ const ChatUIMessagesContainer = forwardRef<HTMLDivElement, MessagesContainerProp
       className={cn(
         "chat-messages",
         "flex-1 overflow-y-auto px-6 py-6 scroll-smooth",
-        "scrollbar-thin scrollbar-thumb-mir-border-light scrollbar-track-transparent scrollbar-thumb-rounded-sm",
+        "scrollbar-thin scrollbar-thumb-inn-border-light scrollbar-track-transparent scrollbar-thumb-rounded-sm",
         className
       )}
       role="log"

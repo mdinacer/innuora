@@ -129,9 +129,9 @@ export function CreditPackages({
   return (
     <div data-testid="credit-packages" className={`grid md:grid-cols-3 gap-4 ${className}`}>
       {packages.map(([key, pkg]) => (
-        <Card key={key} className={`relative ${pkg.popular ? "border-mir-bg-accent shadow-lg" : ""}`}>
+        <Card key={key} className={`relative ${pkg.popular ? "border-inn-bg-accent shadow-lg" : ""}`}>
           {pkg.popular && (
-            <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-mir-bg-accent">Most Popular</Badge>
+            <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-inn-bg-accent">Most Popular</Badge>
           )}
 
           <CardHeader className="text-center">
@@ -152,7 +152,7 @@ export function CreditPackages({
 
             <Button
               onClick={() => handlePurchaseClick(key as BillingProductKey)}
-              className={`w-full ${pkg.popular ? "bg-mir-bg-accent hover:bg-mir-bg-accent/90" : ""}`}
+              className={`w-full ${pkg.popular ? "bg-inn-bg-accent hover:bg-inn-bg-accent/90" : ""}`}
               variant={pkg.popular ? "default" : "outline"}
             >
               Secure {getPackageTimeFrame(pkg.credits)}

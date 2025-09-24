@@ -18,7 +18,7 @@ const FlowChatSystemAction: React.FC<Props> = ({ message }) => {
         primaryContent={<ActivityIcon className="size-6 shrink-0" />}
       />
       {message.id}
-      <h3 className={"text-2xl font-bold text-mir-text-primary mb-2 leading-[1.3] -tracking-[0.3px]"}>
+      <h3 className={"text-2xl font-bold text-inn-text-primary mb-2 leading-[1.3] -tracking-[0.3px]"}>
         {title || "Processing State"}
       </h3>
       <div className="flex items-center gap-3 text-white/70">

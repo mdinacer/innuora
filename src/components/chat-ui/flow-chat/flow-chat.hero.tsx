@@ -22,8 +22,8 @@ const FlowChatHeroCard = (props: Props) => {
     <div
       className={cn(
         "hero-card z-10",
-        " bg-mir-bg-card rounded-3xl py-8 px-7 mb-6 relative overflow-hidden shrink-0",
-        "border border-mir-border-light",
+        " bg-inn-bg-card rounded-3xl py-8 px-7 mb-6 relative overflow-hidden shrink-0",
+        "border border-inn-border-light",
         "shadow-[0_4px_20px] shadow-black/5",
         "animate-slide-in-up opacity-0"
       )}
@@ -32,18 +32,18 @@ const FlowChatHeroCard = (props: Props) => {
         className={cn(
           "hero-decoration",
           "absolute -top-[30px] -right-[30px] size-[120px]",
-          "bg-mir-bg-accent rounded-full opacity-10",
-          "after:content-[''] after:absolute after:bg-mir-bg-accent",
+          "bg-inn-bg-accent rounded-full opacity-10",
+          "after:content-[''] after:absolute after:bg-inn-bg-accent",
           "after:top-[60px] after:left-[60px] after:size-[40px] after:rounded-full after:opacity-60"
         )}
       ></div>
       <div className={cn("hero-content", "relative z-[2]")}>
         <h2
-          className={cn("hero-title", "text-2xl font-bold text-mir-text-primary leading-[1.2] -tracking-[0.5px] mb-3")}
+          className={cn("hero-title", "text-2xl font-bold text-inn-text-primary leading-[1.2] -tracking-[0.5px] mb-3")}
         >
           {title}
         </h2>
-        <p className={cn("hero-subtitle", "text-base text-mir-text-primary/70 leading-[1.5] mb-5 ")}>{subtitle}</p>
+        <p className={cn("hero-subtitle", "text-base text-inn-text-primary/70 leading-[1.5] mb-5 ")}>{subtitle}</p>
         <div className={cn("hero-paragraphs", "my-5")}>
           {paragraphs?.map((paragraph, index) => (
             <div
@@ -64,7 +64,7 @@ const FlowChatHeroCard = (props: Props) => {
           className={cn(
             "hero-action",
             "flex  ltr:flex-row  items-center gap-2",
-            "text-mir-bg-accent font-semibold",
+            "text-inn-bg-accent font-semibold",
             "cursor-pointer bg-none",
             "border-none p-0",
             "ltr:ml-auto rtl:mr-auto"

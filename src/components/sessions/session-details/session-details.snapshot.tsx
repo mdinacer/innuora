@@ -20,7 +20,7 @@ const SessionDetailsSnapshot: React.FC<Props> = ({ className, session }) => {
   return (
     <Card className={className}>
       <div className="flex items-center gap-2 mb-4">
-        <ListChecksIcon className="size-5 text-mir-bg-accent" />
+        <ListChecksIcon className="size-5 text-inn-bg-accent" />
         <h2 className="text-xl font-bold">Analysis Snapshots</h2>
         <Badge variant="default">{updates.length} updates</Badge>
       </div>
@@ -47,7 +47,7 @@ const SessionDetailsSnapshot: React.FC<Props> = ({ className, session }) => {
             const belief = update.core_beliefs?.[0]?.belief;
             const rule = update.silent_rules?.[0]?.rule;
             return (
-              <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-mir-bg-input">
+              <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-inn-bg-input">
                 <div
                   className={`w-2 h-2 rounded-full ${
                     update.intensity === "low"
@@ -69,7 +69,7 @@ const SessionDetailsSnapshot: React.FC<Props> = ({ className, session }) => {
                     </span>
                   </div>
 
-                  <p className="text-sm text-mir-text-secondary">
+                  <p className="text-sm text-inn-text-secondary">
                     Focus: {update.core_module ?? "general"} • Intensity: {update.intensity} • Crisis: {update.crisis}
                   </p>
 
@@ -84,7 +84,7 @@ const SessionDetailsSnapshot: React.FC<Props> = ({ className, session }) => {
                       <span className="font-medium">Distortion:</span> {topDistortion.type} ({topDistortion.severity}) —{" "}
                       <Link
                         href={`/learn/${topDistortion.type.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="underline text-mir-accent"
+                        className="underline text-inn-accent"
                       >
                         learn more
                       </Link>
@@ -103,14 +103,14 @@ const SessionDetailsSnapshot: React.FC<Props> = ({ className, session }) => {
                     </p>
                   )}
 
-                  <p className="text-xs text-mir-text-secondary">Engagement: {update.therapeutic_readiness}</p>
+                  <p className="text-xs text-inn-text-secondary">Engagement: {update.therapeutic_readiness}</p>
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <div className="text-sm text-mir-text-secondary">No analysis snapshots available for this session.</div>
+        <div className="text-sm text-inn-text-secondary">No analysis snapshots available for this session.</div>
       )}
     </Card>
   );

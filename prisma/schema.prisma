@@ -41,6 +41,7 @@ model User {
   creditTransactions CreditTransaction[]
   subscriptions      Subscription[]
   subscriptionRenewals SubscriptionRenewal[]
+  moodEntries        MoodEntry[]
 
   @@map("users")
 }
@@ -154,6 +155,9 @@ model Session {
   encryptedData   Json?     @map("encrypted_data")
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  moodEntries     MoodEntry[]
 
   @@map("sessions")
 }
@@ -289,6 +293,29 @@ model SubscriptionRenewal {
   @@map("subscription_renewals")
 }
 
+model MoodEntry {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId    String  @map("user_id")
+  sessionId String? @map("session_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session   Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  // Business fields
+  moodValue Int                @map("mood_value") // 1-10 scale
+  emotions  EmotionCategory[]  @default([])
+  notes     String?
+  context   Json?              // MoodContext as JSON
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("mood_entries")
+}
+
 // =========================
 // Enums
 // =========================
@@ -393,5 +420,18 @@ enum RenewalStatus {
   processed
   failed
   skipped
+}
+
+enum EmotionCategory {
+  joy
+  gratitude
+  calm
+  confident
+  neutral
+  worried
+  sad
+  angry
+  overwhelmed
+  exhausted
 }
 

@@ -27,9 +27,9 @@ const HomePageFAQ = () => {
       <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
       <div className="space-y-4">
         {FAQ_ITEMS.map((item, index) => (
-          <details key={index} className="rounded-xl border border-mir-border-light bg-mir-bg-card p-4">
+          <details key={index} className="rounded-xl border border-inn-border-light bg-inn-bg-card p-4">
             <summary className="cursor-pointer select-none list-none font-semibold">{item.question}</summary>
-            <p className="mt-2 text-mir-text-secondary">{item.answer}</p>
+            <p className="mt-2 text-inn-text-secondary">{item.answer}</p>
           </details>
         ))}
       </div>

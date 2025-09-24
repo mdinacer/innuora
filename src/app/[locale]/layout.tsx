@@ -11,6 +11,8 @@ import { dir } from "i18next";
 
 import AuthListener from "@/components/auth/auth-listener";
 import { DynamicEffects } from "@/components/dynamic-loaders";
+import { PWAInstallPrompt } from "@/components/pwa/pwa-install-prompt";
+import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,14 +43,16 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
       <body
-        className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-mir-bg-primary`}
+        className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-inn-bg-primary`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
             <AuthListener />
+            <ServiceWorkerRegistration />
             <DynamicEffects.BackgroundBeams className="hidden md:block" />
             {children}
             <Toaster />
+            <PWAInstallPrompt variant="floating" autoShow showDelay={5000} />
           </TranslationProvider>
         </ThemeProvider>
         {process.env.NODE_ENV === "production" && (
