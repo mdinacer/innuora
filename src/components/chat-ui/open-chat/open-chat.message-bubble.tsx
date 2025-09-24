@@ -15,9 +15,9 @@ interface Props {
 }
 
 const STYLES_MAP = {
-  user: "bg-mir-bg-accent text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
-  assistant: "bg-mir-bg-input rounded-[20px] ltr:rounded-tl-[6px] rtl:rounded-tr-[6px]",
-  system: "bg-mir-bg-input rounded-[20px] rounded-tl-[6px]",
+  user: "bg-inn-bg-accent text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
+  assistant: "bg-inn-bg-input rounded-[20px] ltr:rounded-tl-[6px] rtl:rounded-tr-[6px]",
+  system: "bg-inn-bg-input rounded-[20px] rounded-tl-[6px]",
 };
 
 const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
@@ -33,10 +33,10 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
           className={cn(
             "size-9 rounded-lg flex items-center justify-center",
             "text-sm font-semibold rtl:font-sans shrink-0 text-white",
-            isUser ? "bg-mir-bg-secondary" : "bg-mir-bg-accent"
+            isUser ? "bg-inn-bg-secondary" : "bg-inn-bg-accent"
           )}
         >
-          {isUser ? "U" : "M"}
+          {isUser ? "U" : "I"}
         </div>
         <div
           className={cn(
@@ -58,7 +58,7 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
           )}
         </div>
       </div>
-      <div className={cn("message-time", " text-xs text-mir-text-secondary mt-2 text-center font-medium")}>
+      <div className={cn("message-time", " text-xs text-inn-text-secondary mt-2 text-center font-medium")}>
         {formattedDate}
         {message.role === "assistant" && message.creditsUsed && (
           <span className="ml-2 opacity-75">

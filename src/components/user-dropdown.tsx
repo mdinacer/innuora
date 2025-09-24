@@ -47,25 +47,25 @@ const UserDropdown: React.FC<Props> = ({ user }) => {
       <DropdownMenuTrigger asChild>
         <button
           className={
-            "flex items-center gap-3 rounded-2xl border border-mir-border-light bg-mir-bg-card px-4 py-2 transition hover:shadow-subtle focus:outline-none focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-20"
+            "flex items-center gap-3 rounded-2xl border border-inn-border-light bg-inn-bg-card px-4 py-2 transition hover:shadow-subtle focus:outline-none focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-20"
           }
           aria-expanded="false"
           aria-haspopup="true"
         >
-          <div className="w-8 h-8 rounded-full bg-mir-bg-accent flex items-center justify-center text-white font-semibold text-sm">
+          <div className="w-8 h-8 rounded-full bg-inn-bg-accent flex items-center justify-center text-white font-semibold text-sm">
             {profile?.displayName ? getInitials(profile.displayName) : <UserIcon />}
           </div>
           <span className="hidden sm:block font-medium text-sm">{profile?.displayName}</span>
 
           <ChevronDownIcon
-            className={cn("size-4 text-mir-text-secondary transition-transform", { "rotate-180": open })}
+            className={cn("size-4 text-inn-text-secondary transition-transform", { "rotate-180": open })}
           />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
           "w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg",
-          "rounded-2xl mt-2 border border-mir-border-light bg-mir-bg-card shadow-[0_8px_30px] shadow-black/15 py-2 z-50  px-4"
+          "rounded-2xl mt-2 border border-inn-border-light bg-inn-bg-card shadow-[0_8px_30px] shadow-black/15 py-2 z-50  px-4"
         )}
         side={"bottom"}
         align="end"
@@ -74,7 +74,7 @@ const UserDropdown: React.FC<Props> = ({ user }) => {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="px-4 py-3">
             <p className="font-medium">{profile?.displayName}</p>
-            <p className="text-sm text-mir-text-secondary">{user?.email}</p>
+            <p className="text-sm text-inn-text-secondary">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

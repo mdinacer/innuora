@@ -186,7 +186,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
   return (
     <Card className={className}>
       <h3 className="font-bold mb-4 flex items-center gap-2">
-        <CloudIcon className="size-5 text-mir-bg-accent shrink-0" />
+        <CloudIcon className="size-5 text-inn-bg-accent shrink-0" />
         Cloud Sync
       </h3>
 

@@ -21,7 +21,7 @@ const DecorativeOrbs = () => (
         "shape-1",
         "absolute -top-[50px] -right-[50px]",
         "size-[120px]",
-        "rounded-full bg-mir-bg-accent opacity-10"
+        "rounded-full bg-inn-bg-accent opacity-10"
       )}
     />
 
@@ -30,7 +30,7 @@ const DecorativeOrbs = () => (
         "shape-2",
         "absolute top-[20px] right-[30px]",
         "size-[80px]",
-        "rounded-full bg-mir-bg-accent opacity-15"
+        "rounded-full bg-inn-bg-accent opacity-15"
       )}
     />
   </div>
@@ -47,7 +47,6 @@ interface OpenChatContainerProps<T> extends React.HTMLAttributes<HTMLDivElement>
   welcomeMessage?: React.ReactNode;
   renderItem: (message: T, index: number) => React.ReactNode;
   onUserInput?: (value: string) => Promise<unknown>;
-  userId?: string;
 }
 
 const ChatUIContainer = <T,>({
@@ -60,7 +59,6 @@ const ChatUIContainer = <T,>({
   headerActions,
   onUserInput,
   renderItem,
-  userId,
 }: OpenChatContainerProps<T>) => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +74,7 @@ const ChatUIContainer = <T,>({
         "relative flex flex-col max-w-2xl mx-auto h-[calc(100vh-40px)]",
         "mt-5 mb-5",
         "rounded-3xl",
-        "bg-mir-bg-card",
+        "bg-inn-bg-card",
         "shadow-[0_8px_30px] shadow-black/12 dark:shadow-black/40",
         "overflow-hidden relative",
         "transition-all duration-300 ease-in",
@@ -88,14 +86,14 @@ const ChatUIContainer = <T,>({
         title={title}
         subtitle={subtitle}
         headerActions={headerActions}
-        className="absolute top-0 inset-x-0 bg-mir-bg-card/30 backdrop-blur-lg backdrop-saturate-150"
+        className="absolute top-0 inset-x-0 bg-inn-bg-card/30 backdrop-blur-lg backdrop-saturate-150"
       />
       <MessagesContainer ref={messagesContainerRef} className="pt-[120px] pb-[100px] flex flex-col">
         {welcomeMessage}
         {messages.map(renderItem)}
         <Indicator isVisible={isLoading} />
       </MessagesContainer>
-      {onUserInput && <Input onSendMessage={onUserInput} className="absolute bottom-0 inset-x-0" userId={userId} />}
+      {onUserInput && <Input onSendMessage={onUserInput} className="absolute bottom-0 inset-x-0" />}
     </div>
   );
 };

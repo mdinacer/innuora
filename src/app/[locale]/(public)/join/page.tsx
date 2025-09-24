@@ -90,7 +90,7 @@ export default async function TesterJoinRoute({
   };
 
   return (
-    <main className="min-h-screen  standalone:min-h-screen-safe w-screen standalone:w-full">
+    <main className="min-h-screen  mt-20 standalone:min-h-screen-safe w-screen standalone:w-full">
       {/* <Header className="sticky top-0 standalone:pt-safe standalone:inset-x-safe inset-x-0 backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50" /> */}
       <Suspense fallback={<div>Loading...</div>}>
         {status && status === "success" ? (

@@ -18,10 +18,10 @@ interface Props {
 
 const InfoCard: React.FC<Props> = ({ className, icon: Icon, title, value, classNames }) => {
   return (
-    <div className={cn("bg-mir-bg-card border border-mir-border-light rounded-2xl p-4", className)}>
+    <div className={cn("bg-inn-bg-card border border-inn-border-light rounded-2xl p-4", className)}>
       <div className="flex items-center gap-2 mb-2">
-        <Icon className={cn("size-4 text-mir-bg-accent", classNames?.icon)} />
-        <span className={cn("text-sm font-medium text-mir-text-secondary", classNames?.title)}>{title}</span>
+        <Icon className={cn("size-4 text-inn-bg-accent", classNames?.icon)} />
+        <span className={cn("text-sm font-medium text-inn-text-secondary", classNames?.title)}>{title}</span>
       </div>
       <span className={cn("text-xl font-bold", classNames?.value)}>{value}</span>
     </div>

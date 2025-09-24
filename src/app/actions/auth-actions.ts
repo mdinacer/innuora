@@ -164,4 +164,32 @@ export async function signOut() {
     },
     "User signed out successfully"
   );
+
+  redirect("/auth/sign-in");
+}
+
+export async function resetPassword(email: string) {
+  const supabase = await createClient();
+
+  return await logger.wrapOperation(
+    async () => {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/password-reset/confirm`,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return { success: true };
+    },
+    ERROR_CODES.AUTH_PASSWORD_RESET_FAILED,
+    {
+      operation: "password_reset_request",
+      metadata: {
+        email: email.toLowerCase(),
+      },
+    },
+    `Password reset requested for: ${email}`
+  );
 }

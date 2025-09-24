@@ -32,7 +32,7 @@ const SessionPreviewCard: React.FC<SessionPreviewCardProps> = ({ session, state,
   const Icon: LucideIcon = state === "new" ? FilePlusIcon : FilePenLineIcon;
   const formattedDate = format(new Date(state === "new" ? session.createdAt : session.updatedAt), "PP");
   return (
-    <div className="flex items-center justify-between p-4 bg-mir-bg-card border border-mir-border-light rounded-xl">
+    <div className="flex items-center justify-between p-4 bg-inn-bg-card border border-inn-border-light rounded-xl">
       <div className="flex items-center gap-4">
         {/* <!-- New Session Icon --> */}
         <div
@@ -54,15 +54,15 @@ const SessionPreviewCard: React.FC<SessionPreviewCardProps> = ({ session, state,
         {/* <!-- Session Info --> */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-mir-text-primary truncate">{session.title}</h3>
+            <h3 className="font-semibold text-inn-text-primary truncate">{session.title}</h3>
             <Badge className="capitalize" variant={state === "new" ? "success" : "info"}>
               {state}
             </Badge>
           </div>
-          <p className="text-sm text-mir-text-secondary line-clamp-1">{session.subtitle}</p>
+          <p className="text-sm text-inn-text-secondary line-clamp-1">{session.subtitle}</p>
 
           {/* <!-- Session Meta --> */}
-          <div className="flex items-center gap-4 mt-2 text-xs text-mir-text-secondary">
+          <div className="flex items-center gap-4 mt-2 text-xs text-inn-text-secondary">
             <div className="flex items-center gap-1">
               <ClockIcon className="size-3 shrink-0" />
               <span>{formattedDate}</span>
@@ -195,7 +195,7 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
       <div
         id="emptyState"
         className={cn(
-          "w-full flex items-center justify-between bg-mir-bg-soft rounded-xl p-4 border border-mir-bg-accent/25 mt-8 ",
+          "w-full flex items-center justify-between bg-inn-bg-soft rounded-xl p-4 border border-inn-bg-accent/25 mt-8 ",
           className
         )}
       >
@@ -218,14 +218,14 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
   return (
     <div
       className={cn(
-        "w-full flex flex-col bg-mir-bg-soft rounded-2xl p-6 border border-mir-bg-accent/25 shadow-[0_4px_20px] shadow-black/10",
+        "w-full flex flex-col bg-inn-bg-soft rounded-2xl p-6 border border-inn-bg-accent/25 shadow-[0_4px_20px] shadow-black/10",
         className
       )}
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-extrabold mb-1">Cloud Updates Available</h2>
-          <p className="text-mir-text-secondary text-sm">New sessions and updates found in your cloud backup</p>
+          <p className="text-inn-text-secondary text-sm">New sessions and updates found in your cloud backup</p>
         </div>
 
         <Button variant={"outline"} size={"lg"} onClick={handleUpdateAllSessions}>
@@ -241,7 +241,7 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
       </div>
 
       {!loadingStatus.loading && (
-        <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-mir-border-light">
+        <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-inn-border-light">
           <Button className="w-1/4 justify-center" variant={"outline"} onClick={() => setIsSkipped(true)}>
             Skip for Now
           </Button>

@@ -7,6 +7,7 @@ export const ERROR_CODES = {
   AUTH_SIGNIN_FAILED: "errors:auth.signin_failed",
   AUTH_SIGNUP_FAILED: "errors:auth.signup_failed",
   AUTH_SIGNOUT_FAILED: "errors:auth.signout_failed",
+  AUTH_PASSWORD_RESET_FAILED: "errors:auth.password_reset_failed",
   AUTH_EMAIL_VERIFICATION_FAILED: "errors:auth.email_verification_failed",
   AUTH_PASSWORD_REQUIREMENTS: "errors:auth.password_requirements",
   AUTH_EMAIL_INVALID: "errors:auth.email_invalid",

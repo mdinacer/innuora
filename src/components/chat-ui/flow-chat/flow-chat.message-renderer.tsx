@@ -34,17 +34,17 @@ interface Props {
 // Utility function to get message-specific styling
 const getMessageStyling = (messageType: MessageType) => {
   const styleMap = {
-    [MessageType.USER_MESSAGE]: "bg-mir-bg-accent dark:bg-mir-bg-accent-dark font-medium text-white",
-    [MessageType.FLOW_END]: "bg-mir-bg-accent dark:bg-mir-bg-accent-dark font-medium text-white",
-    [MessageType.USER_INPUT]: "bg-mir-bg-card text-mir-text-primary",
-    [MessageType.OPTIONS]: "bg-mir-bg-card text-mir-text-primary",
-    [MessageType.SYSTEM]: "bg-mir-bg-card text-mir-text-primary",
-    [MessageType.ACTION]: "bg-mir-bg-secondary text-white",
-    [MessageType.REFLECTION]: "bg-mir-bg-secondary text-white",
-    [MessageType.TEXT]: "bg-mir-bg-secondary text-white",
+    [MessageType.USER_MESSAGE]: "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white",
+    [MessageType.FLOW_END]: "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white",
+    [MessageType.USER_INPUT]: "bg-inn-bg-card text-inn-text-primary",
+    [MessageType.OPTIONS]: "bg-inn-bg-card text-inn-text-primary",
+    [MessageType.SYSTEM]: "bg-inn-bg-card text-inn-text-primary",
+    [MessageType.ACTION]: "bg-inn-bg-secondary text-white",
+    [MessageType.REFLECTION]: "bg-inn-bg-secondary text-white",
+    [MessageType.TEXT]: "bg-inn-bg-secondary text-white",
   } as const;
 
-  return styleMap[messageType as keyof typeof styleMap] || "bg-mir-bg-card text-mir-text-primary";
+  return styleMap[messageType as keyof typeof styleMap] || "bg-inn-bg-card text-inn-text-primary";
 };
 
 // Fallback component for unknown message types

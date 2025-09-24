@@ -26,26 +26,26 @@ export default async function Footer({ locale = "en" }: Props) {
     copyright: t("policies_footer.copyright", { legal_name: APP_CONFIG.company.legalName }),
   };
   return (
-    <footer className="relative border-t border-mir-border-light">
-      <div className="max-w-6xl mx-auto px-6 py-10 text-center text-base rtl:text-lg text-mir-text-secondary">
+    <footer className="relative border-t border-inn-border-light">
+      <div className="max-w-6xl mx-auto px-6 py-10 text-center text-base rtl:text-lg text-inn-text-secondary">
         <p className="mb-3 text-primary">
           <span className="font-semibold">{disclaimer.label}</span>
           {disclaimer.message}
         </p>
         <div className="flex justify-center gap-6 flex-wrap mb-3">
-          <Link href="/eula" className="hover:text-mir-text-primary">
+          <Link href="/eula" className="hover:text-inn-text-primary">
             {links.eula}
           </Link>
-          <Link href="/privacy" className="hover:text-mir-text-primary">
+          <Link href="/privacy" className="hover:text-inn-text-primary">
             {links.privacy}
           </Link>
-          <Link href="/terms" className="hover:text-mir-text-primary">
+          <Link href="/terms" className="hover:text-inn-text-primary">
             {links.terms}
           </Link>
-          <Link href="/contact" className="hover:text-mir-text-primary">
+          <Link href="/contact" className="hover:text-inn-text-primary">
             {links.contact}
           </Link>
-          <Link href="/help" className="hover:text-mir-text-primary">
+          <Link href="/help" className="hover:text-inn-text-primary">
             {links.help}
           </Link>
         </div>

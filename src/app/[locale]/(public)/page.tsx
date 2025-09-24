@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { BotIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -9,7 +10,7 @@ import initTranslations from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type Conversation = {
-  role: "user" | "generic" | "innuora";
+  role: "user" | "generic" | "app";
   text: string;
 };
 
@@ -103,23 +104,23 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
     );
   }
 
-  if (conversation.role === "innuora") {
+  if (conversation.role === "app") {
     return (
       <div className="flex justify-start">
         <div className="flex items-start gap-3 sm:max-w-[85%] max-w-[95%]">
-          <div className="size-7 font-sans sm:size-9 rounded-full bg-inn-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
-            I
+          <div className="size-7 font-sans sm:size-9 rounded-full border border-inn-bg-accent hidden sm:flex items-center justify-center text-white flex-shrink-0 text-sm font-semibold shadow-[0_2px_8px] shadow-black/5">
+            <Image src="/assets/logo.png" alt="AI" width={24} height={24} className="object-cover object-center" />
           </div>
           <div className="flex flex-col sm:gap-1 gap-3">
             <div className="flex items-center gap-2 px-1">
               <div className="w-1.5 h-1.5 ltr:hidden rounded-full bg-inn-bg-accent" />
               <span className="text-sm font-medium rtl:font-arabic-body rtl:text-base text-inn-bg-accent rtl:font-semibold">
-                {label}
+                {APP_CONFIG.name}
               </span>
               <div className="w-1.5 h-1.5 rounded-full rtl:hidden bg-inn-bg-accent" />
             </div>
             <div
-              className="rounded-2xl bg-inn-bg-accent text-white px-4 py-3 text-base  rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
+              className="rounded-2xl bg-inn-bg-accent-dark text-white px-4 py-3 text-base rtl:text-lg rtl:font-medium shadow-[0_4px_20px] shadow-black/8 
               [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 
               [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-2"
             >
@@ -336,7 +337,7 @@ export default async function Home({
               className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5"
             >
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.subtitle}</p>
+              <p className="text-inn-text-secondary">{feature.subtitle}</p>
             </div>
           ))}
         </div>
@@ -418,7 +419,7 @@ export default async function Home({
           <p className="text-base md:text-lg rtl:font-medium max-w-2xl mx-auto mb-8">{earlyAccess.subtitle}</p>
           <Link
             href={"/join"}
-            className="rounded-2xl bg-white px-6 py-3 font-semibold text-inn-bg-accent transition hover:translate-y-[-1px]"
+            className="rounded-2xl bg-gradient-to-br from-inn-bg-flame to-inn-bg-flame-dark px-6 py-3 font-semibold text-white transition hover:translate-y-[-1px]"
           >
             {earlyAccess.cta}
           </Link>

@@ -20,7 +20,7 @@ const SessionDetailsQuickActions: React.FC<Props> = ({ className, session }) => 
   return (
     <Card className={className}>
       <h3 className="font-bold mb-4 flex items-center gap-2">
-        <CogIcon className="size-5 text-mir-bg-accent" />
+        <CogIcon className="size-5 text-inn-bg-accent" />
         Actions
       </h3>
 

@@ -103,6 +103,19 @@ const SignUpForm: React.FC<Props> = ({}) => {
               errorType: "auth_error",
             },
           });
+        } else {
+          // Handle general errors (validation, network, etc.)
+          const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred during sign up";
+          setFormError(errorMessage);
+
+          // Track general signup error
+          trackError(error instanceof Error ? error : new Error(errorMessage), {
+            feature: "auth",
+            action: "signup",
+            metadata: {
+              errorType: "general_error",
+            },
+          });
         }
       }
     },
@@ -120,7 +133,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
         >
           {title}
         </h1>
-        <p className="text-mir-text-secondary rtl:text-lg rtl:font-arabic-body">{subtitle}</p>
+        <p className="text-inn-text-secondary rtl:text-lg rtl:font-arabic-body">{subtitle}</p>
       </div>
 
       {formError && (
@@ -139,7 +152,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
       )}
 
       {/* <!-- Sign Up Form --> */}
-      <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-card">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-card">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleOnSubmit)} className="grid gap-y-8">
             <TextField
@@ -171,11 +184,11 @@ const SignUpForm: React.FC<Props> = ({}) => {
               label={
                 <>
                   {formFields.termsAgree.prefix}{" "}
-                  <Link href="/terms" className="text-mir-bg-accent hover:underline font-semibold">
+                  <Link href="/terms" className="text-inn-bg-accent hover:underline font-semibold">
                     {formFields.termsAgree.terms}
                   </Link>{" "}
                   {formFields.termsAgree.and}{" "}
-                  <Link href="/privacy" className="text-mir-bg-accent hover:underline font-semibold">
+                  <Link href="/privacy" className="text-inn-bg-accent hover:underline font-semibold">
                     {formFields.termsAgree.privacy}
                   </Link>
                   .
@@ -186,8 +199,11 @@ const SignUpForm: React.FC<Props> = ({}) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-2xl bg-mir-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-mir-bg-accent focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              className="w-full rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
+              {isSubmitting && (
+                <div className="inline-block size-4 border-2 border-white/50 border-t-white rounded-full animate-spin mr-2" />
+              )}
               {formFields.submit}
             </button>
           </form>
@@ -196,17 +212,17 @@ const SignUpForm: React.FC<Props> = ({}) => {
 
       {/* <!-- Sign In Link --> */}
       <div className="text-center mt-6">
-        <p className="text-mir-text-secondary">
+        <p className="text-inn-text-secondary">
           {haveAccount.text}{" "}
-          <Link href="/auth/sign-in" className="text-mir-bg-accent font-medium hover:underline">
+          <Link href="/auth/sign-in" className="text-inn-bg-accent font-medium hover:underline">
             {haveAccount.link}
           </Link>
         </p>
       </div>
 
       {/* <!-- Important Notice --> */}
-      {/* <div className="mt-8 p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15">
-        <p className="text-sm text-mir-text-secondary text-center">
+      {/* <div className="mt-8 p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
+        <p className="text-sm text-inn-text-secondary text-center">
           <strong>Important:</strong> Mirael is not a mental health or crisis service. If you are in crisis, contact
           local emergency services immediately.
         </p>

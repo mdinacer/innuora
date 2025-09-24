@@ -209,20 +209,20 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
     },
   };
   return (
-    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-mir-bg-primary transition-all duration-300 ease-in text-mir-text-primary">
+    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h1 className="text-4xl rtl:font-arabic md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
           {content.title}
         </h1>
-        <div className="inline-flex items-center gap-2 rounded-full border border-mir-bg-accent/25 bg-mir-bg-soft px-3 py-1 text-[13px] rtl:text-base font-semibold text-mir-bg-accent mb-8">
+        <div className="inline-flex items-center gap-2 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-[13px] rtl:text-base font-semibold text-inn-bg-accent mb-8">
           {content.effectiveDate} • {content.version}
         </div>
       </section>
 
       {/* <!-- Agreement Notice --> */}
       <section className="max-w-4xl mx-auto px-6 pb-12">
-        <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
+        <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
           <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.intro.headline}</h2>
           <p className="mb-4 opacity-90">{content.intro.message}</p>
           <p className="text-sm opacity-80">{content.intro.note}</p>
@@ -233,22 +233,22 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       <div className="max-w-4xl mx-auto px-6 pb-16">
         {/* <!-- Contact Information --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.contact.title}</h2>
             <div className="space-y-2 text-muted-foreground">
               <p className="space-x-2 rtl:space-x-reverse">
-                <strong className="text-mir-text-primary">{content.contact.entity}</strong>
+                <strong className="text-inn-text-primary">{content.contact.entity}</strong>
                 <span>{APP_CONFIG.company.legalName}</span>
               </p>
               <p className="space-x-2 rtl:space-x-reverse">
-                <strong className="text-mir-text-primary">{content.contact.support}</strong>
-                <Link href={`mailto:${APP_CONFIG.contact.support}`} className="text-mir-bg-accent hover:underline">
+                <strong className="text-inn-text-primary">{content.contact.support}</strong>
+                <Link href={`mailto:${APP_CONFIG.contact.support}`} className="text-inn-bg-accent hover:underline">
                   {APP_CONFIG.contact.support}
                 </Link>
               </p>
               <p className="space-x-2 rtl:space-x-reverse">
-                <strong className="text-mir-text-primary">{content.contact.privacy}</strong>
-                <Link href={`mailto:${APP_CONFIG.contact.privacy}`} className="text-mir-bg-accent hover:underline">
+                <strong className="text-inn-text-primary">{content.contact.privacy}</strong>
+                <Link href={`mailto:${APP_CONFIG.contact.privacy}`} className="text-inn-bg-accent hover:underline">
                   {APP_CONFIG.contact.privacy}
                 </Link>
               </p>
@@ -258,10 +258,10 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Eligibility --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.eligibility.title}</h2>
-            <div className="p-4 rounded-xl bg-mir-bg-soft border border-mir-bg-accent/15 mb-4">
-              <p className="text-sm font-semibold text-mir-text-primary space-x-2 rtl:space-x-reverse">
+            <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15 mb-4">
+              <p className="text-sm font-semibold text-inn-text-primary space-x-2 rtl:space-x-reverse">
                 <span>{content.eligibility.ageRequirement}</span> {APP_CONFIG.legal.ageRequirement}
               </p>
             </div>
@@ -273,12 +273,12 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <section className="mb-12">
           <h2 className="rtl:font-arabic text-2xl font-bold mb-6">{content.license.title}</h2>
           <div className="space-y-4">
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic text-xl font-semibold mb-3">{content.license.permitted.title}</h3>
               <p className="text-muted-foreground">{content.license.permitted.message}</p>
             </div>
 
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic text-xl font-semibold mb-3">{content.license.restricted.title}</h3>
               <ul className="space-y-2 list-disc list-inside [&>li]:list-item text-muted-foreground">
                 {content.license.restricted.items.map((item, index) => (
@@ -293,21 +293,21 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">{content.responsibilities.title}</h2>
           <div className="space-y-6">
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.responsibilities.sections.accountSecurity.title}
               </h3>
               <p className="text-muted-foreground">{content.responsibilities.sections.accountSecurity.description}</p>
             </div>
 
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.responsibilities.sections.legalCompliance.title}
               </h3>
               <p className="text-muted-foreground">{content.responsibilities.sections.legalCompliance.description} </p>
             </div>
 
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.responsibilities.sections.prohibitedUses.title}
               </h3>
@@ -327,7 +327,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Nature of Service --> */}
         <section className="mb-12">
-          <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-mir-bg-accent to-mir-bg-accent-dark">
+          <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
             <h2 className="text-2xl font-bold mb-3">{content.natureOfService.title}</h2>
             <p className="mb-4 opacity-90">{content.natureOfService.message}</p>
             <div className="p-4 rounded-xl bg-[rgba(255,255,255,0.1)] mt-4">
@@ -340,21 +340,21 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">{content.aiAndContent.title}</h2>
           <div className="space-y-6">
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.aiAndContent.sections.generatedResponses.title}
               </h3>
               <p className="text-muted-foreground">{content.aiAndContent.sections.generatedResponses.description}</p>
             </div>
 
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.aiAndContent.sections.contentRights.title}
               </h3>
               <p className="text-muted-foreground">{content.aiAndContent.sections.contentRights.description} </p>
             </div>
 
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.aiAndContent.sections.contentModeration.title}
               </h3>
@@ -365,13 +365,13 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Fees and Payments --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.fees.title}</h2>
             <div className="space-y-3 text-muted-foreground">
               {content.fees.points.map((item, index) => (
                 <p key={index}>{item}</p>
               ))}
-              <div className="p-3 rounded-lg bg-mir-bg-input">
+              <div className="p-3 rounded-lg bg-inn-bg-input">
                 <p className="text-sm">{content.fees.refundPolicy}</p>
               </div>
             </div>
@@ -382,16 +382,16 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">{content.termination.title}</h2>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">{content.termination.byUser.title}</h3>
               <p className="text-muted-foreground">{content.termination.byUser.description} </p>
             </div>
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">{content.termination.byUs.title}</h3>
               <p className="text-muted-foreground">{content.termination.byUs.description} </p>
             </div>
           </div>
-          <div className="mt-4 p-4 rounded-xl bg-mir-bg-soft border border-[rgba(255,107,90,0.15)]">
+          <div className="mt-4 p-4 rounded-xl bg-inn-bg-soft border border-[rgba(255,107,90,0.15)]">
             <p className="text-sm text-muted-foreground">
               <strong>{content.termination.effect.label}</strong> {content.termination.effect.description}
             </p>
@@ -400,7 +400,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Intellectual Property --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.intellectualProperty.title}</h2>
             <p className="text-muted-foreground mb-3">{content.intellectualProperty.ownership}</p>
             <p className="text-sm text-muted-foreground italic">{content.intellectualProperty.branding} </p>
@@ -411,12 +411,12 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">{content.disclaimers.title}</h2>
           <div className="space-y-4">
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">{content.disclaimers.asIsService.title}</h3>
               <p className="text-muted-foreground">{content.disclaimers.asIsService.description}</p>
             </div>
 
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-xl font-semibold mb-3">
                 {content.disclaimers.healthDisclaimer.title}
               </h3>
@@ -427,10 +427,10 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Limitation of Liability --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.liability.title}</h2>
             <p className="text-muted-foreground mb-3">{content.liability.message}</p>
-            <div className="p-4 rounded-xl bg-mir-bg-input">
+            <div className="p-4 rounded-xl bg-inn-bg-input">
               <p className="text-sm text-muted-foreground">
                 <strong>{content.liability.cap.label}</strong> {content.liability.cap.message}
               </p>
@@ -440,7 +440,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Indemnification --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.indemnification.title}</h2>
             <p className="text-muted-foreground">{content.indemnification.message} </p>
           </div>
@@ -448,7 +448,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Governing Law --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.governingLaw.title}</h2>
             <div className="space-y-3 text-muted-foreground">
               {content.governingLaw.points.map((point, index) => (
@@ -462,13 +462,13 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">{content.additionalTerms.title}</h2>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">
                 {content.additionalTerms.thirdPartyServices.title}
               </h3>
               <p className="text-sm text-muted-foreground">{content.additionalTerms.thirdPartyServices.description}</p>
             </div>
-            <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">
                 {content.additionalTerms.exportControls.title}
               </h3>
@@ -479,7 +479,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Changes to Terms --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.changes.title}</h2>
             <p className="text-muted-foreground mb-3">{content.changes.message}</p>
             <p className="text-sm text-muted-foreground italic">{content.changes.note} </p>
@@ -488,7 +488,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
 
         {/* <!-- Entire Agreement --> */}
         <section className="mb-12">
-          <div className="rounded-2xl border border-mir-border-light bg-mir-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.entireAgreement.title}</h2>
             <p className="text-muted-foreground">{content.entireAgreement.message} </p>
           </div>
