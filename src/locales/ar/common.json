@@ -7,7 +7,7 @@
   },
   "app-name": "Innuora",
   "avatar-letter": "I",
-  "back-to-app": "العودة إلى ميراييل",
+  "back-to-app": "العودة إلى {{app_name}}",
   "languages": {
     "en": "الإنجليزية",
     "fr": "الفرنسية",
