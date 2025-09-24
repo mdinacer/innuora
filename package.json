@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev  --turbo",
     "build": "pnpx prisma generate && next build",
+    "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
     "test": "vitest",
     "test:watch": "vitest --watch",
@@ -16,6 +17,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "format:fix": "prettier --write --ignore-path .prettierignore .",
+    "bundle:size": "npm-size ./next",
     "db:migrate": "pnpm prisma migrate deploy",
     "db:generate": "pnpm prisma generate",
     "db:studio": "pnpm prisma studio",

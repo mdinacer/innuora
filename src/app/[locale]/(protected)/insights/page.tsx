@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
-import IntegratedInsightsPage from "@/components/insights/integrated-insights-page";
+import { DynamicPages } from "@/components/dynamic-loaders";
 import { APP_CONFIG } from "@/config/app";
 import { AdvancedInsightsProfile } from "@/domains/insights/advanced-insights.types";
 
@@ -397,5 +397,5 @@ export default async function InsightsPage() {
   // Get advanced mock insights data (will be replaced with real data fetching)
   const insights = getAdvancedMockInsights();
 
-  return <IntegratedInsightsPage insights={insights} />;
+  return <DynamicPages.IntegratedInsightsPage insights={insights} />;
 }

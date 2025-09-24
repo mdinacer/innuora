@@ -75,15 +75,15 @@ export default function IntegratedInsightsPage({ insights, className }: Integrat
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
+              <TrendingUp className="h-4 w-4 sr-only sm:not-sr-only" />
               Overview
             </TabsTrigger>
             <TabsTrigger value="mood" className="flex items-center gap-2">
-              <Heart className="h-4 w-4" />
+              <Heart className="h-4 w-4 sr-only sm:not-sr-only" />
               Mood Tracking
             </TabsTrigger>
             <TabsTrigger value="patterns" className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
+              <Brain className="h-4 w-4 sr-only sm:not-sr-only" />
               AI Insights
             </TabsTrigger>
           </TabsList>

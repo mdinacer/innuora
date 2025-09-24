@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import initTranslations, { AppLocales } from "@/lib/i18n";
@@ -17,14 +15,14 @@ export default async function Layout({
     <>
       <Header
         className="fixed top-0 pointer-events-auto standalone:pt-safe standalone:inset-x-safe inset-x-0 bg-mir-bg-card/50 backdrop-blur-sm z-50"
-        sideContent={
-          <Link
-            href="/"
-            className="sm:inline-flex hidden items-center rtl:font-medium gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm rtl:text-base font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
-          >
-            {t("back-to-app")}
-          </Link>
-        }
+        // sideContent={
+        //   <Link
+        //     href="/"
+        //     className="sm:inline-flex hidden items-center rtl:font-medium gap-2 rounded-2xl border border-mir-border-light px-4 py-2 text-sm rtl:text-base font-medium text-mir-text-primary hover:text-mir-bg-accent hover:border-mir-bg-accent transition"
+        //   >
+        //     {t("back-to-app")}
+        //   </Link>
+        // }
       />
       {children}
 
