@@ -1,12 +1,18 @@
 // Innuora Service Worker for PWA functionality
 const CACHE_NAME = "innuora-v1";
-const OFFLINE_URL = "/offline";
+const OFFLINE_URLS = {
+  en: "/en/offline",
+  ar: "/ar/offline",
+  fr: "/fr/offline",
+};
 
 // Assets to cache for offline functionality
 const STATIC_ASSETS = [
   "/",
   "/en",
-  "/offline",
+  "/en/offline",
+  "/ar/offline",
+  "/fr/offline",
   "/assets/icons/ios/192.png",
   "/assets/icons/ios/512.png",
   "/assets/logo.png",
@@ -46,12 +52,20 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   // Only handle navigation requests (pages)
   if (event.request.mode === "navigate") {
+    // event.respondWith(
+    //   fetch(event.request).catch(() => {
+    //     // If network fails, serve the offline page
+    //     return caches.match(OFFLINE_URL);
+    //   })
+    // );
     event.respondWith(
       fetch(event.request).catch(() => {
-        // If network fails, serve the offline page
-        return caches.match(OFFLINE_URL);
+        const lang = navigator.language.slice(0, 2); // "en", "ar", "fr"
+        const offlinePage = OFFLINE_URLS[lang] || defaultOffline;
+        return caches.match(offlinePage);
       })
     );
+    return;
     return;
   }
 
