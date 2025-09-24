@@ -234,8 +234,8 @@ export const METADATA: Metadata = {
   },
 
   openGraph: {
-    title: `${APP_CONFIG.name} — AI for Emotional Clarity and Insight`,
-    description: `${APP_CONFIG.name} helps high-functioning women navigate emotional exhaustion, perfectionism, and stress by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
+    title: `${APP_CONFIG.name} - AI Emotional Companion for High-Functioning Women`,
+    description: `${APP_CONFIG.name} helps high-functioning women overcome emotional exhaustion, burnout, overwhelm, and perfectionism by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
     url: APP_CONFIG.domains.primary,
     siteName: APP_CONFIG.name,
     images: [
@@ -252,8 +252,8 @@ export const METADATA: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: `${APP_CONFIG.name} — AI for Emotional Clarity and Insight`,
-    description: `${APP_CONFIG.name} is a dedicated AI companion helping high-functioning women gain clarity, process overwhelm, and navigate perfectionism through emotional reflection.`,
+    title: `${APP_CONFIG.name} - AI Emotional Companion for High-Functioning Women`,
+    description: `${APP_CONFIG.name} helps high-functioning women overcome emotional exhaustion, burnout, overwhelm, and perfectionism by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
     creator: APP_CONFIG.social.twitter.creator,
     images: ["/og/innuora-cover.png"],
   },

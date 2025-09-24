@@ -168,7 +168,7 @@
       {
         "id": "emotional_concerns",
         "content": {
-          "hint": "These emotions may not show on the outside, but they’ve been close for a while. Just name what feels true — no need to explain.",
+          "hint": "These emotions may not show on the outside, but they’ve been close for a while. Just name what feels true - no need to explain.",
           "label": "Which emotions feel closest lately?",
           "options": [
             {
@@ -228,7 +228,7 @@
       {
         "id": "coping_mechanism",
         "content": {
-          "hint": "When things get heavy, your mind and body respond in ways that once kept you safe — even if they cost you now.",
+          "hint": "When things get heavy, your mind and body respond in ways that once kept you safe - even if they cost you now.",
           "label": "When things get hard, what do you tend to do?",
           "options": [
             {
@@ -294,7 +294,7 @@
             {
               "label": "Connection",
               "value": "connection",
-              "description": "To feel seen, heard, and held — by me or others."
+              "description": "To feel seen, heard, and held - by me or others."
             },
             {
               "label": "Direction or meaning",

@@ -30,7 +30,7 @@ function checkPasswordStrength(password: string) {
 const PASSWORD_STRENGTH = {
   weak: { label: "Weak", message: "Try making it longer for safety", bg: "bg-[#ef4444]" },
   fair: { label: "Okay", message: "Stronger if you add a bit more length", bg: "bg-[#f59e0b]" },
-  good: { label: "Good", message: "This works well — longer is even better", bg: "bg-[#3b82f6]" },
+  good: { label: "Good", message: "This works well - longer is even better", bg: "bg-[#3b82f6]" },
   strong: { label: "Strong", message: "Solid, memorable, and safe", bg: "bg-[#10b981]" },
 } as const;
 
@@ -53,7 +53,7 @@ const getPasswordStrength = (value?: string) => {
   const { label, message, bg } = PASSWORD_STRENGTH[key];
 
   return {
-    textContent: `${label} — ${message}`,
+    textContent: `${label} - ${message}`,
     styles: { bg, width: `w-${(score / 4) * 100}` }, // dynamic width for smooth animation
   };
 };

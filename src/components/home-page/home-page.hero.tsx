@@ -8,7 +8,7 @@ export default function HomePageHero() {
         A mirror for your inner world
       </h1>
       <p className="text-lg md:text-xl text-inn-text-secondary max-w-2xl mx-auto mb-8">
-        Mirael helps you slow down, notice patterns, and find clarity when life feels overwhelming — through reflective,
+        Mirael helps you slow down, notice patterns, and find clarity when life feels overwhelming - through reflective,
         emotionally attuned conversations.
       </p>
       <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5">

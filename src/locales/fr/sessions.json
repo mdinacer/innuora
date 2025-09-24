@@ -168,7 +168,7 @@
       {
         "id": "emotional_concerns",
         "content": {
-          "hint": "Ces émotions ne se voient pas toujours à l’extérieur, mais elles sont présentes depuis un moment. Nomme simplement ce qui est vrai — inutile d’expliquer.",
+          "hint": "Ces émotions ne se voient pas toujours à l’extérieur, mais elles sont présentes depuis un moment. Nomme simplement ce qui est vrai - inutile d’expliquer.",
           "label": "Quelles émotions te semblent les plus présentes ces derniers temps ?",
           "options": [
             {
@@ -294,7 +294,7 @@
             {
               "label": "Connexion",
               "value": "connection",
-              "description": "Me sentir vu·e, entendu·e et soutenu·e — par moi-même ou par d’autres."
+              "description": "Me sentir vu·e, entendu·e et soutenu·e - par moi-même ou par d’autres."
             },
             {
               "label": "Direction ou sens",

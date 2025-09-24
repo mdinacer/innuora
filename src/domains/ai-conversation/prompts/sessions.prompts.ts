@@ -23,13 +23,13 @@ export const sessionsPrompts: Record<SessionId, { prompt: (values: Record<string
 - Coping pattern: ${coping}
 - Aspirations: ${aspirations}
 
-Your goal is to translate these into a short emotional reflection that feels lived — not described.
+Your goal is to translate these into a short emotional reflection that feels lived - not described.
 
 Mirror the internal experience of someone who’s been *performing under pressure, disconnecting to survive*, and quietly aching for clarity, kindness, or direction. 
 
 Speak in grounded, woman-to-woman language. Let the emotional weight be felt. Don’t soften it. Don’t analyze it. And don’t sound like a therapist.
 
-End with quiet presence. One gentle line of tenderness is enough — something that feels like *“Maybe today, you don’t have to hold it all together.”*
+End with quiet presence. One gentle line of tenderness is enough - something that feels like *“Maybe today, you don’t have to hold it all together.”*
 
 No lists. No summaries. No repeating data.
 
