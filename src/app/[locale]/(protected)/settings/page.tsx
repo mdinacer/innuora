@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 import { DynamicPages } from "@/components/dynamic-loaders";
+import { APP_CONFIG } from "@/config/app";
 import { createClient } from "@/lib/supabase/server";
 
 // =========================
@@ -8,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 // =========================
 
 export const metadata: Metadata = {
-  title: "Settings | Mirael",
+  title: `Settings | ${APP_CONFIG.name}`,
   description: "Manage your account settings, privacy preferences, and application configuration.",
 };
 

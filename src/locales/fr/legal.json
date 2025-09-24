@@ -89,14 +89,22 @@
     "dataWeCollect": {
       "title": "Ce que nous collectons",
       "table": {
-        "headers": ["Catégorie", "Finalité", "Durée de conservation"],
+        "headers": [
+          "Catégorie",
+          "Finalité",
+          "Durée de conservation"
+        ],
         "rows": [
           [
             "Données du compte (email, langue)",
             "Permettre la connexion et définir votre langue",
             "Conservées jusqu’à la suppression de votre compte"
           ],
-          ["Données de session (réponses IA temporaires)", "Fournir des réflexions IA", "Éphémères – non stockées"],
+          [
+            "Données de session (réponses IA temporaires)",
+            "Fournir des réflexions IA",
+            "Éphémères – non stockées"
+          ],
           [
             "Notes de réflexion (si vous les enregistrez)",
             "Vous permettre de revisiter vos insights passés",
@@ -120,7 +128,7 @@
     "yourRights": {
       "title": "Vos droits",
       "paragraphs": [
-        "Vous pouvez demander l’accès, la correction, la suppression ou l’export de vos données à tout moment. Contactez-nous à privacy@mirael.life.",
+        "Vous pouvez demander l’accès, la correction, la suppression ou l’export de vos données à tout moment. Contactez-nous à {{privacy_email}}.",
         "Si vous êtes situé dans l’UE/EEE ou au Royaume-Uni, vous bénéficiez des droits prévus par le RGPD. Les résidents de Californie disposent également de droits en vertu du CCPA."
       ]
     },

@@ -1,3 +1,4 @@
+import { APP_CONFIG } from "@/config/app";
 import { SESSION_MODULES } from "@/domains/cbt-modules/constants";
 
 const UTILITY_MODULE_INSTRUCTIONS = {
@@ -22,7 +23,7 @@ const UTILITY_MODULE_INSTRUCTIONS = {
 
   [SESSION_MODULES.FIRST_TIME]: `
 Acknowledge the start of a new session with warmth that feels human but not generic.
-Offer a simple reflection if the user shares anything, even brief, to establish Mirael's role as a mirror.
+Offer a simple reflection if the user shares anything, even brief, to establish ${APP_CONFIG.name}'s role as a mirror.
 Invite them to share what feels most present, without pressure.
 Use only one open-ended question, and always after a reflection.
 Avoid analysis-heavy responses, multiple questions, or broad advice at this stage.

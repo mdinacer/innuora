@@ -219,14 +219,6 @@ const SignUpForm: React.FC<Props> = ({}) => {
           </Link>
         </p>
       </div>
-
-      {/* <!-- Important Notice --> */}
-      {/* <div className="mt-8 p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
-        <p className="text-sm text-inn-text-secondary text-center">
-          <strong>Important:</strong> Mirael is not a mental health or crisis service. If you are in crisis, contact
-          local emergency services immediately.
-        </p>
-      </div> */}
     </div>
   );
 };

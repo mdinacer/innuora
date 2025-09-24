@@ -2,9 +2,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { CheckIcon, HomeIcon, RefreshCwIcon, XCircleIcon } from "lucide-react";
 
+import { APP_CONFIG } from "@/config/app";
+
 export const metadata: Metadata = {
-  title: "Email Verification Result - Mirael",
-  description: "Your email verification status for your Mirael account.",
+  title: `Email Verification Result - ${APP_CONFIG.name}`,
+  description: `Your email verification status for your ${APP_CONFIG.name} account.`,
   robots: {
     index: false,
     follow: false,
@@ -33,7 +35,7 @@ export default async function EmailValidationResultRoute({
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">Account verified!</h1>
             <p className="text-lg text-inn-text-secondary">
-              Your email has been successfully verified. Welcome to Mirael!
+              Your email has been successfully verified. Welcome to Innuora!
             </p>
           </div>
 
@@ -121,9 +123,9 @@ export default async function EmailValidationResultRoute({
           <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
             <p className="text-sm text-inn-text-secondary">
               Still having trouble? Email us at
-              <a href="mailto:support@mirael.life" className="text-inn-bg-accent hover:underline">
-                support@mirael.life
-              </a>
+              <Link href={`"mailto:${APP_CONFIG.contact.support}"`} className="text-inn-bg-accent hover:underline">
+                {APP_CONFIG.contact.support}
+              </Link>
               and we'll help you get verified.
             </p>
           </div>

@@ -13,7 +13,7 @@ Instructions:
 
 Output JSON schema:
 {
-  "title": string,                  // short, emotionally resonant session title (non-clinical, Mirael tone)
+  "title": string,                  // short, emotionally resonant session title (non-clinical, ${APP_CONFIG.name} tone)
   "subtitle": string,               // softer expansion of title, user-centric not technical
   "user_state": "first_time" | "returning" | "established_relationship",
   "emotion": "calm" | "tentative" | "overwhelmed_flooding" | "overwhelmed_shutdown" | "resistant" | "crisis",

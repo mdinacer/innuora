@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -11,10 +11,8 @@ import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits
 import LoadingComponent from "@/components/loading-component";
 import { PostSessionMoodPrompt } from "@/components/mood/mood-integration-hooks";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
-import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { APP_CONFIG } from "@/config/app";
 import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
-import { Session } from "@/domains/open-chat/open-chat.types";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
@@ -43,7 +41,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   const { title, subtitle } = useMemo(
     () => ({
-      title: session?.title || t("header.title", { defaultValue: "Welcome to Mirael" }),
+      title: session?.title || t("header.title", { defaultValue: `Welcome to ${APP_CONFIG.name}` }),
       subtitle: session?.subtitle || t("header.subtitle", { defaultValue: "A gentle space to begin your reflection" }),
     }),
     [session?.subtitle, session?.title, t]

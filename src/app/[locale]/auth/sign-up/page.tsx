@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     url: `${APP_CONFIG.domains.primary}/en/auth/sign-up`,
     images: [
       {
-        url: "/og/mirael-cover.png",
+        url: "/og/app-cover.png",
         width: 1200,
         height: 630,
         alt: `Join ${APP_CONFIG.name} for emotional clarity`,
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `Join ${APP_CONFIG.name} - Emotional AI Companion`,
     description: `Start your free account and discover emotional clarity with ${APP_CONFIG.name}.`,
-    images: ["/og/mirael-cover.png"],
+    images: ["/og/app-cover.png"],
   },
   robots: {
     index: true,

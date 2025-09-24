@@ -273,7 +273,7 @@ export default function NotificationSettings(): React.JSX.Element {
               <Bell className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h5 className="font-medium">Mirael</h5>
+              <h5 className="font-medium">Innuora</h5>
               <p className="text-sm text-gray-600">
                 Your wellbeing check-in is ready. Take a moment for yourself today.
               </p>

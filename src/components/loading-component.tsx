@@ -42,7 +42,7 @@ export default function LoadingComponent({ isLoading = true, className, ...props
         )}
       >
         <div className={cn("loading-content", "relative z-2 flex items-center justify-center flex-col")}>
-          {/* <!-- Mirael Avatar with pulsing animation --> */}
+          {/* <!-- Innuora Avatar with pulsing animation --> */}
           <div
             className={cn(
               "loading-avatar",

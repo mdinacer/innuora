@@ -253,7 +253,7 @@ export default function SecuritySettings(): React.JSX.Element {
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div>
               <h4 className="font-medium text-gray-900">Download Your Data</h4>
-              <p className="text-sm text-gray-600">Get a copy of all your data stored with Mirael</p>
+              <p className="text-sm text-gray-600">Get a copy of all your data stored with Innuora</p>
             </div>
             <Button variant="outline">Request Data</Button>
           </div>

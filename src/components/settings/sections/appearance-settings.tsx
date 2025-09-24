@@ -51,7 +51,7 @@ export default function AppearanceSettings(): React.JSX.Element {
           <Monitor className="h-5 w-5 text-gray-600" />
           <h3 className="text-lg font-medium text-gray-900">Theme</h3>
         </div>
-        <p className="text-sm text-gray-600 mb-4">Choose how Mirael looks and feels across all your devices.</p>
+        <p className="text-sm text-gray-600 mb-4">Choose how Innuora looks and feels across all your devices.</p>
 
         <div className="grid grid-cols-3 gap-4">
           {themeOptions.map((option) => (

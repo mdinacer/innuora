@@ -122,7 +122,7 @@ export function validateStripeConfig(): {
 // =========================
 
 /**
- * Create a payment intent with Mirael-specific configuration
+ * Create a payment intent with Innuora-specific configuration
  */
 export async function createPaymentIntent(params: {
   amount: number;
@@ -144,7 +144,7 @@ export async function createPaymentIntent(params: {
       timestamp: new Date().toISOString(),
       ...params.metadata,
     },
-    description: `Mirael Credit Purchase - ${params.productKey}`,
+    description: `Innuora Credit Purchase - ${params.productKey}`,
   });
 }
 

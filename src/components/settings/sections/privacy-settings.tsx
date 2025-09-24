@@ -196,7 +196,7 @@ export default function PrivacySettings(): React.JSX.Element {
             <div>
               <h4 className="font-medium text-gray-900">Usage Analytics</h4>
               <p className="text-sm text-gray-600">
-                Share anonymous usage data to help improve Mirael (no conversation content)
+                Share anonymous usage data to help improve Innuora (no conversation content)
               </p>
             </div>
             <button

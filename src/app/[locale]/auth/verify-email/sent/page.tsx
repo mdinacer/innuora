@@ -4,11 +4,12 @@ import { MailIcon, RefreshCcwIcon } from "lucide-react";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
 import { Button } from "@/components/mir-ui/button";
+import { APP_CONFIG } from "@/config/app";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Check Your Email - Mirael",
-  description: "We've sent a verification email to complete your Mirael account setup.",
+  title: `Check Your Email - ${APP_CONFIG.name}`,
+  description: `We've sent a verification email to complete your ${APP_CONFIG.name} account setup.`,
   robots: {
     index: false,
     follow: false,
@@ -55,7 +56,7 @@ export default async function VerificationEmailSentRoute() {
               <div>
                 <p className="font-medium">Check your inbox</p>
                 <p className="text-sm text-inn-text-secondary">
-                  Look for an email from Mirael with the subject "Verify your account"
+                  Look for an email from Innuora with the subject "Verify your account"
                 </p>
               </div>
             </div>
