@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, Clock, Play, RotateCcw, Star } from "lucide-react";
+import { Clock, Play, RotateCcw, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ActionableInsight } from "@/domains/insights/actionable-insights.types";
