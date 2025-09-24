@@ -94,7 +94,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
                     <Link href={`/learn/distortions/${d.type}`} className="underline text-inn-accent capitalize">
                       {d.type.replace(/_/g, " ").replace(/-/g, " ")}
                     </Link>{" "}
-                    — <Badge>{d.severity}</Badge>, <Badge variant="info">{d.count} times</Badge>
+                    - <Badge>{d.severity}</Badge>, <Badge variant="info">{d.count} times</Badge>
                   </li>
                 ))}
               </ul>

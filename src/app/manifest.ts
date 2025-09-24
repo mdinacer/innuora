@@ -4,7 +4,7 @@ import { APP_CONFIG } from "@/config/app";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${APP_CONFIG.name} — ${APP_CONFIG.tagline}`,
+    name: `${APP_CONFIG.name} - ${APP_CONFIG.tagline}`,
     short_name: APP_CONFIG.name,
     description: APP_CONFIG.description,
     start_url: "/en",
@@ -13,55 +13,177 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     orientation: "portrait",
     scope: "/",
+    screenshots: [
+      // iPadOS / iOS
+      {
+        platform: "ipados",
+        form_factor: "wide",
+        label: "iPad 10.2 Landscape",
+        src: "/splash_screens/10.2__iPad_landscape.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "narrow",
+        label: "iPad 10.2 Portrait",
+        src: "/splash_screens/10.2__iPad_portrait.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "wide",
+        label: "iPad Air 10.5 Landscape",
+        src: "/splash_screens/10.5__iPad_Air_landscape.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "narrow",
+        label: "iPad Air 10.5 Portrait",
+        src: "/splash_screens/10.5__iPad_Air_portrait.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "wide",
+        label: "iPad Air 10.9 Landscape",
+        src: "/splash_screens/10.9__iPad_Air_landscape.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "narrow",
+        label: "iPad Air 10.9 Portrait",
+        src: "/splash_screens/10.9__iPad_Air_portrait.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "wide",
+        label: "iPad Pro 11 M4 Landscape",
+        src: "/splash_screens/11__iPad_Pro_M4_landscape.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "narrow",
+        label: "iPad Pro 11 M4 Portrait",
+        src: "/splash_screens/11__iPad_Pro_M4_portrait.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "wide",
+        label: "iPad Pro 12.9 Landscape",
+        src: "/splash_screens/12.9__iPad_Pro_landscape.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "narrow",
+        label: "iPad Pro 12.9 Portrait",
+        src: "/splash_screens/12.9__iPad_Pro_portrait.png",
+      },
+
+      // iPhone / iOS
+      {
+        platform: "ios",
+        form_factor: "wide",
+        label: "iPhone 11 Pro Max Landscape",
+        src: "/splash_screens/iPhone_11_Pro_Max__iPhone_XS_Max_landscape.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "narrow",
+        label: "iPhone 11 Pro Max Portrait",
+        src: "/splash_screens/iPhone_11_Pro_Max__iPhone_XS_Max_portrait.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "wide",
+        label: "iPhone 11 Landscape",
+        src: "/splash_screens/iPhone_11__iPhone_XR_landscape.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "narrow",
+        label: "iPhone 11 Portrait",
+        src: "/splash_screens/iPhone_11__iPhone_XR_portrait.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "wide",
+        label: "iPhone 13 Mini Landscape",
+        src: "/splash_screens/iPhone_13_mini__iPhone_12_mini__iPhone_11_Pro__iPhone_XS__iPhone_X_landscape.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "narrow",
+        label: "iPhone 13 Mini Portrait",
+        src: "/splash_screens/iPhone_13_mini__iPhone_12_mini__iPhone_11_Pro__iPhone_XS__iPhone_X_portrait.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "wide",
+        label: "iPhone 14 Plus Landscape",
+        src: "/splash_screens/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_landscape.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "narrow",
+        label: "iPhone 14 Plus Portrait",
+        src: "/splash_screens/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_portrait.png",
+      },
+
+      // iOS / iPhone SE / 4-inch
+      {
+        platform: "ios",
+        form_factor: "wide",
+        label: "iPhone SE Landscape",
+        src: "/splash_screens/4__iPhone_SE__iPod_touch_5th_generation_and_later_landscape.png",
+      },
+      {
+        platform: "ios",
+        form_factor: "narrow",
+        label: "iPhone SE Portrait",
+        src: "/splash_screens/4__iPhone_SE__iPod_touch_5th_generation_and_later_portrait.png",
+      },
+
+      // iOS / iPad Mini 8.3-inch
+      {
+        platform: "ipados",
+        form_factor: "wide",
+        label: "iPad Mini Landscape",
+        src: "/splash_screens/8.3__iPad_Mini_landscape.png",
+      },
+      {
+        platform: "ipados",
+        form_factor: "narrow",
+        label: "iPad Mini Portrait",
+        src: "/splash_screens/8.3__iPad_Mini_portrait.png",
+      },
+
+      // App icon fallback
+      { platform: "ios", src: "/splash_screens/icon.png", type: "image/png", sizes: "any" },
+    ],
     id: "/",
     categories: ["health", "wellness", "lifestyle", "productivity"],
     lang: "en",
     icons: [
-      // iOS Icons
-      {
-        src: "/assets/icons/ios/180.png",
-        sizes: "180x180",
-        type: "image/png",
-        purpose: "maskable",
-      },
-      {
-        src: "/assets/icons/ios/152.png",
-        sizes: "152x152",
-        type: "image/png",
-      },
-      {
-        src: "/assets/icons/ios/144.png",
-        sizes: "144x144",
-        type: "image/png",
-      },
-      {
-        src: "/assets/icons/ios/120.png",
-        sizes: "120x120",
-        type: "image/png",
-      },
-      // Android Icons
+      // iOS
+      { src: "/assets/icons/ios/120.png", sizes: "120x120", type: "image/png" },
+      { src: "/assets/icons/ios/152.png", sizes: "152x152", type: "image/png" },
+      { src: "/assets/icons/ios/180.png", sizes: "180x180", type: "image/png", purpose: "maskable" },
+      { src: "/assets/icons/ios/1024.png", sizes: "1024x1024", type: "image/png" },
+
+      // Android
+      { src: "/assets/icons/android/android-launchericon-144-144.png", sizes: "144x144", type: "image/png" },
+      { src: "/assets/icons/android/android-launchericon-192-192.png", sizes: "192x192", type: "image/png" },
       {
         src: "/assets/icons/android/android-launchericon-512-512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
       },
-      {
-        src: "/assets/icons/android/android-launchericon-192-192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        src: "/assets/icons/android/android-launchericon-144-144.png",
-        sizes: "144x144",
-        type: "image/png",
-      },
-      // Fallback icons
-      {
-        src: "/assets/icons/ios/512.png",
-        sizes: "512x512",
-        type: "image/png",
-      },
+
+      // Windows 11 / Microsoft
+      { src: "/assets/icons/windows11/SmallTile.scale-100.png", sizes: "71x71", type: "image/png" },
+      { src: "/assets/icons/windows11/SmallTile.scale-200.png", sizes: "142x142", type: "image/png" },
+      { src: "/assets/icons/windows11/LargeTile.scale-100.png", sizes: "150x150", type: "image/png" },
+      { src: "/assets/icons/windows11/LargeTile.scale-200.png", sizes: "300x300", type: "image/png" },
+      { src: "/assets/icons/windows11/StoreLogo.scale-100.png", sizes: "50x50", type: "image/png" },
+      { src: "/assets/icons/windows11/Wide310x150Logo.scale-100.png", sizes: "310x150", type: "image/png" },
     ],
     shortcuts: [
       {
@@ -71,7 +193,7 @@ export default function manifest(): MetadataRoute.Manifest {
         url: "/en/sessions/new",
         icons: [
           {
-            src: "/assets/icons/ios/192.png",
+            src: "/assets/icons/android/android-launchericon-192-192.png",
             sizes: "192x192",
             type: "image/png",
           },
@@ -84,7 +206,7 @@ export default function manifest(): MetadataRoute.Manifest {
         url: "/en/insights",
         icons: [
           {
-            src: "/assets/icons/ios/192.png",
+            src: "/assets/icons/android/android-launchericon-192-192.png",
             sizes: "192x192",
             type: "image/png",
           },
@@ -97,7 +219,7 @@ export default function manifest(): MetadataRoute.Manifest {
         url: "/en/sessions",
         icons: [
           {
-            src: "/assets/icons/ios/192.png",
+            src: "/assets/icons/android/android-launchericon-192-192.png",
             sizes: "192x192",
             type: "image/png",
           },
@@ -107,68 +229,3 @@ export default function manifest(): MetadataRoute.Manifest {
     display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
   };
 }
-
-// import { appIcons } from "@/metadata/mirael";
-// import { Metadata } from "next";
-
-// export default function manifest(): Metadata {
-//   return {
-//     title: "Mirael — A Gentle Companion for Emotional Clarity",
-//     description:
-//       "Mirael is a soft and emotionally intelligent space for high-functioning yet emotionally exhausted women to reconnect with themselves, gain clarity, and find gentle insight.",
-//     keywords: [
-//       "emotional wellness",
-//       "self-awareness",
-//       "burnout recovery",
-//       "CBT",
-//       "emotional exhaustion",
-//       "women mental health",
-//       "introspective app",
-//       "gentle companion",
-//       "Mirael",
-//       "healing",
-//       "clarity",
-//     ],
-//     applicationName: "Mirael",
-//     authors: [{ name: "Mirael" }],
-//     creator: "Mirael",
-//     category: "health",
-//     //colorScheme: "light dark",
-//     metadataBase: new URL("https://mirael.app"), // Replace with actual domain
-//     openGraph: {
-//       title: "Mirael — A Gentle Companion for Emotional Clarity",
-//       description:
-//         "Designed for emotionally exhausted, high-functioning women. Mirael helps you reconnect with your inner self and find peace through introspective flow.",
-//       url: "https://mirael.app",
-//       siteName: "Mirael",
-//       images: [
-//         {
-//           url: "/og/mirael-cover.png",
-//           width: 1200,
-//           height: 630,
-//           alt: "Mirael App Open Graph Cover",
-//         },
-//       ],
-//       locale: "en_US",
-//       type: "website",
-//     },
-//     // icons: {
-//     //   apple: {
-//     //     sizes: "180x180",
-//     //     url: "/apple-touch-icon.png",
-//     //   },
-//     // },
-//     //icons: appIcons.map(({ sizes, src }) => ({ url: `/assets/icons/${src}`, sizes, type: "image/png" })),
-
-//     // Remove this line - Next.js 15 auto-generates from manifest.ts
-//     // manifest: "/site.webmanifest",
-//     twitter: {
-//       card: "summary_large_image",
-//       title: "Mirael — A Gentle Companion for Emotional Clarity",
-//       description:
-//         "Mirael is an emotionally intelligent app helping high-functioning women navigate disconnection, burnout, and emotional numbness with grace.",
-//       creator: "@miraelapp", // optional
-//       images: ["/og/mirael-cover.png"],
-//     },
-//   };
-// }

@@ -122,7 +122,7 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
       {/* Product Summary */}
       <div className="bg-gray-50 p-4 rounded-lg">
         <h3 className="font-semibold text-lg">
-          {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} Pack — {timeFrame} weeks of support
+          {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} Pack - {timeFrame} weeks of support
         </h3>
         <p className="text-sm text-gray-600 mt-1">~{product.credits.toLocaleString()} credits, automatically applied</p>
       </div>

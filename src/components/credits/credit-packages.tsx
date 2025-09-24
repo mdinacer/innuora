@@ -58,7 +58,7 @@ export function CreditPackages({
   // const getPackageTitle = useCallback(
   //   (key: string, credits: number): string => {
   //     const timeFrame = getPackageTimeFrame(credits);
-  //     return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack — ${timeFrame}`;
+  //     return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack - ${timeFrame}`;
   //   },
   //   [getPackageTimeFrame]
   // );

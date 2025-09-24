@@ -234,7 +234,7 @@ export const METADATA: Metadata = {
   },
 
   openGraph: {
-    title: `${APP_CONFIG.name} — AI Emotional Companion for High-Functioning Women`,
+    title: `${APP_CONFIG.name} - AI Emotional Companion for High-Functioning Women`,
     description: `${APP_CONFIG.name} helps high-functioning women overcome emotional exhaustion, burnout, overwhelm, and perfectionism by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
     url: APP_CONFIG.domains.primary,
     siteName: APP_CONFIG.name,
@@ -252,7 +252,7 @@ export const METADATA: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: `${APP_CONFIG.name} — AI Emotional Companion for High-Functioning Women`,
+    title: `${APP_CONFIG.name} - AI Emotional Companion for High-Functioning Women`,
     description: `${APP_CONFIG.name} helps high-functioning women overcome emotional exhaustion, burnout, overwhelm, and perfectionism by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
     creator: APP_CONFIG.social.twitter.creator,
     images: ["/og/innuora-cover.png"],

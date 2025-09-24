@@ -125,7 +125,7 @@ export const AVATAR_LETTERS = {
 export const APP_NAMES = {
   full: APP_CONFIG.name,
   short: APP_CONFIG.name,
-  taglined: `${APP_CONFIG.name} — ${APP_CONFIG.tagline}`,
+  taglined: `${APP_CONFIG.name} - ${APP_CONFIG.tagline}`,
   withAI: `${APP_CONFIG.name} AI`,
 } as const;
 

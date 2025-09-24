@@ -90,7 +90,7 @@ export const CREDIT_CONFIG = {
 //    */
 //   getConsumptionFeedback: (creditsUsed: number, remainingBalance: number): string => {
 //     const usdCost = (creditsUsed * 0.005).toFixed(2); // Assuming 1 credit = $0.005
-//     return `Today's reflection: ${CreditUtils.formatCreditsForDisplay(creditsUsed)} credits (≈ $${usdCost}) — balance: ${CreditUtils.formatCreditsForDisplay(remainingBalance)} credits`;
+//     return `Today's reflection: ${CreditUtils.formatCreditsForDisplay(creditsUsed)} credits (≈ $${usdCost}) - balance: ${CreditUtils.formatCreditsForDisplay(remainingBalance)} credits`;
 //   },
 
 //   /**
@@ -157,7 +157,7 @@ export const CreditUXUtils = {
 
   getConsumptionFeedback: (creditsUsed: number, remainingBalance: number): string => {
     const usdCost = (creditsUsed * 0.05).toFixed(2); // assuming 1 credit ≈ $0.05 perceived value
-    return `Today's reflection: ${CreditUtils.formatCreditsForDisplay(creditsUsed)} credits (≈ $${usdCost}) — balance: ${CreditUtils.formatCreditsForDisplay(remainingBalance)} credits`;
+    return `Today's reflection: ${CreditUtils.formatCreditsForDisplay(creditsUsed)} credits (≈ $${usdCost}) - balance: ${CreditUtils.formatCreditsForDisplay(remainingBalance)} credits`;
   },
 
   getLowBalanceWarning: (credits: number): string => {
