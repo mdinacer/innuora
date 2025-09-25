@@ -6,8 +6,8 @@ import { AppLocales } from ".";
 const i18nConfig = {
   locales: ["en", "ar", "fr"],
   defaultLocale: "en",
-  serverSetCookie: "if-empty",
-  prefixDefault: false,
+  serverSetCookie: "always",
+  prefixDefault: true,
 } satisfies Config;
 
 export default i18nConfig;
