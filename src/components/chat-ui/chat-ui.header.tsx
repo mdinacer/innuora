@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 
 import ChatUIThemeToggle from "@/components/chat-ui/chat-ui.theme-toggle";
+import { APP_CONFIG } from "@/config/app";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
 const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActions }) => {
   const { t } = useTranslation("common");
   const defaultData = {
-    title: t("chat-headers.default-session.title", { defaultValue: "Mirael" }),
+    title: t("chat-headers.default-session.title", { defaultValue: APP_CONFIG.name }),
     subtitle: t("chat-headers.default-session.subtitle", { defaultValue: "Your emotional mirror" }),
     avatarLetter: t("avatar-letter", { defaultValue: "M" }),
   };

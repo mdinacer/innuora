@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -9,12 +9,9 @@ import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-c
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
 import LoadingComponent from "@/components/loading-component";
-import { PostSessionMoodPrompt } from "@/components/mood/mood-integration-hooks";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
-import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { APP_CONFIG } from "@/config/app";
 import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
-import { Session } from "@/domains/open-chat/open-chat.types";
 import { AppLocales } from "@/lib/i18n";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
@@ -25,8 +22,6 @@ interface Props {
 const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
   const [creditsError, setCreditsError] = useState<{ error: string; cost: number } | null>(null);
-  const [showPostSessionMood, setShowPostSessionMood] = useState(false);
-  const [sessionEnded, setSessionEnded] = useState(false);
 
   const {
     t,
@@ -43,7 +38,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   const { title, subtitle } = useMemo(
     () => ({
-      title: session?.title || t("header.title", { defaultValue: "Welcome to Mirael" }),
+      title: session?.title || t("header.title", { defaultValue: `Welcome to ${APP_CONFIG.name}` }),
       subtitle: session?.subtitle || t("header.subtitle", { defaultValue: "A gentle space to begin your reflection" }),
     }),
     [session?.subtitle, session?.title, t]
@@ -72,8 +67,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
       switch (action) {
         case "reset":
           resetSession();
-          setSessionEnded(false);
-          setShowPostSessionMood(false);
+
           break;
         case "end":
           // Check if session has meaningful content before showing mood prompt
@@ -84,8 +78,6 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
           // Show mood prompt if user has actively participated in conversation
           if (hasUserInput && hasConversation && session?.userId) {
-            setSessionEnded(true);
-            setShowPostSessionMood(true);
           } else {
             // No meaningful conversation or not logged in, just navigate away
             router.push("/sessions");
@@ -149,23 +141,6 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
         <div className="fixed top-20 inset-x-6 z-50 max-w-lg mx-auto">
           <InsufficientCreditsWarning onPurchaseClick={() => router.push("/pricing")} />
         </div>
-      )}
-
-      {/* Post-Session Mood Prompt */}
-      {showPostSessionMood && sessionEnded && (
-        <PostSessionMoodPrompt
-          sessionId={sessionId}
-          onComplete={() => {
-            setShowPostSessionMood(false);
-            setSessionEnded(false);
-            router.push("/sessions");
-          }}
-          onDismiss={() => {
-            setShowPostSessionMood(false);
-            setSessionEnded(false);
-            router.push("/sessions");
-          }}
-        />
       )}
 
       <Container

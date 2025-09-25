@@ -34,14 +34,13 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  auditLogs          AuditLog[]
-  config             UserConfig?
-  profile            Profile?
-  sessions           Session[]
-  creditTransactions CreditTransaction[]
-  subscriptions      Subscription[]
+  auditLogs            AuditLog[]
+  config               UserConfig?
+  profile              Profile?
+  sessions             Session[]
+  creditTransactions   CreditTransaction[]
+  subscriptions        Subscription[]
   subscriptionRenewals SubscriptionRenewal[]
-  moodEntries        MoodEntry[]
 
   @@map("users")
 }
@@ -69,7 +68,6 @@ model Profile {
 
   @@map("profiles")
 }
-
 
 model UserConfig {
   // Identifiers
@@ -104,18 +102,18 @@ model AuditLog {
   user   User?   @relation(fields: [userId], references: [authId], onDelete: Cascade)
 
   // Core logging fields
-  operation String              // Clean operation name (e.g., "user_signup", "session_create")
-  level     LogLevel            // Log level enum
-  message   String              // Human-readable message
-  
+  operation String // Clean operation name (e.g., "user_signup", "session_create")
+  level     LogLevel // Log level enum
+  message   String // Human-readable message
+
   // Context fields
-  errorCode String?             // Structured error codes
-  sessionId String?    @map("session_id")        // Session correlation
-  userAgent String?    @map("user_agent")        // Client information
-  ipAddress String?    @map("ip_address")        // Request IP
-  
+  errorCode String? // Structured error codes
+  sessionId String? @map("session_id") // Session correlation
+  userAgent String? @map("user_agent") // Client information
+  ipAddress String? @map("ip_address") // Request IP
+
   // Additional context
-  metadata  Json?               // Flexible additional data
+  metadata Json? // Flexible additional data
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
@@ -156,9 +154,6 @@ model Session {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  // Relationships
-  moodEntries     MoodEntry[]
-
   @@map("sessions")
 }
 
@@ -172,10 +167,10 @@ model CreditTransaction {
 
   // Transaction details
   type      CreditTransactionType // CREDIT | DEBIT
-  amount    Int                   // Credits amount (always positive)
-  reason    String                // "ai_usage", "purchase", "admin_adjustment"
+  amount    Int // Credits amount (always positive)
+  reason    String // "ai_usage", "purchase", "admin_adjustment"
   sessionId String?               @map("session_id") // Link to session if AI usage
-  
+
   // Metadata for context
   metadata Json? // Additional context (model used, tokens, etc.)
 
@@ -188,9 +183,6 @@ model CreditTransaction {
   @@index([reason])
   @@map("credit_transactions")
 }
-
-
-
 
 model Tester {
   // Identifiers
@@ -219,101 +211,78 @@ model Tester {
 
 model Subscription {
   // Identifiers
-  id              String @id @default(cuid())
-  stripeId        String @unique @map("stripe_id") // Stripe subscription ID
-  customerId      String @map("customer_id") // Stripe customer ID
-  
+  id         String @id @default(cuid())
+  stripeId   String @unique @map("stripe_id") // Stripe subscription ID
+  customerId String @map("customer_id") // Stripe customer ID
+
   // Foreign keys
-  userId          String @map("user_id")
-  
+  userId String @map("user_id")
+
   // Subscription details
-  status          SubscriptionStatus
-  currentPeriodStart DateTime @map("current_period_start")
-  currentPeriodEnd   DateTime @map("current_period_end")
-  cancelAtPeriodEnd  Boolean @default(false) @map("cancel_at_period_end")
-  canceledAt      DateTime? @map("canceled_at")
-  
+  status             SubscriptionStatus
+  currentPeriodStart DateTime           @map("current_period_start")
+  currentPeriodEnd   DateTime           @map("current_period_end")
+  cancelAtPeriodEnd  Boolean            @default(false) @map("cancel_at_period_end")
+  canceledAt         DateTime?          @map("canceled_at")
+
   // Plan details
-  planId          String @map("plan_id") // Stripe price ID
-  creditsPerPeriod Int @map("credits_per_period")
-  priceAmountCents Int @map("price_amount_cents")
-  currency        String @default("usd")
-  
+  planId           String @map("plan_id") // Stripe price ID
+  creditsPerPeriod Int    @map("credits_per_period")
+  priceAmountCents Int    @map("price_amount_cents")
+  currency         String @default("usd")
+
   // Billing
-  trialStart      DateTime? @map("trial_start")
-  trialEnd        DateTime? @map("trial_end")
-  
+  trialStart DateTime? @map("trial_start")
+  trialEnd   DateTime? @map("trial_end")
+
   // Metadata
-  metadata        Json @default("{}")
-  
-  // Timestamps
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  
-  // Relationships
-  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  renewals        SubscriptionRenewal[]
-  
-  @@map("subscriptions")
-}
-
-model SubscriptionRenewal {
-  // Identifiers
-  id              String @id @default(cuid())
-  
-  // Foreign keys
-  subscriptionId  String @map("subscription_id")
-  userId          String @map("user_id")
-  
-  // Renewal details
-  periodStart     DateTime @map("period_start")
-  periodEnd       DateTime @map("period_end")
-  creditsGranted  Int @map("credits_granted")
-  amountPaidCents Int @map("amount_paid_cents")
-  
-  // Stripe details
-  invoiceId       String? @map("invoice_id") // Stripe invoice ID
-  paymentIntentId String? @map("payment_intent_id") // Stripe payment intent ID
-  
-  // Status
-  status          RenewalStatus @default(pending)
-  processedAt     DateTime? @map("processed_at")
-  
-  // Metadata
-  metadata        Json @default("{}")
-  
-  // Timestamps
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  
-  // Relationships
-  subscription    Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("subscription_renewals")
-}
-
-model MoodEntry {
-  // Identifiers
-  id String @id @default(cuid())
-
-  // Foreign keys
-  userId    String  @map("user_id")
-  sessionId String? @map("session_id")
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  session   Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
-
-  // Business fields
-  moodValue Int                @map("mood_value") // 1-10 scale
-  emotions  EmotionCategory[]  @default([])
-  notes     String?
-  context   Json?              // MoodContext as JSON
+  metadata Json @default("{}")
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("mood_entries")
+  // Relationships
+  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  renewals SubscriptionRenewal[]
+
+  @@map("subscriptions")
+}
+
+model SubscriptionRenewal {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  subscriptionId String @map("subscription_id")
+  userId         String @map("user_id")
+
+  // Renewal details
+  periodStart     DateTime @map("period_start")
+  periodEnd       DateTime @map("period_end")
+  creditsGranted  Int      @map("credits_granted")
+  amountPaidCents Int      @map("amount_paid_cents")
+
+  // Stripe details
+  invoiceId       String? @map("invoice_id") // Stripe invoice ID
+  paymentIntentId String? @map("payment_intent_id") // Stripe payment intent ID
+
+  // Status
+  status      RenewalStatus @default(pending)
+  processedAt DateTime?     @map("processed_at")
+
+  // Metadata
+  metadata Json @default("{}")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscription_renewals")
 }
 
 // =========================
@@ -327,8 +296,8 @@ enum ModelCode {
 }
 
 enum CreditTransactionType {
-  CREDIT  // User receives credits (purchase, bonus, refund)
-  DEBIT   // User spends credits (AI usage)
+  CREDIT // User receives credits (purchase, bonus, refund)
+  DEBIT // User spends credits (AI usage)
 }
 
 enum UserRole {
@@ -336,7 +305,6 @@ enum UserRole {
   user
   tester
 }
-
 
 enum AgeGroup {
   Age18_24
@@ -421,17 +389,3 @@ enum RenewalStatus {
   failed
   skipped
 }
-
-enum EmotionCategory {
-  joy
-  gratitude
-  calm
-  confident
-  neutral
-  worried
-  sad
-  angry
-  overwhelmed
-  exhausted
-}
-

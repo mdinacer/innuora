@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { NextRequest, NextResponse } from "next/server";
 
 import { AppError } from "@/lib/errors/app-error";

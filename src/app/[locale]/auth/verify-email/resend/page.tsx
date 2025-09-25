@@ -2,9 +2,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { CircleAlertIcon, MailIcon, RefreshCcwIcon } from "lucide-react";
 
+import { APP_CONFIG } from "@/config/app";
+
 export const metadata: Metadata = {
-  title: "Resend Verification Email - Mirael",
-  description: "Request a new email verification link for your Mirael account.",
+  title: `Resend Verification Email - ${APP_CONFIG.name}`,
+  description: `Request a new email verification link for your ${APP_CONFIG.name} account.`,
   robots: {
     index: false,
     follow: false,
@@ -106,7 +108,7 @@ export default async function EmailValidationResendRoute() {
         <div className="text-center mt-6 space-y-3">
           <p className="text-sm text-mir-text-secondary">
             Still having trouble?
-            <Link href="mailto:support@mirael.app" className="text-mir-bg-accent hover:underline">
+            <Link href={`"mailto:${APP_CONFIG.contact.support}"`} className="text-mir-bg-accent hover:underline">
               Contact support
             </Link>
           </p>

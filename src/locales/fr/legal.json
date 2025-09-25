@@ -120,7 +120,7 @@
     "yourRights": {
       "title": "Vos droits",
       "paragraphs": [
-        "Vous pouvez demander l’accès, la correction, la suppression ou l’export de vos données à tout moment. Contactez-nous à privacy@mirael.life.",
+        "Vous pouvez demander l’accès, la correction, la suppression ou l’export de vos données à tout moment. Contactez-nous à {{privacy_email}}.",
         "Si vous êtes situé dans l’UE/EEE ou au Royaume-Uni, vous bénéficiez des droits prévus par le RGPD. Les résidents de Californie disposent également de droits en vertu du CCPA."
       ]
     },

@@ -227,7 +227,7 @@
       "subtitle": "Découvrez comment {{app_name}} va au-delà des conseils génériques en révélant les sources de stress profondes et en proposant des solutions pratiques et claires.",
       "conversation": [
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Bonjour, je vois que c’est un moment stressant pour toi. Prenons une respiration ensemble. Peux-tu me dire ce qui te pèse le plus en ce moment ?"
         },
         {
@@ -239,7 +239,7 @@
           "text": "On dirait que tu es sous beaucoup de pression. Peut-être que diviser la préparation du contrat en petites étapes pourrait aider à réduire le stress."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Je comprends la **responsabilité énorme** que tu portes. Il y a une **règle silencieuse** ici : tu dois réussir parfaitement, sinon c’est la catastrophe. Cette croyance peut te serrer la poitrine et faire tourner tes pensées. Quelles sensations physiques remarques-tu en pensant à ce contrat ?"
         },
         {
@@ -251,7 +251,7 @@
           "text": "Imaginer le pire peut augmenter l’anxiété. Se concentrer sur des étapes concrètes ou ta préparation peut t’aider à te sentir plus en contrôle."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "C’est ce qu’on appelle le **catastrophisme**, imaginer les pires résultats avant qu’ils n’arrivent. Reconnaître ce schéma est la première étape. Tu te prépares, et la préparation est ce qui compte. Voyons **une chose que tu peux contrôler maintenant**."
         },
         {
@@ -263,7 +263,7 @@
           "text": "Revoir les détails peut t’aider à te sentir plus préparée. C’est une étape pratique pour réduire l’incertitude."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactement. C’est une **étape concrète**. Se concentrer sur ce que tu peux contrôler aide à calmer la tempête mentale. Remarque que se préparer n’est pas un échec, c’est de la compétence. Comment te sens-tu en accomplissant cette petite étape ?"
         },
         {
@@ -275,7 +275,7 @@
           "text": "Partager la responsabilité ou parler avec un collègue peut aider à soulager ce sentiment. Tu n’as pas à tout porter seule."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Tu remarques la **pression de tout porter seule**, et c’est important. Et si ton rôle était de guider l’équipe plutôt que de tout contrôler toi-même ? Déléguer de petites tâches pourrait alléger le fardeau tout en gardant la responsabilité."
         },
         {
@@ -287,7 +287,7 @@
           "text": "Déléguer à un membre de l’équipe de confiance est une étape pratique. Cela peut réduire ton stress tout en maintenant la supervision."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactement. C’est un **changement puissant** - tu fais confiance à ton équipe tout en te faisant confiance. Remarque comment le stress diminue dans ton corps quand tu partages la responsabilité. Même de petites étapes défient l’ancienne règle qui dit que tu dois tout faire parfaitement."
         },
         {
@@ -299,7 +299,7 @@
           "text": "Même de petits changements dans la charge de travail peuvent avoir un effet positif sur le stress et la performance."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Maintenant, explorons la **pression interne**. Tu crains le jugement et l’échec devant ton équipe. C’est beaucoup de **pression intérieure**. Quelle histoire te racontes-tu quand tu imagines échouer ?"
         },
         {
@@ -311,7 +311,7 @@
           "text": "La peur du jugement est fréquente. Il peut être utile de considérer l’échec comme une opportunité d’apprentissage plutôt qu’un reflet de ta valeur."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Je comprends la **peur du jugement**. C’est une croyance centrale qui influence ton stress. Tu n’es pas tes erreurs - tu es une professionnelle compétente face à un défi. Si tu observes cette peur sans agir dessus, comment cela change-t-il ce que tu ressens dans ton corps ?"
         },
         {
@@ -319,7 +319,7 @@
           "text": "C’est toujours tendu, mais plus conscient… pas paniqué."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactement. C’est la différence entre **surcharge réactive** et **conscience consciente**. Tu peux ressentir la peur sans la laisser contrôler tes actions. Essayons de nommer un aspect positif de ta préparation ou de tes compétences."
         },
         {
@@ -331,7 +331,7 @@
           "text": "Reconnaître ta préparation aide à renforcer la confiance. Concentre-toi sur tes forces pour contrer l’anxiété."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Parfait. C’est un **ancrage dans la compétence**. Chaque fois que ton esprit imagine le pire, tu peux revenir à ce fait concret : tu es préparée et compétente. Comment te sens-tu avec cela ?"
         },
         {
@@ -339,7 +339,7 @@
           "text": "Je me sens un peu plus stable et plus en contrôle."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Maintenant, voyons ce que **demander du soutien** pourrait signifier. Ce n’est pas une faiblesse, c’est une force. Même demander un avis ou un retour à un membre de l’équipe peut réduire la pression. Qui pourrais-tu approcher en toute confiance ?"
         },
         {
@@ -351,7 +351,7 @@
           "text": "Obtenir des retours de quelqu’un de confiance est une façon concrète de réduire le stress et de vérifier les éventuelles erreurs."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Exactement. C’est une **collaboration stratégique**. Tu ne perds pas le contrôle - tu amplifies l’efficacité tout en réduisant la pression intérieure. Remarque comment tu te sens même en pensant à partager la tâche."
         },
         {
@@ -363,7 +363,7 @@
           "text": "Partager les tâches et responsabilités peut réduire la charge émotionnelle et aider à maintenir la concentration."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Avant de conclure, intégrons les apprentissages d’aujourd’hui. Tu as pratiqué **préparation, délégation, conscience émotionnelle et collaboration**. Tu as défié l’ancienne règle qui disait que tu devais tout faire seule et parfaitement. Remarque le changement : ta force ne réside pas dans la perfection, mais dans l’action consciente et délibérée."
         },
         {
@@ -375,14 +375,14 @@
           "text": "Reconnaître tes progrès et les construire aidera à maintenir la confiance et à réduire le stress avec le temps."
         },
         {
-          "role": "mirael",
+          "role": "app",
           "text": "Tu as accompli quelque chose de significatif aujourd’hui. Tu as reconnu tes peurs, ressenti ton corps, défié les anciennes règles et pratiqué l’auto-compassion. C’est la véritable force. Tu peux aborder ta réunion demain avec clarté et concentration. Tu es prête."
         }
       ],
       "legend": {
         "user": "Utilisateur",
         "generic": "IA Générique",
-        "mirael": "{{app_name}}"
+        "app": "{{app_name}}"
       },
       "insights": {
         "generic": {
@@ -394,7 +394,7 @@
             "Manque d’occasions d’offrir une compréhension plus profonde ou un soulagement"
           ]
         },
-        "mirael": {
+        "app": {
           "title": "Ce qui différencie {{app_name}}",
           "points": [
             "Remarque quand vos pensées amplifient les situations de manière excessive",
@@ -558,6 +558,40 @@
         },
         "cancel": "Annuler"
       }
+    }
+  },
+  "settings": {
+    "sections": {
+      "profile": "Profil",
+      "appearance": "Apparence",
+      "notifications": "Notifications",
+      "privacy": "Confidentialité et sécurité",
+      "security": "Sécurité",
+      "billing": "Facturation et crédits",
+      "data": "Données et stockage"
+    },
+    "profile": {
+      "title": "Profil",
+      "anonymousUser": "Utilisateur Anonyme",
+      "verified": "Vérifié",
+      "memberSince": "Membre depuis {{date}}",
+      "displayName": "Nom d'affichage",
+      "enterDisplayName": "Entrez votre nom d'affichage",
+      "notSet": "Non défini",
+      "emailAddress": "Adresse e-mail",
+      "emailVerificationNotice": "Les modifications de l'e-mail nécessitent une vérification",
+      "language": "Langue",
+      "cancel": "Annuler",
+      "editProfile": "Modifier le profil",
+      "saveChanges": "Enregistrer les modifications",
+      "accountInformation": "Informations du compte",
+      "userId": "ID utilisateur",
+      "accountType": "Type de compte",
+      "accountStatus": "Statut du compte",
+      "active": "Actif",
+      "verification": "Vérification",
+      "emailVerified": "E-mail vérifié",
+      "emailNotVerified": "E-mail non vérifié"
     }
   }
 }

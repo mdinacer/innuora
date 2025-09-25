@@ -5,7 +5,6 @@ import React from "react";
 import SessionDetailsAnalysis from "@/components/sessions/session-details/session-details.analysis";
 import SessionDetailsDangerZone from "@/components/sessions/session-details/session-details.danger-zone";
 import SessionDetailsHeader from "@/components/sessions/session-details/session-details.header";
-import SessionDetailsMood from "@/components/sessions/session-details/session-details.mood";
 import SessionDetailsQuickActions from "@/components/sessions/session-details/session-details.quick-actions";
 import SessionDetailsSnapshot from "@/components/sessions/session-details/session-details.snapshot";
 import SessionDetailsSummary from "@/components/sessions/session-details/session-details.summary";
@@ -42,9 +41,6 @@ const SessionDetailsPage: React.FC<Props> = ({ session, className }) => {
         <div className="space-y-6">
           {/* <!-- Quick Actions --> */}
           <SessionDetailsQuickActions session={session} />
-
-          {/* <!-- Mood Context --> */}
-          <SessionDetailsMood session={session} />
 
           {/* <!-- Cloud Sync Status --> */}
           <SessionDetailsSyncStatus session={session} />

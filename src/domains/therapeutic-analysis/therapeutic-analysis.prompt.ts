@@ -1,9 +1,11 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
+import { APP_CONFIG } from "@/config/app";
+
 const THERAPEUTIC_ANALYSIS_PROMPT: ChatCompletionMessageParam = {
   role: "system",
   content: `
-CBT & Mirael Analysis for Module Selection:
+CBT & ${APP_CONFIG.name} Analysis for Module Selection:
 
 DISTORTIONS (Burns): all-or-nothing, overgeneralization, mental_filter, discounting_positives, jumping_conclusions, magnification_minimization, emotional_reasoning, should_statements, labeling, personalization, blame
 
@@ -57,7 +59,7 @@ OUTPUT REQUIREMENTS:
 - Return ONLY valid JSON; no explanation
 - Core, process, and utility modules must reflect **highest priority trigger**
 - Arrays: include only significant items
-- Maintain all fields for Mirael’s modules
+- Maintain all fields for ${APP_CONFIG.name}’s modules
 
 JSON STRUCTURE:
 {
@@ -81,7 +83,7 @@ JSON STRUCTURE:
 // const THERAPEUTIC_ANALYSIS_PROMPT: ChatCompletionMessageParam = {
 //   role: "system",
 //   content: `
-// CBT & Mirael Analysis for Module Selection:
+// CBT & ${APP_CONFIG.name} Analysis for Module Selection:
 
 // DISTORTIONS (Burns): all-or-nothing, overgeneralization, mental_filter, discounting_positives, jumping_conclusions, magnification_minimization, emotional_reasoning, should_statements, labeling, personalization, blame
 
@@ -134,7 +136,7 @@ JSON STRUCTURE:
 // - Return ONLY valid JSON; no explanation
 // - Core, process, and utility modules must reflect **highest priority trigger**
 // - Arrays: include only significant items
-// - Maintain all fields for Mirael’s modules
+// - Maintain all fields for ${APP_CONFIG.name}’s modules
 
 // JSON STRUCTURE:
 // {

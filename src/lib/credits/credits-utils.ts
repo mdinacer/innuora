@@ -159,7 +159,7 @@ export const CREDIT_PACKAGES = {
     price: 5.0,
     credits: 1000,
     bonus: 0,
-    description: "Perfect for trying Mirael",
+    description: "Perfect for trying Innuora",
   },
   regular: {
     price: 10.0,
