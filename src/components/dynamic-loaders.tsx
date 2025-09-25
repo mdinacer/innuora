@@ -40,26 +40,6 @@ export const FlowChat = dynamic(
   }
 );
 
-// Virtualized chat components (performance optimized for large message histories)
-// export const VirtualizedOpenChat = dynamic(
-//   () => import("@/components/chat-interface").then((mod) => ({ default: mod.VirtualizedOpenChat })),
-//   {
-//     loading: () => <LoadingSpinner className="h-96" />,
-//   }
-// );
-
-// export const VirtualizedFlowChat = dynamic(
-//   () => import("@/components/chat-interface").then((mod) => ({ default: mod.VirtualizedFlowChat })),
-//   {
-//     loading: () => <LoadingSpinner className="h-96" />,
-//   }
-// );
-
-// Insights components (AI-heavy)
-export const IntegratedInsightsPage = dynamic(() => import("@/components/insights/integrated-insights-page"), {
-  loading: () => <LoadingSpinner className="h-96" />,
-});
-
 // Mood tracking components
 export const MoodCheckIn = dynamic(
   () => import("@/components/mood/mood-check-in").then((mod) => ({ default: mod.MoodCheckIn })),
@@ -111,7 +91,6 @@ export const CreditsTransactionHistory = dynamic(() => import("@/components/cred
 export const DynamicPages = {
   SessionPage,
   SessionDetails,
-  IntegratedInsightsPage,
   BillingManagement,
   SettingsPage,
 };
@@ -119,8 +98,6 @@ export const DynamicPages = {
 export const DynamicChat = {
   OpenChat,
   FlowChat,
-  // VirtualizedOpenChat,
-  // VirtualizedFlowChat,
 };
 
 export const DynamicMood = {

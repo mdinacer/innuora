@@ -9,6 +9,7 @@ export interface UserDataStoreState extends PersistedStoreBaseProps {
   user: User | null;
   config: UserConfig | null;
   profile: Profile | null;
+  email: string | null;
 
   // Getters
   getUser: () => User | null;
@@ -25,6 +26,7 @@ export interface UserDataStoreState extends PersistedStoreBaseProps {
   setUser: (user: User | null) => void;
   setConfig: (config: UserConfig | null) => void;
   setProfile: (profile: Profile | null) => void;
+  setEmail: (email: string | null) => void;
   setData: (data: { user: User | null; config: UserConfig | null; profile: Profile | null }) => void;
 
   // Updaters
@@ -37,11 +39,12 @@ export interface UserDataStoreState extends PersistedStoreBaseProps {
   clearAll: () => void;
 }
 
-const initialState: Pick<UserDataStoreState, "user" | "config" | "profile" | "hasHydrated"> = {
+const initialState: Pick<UserDataStoreState, "user" | "config" | "profile" | "hasHydrated" | "email"> = {
   user: null,
   config: null,
   profile: null,
   hasHydrated: false,
+  email: null,
 };
 
 export const useUserDataStore = create<UserDataStoreState>()(
@@ -61,6 +64,7 @@ export const useUserDataStore = create<UserDataStoreState>()(
       }),
 
       // Setters
+      setEmail: (email) => set({ email }),
       setUser: (user) => set({ user }),
       setConfig: (config) => set({ config }),
       setProfile: (profile) => set({ profile }),

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, Eye, Key, Monitor, Shield, Smartphone } from "lucide-react";
+import { Clock, Eye, Key, Shield } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -30,33 +30,6 @@ export default function SecuritySettings(): React.JSX.Element {
     { value: -1, label: "Never" },
   ];
 
-  const mockDevices = [
-    {
-      id: "1",
-      name: "MacBook Pro",
-      type: "desktop",
-      location: "San Francisco, CA",
-      lastActive: "Active now",
-      current: true,
-    },
-    {
-      id: "2",
-      name: "iPhone 15",
-      type: "mobile",
-      location: "San Francisco, CA",
-      lastActive: "2 hours ago",
-      current: false,
-    },
-    {
-      id: "3",
-      name: "Chrome on Windows",
-      type: "desktop",
-      location: "New York, NY",
-      lastActive: "3 days ago",
-      current: false,
-    },
-  ];
-
   return (
     <div className="space-y-8">
       {/* Security Overview */}
@@ -70,25 +43,25 @@ export default function SecuritySettings(): React.JSX.Element {
       {/* Password & Authentication */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Key className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Password & Authentication</h3>
+          <Key className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Password & Authentication</h3>
         </div>
 
         <div className="space-y-4">
           {/* Change Password */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Password</h4>
-              <p className="text-sm text-gray-600">Last changed 3 months ago</p>
+              <h4 className="font-medium">Password</h4>
+              <p className="text-sm">Last changed 3 months ago</p>
             </div>
             <Button variant="outline">Change Password</Button>
           </div>
 
           {/* Two-Factor Authentication */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Two-Factor Authentication</h4>
-              <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
+              <h4 className="font-medium">Two-Factor Authentication</h4>
+              <p className="text-sm">Add an extra layer of security to your account</p>
               {twoFactorEnabled && (
                 <Badge variant="default" className="mt-2 text-xs">
                   Enabled
@@ -123,8 +96,8 @@ export default function SecuritySettings(): React.JSX.Element {
       {/* Session Management */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Session Management</h3>
+          <Clock className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Session Management</h3>
         </div>
 
         <div className="space-y-4">
@@ -148,135 +121,25 @@ export default function SecuritySettings(): React.JSX.Element {
               </select>
             </div>
           </div>
-
-          {/* Login Alerts */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div>
-              <h4 className="font-medium text-gray-900">Login Alerts</h4>
-              <p className="text-sm text-gray-600">Get notified when someone signs into your account</p>
-            </div>
-            <button
-              onClick={() => setLoginAlerts(!loginAlerts)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                loginAlerts ? "bg-blue-600" : "bg-gray-200"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  loginAlerts ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Device Management */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Smartphone className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Device Management</h3>
-        </div>
-
-        <div className="space-y-4">
-          {/* Device Tracking */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div>
-              <h4 className="font-medium text-gray-900">Device Tracking</h4>
-              <p className="text-sm text-gray-600">Keep track of devices that access your account</p>
-            </div>
-            <button
-              onClick={() => setDeviceTracking(!deviceTracking)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                deviceTracking ? "bg-blue-600" : "bg-gray-200"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  deviceTracking ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
-          </div>
-
-          {/* Active Devices */}
-          {deviceTracking && (
-            <div className="space-y-3">
-              <h4 className="font-medium text-gray-900">Active Devices</h4>
-              {mockDevices.map((device) => (
-                <div key={device.id} className="flex items-center justify-between p-4 bg-white border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                      {device.type === "mobile" ? (
-                        <Smartphone className="h-5 w-5 text-gray-600" />
-                      ) : (
-                        <Monitor className="h-5 w-5 text-gray-600" />
-                      )}
-                    </div>
-                    <div>
-                      <h5 className="font-medium text-gray-900 flex items-center gap-2">
-                        {device.name}
-                        {device.current && (
-                          <Badge variant="default" className="text-xs">
-                            Current
-                          </Badge>
-                        )}
-                      </h5>
-                      <p className="text-sm text-gray-600">{device.location}</p>
-                      <p className="text-xs text-gray-500">{device.lastActive}</p>
-                    </div>
-                  </div>
-                  {!device.current && (
-                    <Button variant="outline" size="sm">
-                      Sign Out
-                    </Button>
-                  )}
-                </div>
-              ))}
-
-              <Button variant="outline" className="w-full">
-                Sign Out All Other Devices
-              </Button>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Privacy & Security Settings */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Eye className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Privacy & Security</h3>
+          <Eye className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Privacy & Security</h3>
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Download Your Data</h4>
-              <p className="text-sm text-gray-600">Get a copy of all your data stored with Innuora</p>
+              <h4 className="font-medium">Download Your Data</h4>
+              <p className="text-sm">Get a copy of all your data stored with Innuora</p>
             </div>
             <Button variant="outline">Request Data</Button>
           </div>
         </div>
-      </div>
-
-      {/* Account Security Score */}
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h4 className="font-medium text-gray-900 mb-4">Security Score</h4>
-        <div className="flex items-center gap-4">
-          <div className="flex-1 bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-green-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${twoFactorEnabled ? 85 : 65}%` }}
-            />
-          </div>
-          <span className="font-medium text-gray-900">{twoFactorEnabled ? "85" : "65"}/100</span>
-        </div>
-        <p className="text-sm text-gray-600 mt-2">
-          {twoFactorEnabled
-            ? "Great! Your account is well protected."
-            : "Consider enabling two-factor authentication to improve your score."}
-        </p>
       </div>
 
       {/* Save Button */}

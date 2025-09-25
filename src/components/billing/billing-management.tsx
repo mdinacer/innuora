@@ -15,13 +15,6 @@ import PurchaseHistory from "./purchase-history";
 // Types
 // =========================
 
-interface BillingManagementProps {
-  userId: string;
-  userEmail?: string;
-  userName?: string;
-  className?: string;
-}
-
 // =========================
 // Billing Overview Component
 // =========================
@@ -82,8 +75,9 @@ function BillingOverview() {
 // Main Billing Management Component
 // =========================
 
-export function BillingManagement({ userId, userEmail, userName, className = "" }: BillingManagementProps) {
+export function BillingManagement() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { userId = "", userEmail = "", userName = "", className = "" } = {};
 
   const handlePurchaseSuccess = (result: { creditsAdded: number; newBalance: number }) => {
     // Optionally show a success notification

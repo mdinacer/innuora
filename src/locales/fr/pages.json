@@ -559,5 +559,39 @@
         "cancel": "Annuler"
       }
     }
+  },
+  "settings": {
+    "sections": {
+      "profile": "Profil",
+      "appearance": "Apparence",
+      "notifications": "Notifications",
+      "privacy": "Confidentialité et sécurité",
+      "security": "Sécurité",
+      "billing": "Facturation et crédits",
+      "data": "Données et stockage"
+    },
+    "profile": {
+      "title": "Profil",
+      "anonymousUser": "Utilisateur Anonyme",
+      "verified": "Vérifié",
+      "memberSince": "Membre depuis {{date}}",
+      "displayName": "Nom d'affichage",
+      "enterDisplayName": "Entrez votre nom d'affichage",
+      "notSet": "Non défini",
+      "emailAddress": "Adresse e-mail",
+      "emailVerificationNotice": "Les modifications de l'e-mail nécessitent une vérification",
+      "language": "Langue",
+      "cancel": "Annuler",
+      "editProfile": "Modifier le profil",
+      "saveChanges": "Enregistrer les modifications",
+      "accountInformation": "Informations du compte",
+      "userId": "ID utilisateur",
+      "accountType": "Type de compte",
+      "accountStatus": "Statut du compte",
+      "active": "Actif",
+      "verification": "Vérification",
+      "emailVerified": "E-mail vérifié",
+      "emailNotVerified": "E-mail non vérifié"
+    }
   }
 }

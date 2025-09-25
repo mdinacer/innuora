@@ -45,20 +45,18 @@ export default function PrivacySettings(): React.JSX.Element {
       {/* Data Encryption */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Lock className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Data Encryption</h3>
+          <Lock className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Data Encryption</h3>
         </div>
 
         <div className="space-y-4">
           {/* Session Encryption */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4  rounded-lg">
             <div className="flex items-start gap-3">
               <Lock className="h-5 w-5 text-green-600 mt-0.5" />
               <div>
-                <h4 className="font-medium text-gray-900">End-to-End Encryption</h4>
-                <p className="text-sm text-gray-600">
-                  All your conversations are encrypted locally before being stored
-                </p>
+                <h4 className="font-medium">End-to-End Encryption</h4>
+                <p className="text-sm">All your conversations are encrypted locally before being stored</p>
                 <Badge variant="outline" className="mt-2 text-xs">
                   Always Enabled
                 </Badge>
@@ -70,10 +68,10 @@ export default function PrivacySettings(): React.JSX.Element {
           </div>
 
           {/* Local Storage Encryption */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4  rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Local Storage Encryption</h4>
-              <p className="text-sm text-gray-600">Encrypt data stored on your device for additional security</p>
+              <h4 className="font-medium">Local Storage Encryption</h4>
+              <p className="text-sm">Encrypt data stored on your device for additional security</p>
             </div>
             <button
               onClick={() => setEncryptSessions(!encryptSessions)}
@@ -94,18 +92,16 @@ export default function PrivacySettings(): React.JSX.Element {
       {/* Cloud Sync & Storage */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Globe className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Cloud Sync & Storage</h3>
+          <Globe className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Cloud Sync & Storage</h3>
         </div>
 
         <div className="space-y-4">
           {/* Cloud Sync Toggle */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4  rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Cloud Backup</h4>
-              <p className="text-sm text-gray-600">
-                Securely backup your encrypted sessions to the cloud for access across devices
-              </p>
+              <h4 className="font-medium">Cloud Backup</h4>
+              <p className="text-sm">Securely backup your encrypted sessions to the cloud for access across devices</p>
             </div>
             <button
               onClick={() => setCloudSync(!cloudSync)}
@@ -135,8 +131,8 @@ export default function PrivacySettings(): React.JSX.Element {
       {/* Data Retention */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Data Retention</h3>
+          <Clock className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Data Retention</h3>
         </div>
 
         <div className="space-y-4">
@@ -162,10 +158,10 @@ export default function PrivacySettings(): React.JSX.Element {
           </div>
 
           {/* Auto Delete */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4  rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Automatic Deletion</h4>
-              <p className="text-sm text-gray-600">Automatically delete sessions older than the retention period</p>
+              <h4 className="font-medium">Automatic Deletion</h4>
+              <p className="text-sm">Automatically delete sessions older than the retention period</p>
             </div>
             <button
               onClick={() => setAutoDelete(!autoDelete)}
@@ -186,18 +182,16 @@ export default function PrivacySettings(): React.JSX.Element {
       {/* Analytics & Improvements */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <AlertTriangle className="h-5 w-5 text-gray-600" />
-          <h3 className="text-lg font-medium text-gray-900">Analytics & Improvements</h3>
+          <AlertTriangle className="h-5 w-5" />
+          <h3 className="text-lg font-medium">Analytics & Improvements</h3>
         </div>
 
         <div className="space-y-4">
           {/* Analytics Opt-in */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4  rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Usage Analytics</h4>
-              <p className="text-sm text-gray-600">
-                Share anonymous usage data to help improve Innuora (no conversation content)
-              </p>
+              <h4 className="font-medium">Usage Analytics</h4>
+              <p className="text-sm">Share anonymous usage data to help improve Innuora (no conversation content)</p>
             </div>
             <button
               onClick={() => setAnalyticsOptIn(!analyticsOptIn)}
@@ -214,10 +208,10 @@ export default function PrivacySettings(): React.JSX.Element {
           </div>
 
           {/* Improvement Suggestions */}
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-4  rounded-lg">
             <div>
-              <h4 className="font-medium text-gray-900">Product Improvements</h4>
-              <p className="text-sm text-gray-600">Receive suggestions for new features based on your usage patterns</p>
+              <h4 className="font-medium">Product Improvements</h4>
+              <p className="text-sm">Receive suggestions for new features based on your usage patterns</p>
             </div>
             <button
               onClick={() => setShareImprovements(!shareImprovements)}

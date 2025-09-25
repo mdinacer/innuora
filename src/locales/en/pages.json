@@ -593,5 +593,39 @@
         "cancel": "Cancel"
       }
     }
+  },
+  "settings": {
+    "sections": {
+      "profile": "Profile",
+      "appearance": "Appearance",
+      "notifications": "Notifications",
+      "privacy": "Privacy & Safety",
+      "security": "Security",
+      "billing": "Billing & Credits",
+      "data": "Data & Storage"
+    },
+    "profile": {
+      "title": "Profile",
+      "anonymousUser": "Anonymous User",
+      "verified": "Verified",
+      "memberSince": "Member since {{date}}",
+      "displayName": "Display Name",
+      "enterDisplayName": "Enter your display name",
+      "notSet": "Not set",
+      "emailAddress": "Email Address",
+      "emailVerificationNotice": "Email changes require verification",
+      "language": "Language",
+      "cancel": "Cancel",
+      "editProfile": "Edit Profile",
+      "saveChanges": "Save Changes",
+      "accountInformation": "Account Information",
+      "userId": "User ID:",
+      "accountType": "Account Type:",
+      "accountStatus": "Account Status:",
+      "active": "Active",
+      "verification": "Verification",
+      "emailVerified": "Email Verified",
+      "emailNotVerified": "Email Not Verified"
+    }
   }
 }

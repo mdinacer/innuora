@@ -89,22 +89,14 @@
     "dataWeCollect": {
       "title": "Ce que nous collectons",
       "table": {
-        "headers": [
-          "Catégorie",
-          "Finalité",
-          "Durée de conservation"
-        ],
+        "headers": ["Catégorie", "Finalité", "Durée de conservation"],
         "rows": [
           [
             "Données du compte (email, langue)",
             "Permettre la connexion et définir votre langue",
             "Conservées jusqu’à la suppression de votre compte"
           ],
-          [
-            "Données de session (réponses IA temporaires)",
-            "Fournir des réflexions IA",
-            "Éphémères – non stockées"
-          ],
+          ["Données de session (réponses IA temporaires)", "Fournir des réflexions IA", "Éphémères – non stockées"],
           [
             "Notes de réflexion (si vous les enregistrez)",
             "Vous permettre de revisiter vos insights passés",
