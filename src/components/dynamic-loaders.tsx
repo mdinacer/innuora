@@ -40,21 +40,6 @@ export const FlowChat = dynamic(
   }
 );
 
-// Mood tracking components
-export const MoodCheckIn = dynamic(
-  () => import("@/components/mood/mood-check-in").then((mod) => ({ default: mod.MoodCheckIn })),
-  {
-    loading: () => <LoadingSpinner className="h-64" />,
-  }
-);
-
-export const MoodDashboard = dynamic(
-  () => import("@/components/mood/mood-dashboard").then((mod) => ({ default: mod.MoodDashboard })),
-  {
-    loading: () => <LoadingSpinner className="h-64" />,
-  }
-);
-
 // Form components - loaded when needed
 export const SessionForm = dynamic(() => import("@/components/sessions/session-form"), {
   loading: () => <div className="animate-pulse bg-gray-200 h-32 rounded-md"></div>,
@@ -98,11 +83,6 @@ export const DynamicPages = {
 export const DynamicChat = {
   OpenChat,
   FlowChat,
-};
-
-export const DynamicMood = {
-  MoodCheckIn,
-  MoodDashboard,
 };
 
 export const DynamicForms = {

@@ -5,14 +5,12 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCredits } from "@/app/actions/credit-actions";
-import { getUserMoodEntries } from "@/app/actions/mood-actions";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
 import { INNUORA_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
 import { ModulesPromptBuilder } from "@/domains/cbt-modules/modules-prompt-builder";
 import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
-import { buildMoodContextPrompt } from "@/domains/mood-tracking/mood-context.prompt";
 import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
@@ -86,29 +84,6 @@ async function buildConversationPrompts(
 
   const profileContextPrompt = profile ? buildUserProfilePrompt(profile) : "";
 
-  // Get recent mood context for personalized AI responses
-  let moodContextPrompt: ChatCompletionMessageParam | null = null;
-  if (userId) {
-    try {
-      const recentMoods = await getUserMoodEntries(userId, { limit: 10, sortBy: "recent" });
-      const moodContext = buildMoodContextPrompt(recentMoods);
-      if (moodContext.trim()) {
-        moodContextPrompt = {
-          role: "system",
-          content: moodContext,
-        } as ChatCompletionMessageParam;
-      }
-    } catch (error) {
-      // Mood context is optional, don't fail the conversation if it errors
-      logger.logWarning("Failed to fetch mood context, continuing without it", {
-        operation: "open_chat_build_conversation_prompts",
-        userId,
-        sessionId,
-        metadata: { error: error instanceof Error ? error.message : "Unknown error" },
-      });
-    }
-  }
-
   let memoryPrompt: ChatCompletionMessageParam | null = null;
 
   if (analysis.recall_memory && prevMemory) {
@@ -132,7 +107,6 @@ async function buildConversationPrompts(
     SecurityProtocolPrompt,
     fullPersonaPrompt,
     ...(profileContextPrompt ? [profileContextPrompt] : []),
-    ...(moodContextPrompt ? [moodContextPrompt] : []),
     modulesPrompt,
     ...(chatHistoryPrompt ? [chatHistoryPrompt] : []),
     ...(memoryPrompt ? [memoryPrompt] : []),

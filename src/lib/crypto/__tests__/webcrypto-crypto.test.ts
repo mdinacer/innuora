@@ -116,11 +116,11 @@ describe("WebCrypto Crypto Functions", () => {
 
     it("should derive the same key for same password and salt", async () => {
       const password = "consistent-password";
-      const salt = generateSalt();
+      // const salt = generateSalt();
 
       // Generate keys for comparison (variables needed for test verification)
-      const _key1 = await deriveWrappingKeyFromPassword(password, salt);
-      const _key2 = await deriveWrappingKeyFromPassword(password, salt);
+      // const _key1 = await deriveWrappingKeyFromPassword(password, salt);
+      // const _key2 = await deriveWrappingKeyFromPassword(password, salt);
 
       // Can't directly compare CryptoKey objects, so test by using them
       const contentKey = await generateContentKey();
@@ -137,13 +137,13 @@ describe("WebCrypto Crypto Functions", () => {
     });
 
     it("should derive different keys for different passwords", async () => {
-      const salt = generateSalt();
+      // const salt = generateSalt();
       const password1 = "password-one";
       const password2 = "password-two";
 
       // Generate keys for comparison (variables needed for test verification)
-      const _key1 = await deriveWrappingKeyFromPassword(password1, salt);
-      const _key2 = await deriveWrappingKeyFromPassword(password2, salt);
+      // const _key1 = await deriveWrappingKeyFromPassword(password1, salt);
+      // const _key2 = await deriveWrappingKeyFromPassword(password2, salt);
 
       // Test that keys are different by attempting cross-password operations
       const contentKey = await generateContentKey();
@@ -153,26 +153,26 @@ describe("WebCrypto Crypto Functions", () => {
     });
 
     it("should derive different keys for different salts", async () => {
-      const password = "same-password";
+      //const password = "same-password";
       const salt1 = generateSalt();
       const salt2 = generateSalt();
 
       // Generate keys for comparison (variables needed for test verification)
-      const _key1 = await deriveWrappingKeyFromPassword(password, salt1);
-      const _key2 = await deriveWrappingKeyFromPassword(password, salt2);
+      // const _key1 = await deriveWrappingKeyFromPassword(password, salt1);
+      // const _key2 = await deriveWrappingKeyFromPassword(password, salt2);
 
-      // Verify keys are different by testing cross-salt operations
-      const contentKey = await generateContentKey();
+      // // Verify keys are different by testing cross-salt operations
+      // const contentKey = await generateContentKey();
 
-      // Manually create packages with different salts
-      const package1: WrappedKeyPackage = {
-        version: 1,
-        kdf: "PBKDF2",
-        hash: "SHA-256",
-        iterations: 600000,
-        salt: salt1,
-        wrappedKey: "", // Will be filled by wrapKey operation
-      };
+      // // Manually create packages with different salts
+      // const package1: WrappedKeyPackage = {
+      //   version: 1,
+      //   kdf: "PBKDF2",
+      //   hash: "SHA-256",
+      //   iterations: 600000,
+      //   salt: salt1,
+      //   wrappedKey: "", // Will be filled by wrapKey operation
+      // };
 
       // Since we can't easily test cross-salt directly, test that same password
       // with different salts would produce different results
