@@ -7,7 +7,7 @@
   },
   "app-name": "Innuora",
   "avatar-letter": "I",
-  "back-to-app": "Back to Innuora",
+  "back-to-app": "Back to {{app_name}}",
   "languages": {
     "en": "English",
     "fr": "French",

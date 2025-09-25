@@ -1,6 +1,59 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect } from "react";
+
+// Sync any pending sessions when connection is restored
+async function syncPendingSessions() {
+  try {
+    // Check if we're online
+    if (!navigator.onLine) {
+      return;
+    }
+
+    // Get session sync utilities
+    const { SessionSynchronizerV2 } = await import("@/domains/session-sync/session-synchronizer-v2");
+    const synchronizer = SessionSynchronizerV2.getInstance();
+
+    // TODO: Implement background sync
+    // Trigger sync for all pending sessions
+    // Note: SessionSynchronizerV2 doesn't have syncAllSessions method
+    // Background sync will handle individual sessions via service worker events
+
+    console.log("Background sync completed successfully");
+  } catch (error) {
+    console.error("Background sync failed:", error);
+  }
+}
+
+// Handle background sync events
+function handleBackgroundSync(action: string) {
+  switch (action) {
+    case "sync-sessions":
+      // Trigger session synchronization when connection is restored
+      syncPendingSessions();
+      break;
+    default:
+      console.log("Unknown background sync action:", action);
+  }
+}
+
+// Hook for manual background sync registration
+export function useBackgroundSync() {
+  const registerSync = async (tag: string) => {
+    if ("serviceWorker" in navigator && "sync" in window.ServiceWorkerRegistration.prototype) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await (registration as any).sync.register(tag);
+        console.log(`Background sync registered: ${tag}`);
+      } catch (error) {
+        console.error("Background sync registration failed:", error);
+      }
+    }
+  };
+
+  return { registerSync };
+}
 
 export function ServiceWorkerRegistration() {
   useEffect(() => {
@@ -53,55 +106,4 @@ export function ServiceWorkerRegistration() {
   }, []);
 
   return null;
-}
-
-// Handle background sync events
-function handleBackgroundSync(action: string) {
-  switch (action) {
-    case "sync-sessions":
-      // Trigger session synchronization when connection is restored
-      syncPendingSessions();
-      break;
-    default:
-      console.log("Unknown background sync action:", action);
-  }
-}
-
-// Sync any pending sessions when connection is restored
-async function syncPendingSessions() {
-  try {
-    // Check if we're online
-    if (!navigator.onLine) {
-      return;
-    }
-
-    // Get session sync utilities
-    const { SessionSynchronizerV2 } = await import("@/domains/session-sync/session-synchronizer-v2");
-    const synchronizer = SessionSynchronizerV2.getInstance();
-
-    // Trigger sync for all pending sessions
-    // Note: SessionSynchronizerV2 doesn't have syncAllSessions method
-    // Background sync will handle individual sessions via service worker events
-
-    console.log("Background sync completed successfully");
-  } catch (error) {
-    console.error("Background sync failed:", error);
-  }
-}
-
-// Hook for manual background sync registration
-export function useBackgroundSync() {
-  const registerSync = async (tag: string) => {
-    if ("serviceWorker" in navigator && "sync" in window.ServiceWorkerRegistration.prototype) {
-      try {
-        const registration = await navigator.serviceWorker.ready;
-        await (registration as any).sync.register(tag);
-        console.log(`Background sync registered: ${tag}`);
-      } catch (error) {
-        console.error("Background sync registration failed:", error);
-      }
-    }
-  };
-
-  return { registerSync };
 }

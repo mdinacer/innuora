@@ -6,6 +6,7 @@ import { User as AuthUser } from "@supabase/supabase-js";
 import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import { UpdateUserProfileSchema, UpdateUserProfileSchemaType } from "@/lib/zod/user-actions.schema";
 import { UserWithRelations } from "@/types/user.types";
 import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";
 
@@ -201,4 +202,87 @@ export async function checkUserExists(authUserId: string): Promise<boolean> {
     // since it's a simple existence check
     return false;
   }
+}
+
+/**
+ * Updates user profile information (display name and locale)
+ */
+export async function updateUserProfile(profileData: UpdateUserProfileSchemaType): Promise<UserWithRelations> {
+  // Validate input
+  const validatedData = UpdateUserProfileSchema.parse(profileData);
+
+  const currentAuthUser = await requireCurrentUser();
+
+  return await logger.wrapOperation(
+    async () => {
+      return await prisma.$transaction(async (tx) => {
+        const { displayName, locale } = validatedData;
+
+        // Prepare update operations
+        const updates: Promise<any>[] = [];
+
+        // Update profile if displayName is provided
+        if (displayName !== undefined) {
+          updates.push(
+            tx.profile.upsert({
+              where: { userId: currentAuthUser.id },
+              update: { displayName },
+              create: {
+                userId: currentAuthUser.id,
+                displayName,
+              },
+            })
+          );
+        }
+
+        // Update user config if locale is provided
+        if (locale !== undefined) {
+          updates.push(
+            tx.userConfig.upsert({
+              where: { userId: currentAuthUser.id },
+              update: { locale },
+              create: {
+                userId: currentAuthUser.id,
+                locale,
+                autoSave: false,
+                theme: ThemeMode.system,
+              },
+            })
+          );
+        }
+
+        // Execute all updates in parallel
+        if (updates.length > 0) {
+          await Promise.all(updates);
+        }
+
+        // Return updated user with relations
+        const updatedUser = await tx.user.findUnique({
+          where: { authId: currentAuthUser.id },
+          include: {
+            profile: true,
+            config: true,
+          },
+        });
+
+        if (!updatedUser) {
+          throw new Error("User not found after update");
+        }
+
+        return updatedUser;
+      });
+    },
+    ERROR_CODES.USER_UPDATE_FAILED,
+    {
+      operation: "user_profile_update",
+      userId: currentAuthUser.id,
+      metadata: {
+        updateFields: Object.keys(validatedData),
+        hasDisplayName: !!validatedData.displayName,
+        hasLocale: !!validatedData.locale,
+        displayNameLength: validatedData.displayName?.length || 0,
+      },
+    },
+    "User profile updated successfully"
+  );
 }

@@ -10,8 +10,6 @@ import { notFound } from "next/navigation";
 import { dir } from "i18next";
 
 import AuthListener from "@/components/auth/auth-listener";
-import { BackgroundGradientAnimation } from "@/components/background-gradient-animation";
-import { DynamicEffects } from "@/components/dynamic-loaders";
 import { PWAInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -50,7 +48,7 @@ export default async function RootLayout({
           <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>
             <AuthListener />
             <ServiceWorkerRegistration />
-            <DynamicEffects.BackgroundBeams className="hidden md:block" />
+
             {/* <BackgroundGradientAnimation interactive={false} /> */}
             {children}
             <Toaster />

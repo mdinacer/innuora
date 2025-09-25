@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { LucideIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 const ChatUIThemeToggle = () => {
   const { setTheme, resolvedTheme, theme } = useTheme();
@@ -16,25 +16,13 @@ const ChatUIThemeToggle = () => {
 
   const currentTheme = useMemo(() => resolvedTheme || theme || "light", [resolvedTheme, theme]);
 
+  const Icon: LucideIcon = currentTheme === "dark" ? MoonIcon : SunIcon;
+
   if (!mounted) return null; // prevent SSR rendering mismatch
   return (
-    <button
-      onClick={() => setTheme(currentTheme === "dark" ? "light" : "dark")}
-      className={cn(
-        "theme-toggle",
-        "size-9 bg-inn-bg-input",
-        "flex items-center justify-center",
-        "border-none rounded-xl cursor-pointer",
-        "transition-all duration-300 ease-in",
-        "hover:bg-inn-border-light hover:scale-105"
-      )}
-    >
-      {currentTheme === "dark" ? (
-        <MoonIcon className="size-5 fill-current" />
-      ) : (
-        <SunIcon className="size-5 fill-current" />
-      )}
-    </button>
+    <Button variant={"ghost"} size={"icon"} onClick={() => setTheme(currentTheme === "dark" ? "light" : "dark")}>
+      <Icon className="size-5 fill-current" />
+    </Button>
   );
 };
 

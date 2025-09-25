@@ -11,6 +11,7 @@ import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
   try {
     // Admin authentication check

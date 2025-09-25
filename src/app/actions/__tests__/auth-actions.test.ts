@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
 import { AppError } from "@/lib/errors/app-error";
@@ -18,11 +18,11 @@ import {
 // Mock logger
 vi.mock("@/lib/logging/unified-logger", () => ({
   logger: {
-    wrapOperation: vi.fn(async (fn, errorCode, metadata, message) => {
+    wrapOperation: vi.fn(async (fn, errorCode, metadata) => {
       try {
         return await fn();
-      } catch (error) {
-        const appError = new AppError(errorCode, metadata, error);
+      } catch {
+        const appError = new AppError(errorCode, metadata);
         throw appError;
       }
     }),
@@ -273,7 +273,10 @@ describe("Auth Actions", () => {
     const mockWrappedKeyPackage: WrappedKeyPackage = {
       wrappedKey: "wrapped-key-data",
       salt: "salt-data",
-      iv: "iv-data",
+      iterations: 600000,
+      version: 1,
+      kdf: "PBKDF2",
+      hash: "SHA-256",
     };
 
     it("should successfully sign up user with valid data", async () => {
@@ -303,7 +306,6 @@ describe("Auth Actions", () => {
     });
 
     it("should work without key package", async () => {
-      const { redirect } = await import("next/navigation");
       mockSupabaseClient.auth.signUp.mockResolvedValue({
         data: {
           user: { ...mockUser, confirmation_sent_at: "2024-01-01T00:00:00Z" },
@@ -478,7 +480,7 @@ describe("Auth Actions", () => {
       });
 
       await expect(signOut()).resolves.toBeUndefined();
-      expect(mockSupabaseClient.auth.signOut).toHaveBeenCalledOnce();
+      expect(mockSupabaseClient.auth.signOut).toHaveBeenCalledWith({ scope: undefined });
       expect(redirect).toHaveBeenCalledWith("/auth/sign-in");
     });
 

@@ -144,6 +144,11 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       },
     },
 
+    securityAndDataProtection: {
+      title: t("terms.securityAndDataProtection.title"),
+      message: t("terms.securityAndDataProtection.message", { app_name: APP_CONFIG.name }),
+    },
+
     intellectualProperty: {
       title: t("terms.intellectualProperty.title"),
       ownership: t("terms.intellectualProperty.ownership", { app_name: APP_CONFIG.name }),
@@ -391,13 +396,20 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
               <p className="text-muted-foreground">{content.termination.byUs.description} </p>
             </div>
           </div>
-          <div className="mt-4 p-4 rounded-xl bg-inn-bg-soft border border-[rgba(255,107,90,0.15)]">
+          <div className="mt-4 p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
             <p className="text-sm text-muted-foreground">
               <strong>{content.termination.effect.label}</strong> {content.termination.effect.description}
             </p>
           </div>
         </section>
 
+        {/* <!-- Intellectual Property --> */}
+        <section className="mb-12">
+          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
+            <h2 className="text-2xl font-bold mb-4">{content.securityAndDataProtection.title}</h2>
+            <p className="text-muted-foreground mb-3">{content.securityAndDataProtection.message}</p>
+          </div>
+        </section>
         {/* <!-- Intellectual Property --> */}
         <section className="mb-12">
           <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">

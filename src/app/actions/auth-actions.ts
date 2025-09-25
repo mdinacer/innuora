@@ -146,13 +146,13 @@ export async function signIn(signInData: SignInSchemaType) {
   );
 }
 
-export async function signOut() {
+export async function signOut(scope?: "global" | "local" | "others") {
   const supabase = await createClient();
   const currentUser = await findCurrentUser();
 
   await logger.wrapOperation(
     async () => {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope });
     },
     ERROR_CODES.AUTH_SIGNOUT_FAILED,
     {
