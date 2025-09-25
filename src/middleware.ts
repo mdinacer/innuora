@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Match all routes except API, Next internals, and common static/special files
-    "/((?!api|_next|sitemap\\.xml|robots\\.txt|favicon\\.ico|manifest\\.webmanifest|.*\\.(?:html?|css|js|json|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip)).*)",
+    "/((?!api|_next|assets|videos|static|sitemap\\.xml|robots\\.txt|favicon\\.ico|manifest\\.webmanifest|.*\\.(?:html?|css|js|json|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip)).*)",
 
     // TRPC routes only
     "/trpc/:path*",
