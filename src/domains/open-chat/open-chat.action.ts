@@ -6,11 +6,12 @@ import { ChatCompletionMessageParam } from "openai/resources";
 import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCredits } from "@/app/actions/credit-actions";
 import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
-import { LanguagePrompt, SecurityProtocolPrompt, TonePrompt } from "@/domains/ai-conversation/prompts";
-import { INNUORA_PERSONA_PROMPT_INSTRUCTIONS } from "@/domains/ai-conversation/prompts/prompt.persona";
+import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
+import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
 import { ModulesPromptBuilder } from "@/domains/cbt-modules/modules-prompt-builder";
 import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
+import { handleLightweightUserInput } from "@/domains/open-chat/open-chat-lightweight.action";
 import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
@@ -20,6 +21,7 @@ import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+import { TONE_INSTRUCTIONS_LOCALIZED } from "../ai-conversation/prompts/prompt.tone";
 
 interface HandleUserInputResult {
   analysis: TherapeuticAnalysis | null;
@@ -47,7 +49,7 @@ async function buildConversationPrompts(
 ): Promise<ChatCompletionMessageParam[]> {
   // Initialize services - can be done in parallel
   const [modulesPromptBuilder, messagesManager] = await Promise.all([
-    Promise.resolve(new ModulesPromptBuilder()),
+    Promise.resolve(new ModulesPromptBuilder(locale)),
     Promise.resolve(new ChatContextManager()),
   ]);
 
@@ -68,7 +70,7 @@ async function buildConversationPrompts(
     });
   }
 
-  const toneInstruction = TonePrompt["friendly"][analysis.intensity];
+  const toneInstruction = TONE_INSTRUCTIONS_LOCALIZED[locale][analysis.intensity];
   if (!toneInstruction) {
     logger.logErrorAndThrow(
       ERROR_CODES.CHAT_UNSUPPORTED_INTENSITY,
@@ -96,10 +98,7 @@ async function buildConversationPrompts(
 
   const fullPersonaPrompt: ChatCompletionMessageParam = {
     role: "system",
-    content: INNUORA_PERSONA_PROMPT_INSTRUCTIONS.replace("{{TONE_DESCRIPTION}}", toneInstruction || "").replace(
-      "{{LANGUAGE_RULES}}",
-      (languagePrompt?.content as string | undefined) ?? ""
-    ),
+    content: PERSONA_PROMPTS_LOCALIZED[locale].replace("{{TONE_DESCRIPTION}}", toneInstruction || ""),
   };
 
   // Compose prompts efficiently
@@ -174,7 +173,34 @@ export async function handleUserInput(
       );
       const { analysis, modelTokenUsage: analysisUsage, consumedCredits: analysisCredits } = analysisResult;
 
-      // Step 2: Build conversation prompts
+      // Smart Processing Decision: Use lightweight processing for low-value inputs
+      if (analysis.analysis_value === "low") {
+        const lightweightResult = await handleLightweightUserInput(
+          userInput,
+          analysis,
+          messages,
+          locale,
+          modelCode,
+          userId,
+          sessionId
+        );
+
+        // Combine analysis credits with lightweight response credits
+        const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
+
+        return {
+          analysis,
+          response: lightweightResult.response,
+          tokenUsage: {
+            analysisUsage,
+            responseUsage: lightweightResult.tokenUsage,
+          },
+          cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
+          creditsUsed: totalCreditsUsed,
+        };
+      }
+
+      // Step 2: Build conversation prompts (for medium/high value inputs)
       const conversationPrompts = await buildConversationPrompts(
         userInput,
         analysis,

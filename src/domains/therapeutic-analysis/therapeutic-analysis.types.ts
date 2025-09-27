@@ -29,6 +29,14 @@ export const EMOTION_INTENSITY_MAP = {
 
 export type EmotionalIntensity = (typeof EMOTION_INTENSITY_MAP)[keyof typeof EMOTION_INTENSITY_MAP];
 
+export const ANALYSIS_VALUE_MAP = {
+  low: "low",
+  medium: "medium",
+  high: "high",
+} as const;
+
+export type AnalysisValue = (typeof ANALYSIS_VALUE_MAP)[keyof typeof ANALYSIS_VALUE_MAP];
+
 export type AnalysisContextItem = {
   core_module: SessionModule | null;
   process_module: SessionModule | null;
@@ -89,7 +97,79 @@ export const TherapeuticAnalysisSchema = z.object({
 
   update_memory: z.boolean(),
   recall_memory: z.boolean(),
+  analysis_value: z.enum(ANALYSIS_VALUE_MAP),
 });
 
 // === Type inferred from schema ===
 export type TherapeuticAnalysis = z.infer<typeof TherapeuticAnalysisSchema>;
+
+// === Advanced Session Diagnostics ===
+export const CONFIDENCE_LEVEL_MAP = {
+  low: "low",
+  medium: "medium",
+  high: "high",
+} as const;
+
+export type ConfidenceLevel = (typeof CONFIDENCE_LEVEL_MAP)[keyof typeof CONFIDENCE_LEVEL_MAP];
+
+export const COGNITIVE_DISTORTION_MAP = {
+  all_or_nothing: "all-or-nothing",
+  overgeneralization: "overgeneralization",
+  mental_filter: "mental_filter",
+  disqualifying_positive: "disqualifying_positive",
+  jumping_conclusions: "jumping_conclusions",
+  magnification: "magnification",
+  emotional_reasoning: "emotional_reasoning",
+  should_statements: "should_statements",
+  labeling: "labeling",
+  personalization: "personalization",
+  rumination: "rumination",
+  catastrophizing: "catastrophizing",
+} as const;
+
+export type CognitiveDistortion = (typeof COGNITIVE_DISTORTION_MAP)[keyof typeof COGNITIVE_DISTORTION_MAP];
+
+export const SessionDiagnosticsSchema = z.object({
+  core_beliefs: z.array(
+    z.object({
+      belief: z.string(),
+      confidence: z.enum(CONFIDENCE_LEVEL_MAP),
+    })
+  ),
+
+  silent_rules_and_double_binds: z.array(
+    z.object({
+      rule: z.string(),
+      confidence: z.enum(CONFIDENCE_LEVEL_MAP),
+    })
+  ),
+
+  dominant_distortions: z.array(
+    z.object({
+      distortion: z.enum(COGNITIVE_DISTORTION_MAP),
+      confidence: z.enum(CONFIDENCE_LEVEL_MAP),
+      examples: z.array(z.string()),
+    })
+  ),
+
+  emotional_behavioral_patterns: z.array(
+    z.object({
+      trigger: z.string(),
+      emotions: z.array(z.string()),
+      behaviors: z.array(z.string()),
+      loop: z.string(),
+      confidence: z.enum(CONFIDENCE_LEVEL_MAP),
+    })
+  ),
+
+  hidden_leverage_points: z.array(
+    z.object({
+      insight: z.string(),
+      confidence: z.enum(CONFIDENCE_LEVEL_MAP),
+    })
+  ),
+
+  therapeutic_opportunities: z.array(z.string()),
+});
+
+export type SessionDiagnostics = z.infer<typeof SessionDiagnosticsSchema>;

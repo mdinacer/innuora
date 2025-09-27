@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Container, Menu } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
+import CodeView from "@/components/code-view";
 import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
 import LoadingComponent from "@/components/loading-component";
 import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
@@ -58,7 +59,11 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   const welcomeMessage = useMemo(() => {
     if (session?.messages?.length) return null;
-    const message = t("hero", { returnObjects: true, defaultValue: {} }) as FlowChatHeroProps;
+    const message = t("hero", {
+      returnObjects: true,
+      defaultValue: {},
+      app_name: APP_CONFIG.name,
+    }) as FlowChatHeroProps;
     return <FlowChatHeroCard data={message} onStartSession={handleSessionStart} />;
   }, [handleSessionStart, session?.messages?.length, t]);
 
@@ -127,6 +132,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   return (
     <>
+      <CodeView data={messages} className="absolute top-6 left-6" />
       <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
 
       {/* Credits Balance Display */}

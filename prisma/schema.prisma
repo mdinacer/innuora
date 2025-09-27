@@ -82,6 +82,15 @@ model UserConfig {
   theme    ThemeMode? @default(system)
   locale   String?    @default("en")
 
+  // Appearance settings
+  fontSize        String?  @default("medium") @map("font_size") // "small" | "medium" | "large"
+  enableAnimation Boolean  @default(false) @map("enable_animation")
+
+  // Future features (not implemented yet, but ready for when needed)
+  analyticsOptIn    Boolean @default(false) @map("analytics_opt_in")
+  shareImprovements Boolean @default(true) @map("share_improvements")
+  marketingEmails   Boolean @default(false) @map("marketing_emails")
+
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

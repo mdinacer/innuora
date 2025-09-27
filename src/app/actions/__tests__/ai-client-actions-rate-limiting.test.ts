@@ -332,7 +332,10 @@ describe.skip("AI Actions Rate Limiting", () => {
       }
 
       // Get current remaining count
-      const remaining = (await import("@/lib/rate-limiting/rate-limiter")).rateLimiter.getRemainingRequests(userId, "AI_BURST");
+      const remaining = (await import("@/lib/rate-limiting/rate-limiter")).rateLimiter.getRemainingRequests(
+        userId,
+        "AI_BURST"
+      );
       expect(remaining).toBe(2);
 
       // Use up remaining requests

@@ -90,32 +90,16 @@
     "dataWeCollect": {
       "title": "What We Collect",
       "table": {
-        "headers": [
-          "Category",
-          "Purpose",
-          "Retention"
-        ],
+        "headers": ["Category", "Purpose", "Retention"],
         "rows": [
           [
             "Account Data (email, locale)",
             "Enable sign-in and set your language preferences",
             "Kept until you delete your account"
           ],
-          [
-            "Session Data (temporary AI responses)",
-            "Provide AI reflections",
-            "Ephemeral - not stored"
-          ],
-          [
-            "Reflection Notes (if you save them)",
-            "Allow you to revisit past insights",
-            "Kept until you delete them"
-          ],
-          [
-            "Technical Logs (IP, device info)",
-            "Security and performance monitoring",
-            "Short-term, auto-deleted"
-          ]
+          ["Session Data (temporary AI responses)", "Provide AI reflections", "Ephemeral - not stored"],
+          ["Reflection Notes (if you save them)", "Allow you to revisit past insights", "Kept until you delete them"],
+          ["Technical Logs (IP, device info)", "Security and performance monitoring", "Short-term, auto-deleted"]
         ]
       }
     },

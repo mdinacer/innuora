@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { ERROR_CODES } from "@/lib/errors";
+
 /**
  * Schema for user account status
  */
@@ -19,10 +21,15 @@ export const UserRoleSchema = z.enum(["user", "admin", "tester"]);
  * Schema for creating a new user
  */
 export const CreateUserSchema = z.object({
-  authId: z.uuid("Invalid authentication ID format"),
-  email: z.email("Invalid email format"),
+  authId: z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }),
+  email: z.email({ message: ERROR_CODES.VALIDATION_EMAIL_INVALID }),
   role: UserRoleSchema.optional().default("user"),
-  creditsBalance: z.number().int().min(0).optional().default(0),
+  creditsBalance: z
+    .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+    .int()
+    .min(0, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL })
+    .optional()
+    .default(0),
   encryptionSalt: z.string().optional(),
 });
 
@@ -30,9 +37,13 @@ export const CreateUserSchema = z.object({
  * Schema for updating user profile
  */
 export const UpdateUserSchema = z.object({
-  authId: z.uuid("Invalid authentication ID format"),
+  authId: z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }),
   role: UserRoleSchema.optional(),
-  creditsBalance: z.number().int().min(0).optional(),
+  creditsBalance: z
+    .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+    .int()
+    .min(0, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL })
+    .optional(),
   status: UserAccountStatusSchema.optional(),
   isOnboarded: z.boolean().optional(),
   encryptionSalt: z.string().optional(),
@@ -42,35 +53,47 @@ export const UpdateUserSchema = z.object({
  * Schema for user lookup
  */
 export const UserLookupSchema = z.object({
-  authId: z.uuid("Invalid authentication ID format"),
+  authId: z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }),
 });
 
 /**
  * Schema for bulk user operations
  */
 export const BulkUserOperationSchema = z.object({
-  authIds: z.array(z.uuid("Invalid authentication ID format")).min(1).max(100),
-  operation: z.enum(["suspend", "activate", "delete"]),
-  reason: z.string().min(1).max(500).optional(),
+  authIds: z
+    .array(z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }))
+    .min(1, { message: ERROR_CODES.VALIDATION_ARRAY_EMPTY })
+    .max(100, { message: ERROR_CODES.VALIDATION_ARRAY_TOO_LARGE }),
+  operation: z.enum(["suspend", "activate", "delete"], { message: ERROR_CODES.VALIDATION_ENUM_INVALID }),
+  reason: z
+    .string()
+    .min(1, { message: ERROR_CODES.VALIDATION_STRING_TOO_SHORT })
+    .max(500, { message: ERROR_CODES.VALIDATION_STRING_TOO_LONG })
+    .optional(),
 });
 
 /**
  * Schema for user statistics query
  */
 export const UserStatsQuerySchema = z.object({
-  authId: z.uuid("Invalid authentication ID format"),
-  startDate: z.iso.datetime().optional(),
-  endDate: z.iso.datetime().optional(),
+  authId: z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }),
+  startDate: z.string().datetime({ message: ERROR_CODES.VALIDATION_DATE_INVALID }).optional(),
+  endDate: z.string().datetime({ message: ERROR_CODES.VALIDATION_DATE_INVALID }).optional(),
 });
 
 /**
  * Schema for admin user management
  */
 export const AdminUserManagementSchema = z.object({
-  targetAuthId: z.uuid("Invalid target user authentication ID format"),
-  adminAuthId: z.uuid("Invalid admin authentication ID format"),
-  action: z.enum(["promote", "demote", "suspend", "reactivate", "delete"]),
-  reason: z.string().min(1).max(1000, "Reason too long"),
+  targetAuthId: z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }),
+  adminAuthId: z.uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }),
+  action: z.enum(["promote", "demote", "suspend", "reactivate", "delete"], {
+    message: ERROR_CODES.VALIDATION_ENUM_INVALID,
+  }),
+  reason: z
+    .string()
+    .min(1, { message: ERROR_CODES.VALIDATION_STRING_TOO_SHORT })
+    .max(1000, { message: ERROR_CODES.VALIDATION_STRING_TOO_LONG }),
 });
 
 export type UserAccountStatusSchemaType = z.infer<typeof UserAccountStatusSchema>;
@@ -83,7 +106,12 @@ export type BulkUserOperationSchemaType = z.infer<typeof BulkUserOperationSchema
  * Schema for updating user profile information
  */
 export const UpdateUserProfileSchema = z.object({
-  displayName: z.string().trim().min(1, "Display name is required").max(50, "Display name too long").optional(),
+  displayName: z
+    .string()
+    .trim()
+    .min(1, { message: ERROR_CODES.VALIDATION_DISPLAY_NAME_REQUIRED })
+    .max(50, { message: ERROR_CODES.VALIDATION_DISPLAY_NAME_TOO_LONG })
+    .optional(),
   locale: AppLocalesSchema.optional(),
 });
 

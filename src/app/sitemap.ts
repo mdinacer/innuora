@@ -2,6 +2,9 @@ import { MetadataRoute } from "next";
 import { Languages } from "next/dist/lib/metadata/types/alternative-urls-types";
 
 import { APP_CONFIG } from "@/config/app";
+import { initializeContentRegistry } from "@/lib/content/content-loader";
+import { contentRegistry } from "@/lib/content/content-registry";
+import { SEOGenerator } from "@/lib/content/seo-generator";
 
 const baseUrl = APP_CONFIG.domains.primary;
 
@@ -15,13 +18,19 @@ const routes = [
 
 const locales = ["en", "fr", "ar"];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
 
-  return routes.flatMap((route) =>
+  // Initialize content registry
+  await initializeContentRegistry();
+
+  // Get all content
+  const allContent = contentRegistry.getAll();
+
+  // Generate static route entries
+  const staticRoutes = routes.flatMap((route) =>
     locales.map((locale) => ({
       url: `${baseUrl}/${locale}${route.path.startsWith("/") ? route.path : "/" + route.path}`,
-      //url: `${baseUrl}/${locale}${route.path}`,
       lastModified,
       changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
       priority: route.priority,
@@ -33,4 +42,47 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     }))
   );
+
+  // Get unique categories
+  const categories = [...new Set(allContent.map((item) => item.metadata.category))];
+
+  // Generate category page entries
+  const categoryRoutes = categories.flatMap((category) =>
+    locales.map((locale) => ({
+      url: `${baseUrl}/${locale}/content/${category}`,
+      lastModified,
+      changeFrequency: "weekly" as MetadataRoute.Sitemap[number]["changeFrequency"],
+      priority: 0.8,
+      alternates: {
+        languages: {
+          ...Object.fromEntries(
+            locales.filter((l) => l !== locale).map((l) => [l, `${baseUrl}/${l}/content/${category}`])
+          ),
+          "x-default": `${baseUrl}/en/content/${category}`,
+        } as Languages<string>,
+      },
+    }))
+  );
+
+  // Generate content article entries
+  const contentRoutes = allContent.flatMap((item) => {
+    const sitemapEntry = SEOGenerator.generateSitemapEntry(item.metadata);
+
+    return locales.map((locale) => ({
+      url: `${baseUrl}/${locale}${sitemapEntry.url}`,
+      lastModified: sitemapEntry.lastModified,
+      changeFrequency: sitemapEntry.changeFrequency,
+      priority: sitemapEntry.priority,
+      alternates: {
+        languages: {
+          ...Object.fromEntries(
+            locales.filter((l) => l !== locale).map((l) => [l, `${baseUrl}/${l}${sitemapEntry.url}`])
+          ),
+          "x-default": `${baseUrl}/en${sitemapEntry.url}`,
+        } as Languages<string>,
+      },
+    }));
+  });
+
+  return [...staticRoutes, ...categoryRoutes, ...contentRoutes];
 }

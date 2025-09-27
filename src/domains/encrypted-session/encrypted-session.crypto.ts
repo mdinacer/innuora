@@ -86,6 +86,7 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
         continuitySummary: null,
         aggregatedAnalysis: null,
         analysisSnapshots: [],
+        sessionDiagnostics: null,
         metadata: encryptedSession.metadata
           ? {
               ...SessionMetadataSchema.parse(encryptedSession.metadata),

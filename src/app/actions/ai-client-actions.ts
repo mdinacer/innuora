@@ -186,7 +186,7 @@ export async function SendPromptsToAi(
       if (userId) {
         const burstLimit = rateLimiter.checkLimit(userId, "AI_BURST");
         if (!burstLimit.success) {
-          throw new AppError(ERROR_CODES.RATE_LIMIT_EXCEEDED, {
+          throw new AppError(ERROR_CODES.RATE_LIMIT_AI_BURST, {
             remaining: burstLimit.remaining,
             resetTime: burstLimit.resetTime,
           });
@@ -194,7 +194,7 @@ export async function SendPromptsToAi(
 
         const generalLimit = rateLimiter.checkLimit(userId, "AI_REQUESTS");
         if (!generalLimit.success) {
-          throw new AppError(ERROR_CODES.RATE_LIMIT_EXCEEDED, {
+          throw new AppError(ERROR_CODES.RATE_LIMIT_AI_REQUESTS, {
             remaining: generalLimit.remaining,
             resetTime: generalLimit.resetTime,
           });
@@ -225,8 +225,10 @@ export async function SendPromptsToAi(
           Model: ${model.apiPath}
           Vendor: ${model.vendor}
           TokenUsage: %o
+          Prompts: %o
           Response: %s`,
           data?.usage,
+          prompts,
           raw
         );
       }
