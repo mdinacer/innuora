@@ -11,6 +11,7 @@ const baseUrl = APP_CONFIG.domains.primary;
 const routes = [
   { path: "", changeFrequency: "weekly", priority: 1 },
   { path: "/join", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/content", changeFrequency: "weekly", priority: 0.9 },
   { path: "/privacy", changeFrequency: "monthly", priority: 0.5 },
   { path: "/eula", changeFrequency: "monthly", priority: 0.5 },
   { path: "/terms", changeFrequency: "monthly", priority: 0.5 },
