@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AppLocales } from "@/lib/i18n";
+import i18nConfig from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
 
 const LOCALES = [
   {
@@ -35,37 +36,61 @@ const LOCALES = [
 
 const LanguageDropdown = () => {
   const { i18n } = useTranslation();
+  const currentLocale = i18n.language;
   const [isSwitching, setIsSwitching] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
+
+  const currentPathname = usePathname();
 
   const isMobile = useIsMobile();
 
-  const changeLanguage = (locale: AppLocales) => {
-    if (isSwitching) return;
-    setIsSwitching(true);
-    // Change i18next language
-    i18n.changeLanguage(locale);
+  // const changeLanguage = (locale: AppLocales) => {
+  //   if (isSwitching) return;
+  //   setIsSwitching(true);
+  //   // Change i18next language
+  //   i18n.changeLanguage(locale);
 
-    // Update URL - remove current locale and add new one
-    const segments = pathname.split("/").filter(Boolean);
-    const currentLocale = segments[0];
+  //   // Update URL - remove current locale and add new one
+  //   const segments = pathname.split("/").filter(Boolean);
+  //   const currentLocale = segments[0];
 
-    let newPath = "";
-    if (["en", "ar", "fr"].includes(currentLocale)) {
-      // Replace current locale
-      segments[0] = locale;
-      newPath = `/${segments.join("/")}`;
-    } else {
-      // Add locale to path
-      newPath = `/${locale}${pathname}`;
-    }
+  //   let newPath = "";
+  //   if (["en", "ar", "fr"].includes(currentLocale)) {
+  //     // Replace current locale
+  //     segments[0] = locale;
+  //     newPath = `/${segments.join("/")}`;
+  //   } else {
+  //     // Add locale to path
+  //     newPath = `/${locale}${pathname}`;
+  //   }
 
-    router.push(newPath);
+  //   router.push(newPath);
 
-    setIsSwitching(false);
-  };
+  //   setIsSwitching(false);
+  // };
 
+  const handleChange = useCallback(
+    (newLocale: AppLocales) => {
+      // set cookie for next-i18n-router
+      setIsSwitching(true);
+      const days = 30;
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      const expires = date.toUTCString();
+      document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/`;
+
+      // redirect to the new locale path
+      if (currentLocale === i18nConfig.defaultLocale && !i18nConfig.prefixDefault) {
+        router.push("/" + newLocale + currentPathname);
+      } else {
+        router.push(currentPathname.replace(`/${currentLocale}`, `/${newLocale}`));
+      }
+
+      setIsSwitching(false);
+      router.refresh();
+    },
+    [currentLocale, currentPathname, router]
+  );
   return (
     <DropdownMenu dir={i18n.dir()}>
       <DropdownMenuTrigger asChild className="relative">
@@ -80,7 +105,7 @@ const LanguageDropdown = () => {
             className={cn("font-medium", { "font-arabic ": locale.value === "ar" })}
             key={locale.value}
             disabled={i18n.language === locale.value || isSwitching}
-            onClick={() => changeLanguage(locale.value as AppLocales)}
+            onClick={() => handleChange(locale.value as AppLocales)}
           >
             {isMobile ? locale.abbreviation : locale.label}
           </DropdownMenuItem>

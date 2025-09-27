@@ -12,11 +12,6 @@ const LoadingSpinner = ({ className = "" }: { className?: string }) => (
   </div>
 );
 
-// Background effects - not critical for initial load
-export const BackgroundBeams = dynamic(() => import("@/components/background-beams"), {
-  loading: () => null, // No loading state needed for background effect
-});
-
 // Heavy session components (biggest bundle impact)
 export const SessionPage = dynamic(() => import("@/components/sessions/session-page"), {
   loading: () => <LoadingSpinner className="h-96" />,
@@ -94,8 +89,4 @@ export const DynamicForms = {
 export const DynamicCredits = {
   CreditsBalance,
   CreditsTransactionHistory,
-};
-
-export const DynamicEffects = {
-  BackgroundBeams,
 };

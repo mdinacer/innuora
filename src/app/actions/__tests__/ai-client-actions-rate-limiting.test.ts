@@ -119,7 +119,7 @@ describe.skip("AI Actions Rate Limiting", () => {
         await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
-        expect((error as AppError).code).toBe(ERROR_CODES.RATE_LIMIT_EXCEEDED);
+        expect((error as AppError).errorCode).toBe(ERROR_CODES.RATE_LIMIT_EXCEEDED);
         expect((error as AppError).message).toContain("Too many AI requests");
       }
     });
@@ -332,7 +332,10 @@ describe.skip("AI Actions Rate Limiting", () => {
       }
 
       // Get current remaining count
-      const remaining = rateLimiter.getRemainingRequests(userId, "AI_BURST");
+      const remaining = (await import("@/lib/rate-limiting/rate-limiter")).rateLimiter.getRemainingRequests(
+        userId,
+        "AI_BURST"
+      );
       expect(remaining).toBe(2);
 
       // Use up remaining requests

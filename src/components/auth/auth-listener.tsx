@@ -10,7 +10,7 @@ const AuthListener: React.FC = () => {
   useEffect(() => {
     console.log("Auth listener mounted");
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") {
         useSessionStore.persist.clearStorage();
       }

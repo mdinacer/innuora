@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Monitor, Moon, Sun, Type } from "lucide-react";
 import { useTheme } from "next-themes";
+import { toast } from "sonner";
 
+import { getUserConfig, updateAppearanceSettings } from "@/app/actions/user-config-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -19,10 +21,50 @@ type FontSize = "small" | "medium" | "large";
 // =========================
 
 export default function AppearanceSettings(): React.JSX.Element {
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [themeMode, setThemeMode] = useState<ThemeMode>((theme as ThemeMode | undefined) || "system");
   const [fontSize, setFontSize] = useState<FontSize>("medium");
   const [enableAnimation, setAnimated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Load user config on component mount
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const config = await getUserConfig();
+        if (config) {
+          setThemeMode((config.theme as ThemeMode) || "system");
+          setFontSize((config.fontSize as FontSize) || "medium");
+          setAnimated(config.enableAnimation);
+        }
+      } catch (error) {
+        console.error("Failed to load user config:", error);
+      }
+    }
+    loadConfig();
+  }, []);
+
+  // Save settings function
+  const saveSettings = async () => {
+    setIsLoading(true);
+    try {
+      await updateAppearanceSettings({
+        theme: themeMode,
+        fontSize: fontSize,
+        enableAnimation: enableAnimation,
+      });
+
+      // Update theme in next-themes
+      setTheme(themeMode);
+
+      toast.success("Appearance settings saved!");
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      toast.error("Failed to save settings. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const themeOptions = [
     { id: "light", label: "Light", icon: <Sun className="h-4 w-4" />, description: "Light theme" },
@@ -135,7 +177,9 @@ export default function AppearanceSettings(): React.JSX.Element {
 
       {/* Save Button */}
       <div className="flex justify-end pt-4 border-t border-gray-200">
-        <Button>Save Appearance Settings</Button>
+        <Button onClick={saveSettings} disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save Appearance Settings"}
+        </Button>
       </div>
     </div>
   );

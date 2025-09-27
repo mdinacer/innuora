@@ -4,16 +4,17 @@
     "lastUpdated": "Last Updated September 2, 2025",
     "hero": {
       "headline": "End User License Agreement",
-      "description": "This agreement governs your use of the {{app_name}} application and defines the terms under which you may access our software."
+      "description": "This agreement governs your use of the {{app_name}} application and defines the terms under which you may access and use our software."
     },
     "notice": {
       "title": "Important Legal Agreement",
       "message": "By downloading, installing, or using {{app_name}}, you agree to be bound by the terms of this End User License Agreement.",
-      "warning": "If you do not agree to these terms, do not install or use {{app_name}}."
+      "warning": "If you do not agree to these terms, please do not install or use {{app_name}}.",
+      "crisisNotice": "Important: {{app_name}} is not a mental health or crisis service. If you are experiencing a crisis, please contact your local emergency services immediately."
     },
     "acceptance": {
       "title": "Acceptance of Agreement",
-      "message": "By downloading, installing, or using {{app_name}}, you agree to be bound by the terms of this End User License Agreement (EULA). If you do not agree, do not install or use {{app_name}}."
+      "message": "By downloading, installing, or using {{app_name}}, you confirm that you have read, understood, and agree to be bound by this End User License Agreement (EULA)."
     },
     "licenseGrant": {
       "title": "License Grant",
@@ -35,7 +36,7 @@
     },
     "updates": {
       "title": "Updates and Modifications",
-      "message": "{{app_name}} may, at its discretion, provide updates, patches, or modifications to the application. This EULA applies to all such updates unless they are accompanied by a separate license agreement."
+      "message": "{{app_name}} may provide updates, patches, or modifications to the application at its discretion. This EULA applies to all such updates unless accompanied by a separate license agreement."
     },
     "termination": {
       "title": "Termination",
@@ -47,8 +48,8 @@
     },
     "disclaimer": {
       "title": "Disclaimer of Warranties",
-      "message": "{{app_name}} is provided \"as is\" without warranties of any kind, express or implied, including but not limited to warranties of fitness for a particular purpose, reliability, or availability.",
-      "note": "This means we cannot guarantee that the app will work perfectly or meet all your expectations, though we strive to provide the best experience possible."
+      "message": "{{app_name}} is provided \"as is\" without warranties of any kind, express or implied, including fitness for a particular purpose, reliability, or availability.",
+      "note": "We cannot guarantee that the app will work perfectly or meet all expectations, though we strive to provide the best possible experience."
     },
     "liability": {
       "title": "Limitation of Liability",
@@ -56,7 +57,7 @@
     },
     "governingLaw": {
       "title": "Governing Law",
-      "message": "This EULA shall be governed by and construed in accordance with the laws of the applicable jurisdiction in which {{app_name}} is made available, without regard to conflict of law provisions."
+      "message": "This EULA shall be governed by and construed in accordance with the laws of the jurisdiction in which {{app_name}} is made available, without regard to conflict of law provisions."
     },
     "contact": {
       "title": "Contact Information",
@@ -66,7 +67,7 @@
     "summary": {
       "title": "Agreement Summary",
       "message": "This EULA grants you permission to use {{app_name}} for personal purposes while protecting our intellectual property rights and limiting liability.",
-      "acknowledgment": "By continuing to use {{app_name}}, you acknowledge that you have read, understood, and agree to be bound by these terms."
+      "acknowledgment": "By continuing to use {{app_name}}, you acknowledge that you have read, understood, and agree to these terms."
     }
   },
   "privacy": {
@@ -74,16 +75,16 @@
     "lastUpdated": "Last updated: September 2025",
     "intro": {
       "title": "Your Privacy, Our Commitment",
-      "message": "{{app_name}} is designed as a private, reflective space. We only collect what is strictly necessary to operate the service, and we never sell your data.",
+      "message": "{{app_name}} is designed as a private, reflective space. We collect only what is strictly necessary to operate the service, and we never sell your data.",
       "note": "{{app_name}} is not a therapeutic relationship. If you are in crisis or at risk of harm, please seek immediate professional support."
     },
     "principles": {
       "title": "Key Principles",
       "items": [
-        "Minimal data collection - we only keep what is needed for your account and reflection history.",
-        "No advertising or data sales - your information is never shared for marketing.",
-        "Transparency - we explain clearly how and why data is used.",
-        "Safety first - emotional reflections are treated with heightened sensitivity."
+        "Minimal data collection - only what is needed for your account and reflection history.",
+        "No advertising or data sales - your information is never shared for marketing purposes.",
+        "Transparency - we clearly explain how and why your data is used.",
+        "Safety first - emotional reflections are handled with heightened sensitivity."
       ]
     },
     "dataWeCollect": {
@@ -93,7 +94,7 @@
         "rows": [
           [
             "Account Data (email, locale)",
-            "Enable sign-in and set your language",
+            "Enable sign-in and set your language preferences",
             "Kept until you delete your account"
           ],
           ["Session Data (temporary AI responses)", "Provide AI reflections", "Ephemeral - not stored"],
@@ -105,24 +106,24 @@
     "howWeUse": {
       "title": "How We Use Your Data",
       "paragraphs": [
-        "{{app_name}} processes your inputs in real time through GPT models. Responses are generated without retaining conversation history unless you choose to save reflections.",
-        "We use hosting, storage, and analytics providers only to run the service. These providers act as processors and cannot use your data for their own purposes."
+        "{{app_name}} processes your inputs in real time through GPT models. Responses are generated without retaining conversation history unless you explicitly save reflections.",
+        "We use hosting, storage, and analytics providers solely to run the service. These providers act only as processors and cannot use your data for their own purposes."
       ]
     },
     "yourRights": {
       "title": "Your Rights",
       "paragraphs": [
-        "You can request access, correction, deletion, or export of your data at any time. Contact us at {{privacy_email}}.",
-        "If you are located in the EU/EEA or UK, you have GDPR rights. California residents also have rights under CCPA."
+        "You can request access, correction, deletion, or export of your data at any time by contacting us at {{privacy_email}}.",
+        "If you are located in the EU/EEA or UK, you have GDPR rights. California residents have rights under CCPA."
       ]
     },
     "children": {
       "title": "Children",
-      "note": "{{app_name}} is not directed to individuals under 18. We do not knowingly collect personal data from minors."
+      "note": "{{app_name}} is not intended for individuals under 18. We do not knowingly collect personal data from minors."
     },
     "contact": {
       "title": "Contact Us",
-      "message": "If you have questions about this policy, email us at"
+      "message": "If you have questions about this policy, please email us at "
     }
   },
   "terms": {
@@ -131,7 +132,7 @@
     "version": "Version 1.0",
     "intro": {
       "headline": "Important Agreement",
-      "message": "By accessing or using {{app_name}}, you agree to be bound by these Terms of Use. If you do not agree with these terms, you may not use our service.",
+      "message": "By accessing or using {{app_name}}, you agree to be bound by these Terms of Use. If you do not agree, you may not use our service.",
       "note": "Please read these terms carefully before using {{app_name}}."
     },
     "contact": {
@@ -165,11 +166,11 @@
       "sections": {
         "account_security": {
           "title": "Account Security",
-          "description": "You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account."
+          "description": "You are responsible for maintaining the confidentiality of your login credentials and all activities that occur under your account."
         },
         "legal_compliance": {
           "title": "Legal Compliance",
-          "description": "You agree to comply with all applicable laws and regulations when using {{app_name}}."
+          "description": "You agree to comply with all applicable laws and regulations while using {{app_name}}."
         },
         "prohibited_uses": {
           "title": "Prohibited Uses",
@@ -184,19 +185,19 @@
     },
     "natureOfService": {
       "title": "What {{app_name}} Is (And Isn't)",
-      "message": "{{app_name}} is an emotional reflection and clarity tool powered by AI. It is not a medical device, mental health service, or therapy substitute.",
-      "disclaimer": "We do not provide medical, psychiatric, or psychological advice. Always seek the advice of a qualified health provider regarding mental health or medical conditions."
+      "message": "{{app_name}} is an AI-powered emotional reflection and clarity tool. It is not a medical device, mental health service, or therapy substitute.",
+      "disclaimer": "We do not provide medical, psychiatric, or psychological advice. Always consult a qualified health provider regarding mental health or medical conditions."
     },
     "ai_and_content": {
       "title": "AI and Your Content",
       "sections": {
         "ai_generated_responses": {
           "title": "AI-Generated Responses",
-          "description": "{{app_name}} uses stateless AI inference to generate reflective responses and insights. These outputs are generated automatically and are not guaranteed to be accurate or appropriate in all contexts."
+          "description": "{{app_name}} uses stateless AI to generate reflective responses and insights. Outputs are automatically generated and may not always be accurate or appropriate."
         },
         "content_rights": {
           "title": "Your Content Rights",
-          "description": "You retain ownership of content you submit to {{app_name}}. However, you grant us a non-exclusive, worldwide, royalty-free license to process, store, and use such content to provide and improve the Service."
+          "description": "You retain ownership of content you submit to {{app_name}}, but grant us a non-exclusive, worldwide, royalty-free license to process, store, and use it to provide and improve the Service."
         },
         "content_moderation": {
           "title": "Content Moderation",
@@ -207,7 +208,7 @@
     "fees": {
       "title": "Fees and Payments",
       "points": [
-        "Certain features may require a subscription or payment. Fees, billing cycles, and cancellation terms will be disclosed at the time of purchase.",
+        "Certain features may require a subscription or payment. Fees, billing cycles, and cancellation terms will be disclosed at purchase.",
         "Payments are processed through third-party providers. We do not store payment card details."
       ],
       "refundPolicy": "Refund Policy: Unless required by law, payments are non-refundable."
@@ -224,19 +225,23 @@
       },
       "effect": {
         "label": "Effect of Termination",
-        "description": "Upon termination, all rights granted to you under these Terms will immediately cease."
+        "description": "Upon termination, all rights granted to you under these Terms immediately cease."
       }
+    },
+    "securityAndDataProtection": {
+      "title": "Security and Data Protection",
+      "message": "We implement reasonable security measures to protect your data. In the event of a serious security breach involving one of our service providers, we reserve the right to take extreme measures, including the deletion of affected data, to safeguard your privacy. We will notify users whenever possible."
     },
     "intellectualProperty": {
       "title": "Intellectual Property",
       "ownership": "{{app_name}}, including its design, features, software, and trademarks, is owned by {{app_name}}, Inc. and protected by intellectual property laws.",
-      "branding": "You may not use {{app_name}}'s trademarks or branding without our prior written permission."
+      "branding": "You may not use {{app_name}}'s trademarks or branding without prior written permission."
     },
     "disclaimers": {
       "title": "Disclaimers",
       "as_is_service": {
         "title": "\"As-Is\" Service",
-        "description": "{{app_name}} is provided on an \"as-is\" and \"as-available\" basis without warranties of any kind. We do not warrant that {{app_name}} will be error-free, uninterrupted, secure, or that results will be reliable or accurate."
+        "description": "{{app_name}} is provided on an \"as-is\" and \"as-available\" basis without warranties. We do not warrant that {{app_name}} will be error-free, uninterrupted, secure, or reliable."
       },
       "health_disclaimer": {
         "title": "Health Disclaimer",
@@ -248,19 +253,19 @@
       "message": "To the maximum extent permitted by law, {{app_name}}, Inc. and its affiliates shall not be liable for indirect, incidental, special, consequential, or punitive damages.",
       "cap": {
         "label": "Liability Cap:",
-        "message": "Our total liability for any claim arising out of or relating to the Service is limited to the amount you paid us in the 12 months preceding the claim, or $50 if no payment was made."
+        "message": "Our total liability for any claim is limited to the amount you paid us in the 12 months preceding the claim, or $50 if no payment was made."
       }
     },
     "indemnification": {
       "title": "Indemnification",
-      "message": "You agree to indemnify and hold harmless {{app_name}}, Inc. and its affiliates from any claims, damages, liabilities, costs, and expenses arising out of your use of the Service, your violation of these Terms, or your violation of any law or rights of a third party."
+      "message": "You agree to indemnify and hold harmless {{app_name}}, Inc. and affiliates from any claims, damages, liabilities, costs, and expenses arising from your use of the Service, your violation of these Terms, or your violation of any law or third-party rights."
     },
     "governingLaw": {
       "title": "Governing Law and Disputes",
       "points": [
-        "These Terms are governed by the laws applicable to {{app_name}}, Inc. without regard to conflict of laws principles.",
+        "These Terms are governed by the laws applicable to {{app_name}}, Inc., without regard to conflict of laws principles.",
         "Disputes shall be resolved in the courts of the jurisdiction where {{app_name}}, Inc. is registered, unless otherwise required by law.",
-        "We may require certain disputes to be resolved through binding arbitration. Specific arbitration rules will be disclosed if applicable."
+        "Certain disputes may be subject to binding arbitration. Specific rules will be disclosed if applicable."
       ]
     },
     "additional": {
@@ -276,12 +281,12 @@
     },
     "changes": {
       "title": "Changes to These Terms",
-      "message": "We may modify these Terms at any time. Changes will be effective when posted or when communicated to you within the Service.",
+      "message": "We may modify these Terms at any time. Changes are effective when posted or communicated within the Service.",
       "note": "Your continued use of {{app_name}} after changes indicates your acceptance of the updated Terms."
     },
     "entireAgreement": {
       "title": "Entire Agreement",
-      "message": "These Terms constitute the entire agreement between you and {{app_name}}, Inc. regarding the Service and supersede all prior agreements relating to the subject matter hereof."
+      "message": "These Terms constitute the entire agreement between you and {{app_name}}, Inc. regarding the Service and supersede all prior agreements on this subject."
     }
   }
 }

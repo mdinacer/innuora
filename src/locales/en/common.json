@@ -7,7 +7,156 @@
   },
   "app-name": "Innuora",
   "avatar-letter": "I",
-  "back-to-app": "Back to Innuora",
+  "back-to-app": "Back to {{app_name}}",
+  "home": {
+    "hero": {
+      "badge": "AI-Powered Therapy",
+      "title": {
+        "line1": "Your Personal",
+        "highlight": "AI Therapist",
+        "line2": "For Mental Wellness"
+      },
+      "description": "Experience personalized Cognitive Behavioral Therapy with advanced AI that adapts to your unique emotional needs. Private, secure, and available 24/7.",
+      "cta": {
+        "primary": "Start Your Journey",
+        "secondary": "Explore Sessions"
+      },
+      "features": {
+        "privacy": "Zero-Knowledge Privacy",
+        "therapeutic": "CBT-Focused Therapy"
+      }
+    },
+    "features": {
+      "title": "Why Choose Innuora",
+      "subtitle": "Advanced AI technology meets evidence-based therapy techniques",
+      "ai_powered": {
+        "title": "AI-Powered Conversations",
+        "description": "Advanced AI that understands emotional nuance and provides personalized therapeutic guidance."
+      },
+      "zero_knowledge": {
+        "title": "Zero-Knowledge Privacy",
+        "description": "Your conversations are encrypted client-side. We can't read your data, ensuring complete privacy."
+      },
+      "cbt_focused": {
+        "title": "CBT-Based Approach",
+        "description": "Evidence-based Cognitive Behavioral Therapy techniques integrated into every conversation."
+      },
+      "adaptive_insights": {
+        "title": "Adaptive Insights",
+        "description": "AI learns your patterns and provides increasingly personalized insights and recommendations."
+      },
+      "progress_tracking": {
+        "title": "Progress Tracking",
+        "description": "Monitor your emotional growth with detailed analytics and progress reports."
+      },
+      "available_247": {
+        "title": "Available 24/7",
+        "description": "Access therapeutic support whenever you need it, day or night."
+      }
+    },
+    "how_it_works": {
+      "title": "How It Works",
+      "subtitle": "Get started with personalized therapy in four simple steps",
+      "sign_up": {
+        "title": "Create Account",
+        "description": "Sign up securely and set up your encrypted therapy environment."
+      },
+      "start_conversation": {
+        "title": "Begin Therapy",
+        "description": "Start your first conversation with our AI therapist trained in CBT techniques."
+      },
+      "track_progress": {
+        "title": "Track Progress",
+        "description": "Monitor your emotional growth and therapeutic milestones over time."
+      },
+      "get_insights": {
+        "title": "Gain Insights",
+        "description": "Receive personalized insights and actionable recommendations for your mental wellness journey."
+      }
+    },
+    "testimonials": {
+      "title": "Trusted by Thousands",
+      "subtitle": "Real people sharing their transformation stories",
+      "sarah": {
+        "quote": "Innuora helped me understand my anxiety patterns in ways traditional therapy never could. The AI feels genuinely understanding and never judgmental.",
+        "name": "Sarah J.",
+        "role": "Software Engineer"
+      },
+      "maya": {
+        "quote": "Having access to therapeutic support 24/7 has been life-changing. The privacy aspect makes me feel completely safe to be vulnerable.",
+        "name": "Maya R.",
+        "role": "Marketing Manager"
+      },
+      "alex": {
+        "quote": "The CBT techniques are explained so clearly, and the AI adapts to my specific triggers. It's like having a personal therapist in my pocket.",
+        "name": "Alex T.",
+        "role": "Teacher"
+      }
+    },
+    "pricing": {
+      "title": "Flexible Pricing",
+      "subtitle": "Pay only for what you use with transparent credit-based pricing",
+      "popular": "Most Popular",
+      "getStarted": "Get Started",
+      "guarantee": "7-day money-back guarantee • Cancel anytime",
+      "starter": {
+        "name": "Starter",
+        "price": "$5",
+        "unit": "1,000 credits",
+        "description": "Perfect for trying out Innuora",
+        "features": [
+          "~25 therapy sessions",
+          "Basic CBT modules",
+          "Progress tracking",
+          "24/7 availability",
+          "Email support"
+        ]
+      },
+      "regular": {
+        "name": "Regular",
+        "price": "$10",
+        "unit": "2,200 credits",
+        "description": "Most popular choice for ongoing therapy",
+        "features": [
+          "~55 therapy sessions",
+          "All CBT modules",
+          "Advanced insights",
+          "Progress analytics",
+          "Priority support",
+          "10% bonus credits"
+        ]
+      },
+      "premium": {
+        "name": "Premium",
+        "price": "$25",
+        "unit": "6,000 credits",
+        "description": "For intensive therapeutic work",
+        "features": [
+          "~150 therapy sessions",
+          "Premium AI models",
+          "Advanced analytics",
+          "Crisis support protocols",
+          "Priority support",
+          "20% bonus credits"
+        ]
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about Innuora"
+    },
+    "cta": {
+      "title": "Ready to Transform Your Mental Wellness?",
+      "subtitle": "Join thousands who've found clarity and peace through AI-powered therapy",
+      "primary": "Start Free Trial",
+      "secondary": "View Demo Session",
+      "features": {
+        "privacy": "Complete Privacy",
+        "therapeutic": "Evidence-Based"
+      },
+      "disclaimer": "Not a substitute for professional therapy • For crisis situations, contact emergency services"
+    }
+  },
   "languages": {
     "en": "English",
     "fr": "French",

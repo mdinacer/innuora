@@ -15,6 +15,7 @@ export const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt">
   continuitySummary: null,
   aggregatedAnalysis: null,
   analysisSnapshots: [],
+  sessionDiagnostics: null,
   modelCode: "M1",
   autoUpdateTitle: false,
   persistOnCloud: false,

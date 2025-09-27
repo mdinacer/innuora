@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, Clock, Eye, Globe, Lock, Shield } from "lucide-react";
+import { toast } from "sonner";
 
+import { getUserConfig, updateUserConfig } from "@/app/actions/user-config-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,20 +18,44 @@ import { Button } from "@/components/ui/button";
 // =========================
 
 export default function PrivacySettings(): React.JSX.Element {
-  const [encryptSessions, setEncryptSessions] = useState(true);
-  const [cloudSync, setCloudSync] = useState(true);
+  // Note: Encryption is always enabled, cloud sync is per-session setting
   const [analyticsOptIn, setAnalyticsOptIn] = useState(false);
   const [shareImprovements, setShareImprovements] = useState(true);
-  const [sessionRetention, setSessionRetention] = useState(90);
-  const [autoDelete, setAutoDelete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const retentionOptions = [
-    { value: 30, label: "30 days" },
-    { value: 90, label: "3 months" },
-    { value: 180, label: "6 months" },
-    { value: 365, label: "1 year" },
-    { value: -1, label: "Never delete" },
-  ];
+  // Load user config on component mount
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const config = await getUserConfig();
+        if (config) {
+          setAnalyticsOptIn(config.analyticsOptIn);
+          setShareImprovements(config.shareImprovements);
+        }
+      } catch (error) {
+        console.error("Failed to load privacy settings:", error);
+      }
+    }
+    loadConfig();
+  }, []);
+
+  // Save settings function
+  const saveSettings = async () => {
+    setIsLoading(true);
+    try {
+      await updateUserConfig({
+        analyticsOptIn,
+        shareImprovements,
+      });
+
+      toast.success("Privacy settings saved!");
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      toast.error("Failed to save settings. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -67,24 +93,18 @@ export default function PrivacySettings(): React.JSX.Element {
             </div>
           </div>
 
-          {/* Local Storage Encryption */}
-          <div className="flex items-center justify-between p-4  rounded-lg">
-            <div>
-              <h4 className="font-medium">Local Storage Encryption</h4>
-              <p className="text-sm">Encrypt data stored on your device for additional security</p>
+          {/* Local Storage Encryption - Always Enabled */}
+          <div className="flex items-center justify-between p-4 rounded-lg bg-green-50 border border-green-200">
+            <div className="flex items-start gap-3">
+              <Lock className="h-5 w-5 text-green-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-green-900">Local Storage Encryption</h4>
+                <p className="text-sm text-green-800">All data stored on your device is automatically encrypted</p>
+                <Badge variant="outline" className="mt-2 text-xs border-green-300 text-green-800">
+                  Always Enabled
+                </Badge>
+              </div>
             </div>
-            <button
-              onClick={() => setEncryptSessions(!encryptSessions)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                encryptSessions ? "bg-blue-600" : "bg-gray-200"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  encryptSessions ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
           </div>
         </div>
       </div>
@@ -97,84 +117,44 @@ export default function PrivacySettings(): React.JSX.Element {
         </div>
 
         <div className="space-y-4">
-          {/* Cloud Sync Toggle */}
-          <div className="flex items-center justify-between p-4  rounded-lg">
-            <div>
-              <h4 className="font-medium">Cloud Backup</h4>
-              <p className="text-sm">Securely backup your encrypted sessions to the cloud for access across devices</p>
+          {/* Cloud Sync Info */}
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Globe className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-blue-900">Cloud Backup</h4>
+                <p className="text-sm text-blue-800 mb-2">
+                  Cloud backup is configured per session. When creating a session, you can choose whether to store it on
+                  the cloud.
+                </p>
+                <p className="text-xs text-blue-700">
+                  <strong>Note:</strong> All cloud data remains encrypted. We cannot read your conversations.
+                </p>
+              </div>
             </div>
-            <button
-              onClick={() => setCloudSync(!cloudSync)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                cloudSync ? "bg-blue-600" : "bg-gray-200"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  cloudSync ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
           </div>
-
-          {cloudSync && (
-            <div className="ml-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Note:</strong> Even with cloud sync enabled, your data remains encrypted. We cannot read your
-                conversations.
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Data Retention */}
+      {/* Data Management */}
       <div>
         <div className="flex items-center gap-2 mb-4">
           <Clock className="h-5 w-5" />
-          <h3 className="text-lg font-medium">Data Retention</h3>
+          <h3 className="text-lg font-medium">Data Management</h3>
         </div>
 
-        <div className="space-y-4">
-          {/* Retention Period */}
-          <div className="grid grid-cols-3 gap-4 items-center">
-            <label htmlFor="session-retention" className="text-sm font-medium text-gray-700">
-              Keep sessions for
-            </label>
-            <div className="col-span-2">
-              <select
-                id="session-retention"
-                value={sessionRetention}
-                onChange={(e) => setSessionRetention(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {retentionOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Auto Delete */}
-          <div className="flex items-center justify-between p-4  rounded-lg">
+        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <Clock className="h-5 w-5 text-gray-600 mt-0.5" />
             <div>
-              <h4 className="font-medium">Automatic Deletion</h4>
-              <p className="text-sm">Automatically delete sessions older than the retention period</p>
+              <h4 className="font-medium text-gray-900">Manual Data Control</h4>
+              <p className="text-sm text-gray-700 mb-2">
+                You have full control over your data. Sessions are kept until you manually delete them.
+              </p>
+              <p className="text-xs text-gray-600">
+                You can delete individual sessions or all data from the session management page or danger zone below.
+              </p>
             </div>
-            <button
-              onClick={() => setAutoDelete(!autoDelete)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                autoDelete ? "bg-blue-600" : "bg-gray-200"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  autoDelete ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
           </div>
         </div>
       </div>
@@ -188,10 +168,13 @@ export default function PrivacySettings(): React.JSX.Element {
 
         <div className="space-y-4">
           {/* Analytics Opt-in */}
-          <div className="flex items-center justify-between p-4  rounded-lg">
+          <div className="flex items-center justify-between p-4 rounded-lg">
             <div>
               <h4 className="font-medium">Usage Analytics</h4>
               <p className="text-sm">Share anonymous usage data to help improve Innuora (no conversation content)</p>
+              <Badge variant="outline" className="mt-1 text-xs">
+                Future Feature
+              </Badge>
             </div>
             <button
               onClick={() => setAnalyticsOptIn(!analyticsOptIn)}
@@ -208,10 +191,13 @@ export default function PrivacySettings(): React.JSX.Element {
           </div>
 
           {/* Improvement Suggestions */}
-          <div className="flex items-center justify-between p-4  rounded-lg">
+          <div className="flex items-center justify-between p-4 rounded-lg">
             <div>
               <h4 className="font-medium">Product Improvements</h4>
               <p className="text-sm">Receive suggestions for new features based on your usage patterns</p>
+              <Badge variant="outline" className="mt-1 text-xs">
+                Future Feature
+              </Badge>
             </div>
             <button
               onClick={() => setShareImprovements(!shareImprovements)}
@@ -253,7 +239,9 @@ export default function PrivacySettings(): React.JSX.Element {
 
       {/* Save Button */}
       <div className="flex justify-end pt-4 border-t border-gray-200">
-        <Button>Save Privacy Settings</Button>
+        <Button onClick={saveSettings} disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save Privacy Settings"}
+        </Button>
       </div>
     </div>
   );

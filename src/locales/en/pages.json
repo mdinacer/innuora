@@ -523,7 +523,7 @@
   "policies_footer": {
     "disclaimer": {
       "label": "Important: ",
-      "message": "{{app_name}} is not a mental health or crisis service. If you are in crisis, please contact local emergency services."
+      "message": "{{app_name}} is not a mental health or crisis service. If you are experiencing a crisis, please reach out to your local emergency services immediately"
     },
     "questions": "Questions about this {{currentPage}}?",
     "contact_email": "Contact us at ",
@@ -625,7 +625,9 @@
       "active": "Active",
       "verification": "Verification",
       "emailVerified": "Email Verified",
-      "emailNotVerified": "Email Not Verified"
+      "emailNotVerified": "Email Not Verified",
+      "updateSuccess": "Profile updated successfully",
+      "updateError": "Failed to update profile. Please try again."
     }
   }
 }

@@ -289,8 +289,27 @@ export default async function Home({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
+      <div className="fixed hidden md:block inset-0 w-screen h-screen">
+        <video
+          autoPlay
+          loop
+          muted
+          preload="auto"
+          className="object-cover w-full h-full  grayscale dark:grayscale-0 opacity-10 dark:opacity-20 dark:invert-0"
+        >
+          <source src="/assets/videos/hero.webm" type="video/webm" />
+          <source src="/assets/videos/hero.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div
+        className="fixed inset-0 hidden md:block bg-[#0a1628]  dark:mix-blend-exclusion mix-blend-color  h-screen w-screen"
+        style={{
+          willChange: "transform, opacity", // Hint GPU for smooth compositing
+        }}
+      ></div>
       {/* <!-- Hero --> */}
-      <section className="max-w-5xl mx-auto px-6 py-16 text-center">
+      <section className="relative max-w-5xl mx-auto px-6 py-16 text-center">
         <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-[13px] font-semibold text-inn-bg-accent">
           {hero.badge}
         </div>
@@ -323,7 +342,7 @@ export default async function Home({
       </section>
 
       {/* <!-- How it helps --> */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section className="relative max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl rtl:md:text-5xl rtl:leading-loose font-bold mb-3 rtl:font-arabic">
             {howItHelps.title}
@@ -343,7 +362,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section id="demo" className="max-w-4xl mx-auto px-4 py-12">
+      <section id="demo" className="relative max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl rtl:font-arabic md:text-3xl rtl:leading-normal rtl:md:text-5xl font-bold mb-3 rtl:mb-5">
             {demo.title}
@@ -413,7 +432,7 @@ export default async function Home({
       </section>
 
       {/* <!-- Early Access CTA --> */}
-      <section id="early-access" className="px-6 py-16">
+      <section id="early-access" className="relative px-6 py-16">
         <div className="max-w-5xl mx-auto rounded-3xl p-10 text-center text-white bg-gradient-to-br from-inn-bg-accent-dark to-inn-bg-accent rtl:to-inn-bg-accent-dark">
           <h2 className="text-3xl md:text-4xl  font-bold mb-3 rtl:mb-5 rtl:font-arabic">{earlyAccess.title}</h2>
           <p className="text-base md:text-lg rtl:font-medium max-w-2xl mx-auto mb-8">{earlyAccess.subtitle}</p>
@@ -426,7 +445,7 @@ export default async function Home({
         </div>
       </section>
       {/* <!-- FAQ (native details/summary for a11y, no extra JS needed) --> */}
-      <section className="max-w-3xl mx-auto px-6 py-16">
+      <section className="relative max-w-3xl mx-auto px-6 py-16">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center rtl:font-arabic rtl:md:text-5xl">{faq.title}</h2>
         <div className="space-y-4">
           {faq.items.map((item, index) => (

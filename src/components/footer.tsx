@@ -5,9 +5,10 @@ import initTranslations, { AppLocales } from "@/lib/i18n";
 
 interface Props {
   locale?: AppLocales;
+  showDisclaimer?: boolean;
 }
 
-export default async function Footer({ locale = "en" }: Props) {
+export default async function Footer({ locale = "en", showDisclaimer = true }: Props) {
   const { t } = await initTranslations(locale, ["pages"]);
 
   const { disclaimer, links, copyright } = {
@@ -28,10 +29,12 @@ export default async function Footer({ locale = "en" }: Props) {
   return (
     <footer className="relative border-t border-inn-border-light">
       <div className="max-w-6xl mx-auto px-6 py-10 text-center text-base rtl:text-lg text-inn-text-secondary">
-        <p className="mb-3 text-primary">
-          <span className="font-semibold">{disclaimer.label}</span>
-          {disclaimer.message}
-        </p>
+        {showDisclaimer && (
+          <p className="mb-3 text-primary">
+            <span className="font-semibold">{disclaimer.label}</span>
+            {disclaimer.message}
+          </p>
+        )}
         <div className="flex justify-center gap-6 flex-wrap mb-3">
           <Link href="/eula" className="hover:text-inn-text-primary">
             {links.eula}

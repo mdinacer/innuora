@@ -2,23 +2,32 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { MODULES_INSTRUCTIONS_MAP_ASYNC } from "@/domains/cbt-modules";
 import { SESSION_MODULES, SessionModule } from "@/domains/cbt-modules/constants";
+import { MODULES_INSTRUCTIONS_LOCALIZED } from "@/domains/cbt-modules/modules-instructions-localized";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { AppLocales } from "@/lib/i18n";
 import { capitalize } from "@/lib/utils/capitalize-word";
 
 export class ModulesPromptBuilder {
+  private locale: AppLocales;
+
+  constructor(locale: AppLocales = "en") {
+    this.locale = locale;
+  }
   async buildModulesPrompt(analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
     const { crisis, core_module, process_module, utility_module, intensity } = analysis;
 
     // 1. ABSOLUTE PRIORITY: IMMEDIATE CRISIS (from analysis.crisis)
     if (crisis === "immediate") {
-      const analysisContext = this.buildAnalysisContext(analysis);
+      const analysisContext = this.buildAnalysisContext(analysis, this.locale);
       const instructions = await this.getModuleInstructions(SESSION_MODULES.CRISIS);
-      const content = `USER IN IMMEDIATE CRISIS. FOLLOW CRISIS MODULE INSTRUCTIONS EXACTLY. IGNORE ALL OTHER MODULES.
+      const localizedInstructions = MODULES_INSTRUCTIONS_LOCALIZED[this.locale];
 
-Current Analysis Context:
+      const content = `${localizedInstructions.crisis_override}
+
+${localizedInstructions.analysis_context}
 ${analysisContext}
 
-Crisis Module Instructions:
+${localizedInstructions.crisis_instructions}
 ${instructions}`;
       return { role: "system", content } as ChatCompletionMessageParam;
     }
@@ -29,112 +38,131 @@ ${instructions}`;
       intensity === "high" &&
       (process_module === SESSION_MODULES.OVERWHELM || process_module === SESSION_MODULES.RESISTANCE_OVERWHELM)
     ) {
-      const analysisContext = this.buildAnalysisContext(analysis);
+      const analysisContext = this.buildAnalysisContext(analysis, this.locale);
+      const curiosityInstructions = await this.getModuleInstructions(SESSION_MODULES.CURIOSITY);
       const instructions = await this.getModuleInstructions(process_module);
-      const content = `USER STATE: HIGH INTENSITY WITH OVERWHELM/RESISTANCE. PRIORITIZE CONTAINMENT. THE CORE_MODULE (${core_module}) IS TEMPORARILY PAUSED.
+      const localizedInstructions = MODULES_INSTRUCTIONS_LOCALIZED[this.locale];
 
-Current Analysis Context:
+      const content = `${localizedInstructions.high_intensity_containment}
+
+${localizedInstructions.analysis_context}
 ${analysisContext}
 
-Process Module Instructions:
-${instructions}`;
+${localizedInstructions.active_modules}
+${localizedInstructions.curiosity_foundation} ${curiosityInstructions}
+
+${capitalize(process_module)} ${localizedInstructions.processing} ${instructions}`;
       return { role: "system", content } as ChatCompletionMessageParam;
     }
 
     // Build analysis context once (shared across all modules to avoid triplication)
-    const analysisContext = this.buildAnalysisContext(analysis);
+    const analysisContext = this.buildAnalysisContext(analysis, this.locale);
+    const localizedInstructions = MODULES_INSTRUCTIONS_LOCALIZED[this.locale];
 
-    const moduleLines: string[] = [];
+    // Build unified module instructions instead of separate sections
+    const activeModules: string[] = [];
 
-    // Add analysis context first
-    moduleLines.push(`Current Analysis Context:\n${analysisContext}`);
+    // ALWAYS include curiosity as the foundation
+    const curiosityInstructions = await this.getModuleInstructions(SESSION_MODULES.CURIOSITY);
+    activeModules.push(`${localizedInstructions.curiosity_foundation} ${curiosityInstructions}`);
 
+    // Add therapeutic modules as integrated guidance
     if (core_module) {
       const instructions = await this.getModuleInstructions(core_module);
-      moduleLines.push(`\n- Core: ${capitalize(core_module)}\nInstructions: ${instructions}`);
+      activeModules.push(`${capitalize(core_module)} ${localizedInstructions.focus} ${instructions}`);
     }
 
     if (process_module) {
       const instructions = await this.getModuleInstructions(process_module);
-      moduleLines.push(`\n- Process: ${capitalize(process_module)}\nInstructions: ${instructions}`);
+      activeModules.push(`${capitalize(process_module)} ${localizedInstructions.processing} ${instructions}`);
     }
 
     if (utility_module) {
       const instructions = await this.getModuleInstructions(utility_module);
-      moduleLines.push(`\n- Utility: ${capitalize(utility_module)}\nInstructions: ${instructions}`);
+      activeModules.push(`${capitalize(utility_module)} ${localizedInstructions.support} ${instructions}`);
     }
 
-    const generalInstructions = `
-General Instructions:
-- Output must be a single short paragraph (≤120 words). Only extend to two concise paragraphs if absolutely necessary.
-- The core module drives the response. Process and utility modules act as subtle modifiers, never standalone sections.
-- Reflect the user's words and emotions directly, showing you understand their inner experience.
-- Highlight cognitive, emotional, thematic, or behavioral patterns tied to active modules.
-- Suggest small, actionable next steps only if aligned with the user’s therapeutic readiness.
-- Keep tone and intensity calibrated to analysis (calm, moderate, high).
-- Maintain continuity with prior messages for a natural conversational flow.
+    const unifiedInstructions = `
+${localizedInstructions.analysis_context}
+${analysisContext}
+
+${localizedInstructions.active_therapeutic_modules}
+${activeModules.join("\n\n")}
 `.trim();
 
-    const content =
-      moduleLines.length > 0 ? `${moduleLines.join("\n")}\n\n${generalInstructions}` : generalInstructions;
+    const content = unifiedInstructions;
 
     return { role: "system", content } as ChatCompletionMessageParam;
   }
 
   async getModuleInstructions(module: SessionModule): Promise<string> {
-    return await MODULES_INSTRUCTIONS_MAP_ASYNC[module]();
+    return await MODULES_INSTRUCTIONS_MAP_ASYNC[module](this.locale);
   }
 
-  async buildModuleSection(module: SessionModule, analysis: TherapeuticAnalysis): Promise<ChatCompletionMessageParam> {
-    const instructions = await this.getModuleInstructions(module);
-    const analysisContext = this.buildAnalysisContext(analysis);
+  private buildAnalysisContext(analysis: TherapeuticAnalysis, locale: AppLocales): string {
+    const coreBeliefs = analysis.core_beliefs.map((b) => `"${b.belief}"`).join(", ") || "none";
+    const distortions = analysis.distortions.map((d) => `${d.type}(${d.severity})`).join(", ") || "none";
+    const silentRules = analysis.silent_rules.map((r) => `"${r.rule}"(${r.rigidity})`).join(", ") || "none";
+    const behavioral = analysis.behavioral_patterns.map((b) => `${b.type}(${b.severity})`).join(", ") || "none";
+    const themes = analysis.themes.map((t) => `${t.theme}(${t.frequency})`).join(", ") || "none";
 
-    return {
-      role: "system",
-      content: `${capitalize(module)} Module:
+    switch (locale) {
+      case "ar":
+        return `
+الحالة العاطفية للمستخدم:
+- شدة المشاعر: ${analysis.intensity}
+- مستوى الأزمة: ${analysis.crisis}
+- الحالة الحالية: ${analysis.state}
 
-Current Analysis Context:
-${analysisContext}
+الأنماط المعرفية والمعتقدات:
+- المعتقدات الجوهرية: ${coreBeliefs}
+- الانحرافات المعرفية: ${distortions}
+- القواعد الصامتة: ${silentRules}
 
-Instructions:
-${instructions}`,
-    };
-  }
+الأنماط السلوكية:
+- ${behavioral}
 
-  private formatDistortions(distortions: TherapeuticAnalysis["distortions"]): string {
-    if (!distortions?.length) return "none";
-    return distortions.map((d) => `${d.type}(${d.severity})`).join(", ");
-  }
+الموضوعات المتكررة:
+- ${themes}
+      `.trim();
 
-  private formatThemes(themes: TherapeuticAnalysis["themes"]): string {
-    if (!themes?.length) return "none";
-    return themes.map((t) => `${t.theme}(${t.frequency})`).join(", ");
-  }
+      case "fr":
+        return `
+État émotionnel de l’utilisateur:
+- Intensité: ${analysis.intensity}
+- Niveau de crise: ${analysis.crisis}
+- État actuel: ${analysis.state}
 
-  private formatCoreBeliefs(beliefs: TherapeuticAnalysis["core_beliefs"]): string {
-    if (!beliefs?.length) return "none";
-    return beliefs.map((b) => `"${b.belief}"`).join(", ");
-  }
+Schémas cognitifs et croyances:
+- Croyances fondamentales: ${coreBeliefs}
+- Distorsions cognitives: ${distortions}
+- Règles silencieuses: ${silentRules}
 
-  private formatSilentRules(rules: TherapeuticAnalysis["silent_rules"]): string {
-    if (!rules?.length) return "none";
-    return rules.map((r) => `"${r.rule}"(${r.rigidity})`).join(", ");
-  }
+Schémas comportementaux:
+- ${behavioral}
 
-  private formatBehavioralPatterns(patterns: TherapeuticAnalysis["behavioral_patterns"]): string {
-    if (!patterns?.length) return "none";
-    return patterns.map((p) => `${p.type}(${p.severity})`).join(", ");
-  }
+Thèmes récurrents:
+- ${themes}
+      `.trim();
 
-  private buildAnalysisContext(analysis: TherapeuticAnalysis): string {
-    return `- Crisis: ${analysis.crisis ?? "none"}
-- Intensity: ${analysis.intensity ?? "medium"}
-- Therapeutic Readiness: ${analysis.therapeutic_readiness ?? "ambivalent"}
-- State: ${analysis.state ?? "unknown"}
-- Distortions: ${this.formatDistortions(analysis.distortions)}
-- Themes: ${this.formatThemes(analysis.themes)}
-- Core Beliefs: ${this.formatCoreBeliefs(analysis.core_beliefs)}
-- Silent Rules: ${this.formatSilentRules(analysis.silent_rules)}
-- Behavioral Patterns: ${this.formatBehavioralPatterns(analysis.behavioral_patterns)}`;
+      default:
+        return `
+User Emotional State:
+- Intensity: ${analysis.intensity}
+- Crisis Level: ${analysis.crisis}
+- Current state: ${analysis.state}
+
+Cognitive Patterns & Beliefs:
+- Core beliefs: ${coreBeliefs}
+- Distortions: ${distortions}
+- Silent rules: ${silentRules}
+
+Behavioral Patterns:
+- ${behavioral}
+
+Recurring Themes:
+- ${themes}
+      `.trim();
+    }
   }
 }

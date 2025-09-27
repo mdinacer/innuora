@@ -7,7 +7,6 @@ import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppError } from "@/lib/errors";
-import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { AiModel } from "@/types/ai-model.types";
 import { SendPromptsToAi, SendPromptsToAiWithRetry } from "../ai-client-actions";
 
@@ -72,10 +71,12 @@ describe("AI Client Actions", () => {
     model: "gpt-4o",
     choices: [
       {
+        logprobs: null,
         index: 0,
         message: {
           role: "assistant",
           content: "Hello! I'm doing well, thank you for asking.",
+          refusal: null,
         },
         finish_reason: "stop",
       },
@@ -472,7 +473,7 @@ describe("AI Client Actions", () => {
     it("should log AI responses in development mode", async () => {
       // Arrange
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "development";
+      (process.env as any).NODE_ENV = "development";
 
       const mockOpenAI = await import("@/lib/openai");
       const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
@@ -494,14 +495,14 @@ describe("AI Client Actions", () => {
       );
 
       // Cleanup
-      process.env.NODE_ENV = originalEnv;
+      (process.env as any).NODE_ENV = originalEnv;
       consoleSpy.mockRestore();
     });
 
     it("should not log in production mode", async () => {
       // Arrange
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "production";
+      (process.env as any).NODE_ENV = "production";
 
       const mockOpenAI = await import("@/lib/openai");
       const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
@@ -519,7 +520,7 @@ describe("AI Client Actions", () => {
       expect(consoleSpy).not.toHaveBeenCalled();
 
       // Cleanup
-      process.env.NODE_ENV = originalEnv;
+      (process.env as any).NODE_ENV = originalEnv;
       consoleSpy.mockRestore();
     });
   });

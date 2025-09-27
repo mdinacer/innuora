@@ -61,7 +61,7 @@ describe("Credit Actions", () => {
   describe("getUserCreditsBalance", () => {
     it("should return user credits balance for valid user", async () => {
       const mockUser = { creditsBalance: 1500 };
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(mockUser);
 
       const result = await getUserCreditsBalance("test-auth-id");
 
@@ -74,7 +74,7 @@ describe("Credit Actions", () => {
 
     it("should return 0 for user with null balance", async () => {
       const mockUser = { creditsBalance: null };
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(mockUser);
 
       const result = await getUserCreditsBalance("test-auth-id");
 
@@ -82,7 +82,7 @@ describe("Credit Actions", () => {
     });
 
     it("should throw error for non-existent user", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue(null);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(null);
       mockLogger.logErrorAndThrow.mockImplementation(() => {
         throw new Error("User not found");
       });
@@ -100,7 +100,7 @@ describe("Credit Actions", () => {
     });
 
     it("should handle database errors gracefully", async () => {
-      mockPrisma.user.findUnique.mockRejectedValue(new Error("Database connection failed"));
+      (mockPrisma.user.findUnique as any).mockRejectedValue(new Error("Database connection failed"));
 
       await expect(getUserCreditsBalance("test-auth-id")).rejects.toThrow("Database connection failed");
     });
@@ -200,7 +200,7 @@ describe("Credit Actions", () => {
   describe("deductCredits", () => {
     it("should successfully deduct credits when sufficient balance exists", async () => {
       // Mock getUserCreditsBalance call
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 1000 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 1000 });
 
       const mockUpdatedUser = { id: "user-123", creditsBalance: 700 };
       const mockTransaction = { id: "txn-debit-456" };
@@ -224,7 +224,7 @@ describe("Credit Actions", () => {
 
     it("should reject deduction when insufficient credits", async () => {
       // Mock getUserCreditsBalance to return low balance
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 50 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 50 });
       mockLogger.logErrorAndThrow.mockImplementation(() => {
         throw new Error("Insufficient credits");
       });
@@ -254,7 +254,7 @@ describe("Credit Actions", () => {
     });
 
     it("should create DEBIT transaction record with session ID", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 1000 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 1000 });
 
       const mockUpdatedUser = { id: "user-123", creditsBalance: 800 };
       const mockTransaction = { id: "txn-debit-789" };
@@ -289,7 +289,7 @@ describe("Credit Actions", () => {
 
     it("should handle exact balance deduction", async () => {
       // User has exactly 100 credits, deduct exactly 100
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 100 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 100 });
 
       const mockUpdatedUser = { id: "user-123", creditsBalance: 0 };
       const mockTransaction = { id: "txn-exact" };
@@ -335,7 +335,7 @@ describe("Credit Actions", () => {
         },
       ];
 
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(mockUser);
       mockPrisma.creditTransaction.findMany.mockResolvedValue(mockTransactions);
 
       const result = await getUserCreditHistory("test-auth-id");
@@ -360,7 +360,7 @@ describe("Credit Actions", () => {
 
     it("should handle custom pagination parameters", async () => {
       const mockUser = { id: "user-456" };
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(mockUser);
       mockPrisma.creditTransaction.findMany.mockResolvedValue([]);
 
       await getUserCreditHistory("test-auth-id", 20, 10);
@@ -374,7 +374,7 @@ describe("Credit Actions", () => {
     });
 
     it("should throw error for non-existent user", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue(null);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(null);
 
       await expect(getUserCreditHistory("invalid-auth-id")).rejects.toThrow("User not found");
     });
@@ -411,7 +411,7 @@ describe("Credit Actions", () => {
 
     it("should reject non-admin user attempts", async () => {
       const mockNonAdmin = { role: "user" };
-      mockPrisma.user.findUnique.mockResolvedValue(mockNonAdmin);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(mockNonAdmin);
       mockLogger.logErrorAndThrow.mockImplementation(() => {
         throw new Error("Admin access required");
       });
@@ -430,7 +430,7 @@ describe("Credit Actions", () => {
 
     it("should reject zero amount adjustments", async () => {
       const mockAdmin = { role: "admin" };
-      mockPrisma.user.findUnique.mockResolvedValue(mockAdmin);
+      (mockPrisma.user.findUnique as any).mockResolvedValue(mockAdmin);
       mockLogger.logErrorAndThrow.mockImplementation(() => {
         throw new Error("Adjustment amount cannot be zero");
       });
@@ -503,7 +503,7 @@ describe("Credit Actions", () => {
 
   describe("checkSufficientCredits", () => {
     it("should return true when user has sufficient credits", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 1000 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 1000 });
 
       const result = await checkSufficientCredits("test-auth-id", 500);
 
@@ -511,7 +511,7 @@ describe("Credit Actions", () => {
     });
 
     it("should return false when user has insufficient credits", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 100 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 100 });
 
       const result = await checkSufficientCredits("test-auth-id", 500);
 
@@ -519,7 +519,7 @@ describe("Credit Actions", () => {
     });
 
     it("should return true for exact balance match", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 250 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 250 });
 
       const result = await checkSufficientCredits("test-auth-id", 250);
 
@@ -527,7 +527,7 @@ describe("Credit Actions", () => {
     });
 
     it("should handle zero required credits", async () => {
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 0 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 0 });
 
       const result = await checkSufficientCredits("test-auth-id", 0);
 
@@ -554,7 +554,7 @@ describe("Credit Actions", () => {
       expect(addResult.newBalance).toBe(1000);
 
       // Step 2: Deduct credits (mock new balance)
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 1000 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 1000 });
       const mockDeductUser = { id: "user-workflow", creditsBalance: 950 };
       const mockDeductTransaction = { id: "deduct-txn" };
 
@@ -571,7 +571,7 @@ describe("Credit Actions", () => {
       expect(deductResult.newBalance).toBe(950);
 
       // Step 3: Check history
-      mockPrisma.user.findUnique.mockResolvedValue({ id: "user-workflow" });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ id: "user-workflow" });
       mockPrisma.creditTransaction.findMany.mockResolvedValue([
         { id: "add-txn", type: "CREDIT", amount: 1000, reason: "purchase" },
         { id: "deduct-txn", type: "DEBIT", amount: 50, reason: "ai_usage" },
@@ -583,7 +583,7 @@ describe("Credit Actions", () => {
 
     it("should maintain atomic operations during concurrent access", async () => {
       // This test verifies that our transaction usage prevents race conditions
-      mockPrisma.user.findUnique.mockResolvedValue({ creditsBalance: 100 });
+      (mockPrisma.user.findUnique as any).mockResolvedValue({ creditsBalance: 100 });
 
       let transactionCount = 0;
       mockPrisma.$transaction.mockImplementation(async (callback) => {

@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { Calendar, Globe, Mail, User, UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
+import { updateUserProfile } from "@/app/actions/user-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AppLocales } from "@/lib/i18n";
@@ -14,15 +16,81 @@ import { useAppUserStore } from "@/stores/app-user.store";
 export default function ProfileSettings() {
   const {
     t,
-    i18n: { language },
+    i18n: { language, changeLanguage },
   } = useTranslation(["pages", "common"]);
   const [locale, setLocale] = useState<AppLocales>(language as AppLocales);
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const user = useAppUserStore((state) => state.user);
   const authUser = useAppUserStore((state) => state.authUser);
+  const setUser = useAppUserStore((state) => state.setUser);
 
   const memberSince = authUser?.email_confirmed_at || user?.createdAt || null;
+
+  // Initialize form state with current user data
+  useEffect(() => {
+    if (user?.profile?.displayName && !displayName) {
+      setDisplayName(user.profile.displayName);
+    }
+    if (user?.config?.locale && user.config.locale !== locale) {
+      setLocale(user.config.locale as AppLocales);
+    }
+  }, [user, displayName, locale]);
+
+  const handleSaveChanges = async () => {
+    if (!user || !authUser?.email) return;
+
+    setIsLoading(true);
+    try {
+      const updates: any = {};
+
+      // Check if display name changed
+      const currentDisplayName = user.profile?.displayName || "";
+      if (displayName.trim() !== currentDisplayName) {
+        updates.displayName = displayName.trim();
+      }
+
+      // Check if locale changed
+      const currentLocale = user.config?.locale || "en";
+      if (locale !== currentLocale) {
+        updates.locale = locale;
+      }
+
+      // Only make API call if there are actual changes
+      if (Object.keys(updates).length > 0) {
+        const updatedUser = await updateUserProfile(updates);
+
+        // Update language if changed
+        if (updates.locale && updates.locale !== language) {
+          await changeLanguage(updates.locale);
+        }
+
+        // Update user data in store with the response from the server
+        setUser(updatedUser);
+
+        toast.success(t("settings.profile.updateSuccess", { ns: "pages" }));
+      }
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      toast.error(t("settings.profile.updateError", { ns: "pages" }));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    // Reset form to current values
+    if (user?.profile?.displayName) {
+      setDisplayName(user.profile.displayName);
+    }
+    if (user?.config?.locale) {
+      setLocale(user.config.locale as AppLocales);
+    }
+    setIsEditing(false);
+  };
 
   const content = useMemo(
     () => ({
@@ -91,7 +159,11 @@ export default function ProfileSettings() {
         </div>
 
         {/* Edit Button */}
-        <Button variant={isEditing ? "outline" : "default"} onClick={() => setIsEditing(!isEditing)}>
+        <Button
+          variant={isEditing ? "outline" : "default"}
+          onClick={() => (isEditing ? handleCancel() : setIsEditing(true))}
+          disabled={isLoading}
+        >
           {isEditing ? content.cancel : content.editProfile}
         </Button>
       </div>
@@ -165,10 +237,12 @@ export default function ProfileSettings() {
       {/* Save Changes */}
       {isEditing && (
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-          <Button variant="outline" onClick={() => setIsEditing(false)}>
+          <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             {content.cancel}
           </Button>
-          <Button onClick={() => setIsEditing(false)}>{content.saveChanges}</Button>
+          <Button onClick={handleSaveChanges} disabled={isLoading}>
+            {isLoading ? "Saving..." : content.saveChanges}
+          </Button>
         </div>
       )}
 

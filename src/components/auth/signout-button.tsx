@@ -17,8 +17,8 @@ const SignoutButton: React.FC<Props> = ({ scope = "global" }) => {
   const handleSignout = useCallback(async () => {
     await clearStoredContentKey();
     sessionStorage.clear();
-    await signOut();
-  }, []);
+    await signOut(scope);
+  }, [scope]);
   return (
     <Button
       onClick={handleSignout}

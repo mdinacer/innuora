@@ -18,8 +18,6 @@ import { Button } from "@/components/ui/button";
 export default function SecuritySettings(): React.JSX.Element {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [sessionTimeout, setSessionTimeout] = useState(60);
-  const [loginAlerts, setLoginAlerts] = useState(true);
-  const [deviceTracking, setDeviceTracking] = useState(true);
 
   const timeoutOptions = [
     { value: 15, label: "15 minutes" },

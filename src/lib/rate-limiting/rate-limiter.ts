@@ -69,7 +69,7 @@ export class MemoryRateLimiter {
   private startCleanupTimer(): void {
     setInterval(() => {
       const now = Date.now();
-      for (const [key, entry] of this.store.entries()) {
+      for (const [key, entry] of Array.from(this.store.entries())) {
         const ruleKey = key.split(":")[0];
         const rule = this.rules[ruleKey];
 
