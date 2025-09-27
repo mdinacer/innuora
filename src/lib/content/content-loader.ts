@@ -10,6 +10,14 @@ import { contentRegistry } from "./content-registry";
  * and registers it with the content registry
  */
 export async function initializeContentRegistry(): Promise<void> {
+  // Check if already initialized
+  if (contentRegistry.isInitialized()) {
+    return;
+  }
+
+  // Clear any existing data (safety measure)
+  contentRegistry.clear();
+
   try {
     // Import the content taxonomy
     const { default: taxonomy } = await import("@/content/content-taxonomy.json");
@@ -34,6 +42,7 @@ export async function initializeContentRegistry(): Promise<void> {
           draft: true, // All content starts as draft until written
           relatedCbtModules: inferCbtModules(category),
           targetEmotions: inferTargetEmotions(category),
+          publishedAt: new Date(), // Add current date as placeholder
         };
 
         // Generate brief excerpt from title
@@ -42,6 +51,9 @@ export async function initializeContentRegistry(): Promise<void> {
         contentRegistry.register(metadata, excerpt);
       });
     });
+
+    // Mark as initialized
+    contentRegistry.markInitialized();
 
     console.log(`Initialized content registry with ${contentRegistry.getAll().length} articles`);
   } catch (error) {
@@ -54,6 +66,9 @@ export async function initializeContentRegistry(): Promise<void> {
 // =========================
 
 function mapIntent(intent: string): ContentMetadata["intent"] {
+  // Handle compound intents by taking the first part
+  const primaryIntent = intent.split("/")[0];
+
   const intentMap: Record<string, ContentMetadata["intent"]> = {
     informational: "informational",
     actionable: "actionable",
@@ -61,9 +76,20 @@ function mapIntent(intent: string): ContentMetadata["intent"] {
     emergency: "emergency",
     instructional: "actionable",
     therapeutic: "therapeutic",
+    advanced: "actionable",
+    professional: "actionable",
+    seasonal: "informational",
+    motivational: "supportive",
+    relationship: "supportive",
+    recovery: "therapeutic",
+    transformational: "therapeutic",
+    analytical: "informational",
+    innovative: "informational",
+    educational: "informational",
+    lifestyle: "actionable",
   };
 
-  return intentMap[intent] || "informational";
+  return intentMap[primaryIntent] || "informational";
 }
 
 function estimateReadingTime(title: string): number {
