@@ -12,6 +12,7 @@ export class ContentRegistry {
   private static instance: ContentRegistry;
   private contentIndex: Map<string, ContentItem> = new Map();
   private categoryIndex: Map<ContentCategory, ContentItem[]> = new Map();
+  private initialized: boolean = false;
 
   static getInstance(): ContentRegistry {
     if (!ContentRegistry.instance) {
@@ -24,6 +25,11 @@ export class ContentRegistry {
    * Register content item (metadata only)
    */
   register(metadata: ContentMetadata, excerpt?: string): void {
+    // Prevent duplicate registrations
+    if (this.contentIndex.has(metadata.slug)) {
+      return;
+    }
+
     const item: ContentItem = {
       metadata,
       excerpt,
@@ -37,6 +43,29 @@ export class ContentRegistry {
       this.categoryIndex.set(metadata.category, []);
     }
     this.categoryIndex.get(metadata.category)!.push(item);
+  }
+
+  /**
+   * Check if registry is initialized
+   */
+  isInitialized(): boolean {
+    return this.initialized;
+  }
+
+  /**
+   * Mark registry as initialized
+   */
+  markInitialized(): void {
+    this.initialized = true;
+  }
+
+  /**
+   * Clear all content (for testing)
+   */
+  clear(): void {
+    this.contentIndex.clear();
+    this.categoryIndex.clear();
+    this.initialized = false;
   }
 
   /**
