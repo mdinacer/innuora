@@ -6,7 +6,7 @@ import useLoadUserData from "@/hooks/use-load-user-data";
 
 const DataLoader = ({ user }: { user: User }) => {
   useLoadUserData({ authUser: user });
-  return <div className="absolute top-0 left-0">{user.id}</div>;
+  return null;
 };
 
 export default DataLoader;

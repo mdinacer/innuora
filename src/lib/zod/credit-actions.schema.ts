@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { ERROR_CODES } from "@/lib/errors";
+
 /**
  * Schema for credit transaction types
  */
@@ -21,17 +23,20 @@ export const CreditTransactionReasonSchema = z.enum([
 /**
  * Schema for user authentication ID validation
  */
-export const AuthIdSchema = z.string().uuid("Invalid authentication ID format");
+export const AuthIdSchema = z.string().uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID });
 
 /**
  * Schema for credit amounts (always positive integers)
  */
-export const CreditAmountSchema = z.number().int().min(1, "Credit amount must be positive");
+export const CreditAmountSchema = z
+  .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+  .int()
+  .min(1, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL });
 
 /**
  * Schema for session ID validation
  */
-export const SessionIdSchema = z.string().uuid("Invalid session ID format").optional();
+export const SessionIdSchema = z.string().uuid({ message: ERROR_CODES.VALIDATION_UUID_INVALID }).optional();
 
 /**
  * Schema for adding credits
@@ -59,11 +64,20 @@ export const DeductCreditsSchema = z.object({
  * Schema for AI message cost calculation
  */
 export const AiMessageCostSchema = z.object({
-  modelCode: z.string().min(1, "Model code is required"),
+  modelCode: z.string().min(1, { message: ERROR_CODES.VALIDATION_STRING_TOO_SHORT }),
   usage: z.object({
-    prompt_tokens: z.number().int().min(0),
-    completion_tokens: z.number().int().min(0),
-    total_tokens: z.number().int().min(0),
+    prompt_tokens: z
+      .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+      .int()
+      .min(0, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL }),
+    completion_tokens: z
+      .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+      .int()
+      .min(0, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL }),
+    total_tokens: z
+      .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+      .int()
+      .min(0, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL }),
   }),
 });
 
@@ -75,8 +89,19 @@ export const CreditTransactionFiltersSchema = z.object({
   type: CreditTransactionTypeSchema.optional(),
   reason: CreditTransactionReasonSchema.optional(),
   sessionId: SessionIdSchema.nullish(),
-  limit: z.number().int().min(1).max(1000).optional().default(100),
-  offset: z.number().int().min(0).optional().default(0),
+  limit: z
+    .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+    .int()
+    .min(1, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL })
+    .max(1000, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_LARGE })
+    .optional()
+    .default(100),
+  offset: z
+    .number({ message: ERROR_CODES.VALIDATION_NUMBER_INVALID })
+    .int()
+    .min(0, { message: ERROR_CODES.VALIDATION_NUMBER_TOO_SMALL })
+    .optional()
+    .default(0),
 });
 
 export type CreditTransactionTypeSchemaType = z.infer<typeof CreditTransactionTypeSchema>;

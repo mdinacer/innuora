@@ -124,8 +124,6 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json(summary);
   } catch (error) {
-    console.error("Analytics API Error:", error);
-
     await logger.logWarning("Failed to fetch analytics summary", {
       operation: "analytics_summary",
       metadata: {

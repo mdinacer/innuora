@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { ChartBarIcon } from "lucide-react";
 
+import CodeView from "@/components/code-view";
 import { Badge } from "@/components/mir-ui/badge";
 import { Button } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
@@ -30,6 +31,8 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
 
     const analysis = combineToSessionAnalysis(session.analysisSnapshots);
 
+    console.log(analysis);
+
     await updateStoreSession(session.id, { ...session, aggregatedAnalysis: analysis });
 
     setAggregatedAnalysis(analysis);
@@ -40,6 +43,7 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
 
   return (
     <Card className={className}>
+      <CodeView data={aggregatedAnalysis} />
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <ChartBarIcon className="size-5 text-inn-bg-accent" />

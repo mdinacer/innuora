@@ -55,6 +55,11 @@ MEMORY:
 - update_memory: new factual content (people, events, decisions)
 - recall_memory: references to previous discussions
 
+ANALYSIS VALUE (for processing optimization):
+- low: simple acknowledgments, brief confirmations, minimal new information (e.g. "Yes", "I agree", "That makes sense", "Okay")
+- medium: surface-level sharing, general statements, some emotional content but not complex
+- high: rich emotional content, detailed stories, complex situations, therapeutic insights, crisis content
+
 OUTPUT REQUIREMENTS:
 - Return ONLY valid JSON; no explanation
 - Core, process, and utility modules must reflect **highest priority trigger**
@@ -76,7 +81,8 @@ JSON STRUCTURE:
   "state": "first_time|returning|established",
   "therapeutic_readiness": "resistant|ambivalent|ready|engaged",
   "update_memory": false,
-  "recall_memory": false
+  "recall_memory": false,
+  "analysis_value": "low|medium|high"
 }
 `.trim(),
 };

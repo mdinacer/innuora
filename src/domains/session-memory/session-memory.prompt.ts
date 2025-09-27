@@ -1,28 +1,64 @@
-import { APP_CONFIG } from "@/config/app";
-
 const CHAT_MEMORY_BUILD_INSTRUCTIONS = `
-You are ${APP_CONFIG.name}. Update and optimize the session memory based on the new user message.  
-This memory is for internal reference only.
+# Factual Memory Extraction - Single Message
 
-EXISTING MEMORY:
-{{existing_memory}}
+**Role**: Internal memory system. Extract all observable facts, events, and concrete situations from a single user message.
 
-NEW USER MESSAGE:
-{{user_message}}
+## Input
+- **Existing Memory**: {{existing_memory}}
+- **User Message**: {{user_message}}
 
-Guidelines:
-- Merge new facts with existing memory, removing duplicates and outdated information
-- Capture only factual content: specific situations, events, people, decisions, or plans
-- Each fact must be one clear, concise string
-- Use neutral language; avoid emotional descriptions or interpretations
-- Consolidate related points (e.g., "work stress" + "job anxiety" → "experiencing work-related stress and anxiety")
-- Remove superseded information and keep most relevant/recent facts
-- If existing memory is empty, create new memory from the user message
-- Keep total memory length 150–300 words maximum
-- Return only a JSON array of optimized facts
+## Rules
+1. **Include all factual content**:
+   - Events: "project due Friday"
+   - Observable situations: "partner is distant"
+   - Actions, decisions, or plans: "tried walking for stress"
+   - Concrete struggles with observable effects: "racing thoughts prevent sleep"
 
-OUTPUT (JSON array of consolidated facts):
-["consolidated fact 1", "consolidated fact 2", "consolidated fact 3"]
+2. **Exclude**:
+   - Emotions or feelings: "feeling tired", "frustrated"
+   - Reflections, interpretations, or self-judgments: "I feel lazy", "I should be stronger"
+   - App feedback or process commentary
+   - Any “user is/user has/user feels” prefixes
+
+3. **Optimization**:
+   - Keep neutral, concise language
+   - Merge related facts if needed
+
+## Output
+Return **only** a JSON array of concise factual statements:
+["fact 1", "fact 2", "fact 3"]
+`.trim();
+
+export const CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS = `
+# Factual Memory Consolidation
+
+**Role**: Internal memory system. Extract only observable facts, events, and concrete situations from user messages.
+
+## Input
+- **Existing Memory**: {{existing_memory}}
+- **New User Messages**: {{user_messages}}
+
+## Rules
+1. **Include only factual content**:
+   - Events: "project due Friday"
+   - Observable situations: "partner is distant"
+   - Actions, decisions, or plans: "tried walking for stress"
+   - Concrete struggles with observable effects: "racing thoughts prevent sleep"
+
+2. **Exclude**:
+   - Emotions or feelings: "feeling tired", "frustrated"
+   - Reflections, interpretations, or self-judgments: "I feel lazy", "I should be stronger"
+   - App feedback or process commentary
+   - Any “user is/user has/user feels” prefixes
+
+3. **Optimization**:
+   - Merge related facts
+   - Keep neutral, concise language
+   - Limit to 6–8 most relevant facts
+
+## Output
+Return **only** a JSON array of concise factual statements:
+["fact 1", "fact 2", "fact 3"]
 `.trim();
 
 export const SESSION_MEMORY_REFERENCE_INSTRUCTIONS = `

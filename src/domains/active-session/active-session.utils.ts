@@ -27,6 +27,7 @@ export function resetSessionData(session: Session): Session {
     continuitySummary: null,
     aggregatedAnalysis: null,
     analysisSnapshots: [],
+    sessionDiagnostics: null,
     modelCode: session.modelCode,
     autoUpdateTitle: session.autoUpdateTitle,
     persistOnCloud: session.persistOnCloud,
