@@ -1,227 +1,16 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Session as PrismaSession } from "@prisma/client";
-import { useTranslation } from "react-i18next";
 
 import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
-import CodeView from "@/components/code-view";
+import UserDiagnosticsView from "@/components/session-diagnostics/user-diagnostics-view";
 import { Button } from "@/components/ui/button";
-import { GPT_3_5_TURBO_MODEL, GPT_4_1_MINI_MODEL } from "@/domains/ai-conversation/ai-models";
-import { decryptSession, encryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
-import { Session, SessionMeta } from "@/domains/open-chat/open-chat.types";
+import { GPT_4_1_MINI_MODEL } from "@/domains/ai-conversation/ai-models";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
-import { CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
-import { formatUserMessagesForMemory } from "@/domains/session-memory/session-memory.utils";
+import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
+import { SessionDiagnosticsStd } from "@/domains/session-diagnostics/session-diagnostics.types";
+import { parseJsonObject } from "@/lib/utils/parse-json";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-
-const mockDiagnostic = {
-  core_beliefs: [
-    {
-      belief: "I must always be strong or I will let others down",
-      confidence: "high",
-    },
-    {
-      belief: "I am lazy and weak",
-      confidence: "high",
-    },
-    {
-      belief: "I am not good enough",
-      confidence: "high",
-    },
-    {
-      belief: "I am failing completely",
-      confidence: "medium",
-    },
-    {
-      belief: "I am failing if I slow down",
-      confidence: "high",
-    },
-  ],
-  silent_rules_and_double_binds: [
-    {
-      rule: "I must not be soft or I am failing",
-      confidence: "high",
-      note: "Paradoxical rule creating a double bind where vulnerability equals failure.",
-    },
-    {
-      rule: "I should never make mistakes",
-      confidence: "high",
-      note: "Unrealistic perfectionism fueling self-criticism and anxiety.",
-    },
-    {
-      rule: "I must keep pushing and never do less",
-      confidence: "high",
-      note: "Rigid productivity rule reinforcing exhaustion and self-judgment.",
-    },
-    {
-      rule: "I must always be productive and not rest excessively",
-      confidence: "high",
-      note: "Double bind undermining self-care and recovery.",
-    },
-    {
-      rule: "I should have done more",
-      confidence: "high",
-    },
-    {
-      rule: "I should not struggle or feel weak",
-      confidence: "medium",
-    },
-    {
-      rule: "I must keep up and not show weakness",
-      confidence: "high",
-    },
-  ],
-  dominant_distortions: [
-    {
-      distortion: "should_statements",
-      confidence: "high",
-      examples: ["I should have done more", "I should never make mistakes", "I should always be productive"],
-    },
-    {
-      distortion: "rumination",
-      confidence: "high",
-      examples: ["Replaying mistakes at work", "Persistent self-criticism and negative thought cycles"],
-    },
-    {
-      distortion: "all-or-nothing thinking",
-      confidence: "high",
-      examples: ["Feeling like a complete failure if slowing down", "Believing weakness means total failure"],
-    },
-    {
-      distortion: "emotional_reasoning",
-      confidence: "medium",
-      examples: ["Feeling inadequate interpreted as proof of being inadequate"],
-    },
-  ],
-  emotional_behavioral_patterns: [
-    {
-      trigger: "Work deadlines and interpersonal strain at work",
-      emotions: ["anxiety", "guilt", "overwhelm", "self-criticism"],
-      behaviors: ["rumination on mistakes", "struggling to relax or sleep", "pushing self harder"],
-      loop: "Work stress → anxiety and guilt → rumination and self-criticism → difficulty relaxing and sleeping → increased exhaustion → worsened work performance and self-judgment → more work stress",
-      confidence: "high",
-    },
-    {
-      trigger: "Internalized pressure to be strong and productive",
-      emotions: ["shame", "inadequacy", "frustration"],
-      behaviors: ["self-judgment", "avoiding vulnerability", "overworking"],
-      loop: "Belief 'must always be strong' → suppressing vulnerability → increased internal tension and exhaustion → feelings of failure when vulnerable → reinforcing belief to never show weakness",
-      confidence: "high",
-    },
-  ],
-  hidden_leverage_points: [
-    {
-      insight:
-        "The rigid rule 'I must not be soft or I am failing' creates a double bind that blocks acceptance of vulnerability and self-compassion.",
-      confidence: "high",
-    },
-    {
-      insight:
-        "High frequency of 'should' statements and perfectionism indicates cognitive flexibility as a key intervention target.",
-      confidence: "high",
-    },
-    {
-      insight:
-        "Physical manifestations of stress (chest and shoulder tightness) suggest that somatic awareness and regulation techniques could reduce distress.",
-      confidence: "medium",
-    },
-    {
-      insight:
-        "The recurring rumination loop around work mistakes fuels anxiety and sleep difficulties, indicating that disrupting this cycle could improve rest and reduce overwhelm.",
-      confidence: "high",
-    },
-  ],
-  therapeutic_opportunities: [
-    "Introduce cognitive restructuring to challenge rigid 'should' and perfectionistic beliefs, fostering more balanced thinking.",
-    "Explore and validate vulnerability as a strength, gently challenging the double bind that equates softness with failure.",
-    "Develop behavioral experiments around allowing rest and imperfection to counteract the all-or-nothing productivity rules.",
-    "Incorporate somatic grounding and relaxation techniques to address physical tension and interrupt rumination before sleep.",
-  ],
-};
-
-const SECOND_LAYER_LABELS_PROMPT = `
-You are a clinical insight generator. You will receive a diagnostics JSON object containing arrays of:
-- core_beliefs
-- silent_rules_and_double_binds
-- dominant_distortions
-- emotional_behavioral_patterns
-- hidden_leverage_points
-- therapeutic_opportunities
-
-Your task is to produce **a mapped array for each category** where each item contains:
-{
-  therapist: "...", // clinical, professional summary for therapist
-  user: "..."      // empathetic, reflective summary for user
-}
-
-Requirements:
-1. Each output item must **map exactly** to the corresponding item in the input arrays by index.
-2. Therapist text should be analytical, highlighting mechanisms, risk, or leverage points.
-3. User text should be short, emotionally attuned, relatable, and non-judgmental.
-4. Output only the JSON object, no explanations or extra text.
-5. Keep the key names the same as in the input diagnostics JSON.
-
-Diagnostics input placeholder:
-{{DIAGNOSTICS_JSON}}
-`.trim();
-
-function formatChatMessagesForSummary(messages: OpenChatMessage[]): string {
-  return messages
-    .map((m) => {
-      const role = m.role === "user" ? "User" : "AI";
-      return `${role}: ${m.content}`;
-    })
-    .join("\n");
-}
-const ADVANCED_DIAGNOSTIC_PROMPT = `
-# Advanced Diagnostic Generation
-
-**Role**: You are an expert clinical case formulation system. Your task is to generate a sophisticated diagnostic profile of the user based on their session data. Output must be structured JSON.
-
-## Input
-- Session Summary: {{session_summary}}
-- Session Memory: {{session_memory}}
-- Session Analysis: {{session_analysis}}
-
-## Rules
-1. **Ground strictly in data**: Do not invent facts. Base conclusions only on the provided inputs.
-2. **Infer patterns, not events**: Your role is to synthesize beliefs, rules, distortions, and loops — not to restate raw data.
-3. **Confidence levels**: Add "confidence": "high" | "medium" | "low" for all key findings.
-4. **Loops and double binds**: Explicitly detect feedback loops (thought → emotion → behavior → outcome → thought) and paradoxical rules (double binds).
-5. **Hidden leverage points**: Identify subtle intervention points that could unlock progress. Keep them concrete and actionable.
-6. **Therapeutic opportunities**: Suggest 2–4 potential openings for change (in behavioral, cognitive, or relational domains). Use plain, concise language.
-7. **Clarity and professionalism**: Output should impress a therapist as sophisticated, but still be clear enough that an intelligent user could follow.
-
-## Output Format
-Return a JSON object with the following structure:
-
-{
-  "core_beliefs": [
-    { "belief": string, "confidence": "high" | "medium" | "low" }
-  ],
-  "silent_rules_and_double_binds": [
-    { "rule": string, "confidence": "high" | "medium" | "low", "note"?: string }
-  ],
-  "dominant_distortions": [
-    { "distortion": string, "confidence": "high" | "medium" | "low", "examples"?: string[] }
-  ],
-  "emotional_behavioral_patterns": [
-    {
-      "trigger": string,
-      "emotions": string[],
-      "behaviors": string[],
-      "loop"?: string,
-      "confidence": "high" | "medium" | "low"
-    }
-  ],
-  "hidden_leverage_points": [
-    { "insight": string, "confidence": "high" | "medium" | "low" }
-  ],
-  "therapeutic_opportunities": string[]
-}
-`;
 
 const mockMessages: OpenChatMessage[] = [
   {
@@ -600,6 +389,21 @@ const mockMessages: OpenChatMessage[] = [
   },
 ];
 
+const mockSessionSummary =
+  "User expresses skepticism about therapy effectiveness, feeling tired and overwhelmed by work deadlines and distant partner relationship. Shows perfectionist tendencies, harsh self-criticism, and difficulty with self-compassion. Struggles with sleep and feels trapped by guilt when trying to rest.";
+
+const mockSessionMemory = [
+  "User feels tired and skeptical about therapy effectiveness",
+  "Work is busy with deadlines, people leaning on them",
+  "Partner has been distant recently",
+  "Tried meditation apps but they don't stick",
+  "Struggles with sleep, lying awake at 2am",
+  "Feels guilty when trying to be soft with themselves",
+  "Strong inner critic calling them 'lazy' or 'failing'",
+  "Expects to be able to control thoughts perfectly",
+  "Ruminates about unfinished tasks from the day",
+].join("\n");
+
 const mockSessionAnalysis: SessionAnalysis = {
   intensity: "high",
   crisis: "none",
@@ -837,36 +641,14 @@ const mockSessionAnalysis: SessionAnalysis = {
 };
 
 export default function Page() {
-  const [memory, setMemory] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const {
-    i18n: { language },
-  } = useTranslation();
 
   const testPrompt = useCallback(async () => {
     setLoading(true);
     try {
-      // Mock session data for testing
-      const mockSessionSummary =
-        "User expresses skepticism about therapy effectiveness, feeling tired and overwhelmed by work deadlines and distant partner relationship. Shows perfectionist tendencies, harsh self-criticism, and difficulty with self-compassion. Struggles with sleep and feels trapped by guilt when trying to rest.";
-
-      const mockSessionMemory = [
-        "User feels tired and skeptical about therapy effectiveness",
-        "Work is busy with deadlines, people leaning on them",
-        "Partner has been distant recently",
-        "Tried meditation apps but they don't stick",
-        "Struggles with sleep, lying awake at 2am",
-        "Feels guilty when trying to be soft with themselves",
-        "Strong inner critic calling them 'lazy' or 'failing'",
-        "Expects to be able to control thoughts perfectly",
-        "Ruminates about unfinished tasks from the day",
-      ].join("\n");
-
-      // Test User-Facing Diagnostics
-      console.log("🔍 Testing USER-FACING DIAGNOSTICS...");
       const userPrompt = {
         role: "system" as const,
-        content: USER_DIAGNOSTICS_INSTRUCTIONS.replace("{{session_summary}}", mockSessionSummary)
+        content: ADVANCED_THERAPIST_DIAGNOSTIC_PROMPT.replace("{{session_summary}}", mockSessionSummary)
           .replace("{{session_memory}}", mockSessionMemory)
           .replace("{{session_analysis}}", JSON.stringify(mockSessionAnalysis))
           .trim(),
@@ -877,44 +659,11 @@ export default function Page() {
       if (userResult) {
         console.log("✅ USER DIAGNOSTICS RESULT:");
         console.log("📊 Tokens used:", userResult.modelTokenUsage);
-        console.log("📄 Content:", JSON.parse(userResult.message));
+        console.log("📄 Content:", parseJsonObject(userResult.message));
         console.log("\n" + "=".repeat(80) + "\n");
       }
 
       // Test Advanced Therapist Diagnostics
-      console.log("🔍 Testing ADVANCED THERAPIST DIAGNOSTICS...");
-      const therapistPrompt = {
-        role: "system" as const,
-        content: ADVANCED_THERAPIST_DIAGNOSTIC_PROMPT.replace("{{session_summary}}", mockSessionSummary)
-          .replace("{{session_memory}}", mockSessionMemory)
-          .replace("{{session_analysis}}", JSON.stringify(mockSessionAnalysis))
-          .trim(),
-      };
-
-      const therapistResult = await SendPromptsToAi([therapistPrompt], GPT_4_1_MINI_MODEL, { max_tokens: 2000 });
-
-      if (therapistResult) {
-        console.log("✅ THERAPIST DIAGNOSTICS RESULT:");
-        console.log("📊 Tokens used:", therapistResult.modelTokenUsage);
-        console.log("📄 Content:", JSON.parse(therapistResult.message));
-        console.log("\n" + "=".repeat(80) + "\n");
-      }
-
-      // Compare results
-      if (userResult && therapistResult) {
-        console.log("📈 COMPARISON SUMMARY:");
-        const userTokens = userResult.modelTokenUsage?.usage?.total_tokens || 0;
-        const therapistTokens = therapistResult.modelTokenUsage?.usage?.total_tokens || 0;
-        console.log(`User prompt tokens: ${userTokens}`);
-        console.log(`Therapist prompt tokens: ${therapistTokens}`);
-        console.log(`Token difference: ${therapistTokens - userTokens}`);
-
-        const userOutput = JSON.parse(userResult.message);
-        const therapistOutput = JSON.parse(therapistResult.message);
-
-        console.log(`User output has actionable_next_steps: ${!!userOutput.actionable_next_steps}`);
-        console.log(`Therapist output has therapeutic_opportunities: ${!!therapistOutput.therapeutic_opportunities}`);
-      }
     } catch (error) {
       console.error("❌ Test failed:", error);
     } finally {
@@ -922,116 +671,18 @@ export default function Page() {
     }
   }, []);
 
-  const generateSessionMemory = useCallback(
-    async (session: Session): Promise<string[]> => {
-      if (session.metadata.messageCount === 0) {
-        return [];
-      }
-      const formattedMessages = formatUserMessagesForMemory(session.messages);
-      const prompt = {
-        role: "system" as const,
-        content: CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS.replace("{{user_messages}}", formattedMessages).replace(
-          "{{session_memory}}",
-          JSON.stringify(memory)
-        ),
-      };
-
-      const result = await SendPromptsToAi([prompt], GPT_3_5_TURBO_MODEL);
-
-      if (!result) {
-        throw new Error("No result");
-      }
-      return JSON.parse(result.message) as string[];
-    },
-    [memory]
-  );
-
-  const processSessions = useCallback(async () => {
-    setLoading(true);
-    try {
-      const encryptedStoreState = useSessionStore.getState();
-      const sessions = Object.values(encryptedStoreState.sessions) as PrismaSession[];
-
-      for (const session of sessions) {
-        if ((session.metadata as SessionMeta).messageCount === 0) {
-          continue;
-        }
-        const decryptedSession: Session = await decryptSession(session);
-        const result = await generateSessionMemory(decryptedSession);
-        if (result.length) {
-          const newSessionData: Session = { ...decryptedSession, memoryStore: JSON.stringify(result) };
-          const encryptedSession = await encryptSession(newSessionData);
-          await encryptedStoreState.updateSession(session.id, encryptedSession);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [generateSessionMemory]);
-
   return (
     <div className="h-screen w-full flex items-center bg-inn-bg-primary justify-center">
-      <CodeView data={mockMessages} className="absolute top-0 left-0 z-10" />
-      <div className="relative h-full w-full bg-inn-bg-card max-w-2xl mx-auto flex flex-col">
+      {/* <CodeView data={mockMessages} className="absolute top-0 left-0 z-10" /> */}
+      <div className="relative h-full w-full max-w-5xl mx-auto flex flex-col">
         <Button onClick={testPrompt} disabled={loading}>
           {loading ? "Testing Diagnostics..." : "Test Enhanced Diagnostic Prompts"}
         </Button>
+        <UserDiagnosticsView diagnostics={mockUserDiagnosticsResponse} className="flex-1 p-6" />
       </div>
     </div>
   );
 }
-
-const USER_DIAGNOSTICS_INSTRUCTIONS = `
-# User-Facing Diagnostic Generation
-
-**Role**: You are an empathetic diagnostic AI creating insights for direct user consumption. Generate a comprehensive yet accessible diagnostic profile that empowers users with understanding and actionable guidance.
-
-## Input
-- Session Summary: {{session_summary}}
-- Session Memory: {{session_memory}}
-- Session Analysis: {{session_analysis}}
-
-## Rules
-1. **Ground in data**: Base insights strictly on provided inputs; avoid speculation.
-2. **User-friendly language**: Use warm, accessible language that feels supportive rather than clinical.
-3. **Comprehensive analysis**: Provide thorough insights while maintaining clarity and relevance.
-4. **Confidence levels**: Include "high" | "medium" | "low" for reliability indication.
-5. **Actionable focus**: Ensure all insights lead toward practical self-understanding and growth.
-6. **Empowering tone**: Frame insights as opportunities for understanding and positive change.
-
-## Output Format
-Return JSON only, structured as:
-
-{
-  "core_beliefs": [
-    { "belief": string, "confidence": "high" | "medium" | "low" }
-  ],
-  "dominant_distortions": [
-    { "distortion": string, "confidence": "high" | "medium" | "low", "examples"?: string[] }
-  ],
-  "emotional_behavioral_patterns": [
-    {
-      "trigger": string,
-      "emotions": string[],
-      "behaviors": string[],
-      "loop"?: string,
-      "confidence": "high" | "medium" | "low"
-    }
-  ],
-  "hidden_leverage_points": [
-    { "insight": string, "confidence": "high" | "medium" | "low" }
-  ],
-  "actionable_next_steps": [
-    {
-      "title": string,
-      "description": string,
-      "difficulty": "gentle" | "moderate" | "challenging"
-    }
-  ]
-}
-`;
 
 const ADVANCED_THERAPIST_DIAGNOSTIC_PROMPT = `
 # Professional Clinical Case Formulation
@@ -1055,48 +706,178 @@ const ADVANCED_THERAPIST_DIAGNOSTIC_PROMPT = `
 Return comprehensive JSON formatted as:
 
 {
-  "core_beliefs": [
-    { "belief": string, "confidence": "high" | "medium" | "low" }
-  ],
-  "silent_rules_and_double_binds": [
-    { "rule": string, "confidence": "high" | "medium" | "low", "clinical_note"?: string }
-  ],
-  "dominant_distortions": [
+  "themes": [
     {
-      "distortion": string,
-      "confidence": "high" | "medium" | "low",
-      "manifestations"?: string[],
-      "severity": "mild" | "moderate" | "severe"
+      "id": string,
+      "title": string,
+      "description": string,
+      "severity": "low" | "medium" | "high",
+      "trajectory": "increasing" | "stable" | "decreasing",
+      "evidence": string[]
     }
   ],
-  "emotional_behavioral_patterns": [
+  "cognitive_distortions": [
     {
-      "trigger": string,
-      "emotional_response": string[],
-      "behavioral_patterns": string[],
-      "maintenance_cycle": string,
-      "confidence": "high" | "medium" | "low"
+      "id": string,
+      "title": string,
+      "description": string,
+      "frequency": number,
+      "severity": "low" | "moderate" | "high"
     }
   ],
-  "hidden_leverage_points": [
-    {
-      "intervention_target": string,
-      "confidence": "high" | "medium" | "low",
-      "therapeutic_approach": string
-    }
+  "emotional_state": {
+    "primary": string,
+    "secondary": string[],
+    "congruence": "aligned" | "minimizing" | "performing"
+  },
+  "risk_assessment": {
+    "level": "low" | "moderate_concern" | "high",
+    "notes": string
+  },
+  "therapist_focus": string[],
+  "clinical_interpretations": [
+    string
   ],
-  "therapeutic_opportunities": [
-    {
-      "modality": string,
-      "focus_area": string,
-      "rationale": string
-    }
+  "treatment_recommendations": [
+    string
   ],
-  "clinical_assessment": {
-    "formulation": string,
-    "risk_level": "low" | "moderate" | "high",
-    "priority_interventions": string[],
-    "monitoring_recommendations": string
-  }
+  "professional_language": [
+    string
+  ],
+  "clinical_insights": [
+    string
+  ]
 }
 `;
+
+const mockUserDiagnosticsResponse: SessionDiagnosticsStd = {
+  whats_happening: [
+    {
+      text: "**perfectionistic pressure and relentless self-criticism**, *feeling trapped by guilt when trying to rest*, and **overwhelming work stress paired with relational distance**",
+      confidence: "high",
+    },
+    {
+      text: "**intense inner critic labeling you as 'lazy' or 'failing'** alongside *persistent rumination about unfinished tasks* and **high emotional reactivity to perceived shortcomings**",
+      confidence: "high",
+    },
+    {
+      text: "**skepticism about therapy’s usefulness** layered with *frustration and exhaustion*, making it harder to engage with support",
+      confidence: "medium",
+    },
+  ],
+  hidden_rules: [
+    {
+      rule: "I must not be lazy or I am failing",
+      description:
+        "This rule fuels a **harsh internal bar that equates any slowing down or rest with failure and weakness**. It creates a cycle where *self-compassion feels like betrayal* and guilt punishes any softness, making it nearly impossible to relax without feeling trapped.",
+      rigidity: "rigid",
+      confidence: "high",
+    },
+    {
+      rule: "I should be able to control my thoughts and feelings perfectly",
+      description:
+        "This unspoken demand sets an impossible standard, leading to **frustration and self-blame when intrusive or anxious thoughts arise**. It makes *mental quiet feel like a measure of worth*, and failing to achieve it deepens the inner critic’s voice.",
+      rigidity: "moderate",
+      confidence: "high",
+    },
+    {
+      rule: "I must always be productive and never rest excessively",
+      description:
+        "This rule drives the relentless push to keep going despite exhaustion, with **rest seen as a sign of weakness or laziness**. It keeps you locked in a *cycle of overwork and guilt*, making recovery feel unsafe.",
+      rigidity: "rigid",
+      confidence: "high",
+    },
+    {
+      rule: "I should never show weakness or struggle",
+      description:
+        "This rule underpins the pressure to appear strong for others, especially at work and in relationships. It fosters **emotional isolation and skepticism about therapy**, since vulnerability feels like failure.",
+      rigidity: "moderate",
+      confidence: "medium",
+    },
+  ],
+  why_heavy: [
+    {
+      title: "The Criticism–Exhaustion Loop",
+      description:
+        "When work deadlines and relationship distance trigger feelings of overwhelm, the inner critic intensifies, labeling you as 'lazy' or 'failing.' This **increases guilt and pressure to push harder**, leading to exhaustion and poor sleep. Exhaustion then lowers resilience, making it harder to resist the critic, which fuels even more self-judgment and rumination, trapping you in a heavy cycle.",
+      confidence: "high",
+    },
+    {
+      title: "The Control–Frustration Spiral",
+      description:
+        "The expectation to control thoughts and feelings perfectly causes frustration when intrusive or anxious thoughts arise, especially at night. This frustration **increases rumination and emotional distress**, which worsens sleep and fuels the belief that you are failing, deepening the sense of being stuck and overwhelmed.",
+      confidence: "high",
+    },
+  ],
+  meta_patterns: [
+    {
+      title: "**Self-worth tied exclusively to productivity and control**",
+      description:
+        "Across sessions, your sense of value repeatedly hinges on how much you accomplish and how well you manage your inner experience. When these standards aren’t met, *feelings of inadequacy and failure escalate quickly*, reinforcing the inner critic and skepticism about change.",
+      confidence: "high",
+    },
+    {
+      title: "**Reluctance to soften or rest due to guilt and fear of weakness**",
+      description:
+        "This pattern consistently shows up as difficulty allowing yourself downtime without harsh self-judgment, which keeps emotional and physical exhaustion high and limits opportunities for genuine recovery.",
+      confidence: "high",
+    },
+  ],
+  leverage_points: [
+    {
+      title: "**Pause before self-criticism escalates**",
+      description:
+        "When the inner critic calls you 'lazy' or 'failing,' there is an opening to *notice this voice as separate from your true self*. This pause can create space to choose gentler, more realistic perspectives and interrupt the cycle of guilt and pressure.",
+      confidence: "high",
+    },
+    {
+      title: "**Experiment with small, permission-giving rest moments**",
+      description:
+        "Inviting yourself to try brief, non-productive breaks with curiosity rather than judgment can gently challenge rigid rules about productivity and worth, creating new experiences that safety and softness are possible.",
+      confidence: "medium",
+    },
+    {
+      title: "**Notice and name the 'must control thoughts perfectly' belief**",
+      description:
+        "Bringing awareness to this expectation can reduce its unconscious grip and open the door to more compassionate acceptance of normal mental fluctuations, easing frustration and rumination.",
+      confidence: "medium",
+    },
+  ],
+  where_to_start: [
+    {
+      title: "Try *naming* the inner critic out loud or in writing",
+      description:
+        "This helps create distance from harsh self-judgments and reminds you that these thoughts are not absolute truths. It can feel safer because it externalizes the critic, making it less overwhelming and more manageable.",
+      difficulty: "gentle",
+    },
+    {
+      title: "Schedule a brief 3–5 minute rest without expectations",
+      description:
+        "Allow yourself a tiny, permission-giving break, noticing any guilt but choosing to stay with the rest anyway. This micro-step can slowly weaken rigid rules about always needing to be productive and build trust in rest.",
+      difficulty: "gentle",
+    },
+    {
+      title: "Write down one 'should' or 'must' belief when it arises",
+      description:
+        "Seeing these rules on paper can help you recognize their rigidity and question their absolute truth, opening space for more flexible thinking and self-kindness.",
+      difficulty: "moderate",
+    },
+  ],
+  relevant_resources: [
+    {
+      category: "self-compassion",
+      goal: "practice flexible self-talk",
+      difficulty: "beginner",
+    },
+    {
+      category: "cognitive-behavioral-therapy",
+      goal: "understand perfectionism",
+      difficulty: "intermediate",
+    },
+    {
+      category: "mindfulness-techniques",
+      goal: "cultivate non-judgmental awareness",
+      difficulty: "beginner",
+    },
+  ],
+};

@@ -1,3 +1,7 @@
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+
 import { ContentCategory, ContentMetadata } from "@/types/content.types";
 import { contentRegistry } from "./content-registry";
 
@@ -6,7 +10,7 @@ import { contentRegistry } from "./content-registry";
 // =========================
 
 /**
- * Loads content metadata from the content taxonomy
+ * Loads content metadata from actual markdown files
  * and registers it with the content registry
  */
 export async function initializeContentRegistry(): Promise<void> {
@@ -18,6 +22,77 @@ export async function initializeContentRegistry(): Promise<void> {
   // Clear any existing data (safety measure)
   contentRegistry.clear();
 
+  try {
+    // Get the content directory path
+    const contentDir = path.join(process.cwd(), "src", "content", "articles");
+
+    // Check if content directory exists
+    if (!fs.existsSync(contentDir)) {
+      console.warn("Content directory not found, falling back to taxonomy");
+      await initializeFromTaxonomy();
+      return;
+    }
+
+    // Read all markdown files from content directory
+    const categories = fs
+      .readdirSync(contentDir, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
+
+    let totalArticles = 0;
+
+    for (const category of categories) {
+      const categoryDir = path.join(contentDir, category);
+      const files = fs.readdirSync(categoryDir).filter((file) => file.endsWith(".md"));
+
+      for (const file of files) {
+        const filePath = path.join(categoryDir, file);
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        const { data: frontmatter, excerpt: fileExcerpt } = matter(fileContent, { excerpt: true });
+
+        // Parse frontmatter into ContentMetadata
+        const metadata: ContentMetadata = {
+          title: frontmatter.title,
+          description: frontmatter.description,
+          slug: frontmatter.slug,
+          category: frontmatter.category as ContentCategory,
+          contentType: frontmatter.contentType || "article",
+          intent: frontmatter.intent,
+          keywords: frontmatter.keywords || [],
+          searchVolume: frontmatter.searchVolume || 0,
+          priority: frontmatter.priority || "medium",
+          featured: frontmatter.featured || false,
+          readingTime: frontmatter.readingTime || 8,
+          draft: frontmatter.draft || false,
+          relatedCbtModules: frontmatter.relatedCbtModules || [],
+          targetEmotions: frontmatter.targetEmotions || [],
+          publishedAt: frontmatter.publishedAt ? new Date(frontmatter.publishedAt) : new Date(),
+        };
+
+        // Only register non-draft articles for sitemap
+        if (!metadata.draft) {
+          const excerpt = fileExcerpt || generateExcerpt(metadata.title, metadata.category);
+          contentRegistry.register(metadata, excerpt);
+          totalArticles++;
+        }
+      }
+    }
+
+    // Mark as initialized
+    contentRegistry.markInitialized();
+
+    console.log(`Initialized content registry with ${totalArticles} published articles`);
+  } catch (error) {
+    console.error("Failed to initialize content registry:", error);
+    // Fallback to taxonomy if file reading fails
+    await initializeFromTaxonomy();
+  }
+}
+
+/**
+ * Fallback: Load from taxonomy (legacy behavior)
+ */
+async function initializeFromTaxonomy(): Promise<void> {
   try {
     // Import the content taxonomy
     const { default: taxonomy } = await import("@/content/content-taxonomy.json");
@@ -55,9 +130,9 @@ export async function initializeContentRegistry(): Promise<void> {
     // Mark as initialized
     contentRegistry.markInitialized();
 
-    console.log(`Initialized content registry with ${contentRegistry.getAll().length} articles`);
+    console.log(`Initialized content registry with ${contentRegistry.getAll().length} articles from taxonomy`);
   } catch (error) {
-    console.error("Failed to initialize content registry:", error);
+    console.error("Failed to initialize content registry from taxonomy:", error);
   }
 }
 

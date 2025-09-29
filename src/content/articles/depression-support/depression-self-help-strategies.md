@@ -13,7 +13,7 @@ readingTime: 12
 relatedCbtModules: ["behavioral_activation", "cognitive", "values_clarification"]
 targetEmotions: ["depression", "sadness", "hopelessness", "low energy"]
 publishedAt: "2025-01-27"
-draft: true
+draft: false
 ---
 
 # 10 Evidence-Based Self-Help Strategies for Depression

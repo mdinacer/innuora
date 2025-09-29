@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 
 import ArticleLayout from "@/components/content/article-layout";
 import { initializeContentRegistry } from "@/lib/content/content-loader";
@@ -107,10 +110,28 @@ export default async function ContentPage({ params }: ContentPageProps) {
     notFound();
   }
 
+  // Load the actual markdown content
+  let markdownContent = "";
+  try {
+    const filePath = path.join(process.cwd(), "src", "content", "articles", category, `${slug}.md`);
+    if (fs.existsSync(filePath)) {
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      const { content } = matter(fileContent);
+      markdownContent = content;
+    }
+  } catch (error) {
+    console.error(`Failed to load markdown content for ${slug}:`, error);
+  }
+
   // Get related content
   const relatedContent = contentRegistry.getRelated(contentItem);
 
   return (
-    <ArticleLayout contentItem={contentItem} relatedContent={relatedContent} category={category as ContentCategory} />
+    <ArticleLayout
+      contentItem={contentItem}
+      relatedContent={relatedContent}
+      category={category as ContentCategory}
+      markdownContent={markdownContent}
+    />
   );
 }

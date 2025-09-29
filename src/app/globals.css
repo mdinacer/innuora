@@ -1,53 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "tailwindcss-safe-area";
+@import "highlight.js/styles/github.css";
 @plugin 'tailwind-scrollbar';
+@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant standalone ( @media all and (display-mode: standalone));
 
 @theme inline {
-  --animate-first: moveVertical 30s ease infinite;
-  --animate-second: moveInCircle 20s reverse infinite;
-  --animate-third: moveInCircle 40s linear infinite;
-  --animate-fourth: moveHorizontal 40s ease infinite;
-  --animate-fifth: moveInCircle 20s ease infinite;
-
-  @keyframes moveHorizontal {
-    0% {
-      transform: translateX(-50%) translateY(-10%);
-    }
-    50% {
-      transform: translateX(50%) translateY(10%);
-    }
-    100% {
-      transform: translateX(-50%) translateY(-10%);
-    }
-  }
-
-  @keyframes moveInCircle {
-    0% {
-      transform: rotate(0deg);
-    }
-    50% {
-      transform: rotate(180deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes moveVertical {
-    0% {
-      transform: translateY(-50%);
-    }
-    50% {
-      transform: translateY(50%);
-    }
-    100% {
-      transform: translateY(-50%);
-    }
-  }
   /* SHADCN UI COLORS */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -132,6 +93,10 @@
   --color-inn-glass-bg: var(--inn-glass-bg);
   --color-inn-glass-border: var(--inn-glass-border);
 
+  --color-inn-bg-success: var(--inn-bg-success);
+  --color-inn-bg-gentle: var(--inn-bg-gentle);
+  --color-inn-text-warm: var(--inn-text-warm);
+
   /* Gradients as CSS properties for Tailwind */
   --gradient-inn-primary: var(--inn-gradient-primary);
   --gradient-inn-flame: var(--inn-gradient-flame);
@@ -204,6 +169,10 @@
   /* Light glass morphism */
   --inn-glass-bg: rgba(255, 255, 255, 0.8);
   --inn-glass-border: rgba(226, 232, 240, 0.5);
+
+  --inn-bg-success: #4caf50;
+  --inn-bg-gentle: #e8f5e8;
+  --inn-text-warm: #f57c00;
   /* MIRAEL THEME */
   --mir-bg-primary: #f5f3f0;
   --mir-bg-card: #ffffff;
@@ -286,6 +255,10 @@
   --inn-glass-bg: rgba(26, 35, 50, 0.8);
   --inn-glass-border: rgba(51, 65, 85, 0.5);
 
+  --inn-bg-success: #4caf50; /* positive/ success feedback */
+  --inn-bg-gentle: #e8f5e8; /* neutral/gentle background */
+  --inn-text-warm: #ffb74d; /* warm/accented text for highlights */
+
   /* MIRAEL THEME */
   --mir-bg-primary: #1c1c1e;
   --mir-bg-card: #2c2c2e;
@@ -342,5 +315,83 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom prose styling for articles */
+.prose {
+  /* Ensure proper line height and spacing */
+  line-height: 1.7;
+
+  /* Heading spacing and sizes */
+  h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Paragraph spacing */
+  p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* List styling */
+  ul, ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Strong/bold text */
+  strong {
+    font-weight: 600;
+    color: inherit;
+  }
+
+  /* Code styling */
+  code {
+    background-color: rgb(243 244 246);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  /* Dark mode adjustments */
+  &.dark {
+    code {
+      background-color: rgb(55 65 81);
+    }
   }
 }
