@@ -13,7 +13,7 @@ readingTime: 8
 relatedCbtModules: ["cognitive", "behavioral", "core_beliefs"]
 targetEmotions: ["confusion", "seeking help", "learning"]
 publishedAt: "2025-01-27"
-draft: true
+draft: false
 ---
 
 # What is Cognitive Behavioral Therapy? A Complete Guide

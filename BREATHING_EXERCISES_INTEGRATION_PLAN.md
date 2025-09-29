@@ -11,20 +11,20 @@ Integrate guided breathing exercises into Innuora's therapeutic platform as evid
 ```typescript
 // src/types/breathing-exercises.types.ts
 export const BreathingTechniques = {
-  BOX_BREATHING: "box_breathing",        // 4-4-4-4 pattern
-  FOUR_SEVEN_EIGHT: "4_7_8",           // 4-7-8 pattern
-  PROGRESSIVE: "progressive",            // Progressive muscle relaxation
-  BELLY_BREATHING: "belly_breathing",    // Diaphragmatic breathing
-  COHERENT: "coherent",                  // 5-second in, 5-second out
-  TRIANGLE: "triangle",                  // 4-4-4 pattern
-  EQUAL: "equal",                        // Equal in/out breathing
-  EXTENDED_EXHALE: "extended_exhale",    // Longer exhale for calm
+  BOX_BREATHING: "box_breathing", // 4-4-4-4 pattern
+  FOUR_SEVEN_EIGHT: "4_7_8", // 4-7-8 pattern
+  PROGRESSIVE: "progressive", // Progressive muscle relaxation
+  BELLY_BREATHING: "belly_breathing", // Diaphragmatic breathing
+  COHERENT: "coherent", // 5-second in, 5-second out
+  TRIANGLE: "triangle", // 4-4-4 pattern
+  EQUAL: "equal", // Equal in/out breathing
+  EXTENDED_EXHALE: "extended_exhale", // Longer exhale for calm
 } as const;
 
 export const BreathingIntensity = {
-  GENTLE: "gentle",      // 3-5 minutes, slow pace
-  MODERATE: "moderate",  // 5-10 minutes, standard pace
-  INTENSIVE: "intensive" // 10-15 minutes, focused session
+  GENTLE: "gentle", // 3-5 minutes, slow pace
+  MODERATE: "moderate", // 5-10 minutes, standard pace
+  INTENSIVE: "intensive", // 10-15 minutes, focused session
 } as const;
 
 export const BreathingContext = {
@@ -104,8 +104,8 @@ export const BREATHING_EXERCISE_CONFIGS = {
       "Hold for 4 counts",
       "Exhale for 4 counts",
       "Hold for 4 counts",
-      "Repeat the pattern"
-    ]
+      "Repeat the pattern",
+    ],
   },
 
   [BreathingTechniques.FOUR_SEVEN_EIGHT]: {
@@ -126,8 +126,8 @@ export const BREATHING_EXERCISE_CONFIGS = {
       "Inhale through nose for 4 counts",
       "Hold breath for 7 counts",
       "Exhale through mouth for 8 counts",
-      "Repeat up to 8 cycles"
-    ]
+      "Repeat up to 8 cycles",
+    ],
   },
 
   [BreathingTechniques.BELLY_BREATHING]: {
@@ -148,9 +148,9 @@ export const BREATHING_EXERCISE_CONFIGS = {
       "Breathe slowly through nose",
       "Feel belly rise more than chest",
       "Exhale slowly through mouth",
-      "Focus on belly movement"
-    ]
-  }
+      "Focus on belly movement",
+    ],
+  },
 };
 ```
 
@@ -161,6 +161,7 @@ export const BREATHING_EXERCISE_CONFIGS = {
 **Location**: `src/components/breathing-exercises/guided-breathing-session.tsx`
 
 **Features**:
+
 - Animated breathing guide (expanding/contracting circle)
 - Real-time countdown and cycle tracking
 - Phase indicators (inhale/hold/exhale)
@@ -169,27 +170,28 @@ export const BREATHING_EXERCISE_CONFIGS = {
 - Progress visualization
 
 **Animation System**:
+
 ```typescript
 // Breathing animation configuration
 const BreathingAnimation = {
   inhale: {
     scale: 1.5,
-    duration: (pattern.inhale * 1000),
-    easing: "ease-in-out"
+    duration: pattern.inhale * 1000,
+    easing: "ease-in-out",
   },
   holdAfterInhale: {
     scale: 1.5,
-    duration: (pattern.holdAfterInhale * 1000)
+    duration: pattern.holdAfterInhale * 1000,
   },
   exhale: {
     scale: 1.0,
-    duration: (pattern.exhale * 1000),
-    easing: "ease-in-out"
+    duration: pattern.exhale * 1000,
+    easing: "ease-in-out",
   },
   holdAfterExhale: {
     scale: 1.0,
-    duration: (pattern.holdAfterExhale * 1000)
-  }
+    duration: pattern.holdAfterExhale * 1000,
+  },
 };
 ```
 
@@ -198,6 +200,7 @@ const BreathingAnimation = {
 **Location**: `src/components/breathing-exercises/exercise-selector.tsx`
 
 **Features**:
+
 - Technique cards with descriptions and benefits
 - Context-based recommendations
 - Difficulty level indicators
@@ -209,6 +212,7 @@ const BreathingAnimation = {
 **Location**: `src/components/breathing-exercises/breathing-dashboard.tsx`
 
 **Components**:
+
 - **Weekly Practice Summary**: Total sessions, average duration
 - **Effectiveness Tracking**: Mood improvement correlation
 - **Technique Usage**: Most effective techniques for user
@@ -220,6 +224,7 @@ const BreathingAnimation = {
 **Location**: `src/components/breathing-exercises/emergency-breathing.tsx`
 
 **Features**:
+
 - Rapid access from any screen
 - Crisis-specific breathing techniques
 - Simplified interface for high-stress moments
@@ -244,7 +249,7 @@ export const BREATHING_EXERCISE_MODULE = {
       technique: BreathingTechniques.FOUR_SEVEN_EIGHT,
       duration: 240,
       context: BreathingContext.ANXIETY_RELIEF,
-      prompt: "I notice you're feeling anxious. Let's try some calming breathing together."
+      prompt: "I notice you're feeling anxious. Let's try some calming breathing together.",
     },
 
     stress_reduction: {
@@ -252,7 +257,7 @@ export const BREATHING_EXERCISE_MODULE = {
       technique: BreathingTechniques.BOX_BREATHING,
       duration: 300,
       context: BreathingContext.STRESS_REDUCTION,
-      prompt: "Box breathing can help reduce stress. Would you like to try a 5-minute session?"
+      prompt: "Box breathing can help reduce stress. Would you like to try a 5-minute session?",
     },
 
     session_preparation: {
@@ -260,9 +265,9 @@ export const BREATHING_EXERCISE_MODULE = {
       technique: BreathingTechniques.COHERENT,
       duration: 180,
       context: BreathingContext.SESSION_PREPARATION,
-      prompt: "Let's center ourselves with some breathing before we begin."
-    }
-  }
+      prompt: "Let's center ourselves with some breathing before we begin.",
+    },
+  },
 };
 ```
 
@@ -279,22 +284,22 @@ export const ANXIETY_BREATHING_PROTOCOLS = {
     followUpPrompts: [
       "How does your body feel now?",
       "What do you notice about your thoughts?",
-      "Rate your anxiety level now (1-10)"
-    ]
+      "Rate your anxiety level now (1-10)",
+    ],
   },
 
   moderate_anxiety: {
     technique: BreathingTechniques.BOX_BREATHING,
     duration: 600,
-    additionalSupport: ["grounding_techniques", "positive_affirmations"]
+    additionalSupport: ["grounding_techniques", "positive_affirmations"],
   },
 
   severe_anxiety: {
     technique: BreathingTechniques.FOUR_SEVEN_EIGHT,
     duration: 240,
     maxCycles: 6,
-    escalationProtocol: "crisis_intervention"
-  }
+    escalationProtocol: "crisis_intervention",
+  },
 };
 ```
 
@@ -308,27 +313,27 @@ export const MINDFULNESS_BREATHING_SEQUENCES = {
     {
       technique: BreathingTechniques.BELLY_BREATHING,
       duration: 300,
-      focus: "body_awareness"
+      focus: "body_awareness",
     },
     {
       technique: BreathingTechniques.COHERENT,
       duration: 300,
-      focus: "present_moment"
-    }
+      focus: "present_moment",
+    },
   ],
 
   emotional_regulation: [
     {
       technique: BreathingTechniques.EXTENDED_EXHALE,
       duration: 240,
-      focus: "nervous_system_calm"
+      focus: "nervous_system_calm",
     },
     {
       technique: BreathingTechniques.TRIANGLE,
       duration: 180,
-      focus: "emotional_balance"
-    }
-  ]
+      focus: "emotional_balance",
+    },
+  ],
 };
 ```
 
@@ -347,10 +352,10 @@ export const BREATHING_EXERCISE_STEPS = {
       subtitle: "A moment to center yourself",
       paragraphs: [
         "Breathing exercises are powerful tools for managing anxiety and stress.",
-        "We'll guide you through a technique that works best for your current needs."
-      ]
+        "We'll guide you through a technique that works best for your current needs.",
+      ],
     },
-    nextStepId: "select_breathing_technique"
+    nextStepId: "select_breathing_technique",
   },
 
   SELECT_BREATHING_TECHNIQUE: {
@@ -364,21 +369,21 @@ export const BREATHING_EXERCISE_STEPS = {
         {
           value: BreathingTechniques.BOX_BREATHING,
           label: "Box Breathing",
-          description: "Equal rhythm breathing for focus and calm"
+          description: "Equal rhythm breathing for focus and calm",
         },
         {
           value: BreathingTechniques.FOUR_SEVEN_EIGHT,
           label: "4-7-8 Breathing",
-          description: "Powerful technique for anxiety relief"
+          description: "Powerful technique for anxiety relief",
         },
         {
           value: BreathingTechniques.BELLY_BREATHING,
           label: "Belly Breathing",
-          description: "Deep, relaxing diaphragmatic breathing"
-        }
-      ]
+          description: "Deep, relaxing diaphragmatic breathing",
+        },
+      ],
     },
-    nextStepId: "breathing_exercise_session"
+    nextStepId: "breathing_exercise_session",
   },
 
   BREATHING_EXERCISE_SESSION: {
@@ -388,13 +393,13 @@ export const BREATHING_EXERCISE_STEPS = {
       prompt: "Ready to begin your breathing exercise?",
       primary: {
         label: "Start Breathing Exercise",
-        nextStepId: "breathing_reflection"
+        nextStepId: "breathing_reflection",
       },
       secondary: {
         label: "Skip for Now",
-        nextStepId: "continue_session"
-      }
-    }
+        nextStepId: "continue_session",
+      },
+    },
   },
 
   BREATHING_REFLECTION: {
@@ -404,10 +409,10 @@ export const BREATHING_EXERCISE_STEPS = {
       label: "How do you feel after the breathing exercise?",
       key: "breathingReflection",
       placeholder: "Notice any changes in your body, mind, or emotions...",
-      hint: "Take a moment to observe without judgment"
+      hint: "Take a moment to observe without judgment",
     },
-    nextStepId: "continue_session"
-  }
+    nextStepId: "continue_session",
+  },
 };
 ```
 
@@ -424,21 +429,17 @@ export const CRISIS_BREATHING_PROTOCOL = {
     instructions: [
       "You're safe. Focus only on breathing.",
       "We'll breathe together, slowly.",
-      "In for 4... hold for 7... out for 8..."
+      "In for 4... hold for 7... out for 8...",
     ],
-    followUp: "grounding_techniques"
+    followUp: "grounding_techniques",
   },
 
   panic_attack_protocol: {
     technique: BreathingTechniques.BOX_BREATHING,
     duration: 300,
     adaptiveInstructions: true, // Adjust based on user response
-    safetyReminders: [
-      "This feeling will pass",
-      "You are in control",
-      "Focus only on your breath"
-    ]
-  }
+    safetyReminders: ["This feeling will pass", "You are in control", "Focus only on your breath"],
+  },
 };
 ```
 
@@ -470,7 +471,7 @@ export class BreathingRecommendationEngine {
     const emergencyTechniques = {
       mild: BreathingTechniques.BELLY_BREATHING,
       moderate: BreathingTechniques.BOX_BREATHING,
-      severe: BreathingTechniques.FOUR_SEVEN_EIGHT
+      severe: BreathingTechniques.FOUR_SEVEN_EIGHT,
     };
     return emergencyTechniques[severity];
   }
@@ -482,6 +483,7 @@ export class BreathingRecommendationEngine {
 **Location**: `src/domains/breathing-exercises/breathing-analytics.ts`
 
 **Analytics Features**:
+
 - Most effective techniques for user
 - Optimal session duration analysis
 - Context-effectiveness correlation
@@ -501,21 +503,21 @@ export const BreathingMoodIntegration = {
       await logMoodImprovement({
         technique: session.technique,
         improvement,
-        context: session.context
+        context: session.context,
       });
     }
   },
 
   suggestBreathingForMood: (currentMood: number) => {
     const techniques = {
-      veryLow: BreathingTechniques.BELLY_BREATHING,   // Gentle, supportive
-      low: BreathingTechniques.EXTENDED_EXHALE,       // Calming
-      neutral: BreathingTechniques.COHERENT,          // Balancing
-      good: BreathingTechniques.BOX_BREATHING,        // Energizing
-      veryGood: BreathingTechniques.TRIANGLE          // Maintaining
+      veryLow: BreathingTechniques.BELLY_BREATHING, // Gentle, supportive
+      low: BreathingTechniques.EXTENDED_EXHALE, // Calming
+      neutral: BreathingTechniques.COHERENT, // Balancing
+      good: BreathingTechniques.BOX_BREATHING, // Energizing
+      veryGood: BreathingTechniques.TRIANGLE, // Maintaining
     };
     return techniques[getMoodCategory(currentMood)];
-  }
+  },
 };
 ```
 
@@ -548,26 +550,31 @@ export const BreathingMoodIntegration = {
 ## Implementation Timeline
 
 ### Week 1-2: Foundation
+
 - Create breathing exercise types and schemas
 - Implement basic breathing technique configurations
 - Build core breathing session components
 
 ### Week 3-4: UI Components
+
 - Develop guided breathing interface with animations
 - Create exercise selection and customization
 - Implement progress tracking dashboard
 
 ### Week 5-6: CBT Integration
+
 - Integrate breathing exercises with CBT modules
 - Enhance anxiety and mindfulness modules
 - Implement session flow integration
 
 ### Week 7-8: Advanced Features
+
 - Build recommendation engine
 - Implement crisis intervention protocols
 - Create analytics and insights system
 
 ### Week 9-10: Polish & Optimization
+
 - Mobile optimization and accessibility
 - Performance optimization
 - User testing and refinement
@@ -575,18 +582,21 @@ export const BreathingMoodIntegration = {
 ## Technical Considerations
 
 ### Performance
+
 - Efficient animation rendering
 - Background session management
 - Memory optimization for long sessions
 - Battery usage optimization
 
 ### User Experience
+
 - Minimal loading times
 - Smooth animations at 60fps
 - Intuitive gesture controls
 - Clear progress indicators
 
 ### Integration Points
+
 - Seamless CBT module integration
 - Mood tracking correlation
 - Crisis intervention system
@@ -594,6 +604,7 @@ export const BreathingMoodIntegration = {
 - Analytics and reporting
 
 ### Privacy & Security
+
 - Local storage of session data
 - Optional cloud sync for progress
 - Anonymized effectiveness data

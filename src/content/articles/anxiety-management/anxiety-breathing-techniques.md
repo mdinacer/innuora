@@ -13,7 +13,7 @@ readingTime: 6
 relatedCbtModules: ["mindfulness", "behavioral", "cognitive"]
 targetEmotions: ["anxiety", "panic", "worry", "stress"]
 publishedAt: "2025-01-27"
-draft: true
+draft: false
 ---
 
 # 5 Breathing Techniques That Actually Work for Anxiety

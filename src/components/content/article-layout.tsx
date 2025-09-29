@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
 import { ContentCategory, ContentItem } from "@/types/content.types";
 
@@ -13,13 +16,14 @@ interface ArticleLayoutProps {
   contentItem: ContentItem;
   relatedContent: ContentItem[];
   category: ContentCategory;
+  markdownContent: string;
 }
 
 // =========================
 // Article Layout Component
 // =========================
 
-export default function ArticleLayout({ contentItem, relatedContent, category }: ArticleLayoutProps) {
+export default function ArticleLayout({ contentItem, relatedContent, category, markdownContent }: ArticleLayoutProps) {
   const { metadata, excerpt } = contentItem;
 
   return (
@@ -66,19 +70,20 @@ export default function ArticleLayout({ contentItem, relatedContent, category }:
 
         {/* Content Area */}
         <main className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 mb-8">
-          {/* Placeholder for future MDX content */}
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-6">
-              <h3 className="text-blue-800 dark:text-blue-200 font-semibold mb-2">Content Coming Soon</h3>
-              <p className="text-blue-700 dark:text-blue-300">
-                This article is part of our comprehensive therapeutic content library. The full content will be
-                available soon with interactive exercises and personalized insights.
-              </p>
-            </div>
-
-            {excerpt && (
-              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                <p className="text-gray-700 dark:text-gray-300 italic">{excerpt}</p>
+            {markdownContent ? (
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeHighlight]}
+              >
+                {markdownContent}
+              </ReactMarkdown>
+            ) : (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-6">
+                <h3 className="text-blue-800 dark:text-blue-200 font-semibold mb-2">Content Loading...</h3>
+                <p className="text-blue-700 dark:text-blue-300">
+                  Unable to load article content. Please check if the file exists.
+                </p>
               </div>
             )}
 

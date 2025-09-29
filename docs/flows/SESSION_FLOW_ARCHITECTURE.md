@@ -31,15 +31,15 @@ export type SessionFlowPhase = "structured_flow" | "open_chat" | "closure";
 
 // 8 distinct step types for different interaction patterns
 export const StepType = {
-  TEXT: "text",               // Simple display text
-  PARAGRAPHS: "paragraphs",   // Rich content blocks
-  USER_INPUT: "user_input",   // Text input collection
-  OPTIONS: "options",         // Single/multiple choice
-  ACTION: "action",           // Decision points
-  REFLECTION: "reflection",   // AI analysis trigger
-  BRANCH: "branch",           // Conditional flow logic
-  SYSTEM: "system",           // System operations
-  FLOW_END: "flow_end"        // Session completion
+  TEXT: "text", // Simple display text
+  PARAGRAPHS: "paragraphs", // Rich content blocks
+  USER_INPUT: "user_input", // Text input collection
+  OPTIONS: "options", // Single/multiple choice
+  ACTION: "action", // Decision points
+  REFLECTION: "reflection", // AI analysis trigger
+  BRANCH: "branch", // Conditional flow logic
+  SYSTEM: "system", // System operations
+  FLOW_END: "flow_end", // Session completion
 };
 ```
 
@@ -64,7 +64,7 @@ export interface ParagraphsContent {
 // User input collection
 export interface UserInputContent {
   label: string;
-  key: string;              // Storage key for input value
+  key: string; // Storage key for input value
   placeholder?: string;
   hint?: string;
   charLimit?: number;
@@ -74,7 +74,7 @@ export interface UserInputContent {
 export interface OptionsContent {
   label: string;
   key: string;
-  mode: SelectMode;         // "single" | "multiple"
+  mode: SelectMode; // "single" | "multiple"
   options: UserOption[];
   hint?: string;
   maxSelected?: number;
@@ -86,10 +86,11 @@ export interface OptionsContent {
 #### Two-Tier Store System
 
 **SessionFlowStore** - Core session state management:
+
 ```typescript
 interface SessionFlowStoreState {
-  sessions: Record<string, SessionFlowState>;    // Multi-session support
-  errors: Record<string, SessionFlowError>;      // Session-scoped errors
+  sessions: Record<string, SessionFlowState>; // Multi-session support
+  errors: Record<string, SessionFlowError>; // Session-scoped errors
 
   // Session lifecycle
   createSession: (sessionId: string) => void;
@@ -104,6 +105,7 @@ interface SessionFlowStoreState {
 ```
 
 **SessionFlowMessagesStore** - Chat message persistence:
+
 ```typescript
 interface SessionFlowMessagesStoreState {
   messagesBySession: Record<string, ChatMessage[]>;
@@ -148,12 +150,13 @@ export interface SessionFlowState {
 #### Core Hooks
 
 **`useSessionFlowOrchestrator`** - Main coordinator hook:
+
 ```typescript
 export function useSessionFlowOrchestrator({
   sessionFlow,
   autoStart = false,
   initializeStores = false,
-  options = {}
+  options = {},
 }: SessionFlowOrchestratorProps) {
   // Initializes and coordinates all session flow components
 
@@ -178,17 +181,15 @@ export function useSessionFlowOrchestrator({
     // Error handling
     hasError,
     error,
-    clearError
+    clearError,
   };
 }
 ```
 
 **`useSessionFlowEngine`** - Core flow logic:
+
 ```typescript
-export function useSessionFlowEngine(
-  sessionFlow: SessionFlow,
-  options?: SessionFlowEngineOptions
-) {
+export function useSessionFlowEngine(sessionFlow: SessionFlow, options?: SessionFlowEngineOptions) {
   // Manages step transitions, validation, and flow execution
 
   return {
@@ -210,17 +211,15 @@ export function useSessionFlowEngine(
 
     // Error handling
     error,
-    clearError
+    clearError,
   };
 }
 ```
 
 **`useSessionFlowChatEngine`** - Message management:
+
 ```typescript
-export function useSessionFlowChatEngine({
-  sessionId,
-  autoCreate = false
-}: SessionFlowChatEngineProps) {
+export function useSessionFlowChatEngine({ sessionId, autoCreate = false }: SessionFlowChatEngineProps) {
   // Manages chat messages for session flow
 
   return {
@@ -233,7 +232,7 @@ export function useSessionFlowChatEngine({
     clearMessages,
 
     // Error handling
-    error
+    error,
   };
 }
 ```
@@ -244,11 +243,11 @@ export function useSessionFlowChatEngine({
 
 ```typescript
 export interface SessionFlow {
-  id: string;                    // Unique session identifier
-  title: string;                 // Display title
-  subtitle: string;              // Display subtitle
-  steps: FlowStep[];             // Array of flow steps
-  initialStepId: string;         // Starting step
+  id: string; // Unique session identifier
+  title: string; // Display title
+  subtitle: string; // Display subtitle
+  steps: FlowStep[]; // Array of flow steps
+  initialStepId: string; // Starting step
   defaultAutoAdvanceDelay?: number; // Default timing for auto-advance
 }
 ```
@@ -256,24 +255,25 @@ export interface SessionFlow {
 #### Flow Step Definition
 
 ```typescript
-type FlowStep = BaseStep & (
-  | { type: "text"; content: string }
-  | { type: "paragraphs"; content: ParagraphsContent }
-  | { type: "user_input"; content: UserInputContent }
-  | { type: "options"; content: OptionsContent }
-  | { type: "action"; content: ActionContent }
-  | { type: "reflection"; content: ReflectionContent; id: "reflection" }
-  | { type: "branch"; content: BranchContent }
-  | { type: "system"; content: SystemContent }
-  | { type: "flow_end"; content: FlowEndContent; id: "end" }
-);
+type FlowStep = BaseStep &
+  (
+    | { type: "text"; content: string }
+    | { type: "paragraphs"; content: ParagraphsContent }
+    | { type: "user_input"; content: UserInputContent }
+    | { type: "options"; content: OptionsContent }
+    | { type: "action"; content: ActionContent }
+    | { type: "reflection"; content: ReflectionContent; id: "reflection" }
+    | { type: "branch"; content: BranchContent }
+    | { type: "system"; content: SystemContent }
+    | { type: "flow_end"; content: FlowEndContent; id: "end" }
+  );
 
 interface BaseStep {
-  id: string;                    // Unique step identifier
-  type: StepType;               // Step type enum
-  nextStepId?: string;          // Default next step
-  advanceMode?: AdvanceMode;    // "auto" | "manual" | "await"
-  autoAdvanceDelay?: number;    // Delay for auto-advance
+  id: string; // Unique step identifier
+  type: StepType; // Step type enum
+  nextStepId?: string; // Default next step
+  advanceMode?: AdvanceMode; // "auto" | "manual" | "await"
+  autoAdvanceDelay?: number; // Delay for auto-advance
 }
 ```
 
@@ -358,11 +358,7 @@ export interface ReflectionContent {
 
 ```typescript
 // src/domains/session-flow/utils/load-session-flow.ts
-export async function loadSessionFlow(
-  sessionId: SessionId,
-  locale: AppLocales = "en"
-): Promise<SessionFlow> {
-
+export async function loadSessionFlow(sessionId: SessionId, locale: AppLocales = "en"): Promise<SessionFlow> {
   // Load session data from translations
   const { t } = await initTranslations(locale, ["sessions"]);
   const sessionData = t(sessionId, { returnObjects: true }) as SessionFlow;
@@ -377,7 +373,7 @@ export async function loadSessionFlow(
   // Validate with Zod schema
   const { data, success, error } = safeValidateSessionFlow({
     ...sessionData,
-    steps: mergedSteps
+    steps: mergedSteps,
   });
 
   if (!success) {
@@ -397,15 +393,15 @@ export const SESSION_PROPS = {
     welcome: {
       type: StepType.PARAGRAPHS,
       advanceMode: AdvanceMode.MANUAL,
-      nextStepId: "what_to_expect"
+      nextStepId: "what_to_expect",
     },
     display_name: {
       type: StepType.USER_INPUT,
       content: { key: "displayName", charLimit: 40 },
-      nextStepId: "age_group"
-    }
+      nextStepId: "age_group",
+    },
     // ... additional step configurations
-  }
+  },
 };
 ```
 
@@ -415,12 +411,12 @@ export const SESSION_PROPS = {
 
 ```typescript
 export interface SessionFlowError {
-  code: string;                  // Error classification
-  message: string;               // User-friendly message
-  stepId?: string;              // Step where error occurred
-  timestamp: Date;              // When error occurred
+  code: string; // Error classification
+  message: string; // User-friendly message
+  stepId?: string; // Step where error occurred
+  timestamp: Date; // When error occurred
   context?: Record<string, any>; // Additional error context
-  recoverable: boolean;         // Whether user can recover
+  recoverable: boolean; // Whether user can recover
 }
 
 // Error types
@@ -429,7 +425,7 @@ const ERROR_CODES = {
   STEP_NOT_FOUND: "STEP_NOT_FOUND",
   INVALID_INPUT: "INVALID_INPUT",
   FLOW_CONFIGURATION_ERROR: "FLOW_CONFIGURATION_ERROR",
-  SYSTEM_ACTION_FAILED: "SYSTEM_ACTION_FAILED"
+  SYSTEM_ACTION_FAILED: "SYSTEM_ACTION_FAILED",
 };
 ```
 
@@ -442,7 +438,7 @@ const recoveryStrategies = {
   STEP_NOT_FOUND: "reset_to_last_valid_step",
   INVALID_INPUT: "clear_input_and_retry",
   FLOW_CONFIGURATION_ERROR: "reset_entire_flow",
-  SYSTEM_ACTION_FAILED: "skip_action_and_continue"
+  SYSTEM_ACTION_FAILED: "skip_action_and_continue",
 };
 ```
 
@@ -453,15 +449,16 @@ const recoveryStrategies = {
 ```typescript
 // Debounced state updates to prevent excessive re-renders
 const debouncedUpdateSession = useMemo(
-  () => debounce((sessionId: string, updates: Partial<SessionFlowState>) => {
-    updateSession(sessionId, updates);
-  }, 300),
+  () =>
+    debounce((sessionId: string, updates: Partial<SessionFlowState>) => {
+      updateSession(sessionId, updates);
+    }, 300),
   [updateSession]
 );
 
 // Memoized step calculations
 const currentStep = useMemo(() => {
-  return sessionFlow.steps.find(step => step.id === currentStepId);
+  return sessionFlow.steps.find((step) => step.id === currentStepId);
 }, [sessionFlow.steps, currentStepId]);
 ```
 
@@ -469,12 +466,14 @@ const currentStep = useMemo(() => {
 
 ```typescript
 // Component memoization for expensive operations
-const FlowStepRenderer = React.memo(({ step, isActive }) => {
-  // Only re-render when step content or active state changes
-}, (prevProps, nextProps) => {
-  return prevProps.step.id === nextProps.step.id &&
-         prevProps.isActive === nextProps.isActive;
-});
+const FlowStepRenderer = React.memo(
+  ({ step, isActive }) => {
+    // Only re-render when step content or active state changes
+  },
+  (prevProps, nextProps) => {
+    return prevProps.step.id === nextProps.step.id && prevProps.isActive === nextProps.isActive;
+  }
+);
 ```
 
 ### 10. Integration Architecture
@@ -512,9 +511,7 @@ export const prepareSessionFlowDataForAI = (session: SessionFlowState) => {
     userInputs: session.inputValues,
     conversationFlow: session.stepHistory,
     currentContext: session.currentStepId,
-    sessionDuration: session.endedAt
-      ? session.endedAt.getTime() - session.startedAt!.getTime()
-      : undefined
+    sessionDuration: session.endedAt ? session.endedAt.getTime() - session.startedAt!.getTime() : undefined,
   };
 };
 ```
@@ -525,23 +522,21 @@ export const prepareSessionFlowDataForAI = (session: SessionFlowState) => {
 
 ```typescript
 // Hook testing with React Testing Library
-describe('useSessionFlowEngine', () => {
-  it('should advance to next step when moveToNext is called', async () => {
-    const { result } = renderHook(() =>
-      useSessionFlowEngine(mockSessionFlow)
-    );
+describe("useSessionFlowEngine", () => {
+  it("should advance to next step when moveToNext is called", async () => {
+    const { result } = renderHook(() => useSessionFlowEngine(mockSessionFlow));
 
     await act(async () => {
       await result.current.startFlow();
     });
 
-    expect(result.current.currentStepId).toBe('welcome');
+    expect(result.current.currentStepId).toBe("welcome");
 
     await act(async () => {
       await result.current.moveToNext();
     });
 
-    expect(result.current.currentStepId).toBe('what_to_expect');
+    expect(result.current.currentStepId).toBe("what_to_expect");
   });
 });
 ```
@@ -573,17 +568,17 @@ describe('Onboarding Flow Integration', () => {
 // Session flow analytics tracking
 export const trackSessionFlowEvent = (event: {
   sessionId: string;
-  eventType: 'step_start' | 'step_complete' | 'input_provided' | 'error_occurred';
+  eventType: "step_start" | "step_complete" | "input_provided" | "error_occurred";
   stepId: string;
   duration?: number;
   metadata?: Record<string, any>;
 }) => {
   // Send analytics data to monitoring service
-  analytics.track('session_flow_event', {
+  analytics.track("session_flow_event", {
     ...event,
     timestamp: new Date(),
     userAgent: navigator.userAgent,
-    viewport: { width: window.innerWidth, height: window.innerHeight }
+    viewport: { width: window.innerWidth, height: window.innerHeight },
   });
 };
 ```
@@ -595,18 +590,18 @@ export const trackSessionFlowEvent = (event: {
 export const monitorSessionFlowPerformance = () => {
   const observer = new PerformanceObserver((list) => {
     list.getEntries().forEach((entry) => {
-      if (entry.name.includes('session-flow')) {
+      if (entry.name.includes("session-flow")) {
         // Track session flow performance metrics
-        analytics.track('session_flow_performance', {
+        analytics.track("session_flow_performance", {
           operation: entry.name,
           duration: entry.duration,
-          timestamp: entry.startTime
+          timestamp: entry.startTime,
         });
       }
     });
   });
 
-  observer.observe({ entryTypes: ['measure'] });
+  observer.observe({ entryTypes: ["measure"] });
 };
 ```
 

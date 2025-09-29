@@ -1,3 +1,21 @@
+---
+title: "Understanding Depression: Symptoms, Types, and Treatment Options"
+description: "Learn to recognize depression symptoms, understand different types of depression, and explore evidence-based treatment options. Comprehensive guide for understanding this common mental health condition."
+slug: "understanding-depression-symptoms"
+category: "depression-support"
+contentType: "article"
+intent: "informational"
+keywords: ["depression symptoms", "types of depression", "what is depression", "depression treatment"]
+searchVolume: 89000
+priority: "high"
+featured: true
+readingTime: 10
+relatedCbtModules: ["cognitive", "behavioral_activation", "core_beliefs", "values_clarification"]
+targetEmotions: ["depression", "sadness", "confusion", "hope"]
+publishedAt: "2025-01-27"
+draft: false
+---
+
 # Understanding Depression: Symptoms, Types, and Treatment Options
 
 Depression is one of the most common mental health conditions, affecting millions of people worldwide. Despite its prevalence, depression is often misunderstood or overlooked. This comprehensive guide will help you understand what depression is, recognize its symptoms, and explore treatment options.
