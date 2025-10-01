@@ -31,7 +31,14 @@ export default function AppearanceSettings(): React.JSX.Element {
   useEffect(() => {
     async function loadConfig() {
       try {
-        const config = await getUserConfig();
+        const result = await getUserConfig();
+
+        if (result.error) {
+          console.error("Failed to load user config:", result.error.message);
+          return;
+        }
+
+        const config = result.data;
         if (config) {
           setThemeMode((config.theme as ThemeMode) || "system");
           setFontSize((config.fontSize as FontSize) || "medium");

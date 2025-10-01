@@ -3,6 +3,7 @@ import localforage from "localforage";
 import { EncryptedBlob, WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
+import type { ActionResult } from "@/types/action-result";
 
 /* webcrypto-crypto.ts
    Wrapped-key only (AES-GCM content + AES-KW wrapping)
@@ -63,7 +64,7 @@ export async function deriveWrappingKeyFromPassword(
   password: string,
   saltB64: string,
   iterations = 600_000
-): Promise<CryptoKey> {
+): Promise<ActionResult<CryptoKey>> {
   return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
@@ -96,7 +97,7 @@ export async function deriveWrappingKeyFromPassword(
 /* ---------- Content key management (AES-GCM) ---------- */
 
 /** Generate a fresh AES-GCM content key (extractable so we can wrap/export if needed). */
-export async function generateContentKey(): Promise<CryptoKey> {
+export async function generateContentKey(): Promise<ActionResult<CryptoKey>> {
   return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
@@ -131,14 +132,18 @@ export async function wrapContentKeyWithPassword(
   contentKey: CryptoKey,
   password: string,
   iterations = 600_000
-): Promise<WrappedKeyPackage> {
+): Promise<ActionResult<WrappedKeyPackage>> {
   return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
       const salt = getRandomBytes(16);
       const saltB64 = arrayBufferToBase64(salt.buffer);
 
-      const wrappingKey = await deriveWrappingKeyFromPassword(password, saltB64, iterations);
+      const wrappingKeyResult = await deriveWrappingKeyFromPassword(password, saltB64, iterations);
+      if (wrappingKeyResult.error) {
+        throw new Error(wrappingKeyResult.error.message);
+      }
+      const wrappingKey = wrappingKeyResult.data;
 
       // wrapKey returns ArrayBuffer
       const wrapped = await s.wrapKey("raw", contentKey, wrappingKey, { name: "AES-KW" });
@@ -161,7 +166,10 @@ export async function wrapContentKeyWithPassword(
 /**
  * Unwrap a WrappedKeyPackage using the provided password. Returns the AES-GCM contentKey.
  */
-export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, password: string): Promise<CryptoKey> {
+export async function unwrapContentKeyWithPassword(
+  pkg: WrappedKeyPackage,
+  password: string
+): Promise<ActionResult<CryptoKey>> {
   return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
@@ -177,7 +185,11 @@ export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, passw
         );
       }
 
-      const wrappingKey = await deriveWrappingKeyFromPassword(password, pkg.salt, pkg.iterations);
+      const wrappingKeyResult = await deriveWrappingKeyFromPassword(password, pkg.salt, pkg.iterations);
+      if (wrappingKeyResult.error) {
+        throw new Error(wrappingKeyResult.error.message);
+      }
+      const wrappingKey = wrappingKeyResult.data;
       const wrappedBuf = base64ToArrayBuffer(pkg.wrappedKey);
 
       // unwrapKey to AES-GCM content key
@@ -204,7 +216,7 @@ export async function unwrapContentKeyWithPassword(pkg: WrappedKeyPackage, passw
  * Encrypt a JSON-serializable object/value with a content key.
  * Returns an EncryptedBlob (JSON-serializable): { iv, ciphertext }.
  */
-export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): Promise<EncryptedBlob> {
+export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): Promise<ActionResult<EncryptedBlob>> {
   return await logger.wrapOperation(
     async () => {
       const json = JSON.stringify(data);
@@ -226,7 +238,7 @@ export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): P
 /**
  * Decrypt an EncryptedBlob using a contentKey and parse JSON back into T.
  */
-export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: CryptoKey): Promise<T> {
+export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: CryptoKey): Promise<ActionResult<T>> {
   return await logger.wrapOperation(
     async () => {
       const s = ensureSubtle();
@@ -269,8 +281,18 @@ export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: C
  * - Keep contentKey in memory or optionally export+store locally for "remember me".
  */
 export async function createAndWrapContentKeyForUser(password: string, iterations = 600_000) {
-  const contentKey = await generateContentKey();
-  const wrappedPackage = await wrapContentKeyWithPassword(contentKey, password, iterations);
+  const contentKeyResult = await generateContentKey();
+  if (contentKeyResult.error) {
+    throw new Error(contentKeyResult.error.message);
+  }
+  const contentKey = contentKeyResult.data;
+
+  const wrappedPackageResult = await wrapContentKeyWithPassword(contentKey, password, iterations);
+  if (wrappedPackageResult.error) {
+    throw new Error(wrappedPackageResult.error.message);
+  }
+  const wrappedPackage = wrappedPackageResult.data;
+
   return { contentKey, wrappedPackage };
 }
 
@@ -278,7 +300,11 @@ export async function createAndWrapContentKeyForUser(password: string, iteration
  * Recover content key given the WrappedKeyPackage and the user's password.
  */
 export async function recoverContentKeyFromWrapped(pkg: WrappedKeyPackage, password: string): Promise<CryptoKey> {
-  return unwrapContentKeyWithPassword(pkg, password);
+  const result = await unwrapContentKeyWithPassword(pkg, password);
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  return result.data;
 }
 
 /**
@@ -307,7 +333,7 @@ export async function getStoredContentKey(): Promise<CryptoKey | null> {
 /**
  * Store the content key (base64) in sessionStorage or IndexedDB depending on persist flag.
  */
-export async function storeContentKey(key: CryptoKey, persist: boolean = false): Promise<void> {
+export async function storeContentKey(key: CryptoKey, persist: boolean = false): Promise<ActionResult<void>> {
   return await logger.wrapOperation(
     async () => {
       // Export CryptoKey to base64

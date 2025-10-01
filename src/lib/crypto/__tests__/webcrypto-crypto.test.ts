@@ -45,7 +45,9 @@ describe("WebCrypto Crypto Functions", () => {
 
   describe("Key Generation", () => {
     it("should generate a valid AES-GCM content key", async () => {
-      const key = await generateContentKey();
+      const keyResult = await generateContentKey();
+      expect(keyResult.error).toBeNull();
+      const key = keyResult.data!;
 
       expect(key).toBeInstanceOf(CryptoKey);
       expect(key.type).toBe("secret");
@@ -56,8 +58,13 @@ describe("WebCrypto Crypto Functions", () => {
     });
 
     it("should generate different keys each time", async () => {
-      const key1 = await generateContentKey();
-      const key2 = await generateContentKey();
+      const key1Result = await generateContentKey();
+      expect(key1Result.error).toBeNull();
+      const key1 = key1Result.data!;
+
+      const key2Result = await generateContentKey();
+      expect(key2Result.error).toBeNull();
+      const key2 = key2Result.data!;
 
       const key1B64 = await exportKeyToBase64(key1);
       const key2B64 = await exportKeyToBase64(key2);
@@ -103,7 +110,9 @@ describe("WebCrypto Crypto Functions", () => {
       const password = "secure-test-password-123";
       const salt = generateSalt();
 
-      const wrappingKey = await deriveWrappingKeyFromPassword(password, salt);
+      const wrappingKeyResult = await deriveWrappingKeyFromPassword(password, salt);
+      expect(wrappingKeyResult.error).toBeNull();
+      const wrappingKey = wrappingKeyResult.data!;
 
       expect(wrappingKey).toBeInstanceOf(CryptoKey);
       expect(wrappingKey.type).toBe("secret");
@@ -123,15 +132,27 @@ describe("WebCrypto Crypto Functions", () => {
       // const _key2 = await deriveWrappingKeyFromPassword(password, salt);
 
       // Can't directly compare CryptoKey objects, so test by using them
-      const contentKey = await generateContentKey();
+      const contentKeyResult = await generateContentKey();
+      expect(contentKeyResult.error).toBeNull();
+      const contentKey = contentKeyResult.data!;
 
-      const package1 = await wrapContentKeyWithPassword(contentKey, password);
-      const recovered1 = await unwrapContentKeyWithPassword(package1, password);
+      const package1Result = await wrapContentKeyWithPassword(contentKey, password);
+      expect(package1Result.error).toBeNull();
+      const package1 = package1Result.data!;
+
+      const recovered1Result = await unwrapContentKeyWithPassword(package1, password);
+      expect(recovered1Result.error).toBeNull();
+      const recovered1 = recovered1Result.data!;
 
       // Should be able to encrypt/decrypt with recovered key
       const testData = { test: "consistency check" };
-      const encrypted = await encryptObjectWithKey(testData, recovered1);
-      const decrypted = await decryptObjectWithKey(encrypted, recovered1);
+      const encryptedResult = await encryptObjectWithKey(testData, recovered1);
+      expect(encryptedResult.error).toBeNull();
+      const encrypted = encryptedResult.data!;
+
+      const decryptedResult = await decryptObjectWithKey(encrypted, recovered1);
+      expect(decryptedResult.error).toBeNull();
+      const decrypted = decryptedResult.data!;
 
       expect(decrypted).toEqual(testData);
     });
@@ -146,10 +167,16 @@ describe("WebCrypto Crypto Functions", () => {
       // const _key2 = await deriveWrappingKeyFromPassword(password2, salt);
 
       // Test that keys are different by attempting cross-password operations
-      const contentKey = await generateContentKey();
-      const package1 = await wrapContentKeyWithPassword(contentKey, password1);
+      const contentKeyResult = await generateContentKey();
+      expect(contentKeyResult.error).toBeNull();
+      const contentKey = contentKeyResult.data!;
 
-      await expect(unwrapContentKeyWithPassword(package1, password2)).rejects.toThrow();
+      const package1Result = await wrapContentKeyWithPassword(contentKey, password1);
+      expect(package1Result.error).toBeNull();
+      const package1 = package1Result.data!;
+
+      const wrongPasswordResult = await unwrapContentKeyWithPassword(package1, password2);
+      expect(wrongPasswordResult.error).not.toBeNull();
     });
 
     it("should derive different keys for different salts", async () => {
@@ -193,7 +220,9 @@ describe("WebCrypto Crypto Functions", () => {
 
   describe("Key Import/Export", () => {
     it("should export and import a key correctly", async () => {
-      const originalKey = await generateContentKey();
+      const originalKeyResult = await generateContentKey();
+      expect(originalKeyResult.error).toBeNull();
+      const originalKey = originalKeyResult.data!;
 
       const keyB64 = await exportKeyToBase64(originalKey);
       expect(typeof keyB64).toBe("string");
@@ -207,8 +236,13 @@ describe("WebCrypto Crypto Functions", () => {
 
       // Test that imported key works the same as original
       const testData = { message: "test export/import" };
-      const encrypted = await encryptObjectWithKey(testData, originalKey);
-      const decrypted = await decryptObjectWithKey(encrypted, importedKey);
+      const encryptedResult = await encryptObjectWithKey(testData, originalKey);
+      expect(encryptedResult.error).toBeNull();
+      const encrypted = encryptedResult.data!;
+
+      const decryptedResult = await decryptObjectWithKey(encrypted, importedKey);
+      expect(decryptedResult.error).toBeNull();
+      const decrypted = decryptedResult.data!;
 
       expect(decrypted).toEqual(testData);
     });

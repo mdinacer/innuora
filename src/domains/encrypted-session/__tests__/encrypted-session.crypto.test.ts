@@ -29,8 +29,12 @@ describe("Encrypted Session Crypto", () => {
     clearStoredContentKey();
 
     // Generate fresh content key for each test
-    contentKey = await generateContentKey();
-    await storeContentKey(contentKey, false);
+    const keyResult = await generateContentKey();
+    if (keyResult.error) throw new Error(keyResult.error.message);
+    contentKey = keyResult.data!;
+
+    const storeResult = await storeContentKey(contentKey, false);
+    if (storeResult.error) throw new Error(storeResult.error.message);
   });
 
   afterEach(() => {
@@ -83,6 +87,7 @@ describe("Encrypted Session Crypto", () => {
             therapeutic_readiness: "ready",
             update_memory: true,
             recall_memory: false,
+            analysis_value: "medium",
           },
         ],
         metadata: {
@@ -261,6 +266,7 @@ describe("Encrypted Session Crypto", () => {
             therapeutic_readiness: "ready",
             update_memory: true,
             recall_memory: false,
+            analysis_value: "medium",
           },
         ],
         metadata: {
@@ -509,6 +515,7 @@ describe("Encrypted Session Crypto", () => {
             therapeutic_readiness: "ready",
             update_memory: true,
             recall_memory: false,
+            analysis_value: "medium",
           },
         ],
         metadata: {

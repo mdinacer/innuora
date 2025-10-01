@@ -34,14 +34,24 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         }
 
         const result = await generateSessionMemory(userMessage, session.memoryStore);
-        if (!result) {
+
+        // Unwrap ActionResult
+        if (result.error) {
+          const error = `Memory generation failed: ${result.error.message}`;
+          console.error(error);
+          setMemoryError(error);
+          return { error };
+        }
+
+        const aiResponse = result.data;
+        if (!aiResponse) {
           const error = "Memory generation failed - no response received";
           console.error(error);
           setMemoryError(error);
           return { error };
         }
 
-        const { modelTokenUsage, message, consumedCredits } = result;
+        const { modelTokenUsage, message, consumedCredits } = aiResponse;
         if (!message?.trim()) {
           const error = "Memory generation returned empty response";
           console.error(error);

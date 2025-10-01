@@ -8,6 +8,7 @@ import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
 import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
+import type { ActionResult } from "@/types/action-result";
 import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
 
 type RequestOptions = {
@@ -31,7 +32,7 @@ async function callOpenAi(
   modelPath: string,
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
-): Promise<ChatCompletion> {
+): Promise<ActionResult<ChatCompletion>> {
   return await logger.wrapOperation(
     async () => {
       const completion = await openai.chat.completions.create({
@@ -56,7 +57,7 @@ async function callOpenRouter(
   modelPath: string,
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
-): Promise<ChatCompletion> {
+): Promise<ActionResult<ChatCompletion>> {
   return await logger.wrapOperation(
     async () => {
       const apiKey = process.env.OPEN_ROUTER_API_KEY;
@@ -179,7 +180,7 @@ export async function SendPromptsToAi(
   model: AiModel,
   options: Partial<RequestOptions> = {},
   userId?: string
-): Promise<AiMessageResponse> {
+): Promise<ActionResult<AiMessageResponse>> {
   return await logger.wrapOperation(
     async () => {
       // Check rate limits
@@ -208,9 +209,16 @@ export async function SendPromptsToAi(
       const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...options };
 
       // Call appropriate AI service
-      const data = await (model.vendor === "openai"
+      const result = await (model.vendor === "openai"
         ? callOpenAi(model.apiPath, prompts, mergedOptions)
         : callOpenRouter(model.apiPath, prompts, mergedOptions));
+
+      // Handle ActionResult wrapper
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      const data = result.data;
 
       // Extract and validate response
       const raw = data?.choices?.[0]?.message?.content?.trim();
@@ -263,36 +271,35 @@ export async function SendPromptsToAiWithRetry(
   maxRetries: number = 3,
   retryDelay: number = 1000,
   userId?: string
-): Promise<AiMessageResponse> {
+): Promise<ActionResult<AiMessageResponse>> {
   return await logger.wrapOperation(
     async () => {
       let lastError: Error | null = null;
 
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          return await SendPromptsToAi(prompts, model, options, userId);
-        } catch (error) {
-          lastError = error as Error;
+        const result = await SendPromptsToAi(prompts, model, options, userId);
 
-          // Don't retry on certain error types - check AppError errorCode if available
+        if (result.error) {
+          lastError = new Error(result.error.message);
+          // Don't retry on certain error types
           if (
-            error instanceof AppError &&
-            error.name === "AppError" &&
-            ((error && error.errorCode === ERROR_CODES.AI_EMPTY_RESPONSE) ||
-              error.errorCode === ERROR_CODES.AI_INVALID_PROMPTS)
+            result.error.code === ERROR_CODES.AI_EMPTY_RESPONSE ||
+            result.error.code === ERROR_CODES.AI_INVALID_PROMPTS
           ) {
-            throw error;
+            throw lastError;
           }
 
-          // If this is the last attempt, throw the error
+          // If this is the last attempt, throw error
           if (attempt === maxRetries) {
             throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError.message}`);
           }
 
           // Wait before retrying (with exponential backoff)
           const delay = retryDelay * Math.pow(2, attempt - 1);
-          console.warn(`AI request failed (attempt ${attempt}/${maxRetries}). Retrying in ${delay}ms...`);
           await new Promise((resolve) => setTimeout(resolve, delay));
+        } else {
+          // Success - return the unwrapped data
+          return result.data;
         }
       }
 

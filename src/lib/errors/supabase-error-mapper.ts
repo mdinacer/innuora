@@ -4,47 +4,72 @@ import { ERROR_CODES, ErrorCode } from "./error-codes";
 
 /**
  * Maps Supabase auth errors to our internal error codes
- * Only handles the most common auth errors we'll encounter
+ * Uses error.code for precise mapping (available in both dev and prod)
  */
 export function mapSupabaseAuthError(error: AuthError): ErrorCode {
-  // Supabase AuthError properties: message, status, statusCode, name
-  const message = error.message.toLowerCase();
+  // Use the specific error code property (available in production)
+  const code = error.code;
 
-  // Map based on common error messages/patterns
-  if (message.includes("invalid login credentials") || message.includes("invalid credentials")) {
-    return ERROR_CODES.AUTH_SIGNIN_FAILED;
+  // If no code, fall back to generic error
+  if (!code) {
+    return ERROR_CODES.SERVER_ERROR;
   }
 
-  if (message.includes("user already registered") || message.includes("email already registered")) {
-    return ERROR_CODES.AUTH_SIGNUP_FAILED;
-  }
+  // Map Supabase error codes to our error codes
+  // Focus on email/password authentication flow
+  switch (code) {
+    // Sign-in errors
+    case "invalid_credentials":
+      return ERROR_CODES.AUTH_INVALID_CREDENTIALS;
+    case "user_not_found":
+      return ERROR_CODES.AUTH_USER_NOT_FOUND;
 
-  if (message.includes("email address is invalid") || message.includes("invalid email")) {
-    return ERROR_CODES.AUTH_EMAIL_INVALID;
-  }
+    // Sign-up errors
+    case "email_exists":
+    case "user_already_exists":
+      return ERROR_CODES.AUTH_EMAIL_EXISTS;
+    case "weak_password":
+      return ERROR_CODES.AUTH_WEAK_PASSWORD;
+    case "email_address_invalid":
+      return ERROR_CODES.AUTH_EMAIL_ADDRESS_INVALID;
+    case "validation_failed":
+      return ERROR_CODES.AUTH_VALIDATION_FAILED;
 
-  if (message.includes("too many requests") || message.includes("rate limit")) {
-    return ERROR_CODES.AUTH_RATE_LIMITED;
-  }
+    // Account status errors
+    case "email_not_confirmed":
+      return ERROR_CODES.AUTH_EMAIL_NOT_CONFIRMED;
+    case "signup_disabled":
+      return ERROR_CODES.AUTH_SIGNUP_DISABLED;
+    case "user_banned":
+      return ERROR_CODES.AUTH_USER_BANNED;
 
-  if (message.includes("email not confirmed") || message.includes("confirm your email")) {
-    return ERROR_CODES.AUTH_ACCOUNT_NOT_CONFIRMED;
-  }
+    // Rate limiting
+    case "over_request_rate_limit":
+      return ERROR_CODES.AUTH_OVER_REQUEST_RATE_LIMIT;
+    case "over_email_send_rate_limit":
+      return ERROR_CODES.AUTH_OVER_EMAIL_SEND_RATE_LIMIT;
 
-  if (message.includes("jwt expired") || message.includes("session expired") || message.includes("refresh token")) {
-    return ERROR_CODES.AUTH_SESSION_EXPIRED;
-  }
+    // Session/token errors
+    case "bad_jwt":
+    case "session_expired":
+      return ERROR_CODES.AUTH_SESSION_EXPIRED;
+    case "refresh_token_not_found":
+      return ERROR_CODES.AUTH_REFRESH_TOKEN_NOT_FOUND;
+    case "refresh_token_already_used":
+      return ERROR_CODES.AUTH_REFRESH_TOKEN_ALREADY_USED;
 
-  if (message.includes("weak password") || message.includes("password should be")) {
-    return ERROR_CODES.AUTH_PASSWORD_REQUIREMENTS;
+    // Fallback for unmapped codes
+    default:
+      // Try message-based fallback for any edge cases
+      const message = error.message?.toLowerCase() || "";
+      if (message.includes("sign") || message.includes("login")) {
+        return ERROR_CODES.AUTH_SIGNIN_FAILED;
+      }
+      if (message.includes("signup") || message.includes("register")) {
+        return ERROR_CODES.AUTH_SIGNUP_FAILED;
+      }
+      return ERROR_CODES.SERVER_ERROR;
   }
-
-  if (message.includes("signup disabled") || message.includes("user banned")) {
-    return ERROR_CODES.AUTH_SIGNUP_FAILED;
-  }
-
-  // Default fallback
-  return ERROR_CODES.SERVER_ERROR;
 }
 
 /**

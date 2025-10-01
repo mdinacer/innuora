@@ -22,7 +22,7 @@ async function requireContentKey(operation: string, sessionId?: string): Promise
 }
 
 export async function encryptSession(session: Partial<Session>): Promise<PrismaSession> {
-  return logger.wrapOperation(
+  const result = await logger.wrapOperation(
     async () => {
       const contentKey = await requireContentKey("crypto_encrypt_session", session.id);
 
@@ -46,7 +46,11 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
           ...(analysisSnapshots && { analysisSnapshots }),
         };
 
-        const encryptedData: EncryptedBlob = await encryptObjectWithKey(dataToEncrypt, contentKey);
+        const encryptResult = await encryptObjectWithKey(dataToEncrypt, contentKey);
+        if (encryptResult.error) {
+          throw new Error(encryptResult.error.message);
+        }
+        const encryptedData = encryptResult.data;
 
         sessionData.encryptedData = encryptedData as EncryptedBlob;
       }
@@ -64,10 +68,16 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
     },
     "Session encrypted successfully"
   );
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }
 
 export async function decryptSession(encryptedSession: PrismaSession): Promise<Session> {
-  return logger.wrapOperation(
+  const result = await logger.wrapOperation(
     async () => {
       const contentKey = await requireContentKey("crypto_decrypt_session", encryptedSession.id);
 
@@ -109,7 +119,11 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
       const parsedData = EncryptedBlobSchema.safeParse(encryptedSession.encryptedData);
 
       if (parsedData.success) {
-        const decryptedData = await decryptObjectWithKey<Partial<Session>>(parsedData.data, contentKey);
+        const decryptResult = await decryptObjectWithKey<Partial<Session>>(parsedData.data, contentKey);
+        if (decryptResult.error) {
+          throw new Error(decryptResult.error.message);
+        }
+        const decryptedData = decryptResult.data;
         session = { ...session, ...decryptedData };
       }
 
@@ -125,4 +139,10 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
     },
     "Session decrypted successfully"
   );
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }

@@ -52,9 +52,20 @@ describe("Credit Actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Default mock for logger.wrapOperation - just execute the operation
+    // Default mock for logger.wrapOperation - execute operation and return ActionResult
     mockLogger.wrapOperation.mockImplementation(async (operation) => {
-      return await operation();
+      try {
+        const result = await operation();
+        return { data: result, error: null };
+      } catch (error) {
+        return {
+          data: null,
+          error: {
+            message: error instanceof Error ? error.message : String(error),
+            code: "UNKNOWN_ERROR",
+          },
+        };
+      }
     });
   });
 
@@ -65,7 +76,8 @@ describe("Credit Actions", () => {
 
       const result = await getUserCreditsBalance("test-auth-id");
 
-      expect(result).toBe(1500);
+      expect(result.error).toBeNull();
+      expect(result.data).toBe(1500);
       expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
         where: { authId: "test-auth-id" },
         select: { creditsBalance: true },
@@ -78,7 +90,8 @@ describe("Credit Actions", () => {
 
       const result = await getUserCreditsBalance("test-auth-id");
 
-      expect(result).toBe(0);
+      expect(result.error).toBeNull();
+      expect(result.data).toBe(0);
     });
 
     it("should throw error for non-existent user", async () => {
@@ -122,7 +135,8 @@ describe("Credit Actions", () => {
 
       const result = await addCredits("test-auth-id", 500, "purchase");
 
-      expect(result).toEqual({
+      expect(result.error).toBeNull();
+      expect(result.data).toEqual({
         success: true,
         newBalance: 2000,
         transactionId: "txn-456",
@@ -187,7 +201,8 @@ describe("Credit Actions", () => {
 
       const result = await addCredits("test-auth-id", 300, "package_purchase", testMetadata);
 
-      expect(result.success).toBe(true);
+      expect(result.error).toBeNull();
+      expect(result.data?.success).toBe(true);
     });
 
     it("should handle transaction rollback on failure", async () => {
@@ -215,7 +230,8 @@ describe("Credit Actions", () => {
 
       const result = await deductCredits("test-auth-id", 300, "ai_usage", "session-123");
 
-      expect(result).toEqual({
+      expect(result.error).toBeNull();
+      expect(result.data).toEqual({
         success: true,
         newBalance: 700,
         transactionId: "txn-debit-456",
@@ -304,8 +320,9 @@ describe("Credit Actions", () => {
 
       const result = await deductCredits("test-auth-id", 100, "ai_usage");
 
-      expect(result.newBalance).toBe(0);
-      expect(result.success).toBe(true);
+      expect(result.error).toBeNull();
+      expect(result.data?.newBalance).toBe(0);
+      expect(result.data?.success).toBe(true);
     });
   });
 
@@ -340,7 +357,8 @@ describe("Credit Actions", () => {
 
       const result = await getUserCreditHistory("test-auth-id");
 
-      expect(result).toEqual(mockTransactions);
+      expect(result.error).toBeNull();
+      expect(result.data).toEqual(mockTransactions);
       expect(mockPrisma.creditTransaction.findMany).toHaveBeenCalledWith({
         where: { userId: "user-123" },
         orderBy: { createdAt: "desc" },
@@ -402,7 +420,8 @@ describe("Credit Actions", () => {
 
       const result = await adminAdjustCredits("admin-123", "target-456", 500, "bonus");
 
-      expect(result).toEqual({
+      expect(result.error).toBeNull();
+      expect(result.data).toEqual({
         success: true,
         newBalance: 1500,
         transactionId: "admin-txn-123",
@@ -507,7 +526,8 @@ describe("Credit Actions", () => {
 
       const result = await checkSufficientCredits("test-auth-id", 500);
 
-      expect(result).toBe(true);
+      expect(result.error).toBeNull();
+      expect(result.data).toBe(true);
     });
 
     it("should return false when user has insufficient credits", async () => {
@@ -515,7 +535,8 @@ describe("Credit Actions", () => {
 
       const result = await checkSufficientCredits("test-auth-id", 500);
 
-      expect(result).toBe(false);
+      expect(result.error).toBeNull();
+      expect(result.data).toBe(false);
     });
 
     it("should return true for exact balance match", async () => {
@@ -523,7 +544,8 @@ describe("Credit Actions", () => {
 
       const result = await checkSufficientCredits("test-auth-id", 250);
 
-      expect(result).toBe(true);
+      expect(result.error).toBeNull();
+      expect(result.data).toBe(true);
     });
 
     it("should handle zero required credits", async () => {
@@ -531,7 +553,8 @@ describe("Credit Actions", () => {
 
       const result = await checkSufficientCredits("test-auth-id", 0);
 
-      expect(result).toBe(true);
+      expect(result.error).toBeNull();
+      expect(result.data).toBe(true);
     });
   });
 

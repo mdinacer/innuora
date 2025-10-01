@@ -102,6 +102,8 @@ export function useReadingProgress(
       clearInterval(timeInterval);
 
       // Track final engagement when component unmounts
+      // Capture the start time at cleanup to ensure we use the same value
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       const startTimeValue = startTime.current;
       const finalTimeSpent = (Date.now() - startTimeValue) / 1000;
       if (finalTimeSpent > 10) {
@@ -113,7 +115,8 @@ export function useReadingProgress(
         });
       }
     };
-  }, [contentSlug, contentCategory, estimatedReadingTime, progress.wordsRead]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentSlug, contentCategory, estimatedReadingTime]);
 
   return progress;
 }

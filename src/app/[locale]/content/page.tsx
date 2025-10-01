@@ -8,6 +8,7 @@ import { contentRegistry } from "@/lib/content/content-registry";
 // Page Props
 // =========================
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface ContentLibraryPageProps {
   params: Promise<{
     locale: string;
@@ -18,9 +19,7 @@ interface ContentLibraryPageProps {
 // Metadata Generation
 // =========================
 
-export async function generateMetadata({ params }: ContentLibraryPageProps): Promise<Metadata> {
-  const { locale } = await params;
-
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Content Library | Innuora",
     description:
@@ -47,7 +46,7 @@ export async function generateMetadata({ params }: ContentLibraryPageProps): Pro
 // Page Component
 // =========================
 
-export default async function ContentLibraryPage({ params }: ContentLibraryPageProps) {
+export default async function ContentLibraryPage() {
   // Initialize content registry
   await initializeContentRegistry();
 

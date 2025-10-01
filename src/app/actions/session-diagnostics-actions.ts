@@ -45,7 +45,12 @@ export async function generateSessionDiagnosticsAction(
   const summaryPrompts = [{ role: "user" as const, content: summaryPrompt }];
 
   const summaryResponse = await SendPromptsToAi(summaryPrompts, model, {}, userId);
-  const sessionSummary = summaryResponse.message.trim();
+
+  if (summaryResponse.error) {
+    throw new Error(`Failed to generate summary: ${summaryResponse.error.message}`);
+  }
+
+  const sessionSummary = summaryResponse.data.message.trim();
 
   // 3. Get session memory
   const sessionMemory = session.memoryStore || "No memory available for this session.";
@@ -58,13 +63,17 @@ export async function generateSessionDiagnosticsAction(
   const diagnosticsPrompts = [{ role: "user" as const, content: diagnosticsPrompt }];
   const diagnosticsResponse = await SendPromptsToAi(diagnosticsPrompts, model, {}, userId);
 
-  const diagnostics = parseSessionDiagnostics(diagnosticsResponse.message);
+  if (diagnosticsResponse.error) {
+    throw new Error(`Failed to generate diagnostics: ${diagnosticsResponse.error.message}`);
+  }
+
+  const diagnostics = parseSessionDiagnostics(diagnosticsResponse.data.message);
 
   const metadata: SessionDiagnosticsMetadata = {
     generatedAt: new Date(),
     tokensUsed:
-      (summaryResponse.modelTokenUsage?.usage?.total_tokens || 0) +
-      (diagnosticsResponse.modelTokenUsage?.usage?.total_tokens || 0),
+      (summaryResponse.data.modelTokenUsage?.usage?.total_tokens || 0) +
+      (diagnosticsResponse.data.modelTokenUsage?.usage?.total_tokens || 0),
     modelUsed: modelCode,
     sessionMessageCount: session.messages.length,
     version: "1.0",

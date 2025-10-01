@@ -128,11 +128,11 @@ model AuditLog {
   createdAt DateTime @default(now()) @map("created_at")
 
   // Indexes for performance
-  @@index([level])
-  @@index([operation])
+  @@index([userId, createdAt])
+  @@index([operation, createdAt])
+  @@index([level, createdAt])
   @@index([errorCode])
   @@index([sessionId])
-  @@index([userId])
   @@index([createdAt])
   @@map("audit_logs")
 }
@@ -163,6 +163,9 @@ model Session {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
+  // Performance indexes
+  @@index([userId, createdAt])
+  @@index([userId, updatedAt])
   @@map("sessions")
 }
 
@@ -186,10 +189,11 @@ model CreditTransaction {
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
 
-  @@index([userId])
-  @@index([createdAt])
+  // Performance indexes
+  @@index([userId, createdAt])
+  @@index([userId, type, createdAt])
+  @@index([reason, createdAt])
   @@index([type])
-  @@index([reason])
   @@map("credit_transactions")
 }
 

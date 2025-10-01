@@ -3,7 +3,7 @@
  * Format: errors.{category}.{specific_error}
  */
 export const ERROR_CODES = {
-  // Auth errors
+  // Auth errors - Generic
   AUTH_SIGNIN_FAILED: "errors:auth.signin_failed",
   AUTH_SIGNUP_FAILED: "errors:auth.signup_failed",
   AUTH_SIGNOUT_FAILED: "errors:auth.signout_failed",
@@ -18,6 +18,23 @@ export const ERROR_CODES = {
   AUTH_PASSWORD_MISMATCH: "errors:auth.password_mismatch",
   AUTH_AGE_CONFIRMATION_REQUIRED: "errors:auth.age_confirmation_required",
   AUTH_TERMS_AGREEMENT_REQUIRED: "errors:auth.terms_agreement_required",
+
+  // Auth errors - Specific Supabase codes (email/password flow)
+  AUTH_INVALID_CREDENTIALS: "errors:auth.invalid_credentials",
+  AUTH_USER_NOT_FOUND: "errors:auth.user_not_found",
+  AUTH_EMAIL_EXISTS: "errors:auth.email_exists",
+  AUTH_USER_ALREADY_EXISTS: "errors:auth.user_already_exists",
+  AUTH_EMAIL_NOT_CONFIRMED: "errors:auth.email_not_confirmed",
+  AUTH_WEAK_PASSWORD: "errors:auth.weak_password",
+  AUTH_EMAIL_ADDRESS_INVALID: "errors:auth.email_address_invalid",
+  AUTH_VALIDATION_FAILED: "errors:auth.validation_failed",
+  AUTH_SIGNUP_DISABLED: "errors:auth.signup_disabled",
+  AUTH_USER_BANNED: "errors:auth.user_banned",
+  AUTH_OVER_REQUEST_RATE_LIMIT: "errors:auth.over_request_rate_limit",
+  AUTH_OVER_EMAIL_SEND_RATE_LIMIT: "errors:auth.over_email_send_rate_limit",
+  AUTH_BAD_JWT: "errors:auth.bad_jwt",
+  AUTH_REFRESH_TOKEN_NOT_FOUND: "errors:auth.refresh_token_not_found",
+  AUTH_REFRESH_TOKEN_ALREADY_USED: "errors:auth.refresh_token_already_used",
 
   // General errors
   NETWORK_ERROR: "errors:general.network_error",

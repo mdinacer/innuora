@@ -58,7 +58,7 @@ export class AISessionWellnessEngine {
     };
 
     try {
-      const response = await SendPromptsToAi(
+      const result = await SendPromptsToAi(
         [
           SESSION_WELLNESS_PROMPT,
           {
@@ -72,18 +72,16 @@ export class AISessionWellnessEngine {
           max_tokens: 200,
         }
       );
-      // const response = await openai.chat.completions.create({
-      //   model: "gpt-4o-mini",
-      //   messages: [
-      //     SESSION_WELLNESS_PROMPT,
-      //     {
-      //       role: "user",
-      //       content: JSON.stringify(contextData, null, 2),
-      //     },
-      //   ],
-      //   temperature: 0.1,
-      //   max_tokens: 200,
-      // });
+
+      // Unwrap ActionResult
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      const response = result.data;
+      if (!response) {
+        return { suggest_conclusion: false };
+      }
 
       const content = response.message;
       if (!content) {

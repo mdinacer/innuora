@@ -27,7 +27,14 @@ export default function PrivacySettings(): React.JSX.Element {
   useEffect(() => {
     async function loadConfig() {
       try {
-        const config = await getUserConfig();
+        const result = await getUserConfig();
+
+        if (result.error) {
+          console.error("Failed to load privacy settings:", result.error.message);
+          return;
+        }
+
+        const config = result.data;
         if (config) {
           setAnalyticsOptIn(config.analyticsOptIn);
           setShareImprovements(config.shareImprovements);

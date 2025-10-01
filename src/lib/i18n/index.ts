@@ -18,7 +18,12 @@ export const APP_NAMESPACES = {
 
 export type AppNamespace = (typeof APP_NAMESPACES)[keyof typeof APP_NAMESPACES];
 
-export const i18nNamespaces = [APP_NAMESPACES.NS_COMMON, APP_NAMESPACES.NS_PAGES, APP_NAMESPACES.NS_SESSIONS];
+export const i18nNamespaces = [
+  APP_NAMESPACES.NS_COMMON,
+  APP_NAMESPACES.NS_PAGES,
+  APP_NAMESPACES.NS_SESSIONS,
+  APP_NAMESPACES.NS_ERRORS,
+];
 
 export default async function initTranslations(
   locale: string,

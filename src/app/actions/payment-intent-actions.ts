@@ -12,6 +12,7 @@ import {
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import type { ActionResult } from "@/types/action-result";
 
 /**
  * Create a Stripe payment intent for credit purchase
@@ -20,7 +21,7 @@ export async function createCreditPurchaseIntent(
   productKey: BillingProductKey,
   userEmail?: string,
   userName?: string
-): Promise<CreatePaymentIntentResult> {
+): Promise<ActionResult<CreatePaymentIntentResult>> {
   return await logger.wrapOperation(
     async () => {
       // Get current authenticated user

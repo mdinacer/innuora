@@ -4,6 +4,7 @@ import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@/types/action-result";
 
 export interface UserConfigData {
   autoSave: boolean;
@@ -19,7 +20,7 @@ export interface UserConfigData {
 /**
  * Get user configuration from database
  */
-export async function getUserConfig(): Promise<UserConfigData | null> {
+export async function getUserConfig(): Promise<ActionResult<UserConfigData | null>> {
   return await logger.wrapOperation(
     async () => {
       const supabase = await createClient();
@@ -73,7 +74,7 @@ export async function getUserConfig(): Promise<UserConfigData | null> {
 /**
  * Update user configuration in database
  */
-export async function updateUserConfig(updates: Partial<UserConfigData>): Promise<UserConfigData> {
+export async function updateUserConfig(updates: Partial<UserConfigData>): Promise<ActionResult<UserConfigData>> {
   return await logger.wrapOperation(
     async () => {
       const supabase = await createClient();
@@ -138,6 +139,6 @@ export async function updateAppearanceSettings(appearance: {
   theme?: "light" | "dark" | "system";
   fontSize?: "small" | "medium" | "large";
   enableAnimation?: boolean;
-}): Promise<UserConfigData> {
+}): Promise<ActionResult<UserConfigData>> {
   return updateUserConfig(appearance);
 }

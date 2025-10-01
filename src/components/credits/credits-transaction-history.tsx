@@ -28,8 +28,14 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
       try {
         setIsLoading(true);
         setError(null);
-        const history = await getUserCreditHistory(userId, limit);
-        setTransactions(history);
+        const result = await getUserCreditHistory(userId, limit);
+
+        if (result.error) {
+          setError(result.error.message);
+          return;
+        }
+
+        setTransactions(result.data);
       } catch (err) {
         logger.logWarning("Failed to load credit transaction history", {
           operation: "credits_transaction_history_load_failed",

@@ -127,134 +127,159 @@ export async function handleUserInput(
   userId?: string,
   sessionId?: string
 ): Promise<HandleUserInputResult> {
-  return await logger.wrapOperation(
-    async () => {
-      // Early validation
-      if (!userInput?.trim()) {
-        logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
-          operation: "open_chat_handle_user_input",
-          userId,
-          sessionId,
-        });
-      }
-
-      const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
-
-      // Resolve authId for credit operations (userId is database User.id, we need authId)
-      let authId: string | undefined;
-      if (userId) {
-        const user = await prisma.user.findUnique({
-          where: { id: userId },
-          select: { authId: true },
-        });
-        authId = user?.authId;
-      }
-      if (!aiModel) {
-        logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
-          operation: "open_chat_handle_user_input",
-          userId,
-          sessionId,
-          metadata: { modelCode },
-        });
-      }
-
-      // Step 1: Analyze user input
-      const sessionMetadata = {
-        messageCount: messages.length,
-        activeDurationMs: 0, // Will be properly calculated in store
-      };
-      const analysisResult = await analyzeUserInput(
-        userInput,
-        prevAnalysis,
-        aiModel,
+  // This function does NOT wrap with wrapOperation because it's a high-level orchestrator
+  // that coordinates multiple operations, each with their own error handling
+  try {
+    // Early validation
+    if (!userInput?.trim()) {
+      logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
+        operation: "open_chat_handle_user_input",
         userId,
         sessionId,
-        sessionMetadata
-      );
-      const { analysis, modelTokenUsage: analysisUsage, consumedCredits: analysisCredits } = analysisResult;
+      });
+    }
 
-      // Smart Processing Decision: Use lightweight processing for low-value inputs
-      if (analysis.analysis_value === "low") {
-        const lightweightResult = await handleLightweightUserInput(
-          userInput,
-          analysis,
-          messages,
-          locale,
-          modelCode,
-          userId,
-          sessionId
-        );
+    const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
 
-        // Combine analysis credits with lightweight response credits
-        const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
+    // Resolve authId for credit operations (userId is database User.id, we need authId)
+    let authId: string | undefined;
+    if (userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { authId: true },
+      });
+      authId = user?.authId;
+    }
+    if (!aiModel) {
+      logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
+        operation: "open_chat_handle_user_input",
+        userId,
+        sessionId,
+        metadata: { modelCode },
+      });
+    }
 
-        return {
-          analysis,
-          response: lightweightResult.response,
-          tokenUsage: {
-            analysisUsage,
-            responseUsage: lightweightResult.tokenUsage,
-          },
-          cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
-          creditsUsed: totalCreditsUsed,
-        };
-      }
+    // Step 1: Analyze user input
+    const sessionMetadata = {
+      messageCount: messages.length,
+      activeDurationMs: 0, // Will be properly calculated in store
+    };
+    const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel, userId, sessionId, sessionMetadata);
 
-      // Step 2: Build conversation prompts (for medium/high value inputs)
-      const conversationPrompts = await buildConversationPrompts(
+    // Unwrap analyzeUserInput ActionResult
+    if (analysisResult.error) {
+      logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, new Error(analysisResult.error.message), {
+        operation: "open_chat_handle_user_input",
+        userId,
+        sessionId,
+        metadata: { modelCode },
+      });
+    }
+
+    const analysisData = analysisResult.data;
+    if (!analysisData) {
+      throw new Error("Analysis result is null");
+    }
+    const { analysis, modelTokenUsage: analysisUsage, consumedCredits: analysisCredits } = analysisData;
+
+    // Smart Processing Decision: Use lightweight processing for low-value inputs
+    if (analysis.analysis_value === "low") {
+      const lightweightResult = await handleLightweightUserInput(
         userInput,
         analysis,
         messages,
-        profile,
-        prevMemory,
         locale,
+        modelCode,
         userId,
         sessionId
       );
 
-      // Step 3: Generate AI response
-      const miraelResponse = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
-      const { consumedCredits: responseCredits } = miraelResponse;
-
-      // Step 4: Simple credit deduction - exact amounts!
-      let creditsUsed = 0;
-      if (userId && authId) {
-        const totalCredits = (analysisCredits || 0) + (responseCredits || 0);
-
-        await deductCredits(authId, totalCredits, "ai_usage", sessionId, {
-          modelCode,
-          analysisCredits: analysisCredits || 0,
-          responseCredits: responseCredits || 0,
-          messageLength: userInput.length,
-          responseLength: miraelResponse.message.length,
-        });
-
-        creditsUsed = totalCredits;
-      }
+      // Combine analysis credits with lightweight response credits
+      const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
 
       return {
         analysis,
-        response: miraelResponse.message,
+        response: lightweightResult.response,
         tokenUsage: {
           analysisUsage,
-          responseUsage: miraelResponse.modelTokenUsage,
+          responseUsage: lightweightResult.tokenUsage,
         },
-        cost: (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0),
-        creditsUsed,
+        cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
+        creditsUsed: totalCreditsUsed,
       };
-    },
-    ERROR_CODES.CHAT_RESPONSE_FAILED,
-    {
+    }
+
+    // Step 2: Build conversation prompts (for medium/high value inputs)
+    const conversationPrompts = await buildConversationPrompts(
+      userInput,
+      analysis,
+      messages,
+      profile,
+      prevMemory,
+      locale,
+      userId,
+      sessionId
+    );
+
+    // Step 3: Generate AI response
+    const responseResult = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
+
+    // Unwrap SendPromptsToAiWithRetry ActionResult
+    if (responseResult.error) {
+      logger.logErrorAndThrow(ERROR_CODES.CHAT_RESPONSE_FAILED, new Error(responseResult.error.message), {
+        operation: "open_chat_handle_user_input",
+        userId,
+        sessionId,
+        metadata: { modelCode },
+      });
+    }
+
+    const miraelResponse = responseResult.data;
+    if (!miraelResponse) {
+      throw new Error("AI response is null");
+    }
+
+    const { consumedCredits: responseCredits } = miraelResponse;
+
+    // Step 4: Simple credit deduction - exact amounts!
+    let creditsUsed = 0;
+    if (userId && authId) {
+      const totalCredits = (analysisCredits || 0) + (responseCredits || 0);
+
+      await deductCredits(authId, totalCredits, "ai_usage", sessionId, {
+        modelCode,
+        analysisCredits: analysisCredits || 0,
+        responseCredits: responseCredits || 0,
+        messageLength: userInput.length,
+        responseLength: miraelResponse.message.length,
+      });
+
+      creditsUsed = totalCredits;
+    }
+
+    return {
+      analysis,
+      response: miraelResponse.message,
+      tokenUsage: {
+        analysisUsage,
+        responseUsage: miraelResponse.modelTokenUsage,
+      },
+      cost: (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0),
+      creditsUsed,
+    };
+  } catch (error) {
+    logger.logWarning("Open chat conversation processing failed", {
       operation: "open_chat_handle_user_input",
       userId,
       sessionId,
       metadata: {
+        error: error instanceof Error ? error.message : String(error),
         modelCode,
         locale,
         messageCount: messages.length,
         inputLength: userInput?.length || 0,
       },
-    },
-    "Open chat conversation processed successfully"
-  );
+    });
+    throw error;
+  }
 }

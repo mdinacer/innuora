@@ -106,20 +106,28 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
       } else if (data.persistOnCloud) {
         // Create cloud session first
         const result = await createSession(data);
-        if (result) {
-          // Create local encrypted session
-          await createStoreSession(
-            {
-              id: result.id,
-              title: result.title,
-              subtitle: result.subtitle || undefined,
-              autoUpdateTitle: result.autoUpdateTitle,
-              persistOnCloud: true,
-            },
-            encryptedStore
-          );
+
+        // Handle error
+        if (result.error) {
+          console.error("Failed to create cloud session:", result.error);
+          return;
         }
-        useSessionStore.getState().addSession(result);
+
+        const session = result.data;
+
+        // Create local encrypted session
+        await createStoreSession(
+          {
+            id: session.id,
+            title: session.title,
+            subtitle: session.subtitle || undefined,
+            autoUpdateTitle: session.autoUpdateTitle,
+            persistOnCloud: true,
+          },
+          encryptedStore
+        );
+
+        useSessionStore.getState().addSession(session);
       } else {
         // Create local-only session
         await createStoreSession(

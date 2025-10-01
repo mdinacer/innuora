@@ -31,7 +31,14 @@ export function CreditsBalance({ className = "", showUSDValue = false }: Credits
         return;
       }
 
-      const currentBalance = await getUserCreditsBalance(user.id);
+      const result = await getUserCreditsBalance(user.id);
+
+      if (result.error) {
+        setError(result.error.message);
+        return;
+      }
+
+      const currentBalance = result.data;
       logger.logInfo("Credits balance loaded", {
         operation: "credits_balance_loaded",
         metadata: { balance: currentBalance },

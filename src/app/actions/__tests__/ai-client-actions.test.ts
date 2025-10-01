@@ -158,11 +158,15 @@ describe("AI Client Actions", () => {
               message: { role: "assistant" as const, content: "" },
             },
           ],
-        };
+        } as any;
         vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(emptyCompletion);
 
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel)).rejects.toThrow("AI returned empty content");
+        // Act
+        const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel);
+
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("AI returned empty content");
       });
     });
 
@@ -310,8 +314,9 @@ describe("AI Client Actions", () => {
         const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel);
 
         // Assert
-        expect(result.consumedCredits).toBe(0);
-        expect(result.modelTokenUsage).toBeNull();
+        expect(result.error).toBeNull();
+        expect(result.data?.consumedCredits).toBe(0);
+        expect(result.data?.modelTokenUsage).toBeNull();
       });
 
       it("should merge custom options with defaults", async () => {
@@ -354,7 +359,8 @@ describe("AI Client Actions", () => {
         const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(1);
       });
 
@@ -374,7 +380,8 @@ describe("AI Client Actions", () => {
         const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 100);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(3);
       });
 
@@ -393,7 +400,8 @@ describe("AI Client Actions", () => {
         const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 10);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(2);
       });
 
@@ -403,10 +411,12 @@ describe("AI Client Actions", () => {
         const persistentError = new Error("Persistent API error");
         vi.mocked(mockOpenAI.default.chat.completions.create).mockRejectedValue(persistentError);
 
-        // Act & Assert
-        await expect(SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 2, 10)).rejects.toThrow(
-          "Failed after 2 attempts"
-        );
+        // Act
+        const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 2, 10);
+
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("Failed after 2 attempts");
 
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(2);
       });
@@ -420,11 +430,7 @@ describe("AI Client Actions", () => {
         const startTime = Date.now();
 
         // Act
-        try {
-          await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 50);
-        } catch {
-          // Expected to fail
-        }
+        await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 50);
 
         const endTime = Date.now();
         const elapsed = endTime - startTime;
@@ -463,7 +469,8 @@ describe("AI Client Actions", () => {
         const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 1);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(1);
       });
     });

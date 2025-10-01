@@ -10,8 +10,14 @@ export default function useLoadUserData({ authUser }: { authUser: AuthUser }) {
 
   const handleLoadUserData = useCallback(async (authUser: AuthUser) => {
     try {
-      const appUser = await getUserWithRelationsById(authUser.id);
+      const result = await getUserWithRelationsById(authUser.id);
 
+      // Unwrap ActionResult
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      const appUser = result.data;
       if (!appUser) {
         throw new Error("App User not found");
       }

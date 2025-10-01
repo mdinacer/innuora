@@ -6,6 +6,7 @@ import THERAPEUTIC_ANALYSIS_PROMPT from "@/domains/therapeutic-analysis/therapeu
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
+import type { ActionResult } from "@/types/action-result";
 import { AiModel } from "@/types/ai-model.types";
 import { AnalysisResult } from "@/types/analysis-result";
 
@@ -16,7 +17,7 @@ export async function analyzeUserInput(
   userId?: string,
   sessionId?: string,
   sessionMetadata?: { messageCount: number; activeDurationMs: number }
-): Promise<AnalysisResult> {
+): Promise<ActionResult<AnalysisResult>> {
   return await logger.wrapOperation<AnalysisResult>(
     async () => {
       if (!userInput?.trim()) {
@@ -36,7 +37,23 @@ export async function analyzeUserInput(
 
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];
 
-      const response = await SendPromptsToAiWithRetry(prompts, model);
+      const result = await SendPromptsToAiWithRetry(prompts, model);
+
+      // Unwrap ActionResult
+      if (result.error) {
+        logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, new Error(result.error.message), {
+          operation: "therapeutic_analysis_analyze_user_input",
+          userId,
+          sessionId,
+          metadata: { model: model.apiPath },
+        });
+      }
+
+      const response = result.data;
+      if (!response) {
+        throw new Error("AI response is null");
+      }
+
       const { message, modelTokenUsage, consumedCredits } = response;
 
       const analysis = therapeuticAnalysisEngine.safeParseTherapeuticAnalysis(message);

@@ -79,13 +79,24 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
       } else {
         const payload = transformForCreate(encryptedSession);
         result = await pushSession(payload);
+      }
+
+      // Handle error
+      if (result.error) {
+        setError(result.error.message);
+        return;
+      }
+
+      const sessionData = result.data;
+
+      if (!session.persistOnCloud) {
         const publicId = state.publicIdMap[session.id];
-        if (result.id && publicId) state.setSession(publicId, result);
+        if (sessionData.id && publicId) state.setSession(publicId, sessionData);
         router.refresh();
       }
 
-      setCloudInfo({ id: result.id, updatedAt: result.updatedAt });
-      state.setSession(session.id, result);
+      setCloudInfo({ id: sessionData.id, updatedAt: sessionData.updatedAt });
+      state.setSession(session.id, sessionData);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to sync");
     } finally {

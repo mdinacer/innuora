@@ -1,7 +1,7 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import fs from "fs";
 import path from "path";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import matter from "gray-matter";
 
 import ArticleLayout from "@/components/content/article-layout";

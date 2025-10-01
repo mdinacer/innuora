@@ -589,7 +589,8 @@ describe("Auth Actions", () => {
         password: "SecurePass123!",
       });
 
-      expect(authData.user).toEqual(mockUser);
+      expect(authData.error).toBeNull();
+      expect(authData.data?.user).toEqual(mockUser);
 
       // 4. Now authenticated
       mockSupabaseClient.auth.getUser.mockResolvedValue({

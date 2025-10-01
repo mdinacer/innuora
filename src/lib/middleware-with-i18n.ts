@@ -4,7 +4,7 @@ import { i18nRouter } from "next-i18n-router";
 
 import i18nConfig from "@/lib/i18n/config";
 
-const protectedRoutes = ["/sessions"]; // add all protected paths here
+const protectedRoutes = ["/sessions", "/billing", "/settings", "/admin", "/analytics"]; // Protected paths
 
 export async function updateSession(request: NextRequest) {
   // First, handle i18n routing and get a response object
@@ -60,7 +60,14 @@ export async function updateSession(request: NextRequest) {
 
     return response;
   } catch (e) {
-    console.error("Middleware error:", e);
+    // Lightweight console logging only - NO database writes in middleware
+    // Middleware runs on Edge Runtime and must be fast (<50ms)
+    if (process.env.NODE_ENV === "development") {
+      console.warn("⚠️ Middleware auth error:", {
+        pathname,
+        error: e instanceof Error ? e.message : String(e),
+      });
+    }
     return response; // fallback on i18nRouter response if Supabase fails
   }
 }

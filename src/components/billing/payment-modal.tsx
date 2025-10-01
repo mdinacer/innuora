@@ -48,10 +48,15 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
       try {
         const result = await createCreditPurchaseIntent(productKey, userEmail, userName);
 
-        if (result.success && result.clientSecret) {
-          setClientSecret(result.clientSecret);
+        if (result.error) {
+          onError(result.error.message || "Failed to initialize payment");
+          return;
+        }
+
+        if (result.data.success && result.data.clientSecret) {
+          setClientSecret(result.data.clientSecret);
         } else {
-          onError(result.error || "Failed to initialize payment");
+          onError("Failed to initialize payment");
         }
       } catch {
         onError("Failed to initialize payment");

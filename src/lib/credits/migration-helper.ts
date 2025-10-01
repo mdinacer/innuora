@@ -4,17 +4,20 @@
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import type { ActionResult } from "@/types/action-result";
 import { AI_MODEL_PRICING_USD, calculateCreditsFromTokens } from "./credits-utils";
 
 /**
  * Migrate existing user balances to new credit system
  * Doubles credit balances since new credit value is half (0.5¢ vs 1¢)
  */
-export async function migrateUserCreditBalances(): Promise<{
-  success: boolean;
-  usersUpdated: number;
-  totalCreditsAdded: number;
-}> {
+export async function migrateUserCreditBalances(): Promise<
+  ActionResult<{
+    success: boolean;
+    usersUpdated: number;
+    totalCreditsAdded: number;
+  }>
+> {
   return await logger.wrapOperation(
     async () => {
       const result = await prisma.$transaction(async (tx) => {

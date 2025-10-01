@@ -43,8 +43,22 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
 
       if (aggregatedAnalysis && memoryStore) {
         const result = await getSessionSummary(aggregatedAnalysis, memoryStore, language as AppLocales);
-        if (result.message) {
-          const data = (await parseJsonObject(result.message)) as { title: string; subtitle: string; summary: string };
+
+        if (result.error) {
+          logger.logWarning("Failed to get session summary", {
+            operation: "session_summary_fetch_failed",
+            sessionId: session.id,
+            metadata: { error: result.error.message },
+          });
+          return;
+        }
+
+        if (result.data.message) {
+          const data = (await parseJsonObject(result.data.message)) as {
+            title: string;
+            subtitle: string;
+            summary: string;
+          };
           summaryText = data.summary;
           title = data.title;
           subtitle = data.subtitle;

@@ -33,6 +33,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ready",
           update_memory: true,
           recall_memory: false,
+          analysis_value: "medium",
         },
         {
           core_module: "cognitive",
@@ -55,6 +56,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "engaged",
           update_memory: false,
           recall_memory: true,
+          analysis_value: "medium",
         },
         {
           core_module: null,
@@ -71,6 +73,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ambivalent",
           update_memory: true,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -125,6 +128,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ready",
           update_memory: true,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -159,6 +163,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -178,6 +183,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ambivalent",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -197,6 +203,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "engaged",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -249,6 +256,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
         {
           core_module: null,
@@ -265,6 +273,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
         {
           core_module: null,
@@ -281,6 +290,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -305,6 +315,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
         {
           core_module: null,
@@ -321,6 +332,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ambivalent",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -361,6 +373,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
         {
           core_module: "cognitive",
@@ -387,6 +400,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ambivalent",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -433,6 +447,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ready",
           update_memory: true,
           recall_memory: false,
+          analysis_value: "medium",
         },
         // Middle of session - processing deeper issues
         {
@@ -460,6 +475,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "engaged",
           update_memory: false,
           recall_memory: true,
+          analysis_value: "medium",
         },
         // End of session - breakthrough moment
         {
@@ -486,6 +502,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "engaged",
           update_memory: true,
           recall_memory: true,
+          analysis_value: "medium",
         },
       ];
 
@@ -544,6 +561,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "resistant",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -583,6 +601,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ready",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
         {
           core_module: "cognitive",
@@ -604,6 +623,7 @@ describe("Session Analysis Utils", () => {
           therapeutic_readiness: "ambivalent",
           update_memory: false,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 

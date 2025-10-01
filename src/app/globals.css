@@ -363,7 +363,8 @@
   }
 
   /* List styling */
-  ul, ol {
+  ul,
+  ol {
     margin-top: 1rem;
     margin-bottom: 1rem;
     padding-left: 1.5rem;
