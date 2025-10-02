@@ -21,19 +21,13 @@ export const SessionDetails = dynamic(() => import("@/components/sessions/sessio
   loading: () => <LoadingSpinner className="h-64" />,
 });
 
-export const OpenChat = dynamic(
-  () => import("@/components/chat-interface").then((mod) => ({ default: mod.OpenChat })),
-  {
-    loading: () => <LoadingSpinner className="h-96" />,
-  }
-);
+export const OpenChat = dynamic(() => import("@/components/chat-ui/open-chat/open-chat.main"), {
+  loading: () => <LoadingSpinner className="h-96" />,
+});
 
-export const FlowChat = dynamic(
-  () => import("@/components/chat-interface").then((mod) => ({ default: mod.FlowChat })),
-  {
-    loading: () => <LoadingSpinner className="h-96" />,
-  }
-);
+export const FlowChat = dynamic(() => import("@/components/chat-ui/flow-chat/flow-chat.main"), {
+  loading: () => <LoadingSpinner className="h-96" />,
+});
 
 // Form components - loaded when needed
 export const SessionForm = dynamic(() => import("@/components/sessions/session-form"), {

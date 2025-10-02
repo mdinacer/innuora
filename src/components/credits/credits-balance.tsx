@@ -1,13 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
-import { findCurrentUser } from "@/app/actions/auth-actions";
-import { getUserCreditsBalance } from "@/app/actions/credit-actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CreditUXUtils } from "@/lib/credits/credit-config";
 import { creditsToUSD, formatUSD } from "@/lib/credits/credits-utils";
-import { logger } from "@/lib/logging/unified-logger";
+import { useAppUserStore } from "@/stores/app-user.store";
 
 interface CreditsBalanceProps {
   className?: string;
@@ -15,55 +13,14 @@ interface CreditsBalanceProps {
 }
 
 export function CreditsBalance({ className = "", showUSDValue = false }: CreditsBalanceProps) {
-  const [balance, setBalance] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Get credits from Zustand store for real-time updates
+  const user = useAppUserStore((state) => state.user);
+  const hasHydrated = useAppUserStore((state) => state.hasHydrated);
 
-  const loadBalance = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      // Get current authenticated user
-      const user = await findCurrentUser();
-      if (!user) {
-        setError("Not authenticated");
-        return;
-      }
-
-      const result = await getUserCreditsBalance(user.id);
-
-      if (result.error) {
-        setError(result.error.message);
-        return;
-      }
-
-      const currentBalance = result.data;
-      logger.logInfo("Credits balance loaded", {
-        operation: "credits_balance_loaded",
-        metadata: { balance: currentBalance },
-      });
-
-      setBalance(currentBalance);
-    } catch (err) {
-      logger.logWarning("Failed to load credits balance in UI component", {
-        operation: "credits_balance_load_failed",
-        metadata: {
-          error: err instanceof Error ? err.message : String(err),
-        },
-      });
-      setError("Failed to load balance");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadBalance();
-  }, [loadBalance]);
+  const balance = user?.creditsBalance ?? 0;
 
   const { usdValue, mainText, subText } = useMemo(() => {
-    const currentBalance = balance || 0;
+    const currentBalance = balance;
     const usdValue = creditsToUSD(currentBalance);
     const balanceText = CreditUXUtils.getBalanceDisplayText(currentBalance);
     const [mainText, subText] = balanceText.split("\n");
@@ -71,19 +28,12 @@ export function CreditsBalance({ className = "", showUSDValue = false }: Credits
     return { usdValue, mainText, subText };
   }, [balance]);
 
-  if (isLoading) {
+  // Show skeleton while store is hydrating
+  if (!hasHydrated || !user) {
     return (
       <div className={`credits-balance ${className}`}>
         <Skeleton className="h-6 w-24" />
         {showUSDValue && <Skeleton className="h-4 w-16 mt-1" />}
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={`credits-balance error ${className}`}>
-        <span className="text-red-500 text-sm">{error}</span>
       </div>
     );
   }

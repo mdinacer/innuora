@@ -3,9 +3,8 @@
 import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCredits } from "@/app/actions/credit-actions";
-import { ModelCode, MODELS_CODES, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
@@ -19,7 +18,7 @@ import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
-import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
+import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 import { TONE_INSTRUCTIONS_LOCALIZED } from "../ai-conversation/prompts/prompt.tone";
 
@@ -114,7 +113,214 @@ async function buildConversationPrompts(
 }
 
 /**
+ * Resolves database user ID to Supabase auth ID for credit operations
+ */
+async function resolveAuthId(userId?: string, sessionId?: string): Promise<string | undefined> {
+  if (!userId) {
+    logger.logWarning("Credit deduction skipped - No userId provided", {
+      operation: "open_chat_auth_id_resolution",
+      sessionId,
+      metadata: { userIdProvided: false },
+    });
+    return undefined;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { authId: true },
+  });
+
+  logger.logInfo("AuthId resolution completed", {
+    operation: "open_chat_auth_id_resolution",
+    sessionId,
+    metadata: {
+      providedUserId: userId,
+      foundAuthId: user?.authId,
+      userFound: !!user,
+    },
+  });
+
+  return user?.authId;
+}
+
+/**
+ * Processes therapeutic analysis for user input
+ */
+async function processTherapeuticAnalysis(
+  userInput: string,
+  prevAnalysis: TherapeuticAnalysis[],
+  messages: OpenChatMessage[],
+  userId?: string,
+  sessionId?: string
+) {
+  const sessionMetadata = {
+    messageCount: messages.length,
+    activeDurationMs: 0, // Will be properly calculated in store
+  };
+
+  const analysisResult = await analyzeUserInput(userInput, prevAnalysis, userId, sessionId, sessionMetadata);
+
+  if (analysisResult.error) {
+    logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, new Error(analysisResult.error.message), {
+      operation: "open_chat_process_therapeutic_analysis",
+      userId,
+      sessionId,
+    });
+  }
+
+  const analysisData = analysisResult.data;
+  if (!analysisData) {
+    throw new Error("Analysis result is null");
+  }
+
+  return analysisData;
+}
+
+/**
+ * Handles lightweight response for low-value inputs
+ */
+async function handleLowValueInput(
+  userInput: string,
+  analysis: TherapeuticAnalysis,
+  analysisUsage: ModelTokenUsage | null,
+  analysisCredits: number,
+  messages: OpenChatMessage[],
+  locale: AppLocales,
+  userId?: string,
+  sessionId?: string
+): Promise<HandleUserInputResult> {
+  const lightweightResult = await handleLightweightUserInput(userInput, analysis, messages, locale, userId, sessionId);
+
+  const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
+
+  return {
+    analysis,
+    response: lightweightResult.response,
+    tokenUsage: {
+      analysisUsage,
+      responseUsage: lightweightResult.tokenUsage,
+    },
+    cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
+    creditsUsed: totalCreditsUsed,
+  };
+}
+
+/**
+ * Generates full AI response for medium/high value inputs
+ */
+async function generateFullResponse(
+  userInput: string,
+  analysis: TherapeuticAnalysis,
+  messages: OpenChatMessage[],
+  profile: Profile | null,
+  prevMemory: string | null,
+  locale: AppLocales,
+  userId?: string,
+  sessionId?: string
+) {
+  const conversationPrompts = await buildConversationPrompts(
+    userInput,
+    analysis,
+    messages,
+    profile,
+    prevMemory,
+    locale,
+    userId,
+    sessionId
+  );
+
+  const responseResult = await processAiPromptsWithRetry(conversationPrompts);
+
+  if (responseResult.error) {
+    logger.logErrorAndThrow(ERROR_CODES.CHAT_RESPONSE_FAILED, new Error(responseResult.error.message), {
+      operation: "open_chat_generate_full_response",
+      userId,
+      sessionId,
+    });
+  }
+
+  const aiResponse = responseResult.data;
+  if (!aiResponse) {
+    throw new Error("AI response is null");
+  }
+
+  return aiResponse;
+}
+
+/**
+ * Handles credit deduction for AI operations with detailed logging
+ */
+async function processCreditsDeduction(
+  authId: string | undefined,
+  userId: string | undefined,
+  analysisCredits: number,
+  responseCredits: number,
+  userInput: string,
+  responseMessage: string,
+  sessionId?: string
+): Promise<number> {
+  if (!userId || !authId) {
+    logger.logWarning("Credit deduction skipped - Missing userId or authId", {
+      operation: "open_chat_credit_deduction_skipped",
+      sessionId,
+      metadata: {
+        hasUserId: !!userId,
+        hasAuthId: !!authId,
+      },
+    });
+    return 0;
+  }
+
+  const totalCredits = (analysisCredits || 0) + (responseCredits || 0);
+
+  logger.logInfo("Attempting credit deduction", {
+    operation: "open_chat_credit_deduction_attempt",
+    sessionId,
+    userId,
+    metadata: {
+      authId,
+      totalCredits,
+      analysisCredits: analysisCredits || 0,
+      responseCredits: responseCredits || 0,
+    },
+  });
+
+  const deductResult = await deductCredits(authId, totalCredits, "ai_usage", sessionId, {
+    analysisCredits: analysisCredits || 0,
+    responseCredits: responseCredits || 0,
+    messageLength: userInput.length,
+    responseLength: responseMessage.length,
+  });
+
+  if (deductResult.error) {
+    logger.logWarning("Credit deduction failed", {
+      operation: "open_chat_credit_deduction_failed",
+      sessionId,
+      userId,
+      metadata: {
+        error: deductResult.error.message,
+        errorCode: deductResult.error.code,
+        totalCredits,
+      },
+    });
+  } else {
+    logger.logInfo("Credit deduction successful", {
+      operation: "open_chat_credit_deduction_success",
+      sessionId,
+      userId,
+      metadata: {
+        creditsDeducted: totalCredits,
+        newBalance: deductResult.data?.newBalance,
+      },
+    });
+  }
+
+  return totalCredits;
+}
+
+/**
  * Handles complete user input processing including analysis and response generation
+ * Orchestrates the entire chat flow: validation → analysis → response → credits
  */
 export async function handleUserInput(
   userInput: string,
@@ -123,14 +329,11 @@ export async function handleUserInput(
   profile: Profile | null,
   prevMemory: string | null,
   locale: AppLocales = "en",
-  modelCode: ModelCode = MODELS_CODES.M1,
   userId?: string,
   sessionId?: string
 ): Promise<HandleUserInputResult> {
-  // This function does NOT wrap with wrapOperation because it's a high-level orchestrator
-  // that coordinates multiple operations, each with their own error handling
   try {
-    // Early validation
+    // Step 1: Validate input
     if (!userInput?.trim()) {
       logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
         operation: "open_chat_handle_user_input",
@@ -139,78 +342,32 @@ export async function handleUserInput(
       });
     }
 
-    const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
+    // Step 2: Resolve authId for credit operations
+    const authId = await resolveAuthId(userId, sessionId);
 
-    // Resolve authId for credit operations (userId is database User.id, we need authId)
-    let authId: string | undefined;
-    if (userId) {
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { authId: true },
-      });
-      authId = user?.authId;
-    }
-    if (!aiModel) {
-      logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
-        operation: "open_chat_handle_user_input",
-        userId,
-        sessionId,
-        metadata: { modelCode },
-      });
-    }
+    // Step 3: Analyze user input
+    const {
+      analysis,
+      modelTokenUsage: analysisUsage,
+      consumedCredits: analysisCredits,
+    } = await processTherapeuticAnalysis(userInput, prevAnalysis, messages, userId, sessionId);
 
-    // Step 1: Analyze user input
-    const sessionMetadata = {
-      messageCount: messages.length,
-      activeDurationMs: 0, // Will be properly calculated in store
-    };
-    const analysisResult = await analyzeUserInput(userInput, prevAnalysis, aiModel, userId, sessionId, sessionMetadata);
-
-    // Unwrap analyzeUserInput ActionResult
-    if (analysisResult.error) {
-      logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, new Error(analysisResult.error.message), {
-        operation: "open_chat_handle_user_input",
-        userId,
-        sessionId,
-        metadata: { modelCode },
-      });
-    }
-
-    const analysisData = analysisResult.data;
-    if (!analysisData) {
-      throw new Error("Analysis result is null");
-    }
-    const { analysis, modelTokenUsage: analysisUsage, consumedCredits: analysisCredits } = analysisData;
-
-    // Smart Processing Decision: Use lightweight processing for low-value inputs
+    // Step 4: Smart routing - lightweight vs full response
     if (analysis.analysis_value === "low") {
-      const lightweightResult = await handleLightweightUserInput(
+      return await handleLowValueInput(
         userInput,
         analysis,
+        analysisUsage,
+        analysisCredits || 0,
         messages,
         locale,
-        modelCode,
         userId,
         sessionId
       );
-
-      // Combine analysis credits with lightweight response credits
-      const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
-
-      return {
-        analysis,
-        response: lightweightResult.response,
-        tokenUsage: {
-          analysisUsage,
-          responseUsage: lightweightResult.tokenUsage,
-        },
-        cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
-        creditsUsed: totalCreditsUsed,
-      };
     }
 
-    // Step 2: Build conversation prompts (for medium/high value inputs)
-    const conversationPrompts = await buildConversationPrompts(
+    // Step 5: Generate full AI response
+    const aiResponse = await generateFullResponse(
       userInput,
       analysis,
       messages,
@@ -221,50 +378,26 @@ export async function handleUserInput(
       sessionId
     );
 
-    // Step 3: Generate AI response
-    const responseResult = await SendPromptsToAiWithRetry(conversationPrompts, aiModel);
+    // Step 6: Process credit deduction
+    const creditsUsed = await processCreditsDeduction(
+      authId,
+      userId,
+      analysisCredits || 0,
+      aiResponse.consumedCredits || 0,
+      userInput,
+      aiResponse.message,
+      sessionId
+    );
 
-    // Unwrap SendPromptsToAiWithRetry ActionResult
-    if (responseResult.error) {
-      logger.logErrorAndThrow(ERROR_CODES.CHAT_RESPONSE_FAILED, new Error(responseResult.error.message), {
-        operation: "open_chat_handle_user_input",
-        userId,
-        sessionId,
-        metadata: { modelCode },
-      });
-    }
-
-    const miraelResponse = responseResult.data;
-    if (!miraelResponse) {
-      throw new Error("AI response is null");
-    }
-
-    const { consumedCredits: responseCredits } = miraelResponse;
-
-    // Step 4: Simple credit deduction - exact amounts!
-    let creditsUsed = 0;
-    if (userId && authId) {
-      const totalCredits = (analysisCredits || 0) + (responseCredits || 0);
-
-      await deductCredits(authId, totalCredits, "ai_usage", sessionId, {
-        modelCode,
-        analysisCredits: analysisCredits || 0,
-        responseCredits: responseCredits || 0,
-        messageLength: userInput.length,
-        responseLength: miraelResponse.message.length,
-      });
-
-      creditsUsed = totalCredits;
-    }
-
+    // Step 7: Return consolidated result
     return {
       analysis,
-      response: miraelResponse.message,
+      response: aiResponse.message,
       tokenUsage: {
         analysisUsage,
-        responseUsage: miraelResponse.modelTokenUsage,
+        responseUsage: aiResponse.modelTokenUsage,
       },
-      cost: (analysisUsage?.costUSD || 0) + (miraelResponse.modelTokenUsage?.costUSD || 0),
+      cost: (analysisUsage?.costUSD || 0) + (aiResponse.modelTokenUsage?.costUSD || 0),
       creditsUsed,
     };
   } catch (error) {
@@ -274,7 +407,6 @@ export async function handleUserInput(
       sessionId,
       metadata: {
         error: error instanceof Error ? error.message : String(error),
-        modelCode,
         locale,
         messageCount: messages.length,
         inputLength: userInput?.length || 0,

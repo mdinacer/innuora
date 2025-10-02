@@ -1,19 +1,17 @@
 "use server";
 
-import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { TherapeuticAnalysisEngine } from "@/domains/therapeutic-analysis/therapeutic-analysis.engine";
 import THERAPEUTIC_ANALYSIS_PROMPT from "@/domains/therapeutic-analysis/therapeutic-analysis.prompt";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import type { ActionResult } from "@/types/action-result";
-import { AiModel } from "@/types/ai-model.types";
 import { AnalysisResult } from "@/types/analysis-result";
 
 export async function analyzeUserInput(
   userInput: string,
   prevData: TherapeuticAnalysis[] = [],
-  model: AiModel,
   userId?: string,
   sessionId?: string,
   sessionMetadata?: { messageCount: number; activeDurationMs: number }
@@ -37,7 +35,7 @@ export async function analyzeUserInput(
 
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];
 
-      const result = await SendPromptsToAiWithRetry(prompts, model);
+      const result = await processAiPromptsWithRetry(prompts);
 
       // Unwrap ActionResult
       if (result.error) {
@@ -45,7 +43,6 @@ export async function analyzeUserInput(
           operation: "therapeutic_analysis_analyze_user_input",
           userId,
           sessionId,
-          metadata: { model: model.apiPath },
         });
       }
 
@@ -65,7 +62,6 @@ export async function analyzeUserInput(
             operation: "therapeutic_analysis_analyze_user_input",
             userId,
             sessionId,
-            metadata: { model: model.apiPath },
           }
         );
       }
@@ -78,7 +74,6 @@ export async function analyzeUserInput(
       userId,
       sessionId,
       metadata: {
-        model: model.apiPath,
         prevDataLength: prevData.length,
         inputLength: userInput?.length || 0,
       },

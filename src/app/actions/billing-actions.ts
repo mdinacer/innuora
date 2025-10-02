@@ -263,8 +263,20 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
             status: "completed",
           });
 
-          if (creditResultWrapper.error) {
-            throw new Error(creditResultWrapper.error.message);
+          if (creditResultWrapper.error || !creditResultWrapper.data) {
+            logger.logErrorAndThrow(
+              ERROR_CODES.BILLING_OPERATION_FAILED,
+              new Error(creditResultWrapper.error?.message || "Failed to add credits"),
+              {
+                operation: "process_successful_payment_add_credits",
+                metadata: {
+                  paymentIntentId,
+                  userId,
+                  credits,
+                  errorCode: creditResultWrapper.error?.code,
+                },
+              }
+            );
           }
 
           const creditResult = creditResultWrapper.data;
@@ -292,8 +304,8 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         return {
           success: true,
           creditsAdded: credits,
-          newBalance: result.newBalance,
-          transactionId: result.transactionId,
+          newBalance: result!.newBalance,
+          transactionId: result!.transactionId,
         };
       } catch (error) {
         if (isStripeError(error)) {
@@ -381,11 +393,21 @@ export async function processRefund(
         });
 
         if (!user?.authId) {
-          throw new Error(`User authId not found for transaction user: ${originalTransaction.userId}`);
+          logger.logErrorAndThrow(
+            ERROR_CODES.USER_NOT_FOUND,
+            new Error(`User authId not found for transaction user: ${originalTransaction.userId}`),
+            {
+              operation: "process_refund_find_user",
+              metadata: {
+                paymentIntentId,
+                transactionUserId: originalTransaction.userId,
+              },
+            }
+          );
         }
 
         const deductResult = await deductCredits(
-          user.authId,
+          user!.authId,
           originalTransaction.amount,
           TRANSACTION_CONFIG.reasons.REFUND,
           undefined,
@@ -397,8 +419,20 @@ export async function processRefund(
           }
         );
 
-        if (deductResult.error) {
-          throw new Error(deductResult.error.message);
+        if (deductResult.error || !deductResult.data) {
+          logger.logErrorAndThrow(
+            ERROR_CODES.BILLING_OPERATION_FAILED,
+            new Error(deductResult.error?.message || "Failed to deduct credits"),
+            {
+              operation: "process_refund_deduct_credits",
+              metadata: {
+                paymentIntentId,
+                userId: user!.authId,
+                amount: originalTransaction.amount,
+                errorCode: deductResult.error?.code,
+              },
+            }
+          );
         }
 
         return {

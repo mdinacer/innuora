@@ -268,14 +268,18 @@ export async function deleteSession(sessionId: string) {
       });
 
       if (!session) {
-        throw new Error(`Session not found: ${sessionId}`);
+        logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error(`Session not found: ${sessionId}`), {
+          userId: authUser.id,
+          sessionId,
+          operation: "session_delete_find_session",
+        });
       }
 
       const deletedSession = await prisma.session.delete({
         where: { id: sessionId, user: { authId: authUser.id } },
       });
 
-      return { ...deletedSession, title: session.title };
+      return { ...deletedSession, title: session!.title };
     },
     ERROR_CODES.SESSION_DELETE_FAILED,
     {

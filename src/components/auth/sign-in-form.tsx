@@ -68,27 +68,26 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
   /**
    * Helper: Recover and store user's encryption key from wrapped package
+   * Note: Key is always persisted in IndexedDB (industry standard for E2EE apps)
    */
-  const recoverUserEncryptionKey = useCallback(
-    async (userMetadata: any, password: string, remember: boolean, email: string) => {
-      const parsedCryptoData = WrappedKeyPackageSchema.safeParse(userMetadata?.crypto);
+  const recoverUserEncryptionKey = useCallback(async (userMetadata: any, password: string, email: string) => {
+    const parsedCryptoData = WrappedKeyPackageSchema.safeParse(userMetadata?.crypto);
 
-      if (parsedCryptoData.success) {
-        const cryptoMeta = parsedCryptoData.data;
-        const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, password);
-        await storeContentKey(contentKey, remember);
-      } else {
-        logger.logWarning("Crypto metadata invalid during sign-in", {
-          operation: "auth_signin_crypto_metadata_invalid",
-          metadata: {
-            email,
-            cryptoParsingError: parsedCryptoData.error?.message || "Unknown parsing error",
-          },
-        });
-      }
-    },
-    []
-  );
+    if (parsedCryptoData.success) {
+      const cryptoMeta = parsedCryptoData.data;
+      const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, password);
+      // Always persist key in IndexedDB (removed 'remember' parameter)
+      await storeContentKey(contentKey);
+    } else {
+      logger.logWarning("Crypto metadata invalid during sign-in", {
+        operation: "auth_signin_crypto_metadata_invalid",
+        metadata: {
+          email,
+          cryptoParsingError: parsedCryptoData.error?.message || "Unknown parsing error",
+        },
+      });
+    }
+  }, []);
 
   const handleSignIn = useCallback(
     async (credentials: SignInSchemaType) => {
@@ -113,13 +112,8 @@ const SignInForm: React.FC<Props> = ({ className }) => {
         // Success - extract data
         const { user } = result.data;
 
-        // Recover and store encryption key
-        await recoverUserEncryptionKey(
-          user?.user_metadata,
-          credentials.password,
-          credentials.remember ?? false,
-          credentials.email
-        );
+        // Recover and store encryption key (always persisted in IndexedDB)
+        await recoverUserEncryptionKey(user?.user_metadata, credentials.password, credentials.email);
 
         // Enforces sign out of other sessions (Single session per user)
         await signOutOthers();

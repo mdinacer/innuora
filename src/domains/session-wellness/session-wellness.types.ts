@@ -2,7 +2,11 @@ import z from "zod";
 
 export const SessionWellnessSchema = z.object({
   suggest_conclusion: z.boolean(),
-  reason: z.enum(["length", "progress", "repetition", "fatigue", "natural_end"]).optional(),
+  should_end: z.boolean(),
+  reasons: z.array(
+    z.enum(["natural_end", "productive_loop_complete", "unproductive_loop", "length", "safety", "crisis"])
+  ),
+  loop_assessment: z.enum(["productive", "unproductive", "none"]).optional(),
   confidence: z.enum(["low", "medium", "high"]).optional(),
 });
 

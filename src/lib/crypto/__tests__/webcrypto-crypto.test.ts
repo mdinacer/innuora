@@ -535,10 +535,15 @@ describe("WebCrypto Crypto Functions", () => {
   });
 
   describe("Key Storage", () => {
-    it("should store and retrieve content key in session storage", async () => {
-      const contentKey = await generateContentKey();
+    it("should store and retrieve content key in IndexedDB", async () => {
+      const keyResult = await generateContentKey();
+      if (keyResult.error) throw new Error(keyResult.error.message);
+      const contentKey = keyResult.data!;
 
-      await storeContentKey(contentKey, false);
+      // Always stores in IndexedDB (industry standard)
+      const storeResult = await storeContentKey(contentKey);
+      if (storeResult.error) throw new Error(storeResult.error.message);
+
       const retrievedKey = await getStoredContentKey();
 
       expect(retrievedKey).toBeInstanceOf(CryptoKey);
@@ -546,36 +551,35 @@ describe("WebCrypto Crypto Functions", () => {
 
       // Verify functionality
       const testData = { storage: "test" };
-      const encrypted = await encryptObjectWithKey(testData, contentKey);
-      const decrypted = await decryptObjectWithKey(encrypted, retrievedKey!);
+      const encryptResult = await encryptObjectWithKey(testData, contentKey);
+      if (encryptResult.error) throw new Error(encryptResult.error.message);
+      const encrypted = encryptResult.data!;
+
+      const decryptResult = await decryptObjectWithKey(encrypted, retrievedKey!);
+      if (decryptResult.error) throw new Error(decryptResult.error.message);
+      const decrypted = decryptResult.data!;
 
       expect(decrypted).toEqual(testData);
     });
 
-    it("should store and retrieve content key in persistent storage", async () => {
-      const contentKey = await generateContentKey();
-
-      await storeContentKey(contentKey, true);
-      const retrievedKey = await getStoredContentKey();
-
-      expect(retrievedKey).toBeInstanceOf(CryptoKey);
-      expect(retrievedKey!.algorithm.name).toBe("AES-GCM");
-    });
-
     it("should return null when no key is stored", async () => {
-      clearStoredContentKey();
+      await clearStoredContentKey();
 
       const retrievedKey = await getStoredContentKey();
       expect(retrievedKey).toBeNull();
     });
 
     it("should clear stored content key", async () => {
-      const contentKey = await generateContentKey();
+      const keyResult = await generateContentKey();
+      if (keyResult.error) throw new Error(keyResult.error.message);
+      const contentKey = keyResult.data!;
 
-      await storeContentKey(contentKey, false);
+      const storeResult = await storeContentKey(contentKey);
+      if (storeResult.error) throw new Error(storeResult.error.message);
+
       expect(await getStoredContentKey()).not.toBeNull();
 
-      clearStoredContentKey();
+      await clearStoredContentKey();
       expect(await getStoredContentKey()).toBeNull();
     });
   });

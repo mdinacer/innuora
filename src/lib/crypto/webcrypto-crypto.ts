@@ -308,14 +308,15 @@ export async function recoverContentKeyFromWrapped(pkg: WrappedKeyPackage, passw
 }
 
 /**
- * Retrieve the stored content key (base64 string) from sessionStorage or IndexedDB.
+ * Retrieve the stored content key (base64 string) from IndexedDB.
+ * Always uses persistent storage (IndexedDB) - industry standard for E2EE apps.
  */
 export async function getStoredContentKey(): Promise<CryptoKey | null> {
   try {
     if (typeof window === "undefined") return null;
 
-    let keyB64: string | null = sessionStorage.getItem(SESSION_KEY);
-    if (!keyB64) keyB64 = await localforage.getItem(SESSION_KEY);
+    // Only check IndexedDB (removed sessionStorage check)
+    const keyB64 = await localforage.getItem<string>(SESSION_KEY);
 
     if (!keyB64) return null;
 
@@ -331,9 +332,11 @@ export async function getStoredContentKey(): Promise<CryptoKey | null> {
 }
 
 /**
- * Store the content key (base64) in sessionStorage or IndexedDB depending on persist flag.
+ * Store the content key in IndexedDB (always persistent).
+ * This is the industry standard for E2EE apps (Signal, WhatsApp, Matrix, etc.).
+ * The "remember me" checkbox only controls auth session persistence, not encryption keys.
  */
-export async function storeContentKey(key: CryptoKey, persist: boolean = false): Promise<ActionResult<void>> {
+export async function storeContentKey(key: CryptoKey): Promise<ActionResult<void>> {
   return await logger.wrapOperation(
     async () => {
       // Export CryptoKey to base64
@@ -341,24 +344,21 @@ export async function storeContentKey(key: CryptoKey, persist: boolean = false):
 
       if (typeof window === "undefined") return;
 
-      if (persist) {
-        // store in IndexedDB via localforage
-        await localforage.setItem(SESSION_KEY, keyB64);
-      } else {
-        // store in sessionStorage
-        sessionStorage.setItem(SESSION_KEY, keyB64);
-      }
+      // Always store in IndexedDB (persistent)
+      await localforage.setItem(SESSION_KEY, keyB64);
     },
     ERROR_CODES.CRYPTO_KEY_STORAGE_FAILED,
-    { operation: "storeContentKey", metadata: { persist } }
+    { operation: "storeContentKey" }
   );
 }
 
 /**
- * Clear content key from both storages.
+ * Clear content key from IndexedDB (on logout).
+ * IMPORTANT: This only clears the encryption key, NOT session data.
+ * Sessions remain in IndexedDB and can be accessed after re-login.
  */
-export function clearStoredContentKey(): void {
+export async function clearStoredContentKey(): Promise<void> {
   if (typeof window === "undefined") return;
-  sessionStorage.removeItem(SESSION_KEY);
-  localforage.removeItem(SESSION_KEY);
+  // Only clear the encryption key, NOT session data
+  await localforage.removeItem(SESSION_KEY);
 }

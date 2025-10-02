@@ -45,12 +45,12 @@ export default async function Footer({ locale = "en", showDisclaimer = true }: P
           <Link href="/terms" className="hover:text-inn-text-primary">
             {links.terms}
           </Link>
-          <Link href="/contact" className="hover:text-inn-text-primary">
+          {/* <Link href="/contact" className="hover:text-inn-text-primary">
             {links.contact}
           </Link>
           <Link href="/help" className="hover:text-inn-text-primary">
             {links.help}
-          </Link>
+          </Link> */}
         </div>
         <p>{copyright}</p>
       </div>

@@ -1,7 +1,7 @@
 "use server";
 
-import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
-import { MODELS_CODES_MAP, type ModelCode } from "@/domains/ai-conversation/ai-models";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
+import { deductCredits } from "@/app/actions/credit-actions";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { combineToSessionAnalysis } from "@/domains/session-analysis/session-analysis.utils";
 import { parseSessionDiagnostics } from "@/domains/session-diagnostics/session-diagnostics.core";
@@ -13,17 +13,17 @@ import {
   SessionDiagnosticsMetadata,
   SessionDiagnosticsWithMetadata,
 } from "@/domains/session-diagnostics/session-diagnostics.types";
+import { logger } from "@/lib/logging/unified-logger";
 
 /**
  * Server action to generate session diagnostics from a session object
+ * Now includes credit tracking for AI operations
  */
 export async function generateSessionDiagnosticsAction(
   session: Session,
-  modelCode: ModelCode = "M1",
-  userId?: string
+  userId?: string,
+  authId?: string
 ): Promise<SessionDiagnosticsWithMetadata> {
-  const model = MODELS_CODES_MAP[modelCode];
-
   // 1. Get or generate session analysis
   let sessionAnalysisText: string;
   if (session.aggregatedAnalysis) {
@@ -44,7 +44,7 @@ export async function generateSessionDiagnosticsAction(
   const summaryPrompt = SESSION_SUMMARY_PROMPT.replace("{{chat_messages}}", chatMessages);
   const summaryPrompts = [{ role: "user" as const, content: summaryPrompt }];
 
-  const summaryResponse = await SendPromptsToAi(summaryPrompts, model, {}, userId);
+  const summaryResponse = await processAiPromptsWithRetry(summaryPrompts, {});
 
   if (summaryResponse.error) {
     throw new Error(`Failed to generate summary: ${summaryResponse.error.message}`);
@@ -61,7 +61,7 @@ export async function generateSessionDiagnosticsAction(
     .replace("{{session_analysis}}", sessionAnalysisText);
 
   const diagnosticsPrompts = [{ role: "user" as const, content: diagnosticsPrompt }];
-  const diagnosticsResponse = await SendPromptsToAi(diagnosticsPrompts, model, {}, userId);
+  const diagnosticsResponse = await processAiPromptsWithRetry(diagnosticsPrompts, {});
 
   if (diagnosticsResponse.error) {
     throw new Error(`Failed to generate diagnostics: ${diagnosticsResponse.error.message}`);
@@ -69,12 +69,39 @@ export async function generateSessionDiagnosticsAction(
 
   const diagnostics = parseSessionDiagnostics(diagnosticsResponse.data.message);
 
+  const totalTokensUsed =
+    (summaryResponse.data.modelTokenUsage?.usage?.total_tokens || 0) +
+    (diagnosticsResponse.data.modelTokenUsage?.usage?.total_tokens || 0);
+  const totalCreditsUsed =
+    (summaryResponse.data.consumedCredits || 0) + (diagnosticsResponse.data.consumedCredits || 0);
+
+  // Deduct credits for diagnostics generation
+  if (authId && totalCreditsUsed > 0) {
+    const deductResult = await deductCredits(authId, totalCreditsUsed, "ai_diagnostics", session.id, {
+      operation: "session_diagnostics_generation",
+      tokensUsed: totalTokensUsed,
+      messageCount: session.messages.length,
+      summaryTokens: summaryResponse.data.modelTokenUsage?.usage?.total_tokens || 0,
+      diagnosticsTokens: diagnosticsResponse.data.modelTokenUsage?.usage?.total_tokens || 0,
+    });
+
+    if (deductResult.error) {
+      logger.logWarning("Credit deduction failed for diagnostics generation", {
+        operation: "session_diagnostics_credit_deduction_failed",
+        sessionId: session.id,
+        metadata: {
+          authId,
+          creditsUsed: totalCreditsUsed,
+          error: deductResult.error.message,
+        },
+      });
+    }
+  }
+
   const metadata: SessionDiagnosticsMetadata = {
     generatedAt: new Date(),
-    tokensUsed:
-      (summaryResponse.data.modelTokenUsage?.usage?.total_tokens || 0) +
-      (diagnosticsResponse.data.modelTokenUsage?.usage?.total_tokens || 0),
-    modelUsed: modelCode,
+    tokensUsed: totalTokensUsed,
+    modelUsed: "M1",
     sessionMessageCount: session.messages.length,
     version: "1.0",
   };

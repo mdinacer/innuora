@@ -1,15 +1,13 @@
 import { useCallback, useState } from "react";
 
-import { deductCredits } from "@/app/actions/credit-actions";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { generateSessionMemory } from "@/domains/session-memory/session-memory.action";
 import { logger } from "@/lib/logging/unified-logger";
-import { prisma } from "@/lib/prisma";
-import { useUserDataStore } from "@/stores/user-data.store";
+import { useAppUserStore } from "@/stores/app-user.store";
 
 export default function useSessionMemory({ sessionId }: { sessionId: string }) {
-  const { session, addTokenUsage, updateSession } = useSessionState({ sessionId });
-  const userProfile = useUserDataStore((state) => state.profile);
+  const { session, addTokenUsage, updateSession, addCreditsUsed } = useSessionState({ sessionId });
+  const appUser = useAppUserStore((state) => state.user);
   const [isUpdating, setIsUpdating] = useState(false);
   const [memoryError, setMemoryError] = useState<string | null>(null);
 
@@ -33,7 +31,8 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        const result = await generateSessionMemory(userMessage, session.memoryStore);
+        // Call generateSessionMemory with authId and sessionId for credit tracking
+        const result = await generateSessionMemory(userMessage, session.memoryStore, appUser?.authId, sessionId);
 
         // Unwrap ActionResult
         if (result.error) {
@@ -43,75 +42,38 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        const aiResponse = result.data;
-        if (!aiResponse) {
+        const memoryResult = result.data;
+        if (!memoryResult) {
           const error = "Memory generation failed - no response received";
           console.error(error);
           setMemoryError(error);
           return { error };
         }
 
-        const { modelTokenUsage, message, consumedCredits } = aiResponse;
-        if (!message?.trim()) {
+        const { tokenUsage, memory, creditsUsed } = memoryResult;
+        if (!memory?.trim()) {
           const error = "Memory generation returned empty response";
           console.error(error);
           setMemoryError(error);
           return { error };
         }
 
-        // Track token usage and deduct credits for memory AI call
-        if (modelTokenUsage) {
-          addTokenUsage({ ...modelTokenUsage, type: "memory" });
+        // Track token usage in session metadata (credits already deducted in action)
+        if (tokenUsage) {
+          addTokenUsage({ ...tokenUsage, type: "memory" });
+        }
 
-          // Deduct credits for memory generation AI call
-          if (userProfile?.userId) {
-            const inputTokens = modelTokenUsage.usage?.prompt_tokens ?? 0;
-            const outputTokens = modelTokenUsage.usage?.completion_tokens ?? 0;
-
-            if (inputTokens > 0 || outputTokens > 0) {
-              try {
-                // Resolve authId from database user ID
-                const user = await prisma.user.findUnique({
-                  where: { id: userProfile.userId },
-                  select: { authId: true },
-                });
-
-                if (!user?.authId) {
-                  throw new Error("User authId not found");
-                }
-
-                // Use exact credits from AI response
-                const memoryCredits = consumedCredits || 0;
-                if (memoryCredits > 0) {
-                  await deductCredits(user.authId, memoryCredits, "memory_generation", sessionId, {
-                    inputTokens,
-                    outputTokens,
-                    userMessage: userMessage.substring(0, 100), // First 100 chars for tracking
-                  });
-                }
-              } catch (error) {
-                logger.logWarning("Failed to deduct credits for memory generation", {
-                  operation: "session_memory_credit_deduction_failed",
-                  sessionId,
-                  userId: userProfile?.userId,
-                  metadata: {
-                    error: error instanceof Error ? error.message : String(error),
-                    inputTokens,
-                    outputTokens,
-                  },
-                });
-                // Don't fail the memory update if credit deduction fails
-              }
-            }
-          }
+        // Track credits used in session metadata
+        if (creditsUsed > 0) {
+          addCreditsUsed(creditsUsed);
         }
 
         let memoryArray: string[];
         try {
-          memoryArray = JSON.parse(message);
+          memoryArray = JSON.parse(memory);
         } catch (err) {
           const error = "Invalid JSON in memory generation result";
-          console.error(error, message, err);
+          console.error(error, memory, err);
           setMemoryError(error);
           return { error };
         }
@@ -145,23 +107,23 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
 
         return { success: true };
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown error occurred";
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
         logger.logWarning("Memory update failed", {
           operation: "session_memory_update_failed",
           sessionId,
-          userId: userProfile?.userId,
           metadata: {
             error: error instanceof Error ? error.message : String(error),
+            authId: appUser?.authId,
           },
         });
-        setMemoryError(`Memory update failed: ${message}`);
-        return { error: message };
+        setMemoryError(`Memory update failed: ${errorMessage}`);
+        return { error: errorMessage };
       } finally {
         setIsUpdating(false);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [addTokenUsage, session, updateSession]
+    [addTokenUsage, addCreditsUsed, session, updateSession, appUser?.authId]
   );
 
   return {

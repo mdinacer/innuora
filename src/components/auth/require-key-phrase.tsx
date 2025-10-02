@@ -16,15 +16,21 @@ export default function RequireKeyPhrase() {
       const key = await getStoredContentKey();
 
       if (!key) {
-        // Clear any remaining session data
-        await clearStoredContentKey();
-        await supabase.auth.signOut();
+        // Key missing - user needs to sign in again to regenerate it
+        // Note: This preserves local sessions in IndexedDB (they'll be accessible after re-login)
+        await clearStoredContentKey(); // Ensure key is cleared
+        await supabase.auth.signOut(); // Clear auth session
 
-        logger.logInfo("No key found, redirecting to login", {
+        logger.logInfo("Encryption key missing, redirecting to sign-in", {
           operation: "require_key_phrase_redirect",
+          metadata: {
+            reason: "key_missing",
+            message: "User must sign in again to regenerate encryption key and access sessions",
+          },
         });
-        // Redirect to login
-        router.replace("/auth");
+
+        // Redirect to login with message
+        router.replace("/auth/sign-in?reason=key_missing");
       }
     }
 

@@ -8,31 +8,11 @@ import { cn } from "@/lib/utils";
 
 const DecorativeOrbs = () => (
   <div
-    className={cn(
-      "decorative-shapes",
-      "max-[480px]:rounded-none",
-      "absolute top-20 right-0 z-[1]",
-      "size-[200px]",
-      "overflow-hidden rounded-bl-3xl"
-    )}
+    className={cn("absolute top-20 right-0 z-[1] size-[200px] overflow-hidden rounded-bl-3xl max-[480px]:rounded-none")}
+    aria-hidden="true"
   >
-    <div
-      className={cn(
-        "shape-1",
-        "absolute -top-[50px] -right-[50px]",
-        "size-[120px]",
-        "rounded-full bg-inn-bg-accent opacity-10"
-      )}
-    />
-
-    <div
-      className={cn(
-        "shape-2",
-        "absolute top-[20px] right-[30px]",
-        "size-[80px]",
-        "rounded-full bg-inn-bg-accent opacity-15"
-      )}
-    />
+    <div className="absolute -top-[50px] -right-[50px] size-[120px] rounded-full bg-inn-bg-accent opacity-10" />
+    <div className="absolute top-[20px] right-[30px] size-[80px] rounded-full bg-inn-bg-accent opacity-15" />
   </div>
 );
 
@@ -45,6 +25,7 @@ interface OpenChatContainerProps<T> extends React.HTMLAttributes<HTMLDivElement>
   subtitle?: string;
   headerActions?: React.ReactNode;
   welcomeMessage?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   renderItem: (message: T, index: number) => React.ReactNode;
   onUserInput?: (value: string) => Promise<unknown>;
 }
@@ -56,6 +37,7 @@ const ChatUIContainer = <T,>({
   title,
   subtitle,
   welcomeMessage,
+  errorMessage,
   headerActions,
   onUserInput,
   renderItem,
@@ -92,6 +74,7 @@ const ChatUIContainer = <T,>({
       <MessagesContainer ref={messagesContainerRef} className="pt-[120px] pb-[100px] flex flex-col">
         {welcomeMessage}
         {messages.map(renderItem)}
+        {errorMessage}
         <Indicator isVisible={isLoading} />
       </MessagesContainer>
       {onUserInput && <Input onSendMessage={onUserInput} className="absolute bottom-0 inset-x-0" />}

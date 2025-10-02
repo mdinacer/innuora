@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Container, Menu } from "@/components/chat-ui";
+import { ChatErrorMessage } from "@/components/chat-ui/chat-error-message";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
@@ -23,6 +24,7 @@ interface Props {
 const SessionPage: React.FC<Props> = ({ sessionId }) => {
   const router = useRouter();
   const [creditsError, setCreditsError] = useState<{ error: string; cost: number } | null>(null);
+  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
 
   const {
     t,
@@ -35,7 +37,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
   });
 
   const { processMessage, addMessage, resetSession } = chatController.actions;
-  const { hasHydrated, session, messages, isProcessing } = chatController.state;
+  const { hasHydrated, session, messages, isProcessing, processingError } = chatController.state;
 
   const { title, subtitle } = useMemo(
     () => ({
@@ -100,7 +102,13 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     async (message: string) => {
       try {
         setCreditsError(null); // Clear any previous credits errors
+        setLastFailedMessage(null); // Clear previous failed message
         const result = await processMessage(message);
+
+        // Check if there was an error in the result
+        if (result?.error) {
+          setLastFailedMessage(message);
+        }
 
         // Message processed successfully
         return result;
@@ -113,8 +121,12 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
             error: error.message,
             cost,
           });
+          setLastFailedMessage(message);
           return { error: error.message };
         }
+
+        // For other errors, save the message for retry
+        setLastFailedMessage(message);
 
         // Re-throw other errors
         throw error;
@@ -122,6 +134,16 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     },
     [processMessage]
   );
+
+  const handleRetry = useCallback(() => {
+    if (lastFailedMessage) {
+      handleProcessMessage(lastFailedMessage);
+    }
+  }, [lastFailedMessage, handleProcessMessage]);
+
+  const handleDismissError = useCallback(() => {
+    setLastFailedMessage(null);
+  }, []);
 
   if (!hasHydrated) {
     return <LoadingComponent />;
@@ -157,6 +179,15 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
         renderItem={(message, index) => <MessageBubble key={index} message={message} />}
         onUserInput={handleProcessMessage}
         welcomeMessage={welcomeMessage}
+        errorMessage={
+          processingError ? (
+            <ChatErrorMessage
+              errorMessage={processingError}
+              onRetry={lastFailedMessage ? handleRetry : undefined}
+              onDismiss={handleDismissError}
+            />
+          ) : null
+        }
         headerActions={
           <>
             <Menu disabled={!messages?.length} onAction={handleActions} />

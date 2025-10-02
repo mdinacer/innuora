@@ -133,28 +133,53 @@ export async function createUserWithDefaults(authUserId: string): Promise<Action
   );
 }
 
-export async function findOrCreateUser(authUserId: string): Promise<UserWithRelations> {
-  const existingUserResult = await getUserWithRelationsById(authUserId);
+export async function findOrCreateUser(authUserId: string): Promise<ActionResult<UserWithRelations>> {
+  return (await logger.wrapOperation(
+    async () => {
+      const existingUserResult = await getUserWithRelationsById(authUserId);
 
-  if (existingUserResult.error) {
-    // If there's an error fetching, try to create
-    const createResult = await createUserWithDefaults(authUserId);
-    if (createResult.error) {
-      throw new Error(createResult.error.message);
+      if (existingUserResult.error) {
+        // If there's an error fetching, try to create
+        const createResult = await createUserWithDefaults(authUserId);
+        if (createResult.error || !createResult.data) {
+          logger.logErrorAndThrow(
+            ERROR_CODES.USER_CREATE_FAILED,
+            new Error(createResult.error?.message || "Failed to create user"),
+            {
+              operation: "find_or_create_user",
+              userId: authUserId,
+              metadata: { reason: "create_failed_after_fetch_error" },
+            }
+          );
+        }
+        return createResult.data;
+      }
+
+      if (existingUserResult.data) {
+        return existingUserResult.data;
+      }
+
+      // User doesn't exist, create it
+      const createResult = await createUserWithDefaults(authUserId);
+      if (createResult.error || !createResult.data) {
+        logger.logErrorAndThrow(
+          ERROR_CODES.USER_CREATE_FAILED,
+          new Error(createResult.error?.message || "Failed to create user"),
+          {
+            operation: "find_or_create_user",
+            userId: authUserId,
+            metadata: { reason: "create_failed_user_not_found" },
+          }
+        );
+      }
+      return createResult.data;
+    },
+    ERROR_CODES.USER_NOT_FOUND,
+    {
+      operation: "find_or_create_user",
+      userId: authUserId,
     }
-    return createResult.data;
-  }
-
-  if (existingUserResult.data) {
-    return existingUserResult.data;
-  }
-
-  // User doesn't exist, create it
-  const createResult = await createUserWithDefaults(authUserId);
-  if (createResult.error) {
-    throw new Error(createResult.error.message);
-  }
-  return createResult.data;
+  )) as ActionResult<UserWithRelations>;
 }
 
 export async function updateUserById(
@@ -183,15 +208,11 @@ export async function updateUserById(
   );
 }
 
-export async function updateCurrentUser(userData: Partial<Prisma.UserUpdateInput>): Promise<UserWithRelations> {
+export async function updateCurrentUser(
+  userData: Partial<Prisma.UserUpdateInput>
+): Promise<ActionResult<UserWithRelations>> {
   const currentAuthUser = await requireCurrentUser();
-  const result = await updateUserById(currentAuthUser.id, userData);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return result.data;
+  return await updateUserById(currentAuthUser.id, userData);
 }
 
 export async function deleteUserById(authUserId: string): Promise<ActionResult<boolean>> {
@@ -206,7 +227,10 @@ export async function deleteUserById(authUserId: string): Promise<ActionResult<b
       });
 
       if (!user) {
-        throw new Error(`User not found: ${authUserId}`);
+        logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error(`User not found: ${authUserId}`), {
+          operation: "user_delete_by_id",
+          userId: authUserId,
+        });
       }
 
       await prisma.user.delete({
@@ -227,15 +251,9 @@ export async function deleteUserById(authUserId: string): Promise<ActionResult<b
   );
 }
 
-export async function deleteCurrentUser(): Promise<boolean> {
+export async function deleteCurrentUser(): Promise<ActionResult<boolean>> {
   const currentAuthUser = await requireCurrentUser();
-  const result = await deleteUserById(currentAuthUser.id);
-
-  if (result.error) {
-    throw new Error(result.error.message);
-  }
-
-  return result.data;
+  return await deleteUserById(currentAuthUser.id);
 }
 
 export async function checkUserExists(authUserId: string): Promise<boolean> {
@@ -263,7 +281,7 @@ export async function updateUserProfile(
 
   const currentAuthUser = await requireCurrentUser();
 
-  return await logger.wrapOperation(
+  return (await logger.wrapOperation(
     async () => {
       return await prisma.$transaction(async (tx) => {
         const { displayName, locale } = validatedData;
@@ -316,7 +334,11 @@ export async function updateUserProfile(
         });
 
         if (!updatedUser) {
-          throw new Error("User not found after update");
+          logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("User not found after update"), {
+            operation: "user_profile_update",
+            userId: currentAuthUser.id,
+            metadata: { reason: "user_disappeared_after_update" },
+          });
         }
 
         return updatedUser;
@@ -334,5 +356,5 @@ export async function updateUserProfile(
       },
     },
     "User profile updated successfully"
-  );
+  )) as ActionResult<UserWithRelations>;
 }

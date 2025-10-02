@@ -2,16 +2,14 @@
 
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { SendPromptsToAiWithRetry } from "@/app/actions/ai-client-actions";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCredits } from "@/app/actions/credit-actions";
-import { ModelCode, MODELS_CODES_MAP } from "@/domains/ai-conversation/ai-models";
 import { LanguagePrompt } from "@/domains/ai-conversation/prompts";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
-import { AiModel, ModelTokenUsage } from "@/types/ai-model.types";
+import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface LightweightResponseResult {
@@ -29,24 +27,12 @@ export async function handleLightweightUserInput(
   analysis: TherapeuticAnalysis,
   messages: OpenChatMessage[],
   locale: AppLocales = "en",
-  modelCode: ModelCode,
   userId?: string,
   sessionId?: string
 ): Promise<LightweightResponseResult> {
   // This function does NOT wrap with wrapOperation because it's called from within another wrapOperation
   // and we want to return LightweightResponseResult directly, not ActionResult
   try {
-    const aiModel = MODELS_CODES_MAP[modelCode] as AiModel;
-
-    if (!aiModel) {
-      logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_MODEL, new Error(`Unsupported model code: ${modelCode}`), {
-        operation: "open_chat_lightweight_response",
-        userId,
-        sessionId,
-        metadata: { modelCode },
-      });
-    }
-
     // Resolve authId for credit operations
     let authId: string | undefined;
     if (userId) {
@@ -81,7 +67,7 @@ ${languagePrompt?.content || ""}`.trim(),
     ];
 
     // Generate lightweight AI response
-    const result = await SendPromptsToAiWithRetry(lightweightPrompts, aiModel, {}, 2, 1000, authId);
+    const result = await processAiPromptsWithRetry(lightweightPrompts, {}, 2, 1000);
 
     // Unwrap ActionResult
     if (result.error) {
@@ -97,7 +83,6 @@ ${languagePrompt?.content || ""}`.trim(),
     let creditsUsed = 0;
     if (userId && authId && aiResponse.consumedCredits) {
       await deductCredits(authId, aiResponse.consumedCredits, "ai_usage", sessionId, {
-        modelCode,
         messageLength: userInput.length,
         responseLength: aiResponse.message.length,
         processingType: "lightweight",
@@ -119,7 +104,6 @@ ${languagePrompt?.content || ""}`.trim(),
         error: error instanceof Error ? error.message : String(error),
         inputLength: userInput.length,
         analysisValue: analysis.analysis_value,
-        modelCode,
       },
     });
     throw error;

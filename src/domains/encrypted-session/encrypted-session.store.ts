@@ -152,7 +152,6 @@ export const useSessionStore = create<SessionsStoreState>()(
             userId: current.userId,
             title: current.title,
             subtitle: current.subtitle,
-            modelCode: current.modelCode,
             autoUpdateTitle: current.autoUpdateTitle,
             persistOnCloud: current.persistOnCloud,
             metadata: {

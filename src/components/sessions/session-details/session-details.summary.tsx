@@ -53,8 +53,8 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
           return;
         }
 
-        if (result.data.message) {
-          const data = (await parseJsonObject(result.data.message)) as {
+        if (result.data.summary) {
+          const data = (await parseJsonObject(result.data.summary)) as {
             title: string;
             subtitle: string;
             summary: string;

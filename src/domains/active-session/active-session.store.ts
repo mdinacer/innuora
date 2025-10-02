@@ -133,8 +133,9 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
     const current = get().session;
     if (!current) return;
 
-    const newTokenCount = current.metadata.tokenCount + (tokenUsage.usage?.total_tokens || 0);
-    const newCostUSD = current.metadata.costUSD + tokenUsage.costUSD;
+    const inputTokensDelta = tokenUsage.usage?.prompt_tokens || 0;
+    const outputTokensDelta = tokenUsage.usage?.completion_tokens || 0;
+    const totalTokensDelta = tokenUsage.usage?.total_tokens || 0;
 
     set({
       session: {
@@ -142,8 +143,10 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
         metadata: {
           ...current.metadata,
           tokenUsage: [...current.metadata.tokenUsage, tokenUsage],
-          tokenCount: newTokenCount,
-          costUSD: newCostUSD,
+          tokenCount: current.metadata.tokenCount + totalTokensDelta,
+          inputTokens: current.metadata.inputTokens + inputTokensDelta,
+          outputTokens: current.metadata.outputTokens + outputTokensDelta,
+          costUSD: current.metadata.costUSD + tokenUsage.costUSD,
         },
         updatedAt: new Date(),
       },

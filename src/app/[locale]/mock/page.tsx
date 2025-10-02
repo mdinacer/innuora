@@ -2,10 +2,9 @@
 
 import { useCallback, useState } from "react";
 
-import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import UserDiagnosticsView from "@/components/session-diagnostics/user-diagnostics-view";
 import { Button } from "@/components/ui/button";
-import { GPT_4_1_MINI_MODEL } from "@/domains/ai-conversation/ai-models";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 // import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import { SessionDiagnosticsStd } from "@/domains/session-diagnostics/session-diagnostics.types";
@@ -657,7 +656,7 @@ export default function Page() {
           .trim(),
       };
 
-      const userResult = await SendPromptsToAi([userPrompt], GPT_4_1_MINI_MODEL, { max_tokens: 2000 });
+      const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2000 });
 
       if (userResult.error) {
         console.error("❌ AI call failed:", userResult.error.message);

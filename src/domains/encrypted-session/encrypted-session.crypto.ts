@@ -1,13 +1,10 @@
 import { Session as PrismaSession } from "@prisma/client";
 
-import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
 import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { EncryptedBlob, EncryptedBlobSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
-
-const DEFAULT_MODEL_CODE = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE ?? MODELS_CODES.M1;
 
 /** Ensure content key is available or raise a managed error */
 async function requireContentKey(operation: string, sessionId?: string): Promise<CryptoKey> {
@@ -87,7 +84,6 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
         userId: encryptedSession.userId,
         title: encryptedSession.title,
         subtitle: encryptedSession.subtitle ?? "",
-        modelCode: encryptedSession.modelCode ?? DEFAULT_MODEL_CODE,
         autoUpdateTitle: encryptedSession.autoUpdateTitle ?? false,
         createdAt: encryptedSession.createdAt,
         updatedAt: encryptedSession.updatedAt,
@@ -106,6 +102,8 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
           : {
               messageCount: 0,
               tokenCount: 0,
+              inputTokens: 0,
+              outputTokens: 0,
               costUSD: 0,
               creditsUsed: 0,
               activeDurationMs: 0,

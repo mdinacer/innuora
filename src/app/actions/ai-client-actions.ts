@@ -1,15 +1,15 @@
 "use server";
 
-import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
+import { ChatCompletion, ChatCompletionMessageParam, ChatModel } from "openai/resources";
 
-import { calculateCreditsUsed } from "@/domains/credits/credits-calculation";
+import { findCurrentUser } from "@/app/actions/auth-actions";
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
 import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
 import type { ActionResult } from "@/types/action-result";
-import { AiMessageResponse, AiModel, ModelTokenUsage } from "@/types/ai-model.types";
+import { AiMessageResponse } from "@/types/ai-model.types";
 
 type RequestOptions = {
   stream?: boolean;
@@ -26,17 +26,38 @@ const DEFAULT_AI_OPTIONS: RequestOptions = {
 };
 
 /**
- * Calls OpenAI API with error handling
+ * Calculates credits from token usage based on model pricing
+ * Credits = (tokens / 1000) * pricePerK * 100, rounded up with minimum 1 credit
+ *
+ * @param inputTokens - Number of input/prompt tokens
+ * @param outputTokens - Number of output/completion tokens
+ * @param inputPricePer1K - Price per 1000 input tokens in USD
+ * @param outputPricePer1K - Price per 1000 output tokens in USD
+ * @returns Total credits consumed (minimum 1)
  */
-async function callOpenAi(
-  modelPath: string,
+function calculateCreditsFromUsage(
+  inputTokens: number,
+  outputTokens: number,
+  inputPricePer1K: number,
+  outputPricePer1K: number
+): number {
+  const inputCredits = Math.ceil((inputTokens / 1000) * inputPricePer1K * 100);
+  const outputCredits = Math.ceil((outputTokens / 1000) * outputPricePer1K * 100);
+  return Math.max(1, inputCredits + outputCredits);
+}
+
+/**
+ * Calls OpenAI API using the official SDK
+ */
+async function executeChatCompletion(
+  model: ChatModel,
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
 ): Promise<ActionResult<ChatCompletion>> {
   return await logger.wrapOperation(
     async () => {
       const completion = await openai.chat.completions.create({
-        model: modelPath,
+        model: model,
         messages: prompts,
         ...options,
       });
@@ -45,95 +66,15 @@ async function callOpenAi(
     ERROR_CODES.AI_OPENAI_ERROR,
     {
       operation: "ai_openai_call",
-      metadata: { model: modelPath },
+      metadata: { model: model },
     }
   );
-}
-
-/**
- * Calls OpenRouter API with error handling and retry logic
- */
-async function callOpenRouter(
-  modelPath: string,
-  prompts: ChatCompletionMessageParam[],
-  options: Partial<RequestOptions>
-): Promise<ActionResult<ChatCompletion>> {
-  return await logger.wrapOperation(
-    async () => {
-      const apiKey = process.env.OPEN_ROUTER_API_KEY;
-      if (!apiKey) {
-        throw new Error("OPEN_ROUTER_API_KEY environment variable is not set");
-      }
-
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: modelPath,
-          messages: prompts,
-          ...options,
-        }),
-      });
-
-      if (!response.ok) {
-        let errorText: string;
-        try {
-          errorText = await response.text();
-        } catch {
-          errorText = "Unable to read error response";
-        }
-        throw new Error(`${response.status} - ${errorText}`);
-      }
-
-      const data = (await response.json()) as ChatCompletion;
-      return data;
-    },
-    ERROR_CODES.AI_OPENROUTER_ERROR,
-    {
-      operation: "ai_openrouter_call",
-      metadata: { model: modelPath },
-    }
-  );
-}
-
-/**
- * Validates AI model configuration
- */
-function validateAiModel(model: AiModel): void {
-  if (!model) {
-    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model configuration is required"), {
-      operation: "ai_validate_model",
-    });
-  }
-
-  if (!model.apiPath) {
-    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model apiPath is required"), {
-      operation: "ai_validate_model",
-      metadata: { model: model.vendor },
-    });
-  }
-
-  if (!model.vendor) {
-    logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_MODEL, new Error("AI model vendor is required"), {
-      operation: "ai_validate_model",
-    });
-  }
-
-  if (!["openai", "tngtech", "mistralai", "qwen", "moonshotai", "rekaai", "deepseek"].includes(model.vendor)) {
-    logger.logErrorAndThrow(ERROR_CODES.AI_UNSUPPORTED_VENDOR, new Error(`Unsupported vendor: ${model.vendor}`), {
-      operation: "ai_validate_model",
-      metadata: { vendor: model.vendor },
-    });
-  }
 }
 
 /**
  * Validates prompts array
  */
-function validatePrompts(prompts: ChatCompletionMessageParam[]): void {
+function assertValidPrompts(prompts: ChatCompletionMessageParam[]): void {
   if (!Array.isArray(prompts) || prompts.length === 0) {
     logger.logErrorAndThrow(ERROR_CODES.AI_INVALID_PROMPTS, new Error("Prompts array cannot be empty"), {
       operation: "ai_validate_prompts",
@@ -156,36 +97,30 @@ function validatePrompts(prompts: ChatCompletionMessageParam[]): void {
 }
 
 /**
- * Creates model token usage object
- */
-function createModelTokenUsage(data: ChatCompletion, model: AiModel): ModelTokenUsage | null {
-  if (!data.usage) return null;
-
-  return {
-    type: "completion",
-    model: data.model,
-    mode: model.mode,
-    usage: data.usage,
-    timestamp: new Date().toISOString(),
-    version: "", // You might want to add version tracking
-    costUSD: 0, // Legacy field - will be removed once credit system is fully integrated
-  };
-}
-
-/**
  * Main function to send prompts to AI services
+ * Uses GPT-4.1 Mini (configured via environment variables)
+ * Automatically gets current user from session for rate limiting
  */
-export async function SendPromptsToAi(
+export async function processAiPrompts(
   prompts: ChatCompletionMessageParam[],
-  model: AiModel,
-  options: Partial<RequestOptions> = {},
-  userId?: string
+  options: Partial<RequestOptions> = {}
 ): Promise<ActionResult<AiMessageResponse>> {
   return await logger.wrapOperation(
     async () => {
-      // Check rate limits
-      if (userId) {
-        const burstLimit = rateLimiter.checkLimit(userId, "AI_BURST");
+      // Import model configuration (simple constants from env)
+      const { AI_MODEL, AI_MODEL_VENDOR, AI_MODEL_INPUT_PRICE_PER_1K, AI_MODEL_OUTPUT_PRICE_PER_1K } = await import(
+        "@/domains/ai-conversation/ai-models"
+      );
+
+      // Validate inputs
+      assertValidPrompts(prompts);
+
+      // Get current user for rate limiting
+      const user = await findCurrentUser();
+
+      // Check rate limits (if user is authenticated)
+      if (user) {
+        const burstLimit = rateLimiter.checkLimit(user.id, "AI_BURST");
         if (!burstLimit.success) {
           throw new AppError(ERROR_CODES.RATE_LIMIT_AI_BURST, {
             remaining: burstLimit.remaining,
@@ -193,7 +128,7 @@ export async function SendPromptsToAi(
           });
         }
 
-        const generalLimit = rateLimiter.checkLimit(userId, "AI_REQUESTS");
+        const generalLimit = rateLimiter.checkLimit(user.id, "AI_REQUESTS");
         if (!generalLimit.success) {
           throw new AppError(ERROR_CODES.RATE_LIMIT_AI_REQUESTS, {
             remaining: generalLimit.remaining,
@@ -202,82 +137,99 @@ export async function SendPromptsToAi(
         }
       }
 
-      // Validate inputs
-      validatePrompts(prompts);
-      validateAiModel(model);
-
       const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...options };
 
-      // Call appropriate AI service
-      const result = await (model.vendor === "openai"
-        ? callOpenAi(model.apiPath, prompts, mergedOptions)
-        : callOpenRouter(model.apiPath, prompts, mergedOptions));
+      // Call OpenAI API (single vendor)
+      const result = await executeChatCompletion(AI_MODEL, prompts, mergedOptions);
 
       // Handle ActionResult wrapper
       if (result.error) {
-        throw new Error(result.error.message);
+        logger.logErrorAndThrow(ERROR_CODES.AI_REQUEST_FAILED, new Error(result.error.message), {
+          operation: "ai_send_prompts",
+          metadata: { model: AI_MODEL, errorCode: result.error.code },
+        });
       }
 
-      const data = result.data;
+      // At this point result.data is guaranteed to be non-null (logErrorAndThrow throws on error)
+      const data = result.data!;
 
       // Extract and validate response
-      const raw = data?.choices?.[0]?.message?.content?.trim();
-      if (!raw) {
-        throw new Error("AI returned empty content");
+      const rawContent = data?.choices?.[0]?.message?.content?.trim();
+      if (!rawContent) {
+        logger.logErrorAndThrow(ERROR_CODES.AI_EMPTY_RESPONSE, new Error("AI returned empty content"), {
+          operation: "ai_send_prompts",
+          metadata: { model: AI_MODEL, vendor: AI_MODEL_VENDOR },
+        });
       }
+
+      // At this point, rawContent is guaranteed to be a non-empty string (logErrorAndThrow throws)
+      const message = rawContent!;
 
       // Log in development environment
       if (process.env.NODE_ENV === "development") {
         console.info(
           `AI Service Called:
-          Model: ${model.apiPath}
-          Vendor: ${model.vendor}
+          Model: ${AI_MODEL}
+          Vendor: ${AI_MODEL_VENDOR}
           TokenUsage: %o
           Prompts: %o
           Response: %s`,
           data?.usage,
           prompts,
-          raw
+          message
         );
       }
 
-      let consumedCredits = 0;
-
-      if (data.usage) {
-        consumedCredits = calculateCreditsUsed(model, data.usage);
-      }
+      // Calculate credits based on token usage and model pricing
+      const consumedCredits = data.usage
+        ? calculateCreditsFromUsage(
+            data.usage.prompt_tokens,
+            data.usage.completion_tokens,
+            AI_MODEL_INPUT_PRICE_PER_1K,
+            AI_MODEL_OUTPUT_PRICE_PER_1K
+          )
+        : 0;
 
       return {
-        message: raw,
-        modelTokenUsage: createModelTokenUsage(data, model),
+        message,
+        modelTokenUsage: data.usage
+          ? {
+              type: "completion" as const,
+              model: data.model,
+              mode: "paid" as const,
+              usage: data.usage,
+              timestamp: new Date().toISOString(),
+              version: "",
+              costUSD: 0, // Legacy field
+            }
+          : null,
         consumedCredits,
       };
     },
     ERROR_CODES.AI_REQUEST_FAILED,
     {
       operation: "ai_send_prompts",
-      metadata: { model: model.apiPath, vendor: model.vendor },
+      metadata: { model: "gpt-4.1-mini", vendor: "openai" },
     }
   );
 }
 
 /**
  * Send prompts with retry logic for transient failures
+ * Uses GPT-4.1 Mini with automatic user detection
  */
-export async function SendPromptsToAiWithRetry(
+export async function processAiPromptsWithRetry(
   prompts: ChatCompletionMessageParam[],
-  model: AiModel,
   options: Partial<RequestOptions> = {},
   maxRetries: number = 3,
-  retryDelay: number = 1000,
-  userId?: string
+  retryDelay: number = 1000
 ): Promise<ActionResult<AiMessageResponse>> {
   return await logger.wrapOperation(
-    async () => {
+    async (): Promise<AiMessageResponse> => {
       let lastError: Error | null = null;
 
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        const result = await SendPromptsToAi(prompts, model, options, userId);
+        const result = await processAiPrompts(prompts, options);
 
         if (result.error) {
           lastError = new Error(result.error.message);
@@ -286,30 +238,55 @@ export async function SendPromptsToAiWithRetry(
             result.error.code === ERROR_CODES.AI_EMPTY_RESPONSE ||
             result.error.code === ERROR_CODES.AI_INVALID_PROMPTS
           ) {
-            throw lastError;
+            logger.logErrorAndThrow(ERROR_CODES.AI_RETRY_EXHAUSTED, lastError, {
+              operation: "ai_send_prompts_with_retry",
+              metadata: {
+                attempts: attempt,
+                maxRetries,
+                errorCode: result.error.code,
+                reason: "non_retryable_error",
+              },
+            });
           }
 
           // If this is the last attempt, throw error
           if (attempt === maxRetries) {
-            throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError.message}`);
+            logger.logErrorAndThrow(
+              ERROR_CODES.AI_RETRY_EXHAUSTED,
+              new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError.message}`),
+              {
+                operation: "ai_send_prompts_with_retry",
+                metadata: { attempts: maxRetries },
+              }
+            );
           }
 
           // Wait before retrying (with exponential backoff)
           const delay = retryDelay * Math.pow(2, attempt - 1);
           await new Promise((resolve) => setTimeout(resolve, delay));
         } else {
-          // Success - return the unwrapped data
-          return result.data;
+          // Success - return the unwrapped data (guaranteed non-null since no error)
+          return result.data!;
         }
       }
 
       // This should never be reached due to the logic above
-      throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message || "Unknown error"}`);
+      logger.logErrorAndThrow(
+        ERROR_CODES.AI_RETRY_EXHAUSTED,
+        new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message || "Unknown error"}`),
+        {
+          operation: "ai_send_prompts_with_retry",
+          metadata: { attempts: maxRetries, reason: "unexpected_fallthrough" },
+        }
+      );
+
+      // TypeScript safety - this line is unreachable since logErrorAndThrow always throws
+      throw new Error("Unreachable code");
     },
     ERROR_CODES.AI_RETRY_EXHAUSTED,
     {
       operation: "ai_send_prompts_with_retry",
-      metadata: { attempts: maxRetries, model: model.apiPath },
+      metadata: { attempts: maxRetries },
     }
   );
 }

@@ -128,7 +128,7 @@ const PasswordField = <T extends FieldValues>({
             )}
 
             {helperText && <FormDescription>{helperText}</FormDescription>}
-            <FormMessage />
+            {fieldState.error && <FormMessage>error message</FormMessage>}
           </FormItem>
         );
       }}

@@ -5,6 +5,7 @@ import { BotIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import BackgroundAnimation from "@/components/background-animation";
 import { APP_CONFIG } from "@/config/app";
 import initTranslations from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -289,25 +290,7 @@ export default async function Home({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <div className="fixed hidden md:block inset-0 w-screen h-screen">
-        <video
-          autoPlay
-          loop
-          muted
-          preload="auto"
-          className="object-cover w-full h-full  grayscale dark:grayscale-0 opacity-10 dark:opacity-20 dark:invert-0"
-        >
-          <source src="/assets/videos/hero.webm" type="video/webm" />
-          <source src="/assets/videos/hero.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <div
-        className="fixed inset-0 hidden md:block bg-[#0a1628]  dark:mix-blend-exclusion mix-blend-color  h-screen w-screen"
-        style={{
-          willChange: "transform, opacity", // Hint GPU for smooth compositing
-        }}
-      ></div>
+      <BackgroundAnimation />
       {/* <!-- Hero --> */}
       <section className="relative max-w-5xl mx-auto px-6 py-16 text-center">
         <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-[13px] font-semibold text-inn-bg-accent">
@@ -458,8 +441,6 @@ export default async function Home({
           ))}
         </div>
       </section>
-
-      {/* <!-- Footer --> */}
     </main>
   );
 }

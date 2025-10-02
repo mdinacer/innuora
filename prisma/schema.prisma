@@ -154,7 +154,6 @@ model Session {
   // Core session info (non-encrypted)
   title           String // title of session
   subtitle        String? // subtitle of session
-  modelCode       ModelCode @default(M1)
   autoUpdateTitle Boolean   @default(false)
   persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
   metadata        Json // additional metadata { messageCount: int, tokenCount: int, creditsUsed: int }
@@ -301,12 +300,6 @@ model SubscriptionRenewal {
 // =========================
 // Enums
 // =========================
-
-enum ModelCode {
-  M1
-  M2
-  M3
-}
 
 enum CreditTransactionType {
   CREDIT // User receives credits (purchase, bonus, refund)
