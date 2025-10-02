@@ -16,6 +16,7 @@ import {
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import type { ActionResult } from "@/types/action-result";
 
 // =========================
 // Types and Interfaces
@@ -57,7 +58,7 @@ export async function createCreditPurchaseIntent(
   productKey: BillingProductKey,
   userEmail?: string,
   userName?: string
-): Promise<CreatePaymentIntentResult> {
+): Promise<ActionResult<CreatePaymentIntentResult>> {
   return await logger.wrapOperation(
     async () => {
       // Get current authenticated user
@@ -204,7 +205,7 @@ export async function createCreditPurchaseIntent(
 /**
  * Process a successful payment and add credits to user account
  */
-export async function processSuccessfulPayment(paymentIntentId: string): Promise<ProcessPaymentResult> {
+export async function processSuccessfulPayment(paymentIntentId: string): Promise<ActionResult<ProcessPaymentResult>> {
   return await logger.wrapOperation(
     async () => {
       try {
@@ -254,13 +255,31 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         // Process the payment in a transaction
         const result = await prisma.$transaction(async (tx) => {
           // Add credits to user account (userId here is already authId from payment metadata)
-          const creditResult = await addCredits(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
+          const creditResultWrapper = await addCredits(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
             paymentIntentId,
             productKey,
             stripeCustomerId: paymentIntent.customer as string,
             amountUSD: BillingUtils.centsToDollars(paymentIntent.amount),
             status: "completed",
           });
+
+          if (creditResultWrapper.error || !creditResultWrapper.data) {
+            logger.logErrorAndThrow(
+              ERROR_CODES.BILLING_OPERATION_FAILED,
+              new Error(creditResultWrapper.error?.message || "Failed to add credits"),
+              {
+                operation: "process_successful_payment_add_credits",
+                metadata: {
+                  paymentIntentId,
+                  userId,
+                  credits,
+                  errorCode: creditResultWrapper.error?.code,
+                },
+              }
+            );
+          }
+
+          const creditResult = creditResultWrapper.data;
 
           // Update the pending transaction to completed
           if (existingTransaction) {
@@ -285,8 +304,8 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         return {
           success: true,
           creditsAdded: credits,
-          newBalance: result.newBalance,
-          transactionId: result.transactionId,
+          newBalance: result!.newBalance,
+          transactionId: result!.transactionId,
         };
       } catch (error) {
         if (isStripeError(error)) {
@@ -330,7 +349,7 @@ export async function processRefund(
   paymentIntentId: string,
   reason: "duplicate" | "fraudulent" | "requested_by_customer" = "requested_by_customer",
   adminUserId?: string
-): Promise<RefundPaymentResult> {
+): Promise<ActionResult<RefundPaymentResult>> {
   return await logger.wrapOperation(
     async () => {
       try {
@@ -374,15 +393,47 @@ export async function processRefund(
         });
 
         if (!user?.authId) {
-          throw new Error(`User authId not found for transaction user: ${originalTransaction.userId}`);
+          logger.logErrorAndThrow(
+            ERROR_CODES.USER_NOT_FOUND,
+            new Error(`User authId not found for transaction user: ${originalTransaction.userId}`),
+            {
+              operation: "process_refund_find_user",
+              metadata: {
+                paymentIntentId,
+                transactionUserId: originalTransaction.userId,
+              },
+            }
+          );
         }
 
-        await deductCredits(user.authId, originalTransaction.amount, TRANSACTION_CONFIG.reasons.REFUND, undefined, {
-          refundId: refund.id,
-          paymentIntentId,
-          originalTransactionId: originalTransaction.id,
-          reason,
-        });
+        const deductResult = await deductCredits(
+          user!.authId,
+          originalTransaction.amount,
+          TRANSACTION_CONFIG.reasons.REFUND,
+          undefined,
+          {
+            refundId: refund.id,
+            paymentIntentId,
+            originalTransactionId: originalTransaction.id,
+            reason,
+          }
+        );
+
+        if (deductResult.error || !deductResult.data) {
+          logger.logErrorAndThrow(
+            ERROR_CODES.BILLING_OPERATION_FAILED,
+            new Error(deductResult.error?.message || "Failed to deduct credits"),
+            {
+              operation: "process_refund_deduct_credits",
+              metadata: {
+                paymentIntentId,
+                userId: user!.authId,
+                amount: originalTransaction.amount,
+                errorCode: deductResult.error?.code,
+              },
+            }
+          );
+        }
 
         return {
           success: true,
@@ -427,13 +478,15 @@ export async function processRefund(
 /**
  * Get payment status for a payment intent
  */
-export async function getPaymentStatus(paymentIntentId: string): Promise<{
-  success: boolean;
-  status?: string;
-  amount?: number;
-  currency?: string;
-  error?: string;
-}> {
+export async function getPaymentStatus(paymentIntentId: string): Promise<
+  ActionResult<{
+    success: boolean;
+    status?: string;
+    amount?: number;
+    currency?: string;
+    error?: string;
+  }>
+> {
   return await logger.wrapOperation(
     async () => {
       try {
@@ -468,18 +521,20 @@ export async function getPaymentStatus(paymentIntentId: string): Promise<{
 /**
  * Get user's purchase history
  */
-export async function getUserPurchaseHistory(limit: number = 10): Promise<{
-  success: boolean;
-  purchases?: Array<{
-    id: string;
-    amount: number;
-    credits: number;
-    date: Date;
-    status: string;
-    paymentIntentId?: string;
-  }>;
-  error?: string;
-}> {
+export async function getUserPurchaseHistory(limit: number = 10): Promise<
+  ActionResult<{
+    success: boolean;
+    purchases?: Array<{
+      id: string;
+      amount: number;
+      credits: number;
+      date: Date;
+      status: string;
+      paymentIntentId?: string;
+    }>;
+    error?: string;
+  }>
+> {
   return await logger.wrapOperation(
     async () => {
       try {

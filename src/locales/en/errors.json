@@ -11,18 +11,41 @@
     "unsupported_vendor": "Unsupported AI service provider"
   },
   "auth": {
-    "signin_failed": "Invalid email or password",
-    "signup_failed": "Unable to create account. Please try again",
-    "email_verification_failed": "Email verification failed. Please try again",
-    "password_requirements": "Password must be at least 12 characters with uppercase, lowercase, number and special character",
-    "email_invalid": "Please enter a valid email address",
-    "rate_limited": "Too many attempts. Please try again in a few minutes",
-    "unauthorized": "You don't have permission to access this resource",
-    "session_expired": "Your session has expired. Please sign in again",
     "account_not_confirmed": "Please check your email and confirm your account",
-    "password_mismatch": "Passwords do not match",
     "age_confirmation_required": "You must confirm that you are at least 18 years old",
-    "terms_agreement_required": "You must agree to the terms and conditions"
+    "bad_jwt": "Invalid authentication token. Please sign in again",
+    "email_address_invalid": "Please enter a valid email address",
+    "email_exists": "An account with this email already exists",
+    "email_invalid": "Please enter a valid email address",
+    "email_not_confirmed": "Please confirm your email address before signing in",
+    "email_verification_failed": "Email verification failed. Please try again",
+    "invalid_credentials": "Invalid email or password",
+    "over_email_send_rate_limit": "Too many emails sent. Please wait before requesting another",
+    "over_request_rate_limit": "Too many requests. Please wait a few minutes before trying again",
+    "password_mismatch": "Passwords do not match",
+    "password_requirements": "Password must be at least 12 characters with uppercase, lowercase, number and special character",
+    "password_reset_failed": "Failed to send password reset email. Please try again",
+    "rate_limited": "Too many attempts. Please try again in a few minutes",
+    "refresh_token_already_used": "Session expired. Please sign in again",
+    "refresh_token_not_found": "Session expired. Please sign in again",
+    "session_expired": "Your session has expired. Please sign in again",
+    "signin_failed": "Unable to sign in. Please try again",
+    "signout_failed": "Failed to sign out. Please try again",
+    "signup_disabled": "New signups are currently disabled",
+    "signup_failed": "Unable to create account. Please try again",
+    "terms_agreement_required": "You must agree to the terms and conditions",
+    "unauthorized": "You don't have permission to access this resource",
+    "user_already_exists": "An account with this email already exists",
+    "user_banned": "This account has been suspended",
+    "user_not_found": "No account found with this email",
+    "validation_failed": "Please check your input and try again",
+    "weak_password": "Password is too weak. Use at least 12 characters with uppercase, lowercase, number and special character"
+  },
+  "billing": {
+    "operation_failed": "Payment operation failed. Please try again",
+    "stripe_customer_failed": "Failed to set up payment account. Please try again",
+    "payment_intent_failed": "Failed to process payment. Please try again",
+    "config_invalid": "Payment configuration error. Please contact support"
   },
   "chat": {
     "analysis_failed": "Unable to analyze your message. Please try again",
@@ -32,6 +55,19 @@
     "unsupported_model": "AI model not supported",
     "prompt_build_failed": "Unable to process your request. Please try again",
     "response_failed": "Unable to generate response. Please try again"
+  },
+  "config": {
+    "invalid": "Invalid configuration. Please contact support",
+    "missing": "Configuration is missing. Please contact support",
+    "parse_failed": "Failed to load configuration. Please contact support"
+  },
+  "content": {
+    "too_long": "Your message is too long. Please shorten it and try again",
+    "inappropriate": "Message contains inappropriate content",
+    "empty": "Please enter a message"
+  },
+  "credits": {
+    "insufficient": "Insufficient credits. Please purchase more credits to continue"
   },
   "crypto": {
     "encryption_failed": "Failed to encrypt data. Please try again",
@@ -46,6 +82,43 @@
     "webcrypto_unavailable": "Encryption is not available in your browser",
     "malformed_data": "Encrypted data is corrupted or invalid"
   },
+  "db": {
+    "connection_failed": "Database connection failed. Please try again later",
+    "query_failed": "Database query failed. Please try again",
+    "transaction_failed": "Operation failed. Please try again",
+    "constraint_violation": "Operation violates data constraints",
+    "unique_constraint_violation": "This record already exists",
+    "foreign_key_constraint_violation": "Cannot complete operation due to related data",
+    "not_null_constraint_violation": "Required field is missing",
+    "check_constraint_violation": "Data does not meet requirements",
+    "record_not_found": "Record not found",
+    "duplicate_record": "This record already exists",
+    "timeout": "Database operation timed out. Please try again",
+    "migration_failed": "Database migration failed. Please contact support"
+  },
+  "env": {
+    "variable_missing": "Configuration variable is missing. Please contact support",
+    "variable_invalid": "Configuration variable is invalid. Please contact support",
+    "database_url_missing": "Database configuration is missing. Please contact support",
+    "auth_config_missing": "Authentication configuration is missing. Please contact support",
+    "ai_config_missing": "AI service configuration is missing. Please contact support",
+    "billing_config_missing": "Payment configuration is missing. Please contact support",
+    "validation_failed": "Configuration validation failed. Please contact support"
+  },
+  "feature": {
+    "not_available": "This feature is not available yet",
+    "disabled": "This feature is currently disabled"
+  },
+  "file": {
+    "not_found": "File not found",
+    "access_denied": "You don't have permission to access this file",
+    "read_failed": "Failed to read file",
+    "write_failed": "Failed to write file",
+    "delete_failed": "Failed to delete file",
+    "too_large": "File is too large",
+    "invalid_type": "File type is not supported",
+    "corrupted": "File is corrupted or invalid"
+  },
   "general": {
     "network_error": "Network error. Please check your connection",
     "server_error": "Something went wrong. Please try again later",
@@ -53,21 +126,89 @@
     "unknown_error": "An unexpected error occurred",
     "rate_limit_exceeded": "Too many requests. Please wait before trying again"
   },
+  "memory": {
+    "allocation_failed": "Memory allocation failed. Please try again",
+    "limit_exceeded": "Memory limit exceeded. Please try again"
+  },
+  "message": {
+    "duplicate": "This message was already sent",
+    "too_frequent": "You're sending messages too quickly. Please slow down",
+    "invalid_format": "Message format is invalid"
+  },
+  "permission": {
+    "denied": "You don't have permission to perform this action",
+    "insufficient": "Insufficient permissions"
+  },
+  "rate_limit": {
+    "ai_requests": "Too many AI requests. Please wait a moment before continuing",
+    "ai_burst": "You're sending messages too quickly. Please slow down",
+    "session_creation": "Too many sessions created. Please wait before creating another",
+    "credit_purchase": "Too many purchase attempts. Please wait before trying again",
+    "auth_attempts": "Too many sign-in attempts. Please wait before trying again",
+    "general_api": "Too many requests. Please wait before trying again",
+    "message_sending": "You're sending messages too quickly. Please slow down",
+    "file_upload": "Too many file uploads. Please wait before uploading again",
+    "export_requests": "Too many export requests. Please wait before trying again"
+  },
+  "resource": {
+    "not_found": "Resource not found",
+    "unavailable": "Resource is currently unavailable",
+    "exhausted": "Resource limit has been reached"
+  },
   "session": {
     "not_found": "Session not found",
     "access_denied": "You don't have permission to access this session",
     "create_failed": "Failed to create session",
+    "read_failed": "Failed to load session",
     "update_failed": "Failed to update session",
     "delete_failed": "Failed to delete session",
     "sync_failed": "Failed to sync session data",
     "encryption_failed": "Failed to encrypt session data",
     "decryption_failed": "Failed to decrypt session data",
-    "save_failed": "Failed to save session"
+    "save_failed": "Failed to save session",
+    "memory_full": "Session memory is full. Please start a new session",
+    "timeout": "Session has timed out",
+    "invalid_state": "Session is in an invalid state",
+    "concurrent_modification": "Session was modified elsewhere. Please refresh"
+  },
+  "subscription": {
+    "required": "This feature requires a subscription"
+  },
+  "tester": {
+    "not_found": "Tester account not found",
+    "create_failed": "Failed to create tester account",
+    "update_failed": "Failed to update tester account",
+    "delete_failed": "Failed to delete tester account"
   },
   "user": {
     "not_found": "User not found",
     "create_failed": "Failed to create user account",
     "update_failed": "Failed to update user profile",
     "delete_failed": "Failed to delete user account"
+  },
+  "validation": {
+    "email_invalid": "Please enter a valid email address",
+    "email_required": "Email is required",
+    "email_too_long": "Email is too long",
+    "password_required": "Password is required",
+    "password_too_short": "Password is too short. Use at least 8 characters",
+    "password_too_long": "Password is too long",
+    "password_weak": "Password is too weak. Use uppercase, lowercase, number and special character",
+    "password_mismatch": "Passwords do not match",
+    "display_name_required": "Display name is required",
+    "display_name_too_long": "Display name is too long",
+    "uuid_invalid": "Invalid identifier format",
+    "string_too_short": "Value is too short",
+    "string_too_long": "Value is too long",
+    "number_invalid": "Please enter a valid number",
+    "number_too_small": "Number is too small",
+    "number_too_large": "Number is too large",
+    "date_invalid": "Please enter a valid date",
+    "enum_invalid": "Invalid selection",
+    "array_empty": "Please select at least one option",
+    "array_too_large": "Too many items selected",
+    "boolean_required": "This field is required",
+    "json_invalid": "Invalid data format",
+    "schema_parse_failed": "Failed to validate input. Please check your data"
   }
 }

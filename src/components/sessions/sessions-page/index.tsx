@@ -31,7 +31,7 @@ const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
       persistOnCloud: session.persistOnCloud ?? false,
       metadata: session.metadata
         ? SessionMetadataSchema.parse(session.metadata)
-        : { messageCount: 0, tokenCount: 0, costUSD: 0, creditsUsed: 0 },
+        : { messageCount: 0, tokenCount: 0, inputTokens: 0, outputTokens: 0, costUSD: 0, creditsUsed: 0 },
       createdAt: session.createdAt,
       updatedAt: session.updatedAt,
     }));

@@ -9,7 +9,6 @@ import { OpenChatMessage } from "@/types/open-chat-message.types";
 interface OpenChanUIProps {
   isLoading?: boolean;
   messages: OpenChatMessage[];
-  onAddMessage: (message: OpenChatMessage) => void;
   onUserMessageSent: (message: string) => Promise<void>;
 }
 

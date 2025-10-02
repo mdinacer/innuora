@@ -59,7 +59,13 @@ export default function ProfileSettings() {
 
       // Only make API call if there are actual changes
       if (Object.keys(updates).length > 0) {
-        const updatedUser = await updateUserProfile(updates);
+        const result = await updateUserProfile(updates);
+
+        if (result.error) {
+          throw new Error(result.error.message);
+        }
+
+        const updatedUser = result.data;
 
         // Update language if changed
         if (updates.locale && updates.locale !== language) {

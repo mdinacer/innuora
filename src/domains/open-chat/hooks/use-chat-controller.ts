@@ -7,6 +7,7 @@ import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { analytics } from "@/lib/analytics/analytics";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
+import { useAppUserStore } from "@/stores/app-user.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
@@ -53,7 +54,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
 
-  const { appendAssistantMessage, appendUserMessage, processInput } = useSessionInput({
+  const { appendAssistantMessage, appendUserMessage, processInput, processingError } = useSessionInput({
     sessionId,
     locale,
     onRoundComplete: handleRoundComplete,
@@ -122,81 +123,28 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         }
 
         // Evaluate session wellness using AI (optimized frequency to reduce token waste)
+        // Track token usage and credits from wellness checks
         setTimeout(() => {
-          import("@/domains/session-wellness/session-wellness.frequency-manager").then(
-            ({ wellnessFrequencyManager }) => {
-              const currentSession = session;
-              if (currentSession) {
-                const messageCount = currentSession.messages.length;
-                const latestAnalysis = currentSession.analysisSnapshots[currentSession.analysisSnapshots.length - 1];
-                const hasCrisisIndicators = latestAnalysis?.crisis !== "none" || latestAnalysis?.intensity === "high";
-
-                // Check if wellness analysis should run based on frequency optimization
-                if (wellnessFrequencyManager.shouldCheckWellness(sessionId, messageCount, hasCrisisIndicators)) {
-                  import("@/domains/session-wellness/session-wellness.ai").then(({ AISessionWellnessEngine }) => {
-                    const aiWellnessEngine = new AISessionWellnessEngine();
-
-                    // Log wellness check execution with frequency stats
-                    const stats = wellnessFrequencyManager.getCheckStats(sessionId, messageCount);
-                    const savings = wellnessFrequencyManager.getTokenSavingsEstimate(sessionId, messageCount);
-
-                    logger.logInfo("Executing wellness check with frequency optimization", {
-                      operation: "chat_controller_wellness_check_optimized",
-                      sessionId,
-                      metadata: {
-                        messageCount,
-                        messagesSinceLastCheck: stats.messagesSinceLastCheck,
-                        estimatedTokensSaved: savings.estimatedTokensSaved,
-                        hasCrisisIndicators,
-                        locale,
-                      },
-                    });
-
-                    aiWellnessEngine
-                      .evaluateSessionWellness(currentSession, currentSession.analysisSnapshots, message)
-                      .then((wellness) => {
-                        if (wellness.suggest_conclusion) {
-                          logger.logInfo("AI session wellness evaluation completed", {
-                            operation: "chat_controller_session_wellness",
-                            sessionId,
-                            metadata: {
-                              shouldEnd: wellness.suggest_conclusion,
-                              reason: wellness.reason,
-                              locale,
-                            },
-                          });
-                          // TODO: Implement gentle conclusion guidance based on wellness.reason
-                        }
-                      })
-                      .catch((error) => {
-                        logger.logWarning("Session wellness evaluation failed", {
-                          operation: "chat_controller_session_wellness_failed",
-                          sessionId,
-                          metadata: {
-                            error: error instanceof Error ? error.message : String(error),
-                            locale,
-                          },
-                        });
-                      });
-                  });
-                } else {
-                  // Log when wellness check is skipped for frequency optimization
-                  const stats = wellnessFrequencyManager.getCheckStats(sessionId, messageCount);
-                  logger.logInfo("Wellness check skipped for frequency optimization", {
-                    operation: "chat_controller_wellness_check_skipped",
-                    sessionId,
-                    metadata: {
-                      messageCount,
-                      messagesSinceLastCheck: stats.messagesSinceLastCheck,
-                      timeSinceLastCheckMs: stats.timeSinceLastCheck,
-                      hasCrisisIndicators,
-                      locale,
-                    },
-                  });
+          import("@/domains/session-wellness/session-wellness.service").then(({ sessionWellnessService }) => {
+            const appUser = useAppUserStore.getState().user;
+            sessionWellnessService
+              .evaluateAfterMessage(session, session.analysisSnapshots, message, sessionId, locale, appUser?.authId)
+              .then((result) => {
+                if (result) {
+                  if (result.tokenUsage) addTokenUsage({ ...result.tokenUsage, type: "other" });
+                  if (result.creditsUsed > 0) addCreditsUsed(result.creditsUsed);
                 }
-              }
-            }
-          );
+              })
+              .catch((error) => {
+                logger.logWarning("Wellness check tracking failed", {
+                  operation: "wellness_check_tracking_failed",
+                  sessionId,
+                  metadata: {
+                    error: error instanceof Error ? error.message : String(error),
+                  },
+                });
+              });
+          });
         }, 0);
 
         return {
@@ -242,6 +190,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
       session,
       messages,
       isProcessing,
+      processingError,
     },
     actions: {
       processMessage,

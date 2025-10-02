@@ -12,13 +12,6 @@ import type { CreditTransaction } from "@prisma/client";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
-
-interface CreditOperationResult {
-  success: boolean;
-  newBalance: number;
-  transactionId: string;
-}
-
 // =========================
 // Core Credit Operations
 // =========================
@@ -26,7 +19,15 @@ interface CreditOperationResult {
 /**
  * Get user's current credits balance
  */
-export async function getUserCreditsBalance(authId: string): Promise<number> {
+import type { ActionResult } from "@/types/action-result";
+
+interface CreditOperationResult {
+  success: boolean;
+  newBalance: number;
+  transactionId: string;
+}
+
+export async function getUserCreditsBalance(authId: string): Promise<ActionResult<number>> {
   return await logger.wrapOperation(
     async () => {
       // Get user credits balance
@@ -60,7 +61,7 @@ export async function addCredits(
   amount: number,
   reason: string,
   metadata?: Record<string, any>
-): Promise<CreditOperationResult> {
+): Promise<ActionResult<CreditOperationResult>> {
   return await logger.wrapOperation(
     async () => {
       if (amount <= 0) {
@@ -121,7 +122,7 @@ export async function deductCredits(
   reason: string,
   sessionId?: string,
   metadata?: Record<string, any>
-): Promise<CreditOperationResult> {
+): Promise<ActionResult<CreditOperationResult>> {
   return await logger.wrapOperation(
     async () => {
       if (amount <= 0) {
@@ -132,7 +133,11 @@ export async function deductCredits(
       }
 
       // Check sufficient balance first
-      const currentBalance = await getUserCreditsBalance(authId);
+      const balanceResult = await getUserCreditsBalance(authId);
+      if (balanceResult.error) {
+        throw new Error(balanceResult.error.message);
+      }
+      const currentBalance = balanceResult.data;
       if (currentBalance < amount) {
         logger.logErrorAndThrow(
           ERROR_CODES.VALIDATION_FAILED,
@@ -196,7 +201,7 @@ export async function getUserCreditHistory(
   authId: string,
   limit: number = 50,
   offset: number = 0
-): Promise<CreditTransaction[]> {
+): Promise<ActionResult<CreditTransaction[]>> {
   return await logger.wrapOperation(
     async () => {
       // Get user first to resolve authId to userId
@@ -249,7 +254,7 @@ export async function adminAdjustCredits(
   targetUserId: string,
   amount: number, // Can be positive (add) or negative (deduct)
   reason: string
-): Promise<CreditOperationResult> {
+): Promise<ActionResult<CreditOperationResult>> {
   return await logger.wrapOperation(
     async () => {
       // Verify admin permissions (this would need to be expanded based on your auth system)
@@ -284,7 +289,11 @@ export async function adminAdjustCredits(
         if (!targetUser?.authId) {
           throw new Error(`Target user authId not found: ${targetUserId}`);
         }
-        const currentBalance = await getUserCreditsBalance(targetUser.authId);
+        const balanceResult = await getUserCreditsBalance(targetUser.authId);
+        if (balanceResult.error) {
+          throw new Error(balanceResult.error.message);
+        }
+        const currentBalance = balanceResult.data;
         if (currentBalance < Math.abs(amount)) {
           logger.logErrorAndThrow(
             ERROR_CODES.VALIDATION_FAILED,
@@ -354,6 +363,9 @@ export async function adminAdjustCredits(
  * Check if user has sufficient credits for an operation
  */
 export async function checkSufficientCredits(authId: string, requiredCredits: number): Promise<boolean> {
-  const balance = await getUserCreditsBalance(authId);
-  return balance >= requiredCredits;
+  const result = await getUserCreditsBalance(authId);
+  if (result.error) {
+    return false;
+  }
+  return result.data >= requiredCredits;
 }

@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthError } from "@supabase/supabase-js";
 import { XCircleIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { signIn } from "@/app/actions/auth-actions";
+import { signIn, signOutOthers } from "@/app/actions/auth-actions";
 import CheckboxField from "@/components/input/checkbox-field";
 import PasswordField from "@/components/input/password-field";
 import TextField from "@/components/input/text-field";
@@ -17,7 +16,6 @@ import { Form } from "@/components/ui/form";
 import { recoverContentKeyFromWrapped, storeContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { WrappedKeyPackageSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { logger } from "@/lib/logging/unified-logger";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
 
@@ -27,31 +25,35 @@ interface Props {
 
 const SignInForm: React.FC<Props> = ({ className }) => {
   const router = useRouter();
-  const { t } = useTranslation("pages", { keyPrefix: "auth.sign-in" });
-  const [formError, setFormError] = useState<string | null>(null);
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const { t } = useTranslation(["pages", "errors"]);
 
-  const { title, subtitle, formFields, no_account } = {
-    title: t("title"),
-    subtitle: t("subtitle"),
-    formFields: {
-      email: {
-        label: t("form.email.label"),
-        placeholder: t("form.email.placeholder"),
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const { title, subtitle, formFields, no_account } = useMemo(
+    () => ({
+      title: t("title", { keyPrefix: "auth.sign-in" }),
+      subtitle: t("subtitle", { keyPrefix: "auth.sign-in" }),
+      formFields: {
+        email: {
+          label: t("form.email.label", { keyPrefix: "auth.sign-in" }),
+          placeholder: t("form.email.placeholder", { keyPrefix: "auth.sign-in" }),
+        },
+        password: {
+          label: t("form.password.label", { keyPrefix: "auth.sign-in" }),
+          placeholder: t("form.password.placeholder", { keyPrefix: "auth.sign-in" }),
+        },
+        forgot_password: t("form.forgot_password", { keyPrefix: "auth.sign-in" }),
+        remember: t("form.remember", { keyPrefix: "auth.sign-in" }),
+        submit: t("form.submit", { keyPrefix: "auth.sign-in" }),
       },
-      password: {
-        label: t("form.password.label"),
-        placeholder: t("form.password.placeholder"),
+      no_account: {
+        text: t("no_account.text", { keyPrefix: "auth.sign-in" }),
+        link: t("no_account.link", { keyPrefix: "auth.sign-in" }),
       },
-      forgot_password: t("form.forgot_password"),
-      remember: t("form.remember"),
-      submit: t("form.submit"),
-    },
-    no_account: {
-      text: t("no_account.text"),
-      link: t("no_account.link"),
-    },
-  };
+    }),
+    [t]
+  );
 
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
@@ -64,62 +66,79 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
   const { isSubmitting } = form.formState;
 
+  /**
+   * Helper: Recover and store user's encryption key from wrapped package
+   * Note: Key is always persisted in IndexedDB (industry standard for E2EE apps)
+   */
+  const recoverUserEncryptionKey = useCallback(async (userMetadata: any, password: string, email: string) => {
+    const parsedCryptoData = WrappedKeyPackageSchema.safeParse(userMetadata?.crypto);
+
+    if (parsedCryptoData.success) {
+      const cryptoMeta = parsedCryptoData.data;
+      const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, password);
+      // Always persist key in IndexedDB (removed 'remember' parameter)
+      await storeContentKey(contentKey);
+    } else {
+      logger.logWarning("Crypto metadata invalid during sign-in", {
+        operation: "auth_signin_crypto_metadata_invalid",
+        metadata: {
+          email,
+          cryptoParsingError: parsedCryptoData.error?.message || "Unknown parsing error",
+        },
+      });
+    }
+  }, []);
+
   const handleSignIn = useCallback(
-    async (data: SignInSchemaType) => {
+    async (credentials: SignInSchemaType) => {
       setFormError(null);
       try {
-        const { user, session } = await signIn(data);
+        const result = await signIn(credentials);
 
-        if (session) {
-          const client = createClient();
-          client.auth.setSession(session);
-        }
-
-        const metadata = user?.user_metadata;
-
-        const parsedCryptoData = WrappedKeyPackageSchema.safeParse(metadata?.crypto);
-        if (parsedCryptoData.success) {
-          const cryptoMeta = parsedCryptoData.data; // use parsed data
-          const contentKey = await recoverContentKeyFromWrapped(cryptoMeta, data.password);
-          storeContentKey(contentKey, data.remember);
-        } else {
-          logger.logWarning("Crypto metadata invalid during sign-in", {
-            operation: "auth_signin_crypto_metadata_invalid",
-            metadata: {
-              email: data.email,
-              cryptoParsingError: parsedCryptoData.error?.message || "Unknown parsing error",
-            },
-          });
-        }
-
-        // Mark as signed in to keep button disabled during redirect
-        setIsSignedIn(true);
-        router.push("/sessions");
-      } catch (error: unknown) {
-        if (error instanceof AuthError) {
-          setFormError(error.message);
-          logger.logWarning("Authentication error during sign-in", {
-            operation: "auth_signin_auth_error",
-            metadata: {
-              email: data.email,
-              authErrorMessage: error.message,
-            },
-          });
-        } else {
-          // Handle general errors (validation, network, crypto, etc.)
-          const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred during sign in";
+        // Handle error response
+        if (result.error) {
+          const errorMessage = t(result.error.code);
           setFormError(errorMessage);
-          logger.logWarning("Unexpected error during sign-in", {
-            operation: "auth_signin_unexpected_error",
+          logger.logWarning("Authentication error during sign-in", {
+            operation: "auth_signin_error",
             metadata: {
-              email: data.email,
-              error: error instanceof Error ? error.message : String(error),
+              email: credentials.email,
+              errorCode: result.error.code,
             },
           });
+          return;
         }
+
+        // Success - extract data
+        const { user } = result.data;
+
+        // Recover and store encryption key (always persisted in IndexedDB)
+        await recoverUserEncryptionKey(user?.user_metadata, credentials.password, credentials.email);
+
+        // Enforces sign out of other sessions (Single session per user)
+        await signOutOthers();
+
+        // Mark as redirecting to prevent form re-enablement during navigation
+        setIsRedirecting(true);
+
+        // Navigate to sessions page
+        router.push("/sessions");
+        router.refresh();
+      } catch (error: unknown) {
+        setIsRedirecting(false);
+        // Handle unexpected errors (e.g., crypto key recovery failure)
+        const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred during sign in";
+        setFormError(errorMessage);
+        logger.logWarning("Unexpected error during sign-in", {
+          operation: "auth_signin_unexpected_error",
+          metadata: {
+            email: credentials.email,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
       }
     },
-    [router]
+    [recoverUserEncryptionKey, router, t]
   );
 
   return (
@@ -179,17 +198,17 @@ const SignInForm: React.FC<Props> = ({ className }) => {
             {/* <!-- Submit Button --> */}
             <button
               type="submit"
-              disabled={isSubmitting || isSignedIn}
+              disabled={isSubmitting || isRedirecting}
               className={cn(
                 "w-full rounded-2xl inline-flex items-center gap-x-2 justify-center bg-inn-bg-accent  focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50",
                 "px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none",
                 "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               )}
             >
-              {(isSubmitting || isSignedIn) && (
+              {(isSubmitting || isRedirecting) && (
                 <div className="size-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
               )}
-              {isSignedIn ? "Signing in..." : formFields.submit}
+              {isRedirecting ? "Redirecting..." : formFields.submit}
             </button>
           </form>
         </Form>

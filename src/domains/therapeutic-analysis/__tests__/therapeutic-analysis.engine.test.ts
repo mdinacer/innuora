@@ -68,6 +68,7 @@ describe("TherapeuticAnalysisEngine", () => {
         therapeutic_readiness: "ready",
         update_memory: true,
         recall_memory: false,
+        analysis_value: "medium",
       };
 
       mockParseJsonObject.mockReturnValue(mockParsedObject);
@@ -188,6 +189,7 @@ describe("TherapeuticAnalysisEngine", () => {
         therapeutic_readiness: "resistant",
         update_memory: false,
         recall_memory: false,
+        analysis_value: "medium",
       };
 
       mockParseJsonObject.mockReturnValue(mockParsedObject);
@@ -300,6 +302,7 @@ describe("TherapeuticAnalysisEngine", () => {
         therapeutic_readiness: "engaged",
         update_memory: true,
         recall_memory: true,
+        analysis_value: "medium",
       };
 
       mockParseJsonObject.mockReturnValue(mockParsedObject);
@@ -385,6 +388,7 @@ describe("TherapeuticAnalysisEngine", () => {
           therapeutic_readiness: "ready",
           update_memory: true,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
       const sessionMetadata = {
@@ -427,6 +431,7 @@ describe("TherapeuticAnalysisEngine", () => {
           therapeutic_readiness: "ready",
           update_memory: false,
           recall_memory: true,
+          analysis_value: "medium",
         },
         {
           core_module: "core_beliefs",
@@ -443,6 +448,7 @@ describe("TherapeuticAnalysisEngine", () => {
           therapeutic_readiness: "engaged",
           update_memory: true,
           recall_memory: false,
+          analysis_value: "medium",
         },
       ];
 
@@ -535,6 +541,7 @@ describe("TherapeuticAnalysisEngine", () => {
           therapeutic_readiness: "engaged",
           update_memory: true,
           recall_memory: true,
+          analysis_value: "medium",
         },
       ];
 

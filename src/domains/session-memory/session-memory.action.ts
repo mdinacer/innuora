@@ -2,14 +2,31 @@
 
 import { ChatCompletionMessageParam } from "openai/resources";
 
-import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
-import { GPT_3_5_TURBO_MODEL } from "@/domains/ai-conversation/ai-models";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
+import { deductCredits } from "@/app/actions/credit-actions";
 import CHAT_MEMORY_BUILD_INSTRUCTIONS from "@/domains/session-memory/session-memory.prompt";
 import { formatUserInputForMemory } from "@/domains/session-memory/session-memory.utils";
+import { logger } from "@/lib/logging/unified-logger";
+import type { ActionResult } from "@/types/action-result";
+import type { AiMessageResponse } from "@/types/ai-model.types";
 
-export async function generateSessionMemory(userInput: string, existingMemory?: string | null) {
+interface SessionMemoryResult {
+  memory: string;
+  tokenUsage: AiMessageResponse["modelTokenUsage"];
+  creditsUsed: number;
+}
+
+export async function generateSessionMemory(
+  userInput: string,
+  existingMemory: string | null | undefined,
+  authId?: string,
+  sessionId?: string
+): Promise<ActionResult<SessionMemoryResult>> {
   if (!userInput) {
-    throw new Error("User input is required");
+    return {
+      data: null,
+      error: { code: "VALIDATION_FAILED", message: "User input is required" },
+    };
   }
 
   const formattedUserMessage = formatUserInputForMemory(userInput);
@@ -23,7 +40,40 @@ export async function generateSessionMemory(userInput: string, existingMemory?: 
     ),
   } as ChatCompletionMessageParam;
 
-  const result = await SendPromptsToAi([prompt], GPT_3_5_TURBO_MODEL);
+  const result = await processAiPromptsWithRetry([prompt], {});
 
-  return result;
+  if (result.error) {
+    return { data: null, error: result.error };
+  }
+
+  const aiResponse = result.data!;
+
+  // Deduct credits for memory operation
+  if (authId && aiResponse.consumedCredits > 0) {
+    const deductResult = await deductCredits(authId, aiResponse.consumedCredits, "ai_memory_update", sessionId, {
+      operation: "session_memory_generation",
+      tokensUsed: aiResponse.modelTokenUsage?.usage?.total_tokens || 0,
+    });
+
+    if (deductResult.error) {
+      logger.logWarning("Credit deduction failed for memory update", {
+        operation: "session_memory_credit_deduction_failed",
+        sessionId,
+        metadata: {
+          authId,
+          creditsUsed: aiResponse.consumedCredits,
+          error: deductResult.error.message,
+        },
+      });
+    }
+  }
+
+  return {
+    data: {
+      memory: aiResponse.message,
+      tokenUsage: aiResponse.modelTokenUsage,
+      creditsUsed: aiResponse.consumedCredits,
+    },
+    error: null,
+  };
 }

@@ -37,8 +37,15 @@ export function InsufficientCreditsWarning({
             return;
           }
 
-          const balance = await getUserCreditsBalance(user.id);
-          setCurrentBalance(balance);
+          const result = await getUserCreditsBalance(user.id);
+
+          if (result.error) {
+            console.error("Failed to fetch credits balance:", result.error.message);
+            setCurrentBalance(0);
+            return;
+          }
+
+          setCurrentBalance(result.data);
         } catch (error) {
           console.error("Failed to fetch credits balance:", error);
           setCurrentBalance(0);

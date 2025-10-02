@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 
-import { deductCredits } from "@/app/actions/credit-actions";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { SessionSummary } from "@/domains/open-chat/open-chat.types";
 import { SessionSummarySchema } from "@/domains/session-analysis/session-analysis.types";
@@ -8,13 +7,12 @@ import { combineToSessionAnalysis } from "@/domains/session-analysis/session-ana
 import { getSessionSummary } from "@/domains/session-summary/session-summary.action";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
-import { prisma } from "@/lib/prisma";
 import { parseJsonObject } from "@/lib/utils/parse-json";
-import { useUserDataStore } from "@/stores/user-data.store";
+import { useAppUserStore } from "@/stores/app-user.store";
 
 export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessionId: string; locale?: AppLocales }) {
-  const { session, addTokenUsage, updateSession } = useSessionState({ sessionId });
-  const userProfile = useUserDataStore((state) => state.profile);
+  const { session, addTokenUsage, addCreditsUsed, updateSession } = useSessionState({ sessionId });
+  const appUser = useAppUserStore((state) => state.user);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
@@ -60,47 +58,35 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
         return { error };
       }
 
-      const result = await getSessionSummary(sessionAnalysis, session.memoryStore, locale);
+      const result = await getSessionSummary(sessionAnalysis, session.memoryStore, locale, appUser?.authId, sessionId);
 
-      if (!result) {
+      // Unwrap ActionResult
+      if (result.error) {
+        const error = `AI analysis failed: ${result.error.message}`;
+        console.error(error);
+        setAnalysisError(error);
+        return { error };
+      }
+
+      const aiResponse = result.data;
+      if (!aiResponse) {
         const error = "AI analysis failed - no response received";
         console.error(error);
         setAnalysisError(error);
         return { error };
       }
 
-      // Track token usage and deduct credits for summarization AI call
-      if (result.modelTokenUsage) {
-        addTokenUsage({ ...result.modelTokenUsage, type: "summary" });
-
-        // Deduct credits for session summarization AI call
-        if (userProfile?.userId && result.consumedCredits) {
-          try {
-            // Resolve authId from database user ID
-            const user = await prisma.user.findUnique({
-              where: { id: userProfile.userId },
-              select: { authId: true },
-            });
-
-            if (!user?.authId) {
-              throw new Error("User authId not found");
-            }
-
-            // Use exact credits from AI response
-            const summaryCredits = result.consumedCredits;
-            await deductCredits(user.authId, summaryCredits, "session_summarization", sessionId, {
-              locale,
-              sessionMemoryLength: session.memoryStore?.length ?? 0,
-              analysisSnapshotCount: session.analysisSnapshots.length,
-            });
-          } catch (error) {
-            console.warn("Failed to deduct credits for session summarization:", error);
-            // Don't fail the summarization if credit deduction fails
-          }
-        }
+      // Track token usage (credits already deducted in action)
+      if (aiResponse.tokenUsage) {
+        addTokenUsage({ ...aiResponse.tokenUsage, type: "summary" });
       }
 
-      if (!result.message) {
+      // Track credits used in session metadata
+      if (aiResponse.creditsUsed > 0) {
+        addCreditsUsed(aiResponse.creditsUsed);
+      }
+
+      if (!aiResponse.summary) {
         const error = "AI analysis returned empty response";
         console.error(error);
         setAnalysisError(error);
@@ -109,10 +95,10 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
 
       let parsedJSON;
       try {
-        parsedJSON = parseJsonObject(result.message);
+        parsedJSON = parseJsonObject(aiResponse.summary);
       } catch (err) {
         const error = "Invalid JSON in analysis result";
-        console.error(error, result.message, err);
+        console.error(error, aiResponse.summary, err);
         setAnalysisError(error);
         return { error };
       }

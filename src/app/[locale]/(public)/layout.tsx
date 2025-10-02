@@ -15,7 +15,7 @@ export default async function Layout({
   return (
     <>
       <Header
-        className="fixed top-0 pointer-events-auto standalone:pt-safe standalone:inset-x-safe inset-x-0 bg-mir-bg-card/50 backdrop-blur-sm z-50"
+        className="fixed top-0 pointer-events-auto standalone:pt-safe backdrop-saturate-150 standalone:inset-x-safe inset-x-0 bg-mir-bg-primary/30 backdrop-blur-sm z-50"
         sideContent={
           <div>
             <LanguageDropdown />

@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AppError } from "@/lib/errors/app-error";
+// import { AppError } from "@/lib/errors/app-error"; // Currently unused
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 // Import mocked modules
 import openai from "@/lib/openai";
 import { MemoryRateLimiter } from "@/lib/rate-limiting/rate-limiter";
 import { AiModel } from "@/types/ai-model.types";
-import { SendPromptsToAi, SendPromptsToAiWithRetry } from "../ai-client-actions";
+import { processAiPrompts, processAiPromptsWithRetry } from "../ai-client-actions";
 
 // Mock the logger to avoid test pollution
 vi.mock("@/lib/logging/unified-logger", () => ({
@@ -29,8 +29,12 @@ vi.mock("@/lib/openai", () => ({
 // Mock fetch for OpenRouter API calls
 global.fetch = vi.fn();
 
-vi.mock("@/domains/credits/credits-calculation", () => ({
-  calculateCreditsUsed: vi.fn(() => 5),
+vi.mock("@/domains/ai-conversation/ai-models", () => ({
+  AI_MODEL: "gpt-4.1-mini",
+  AI_MODEL_VENDOR: "openai",
+  AI_MODEL_INPUT_PRICE_PER_1K: 0.0004,
+  AI_MODEL_OUTPUT_PRICE_PER_1K: 0.0016,
+  AI_MODEL_MAX_OUTPUT: 2048,
 }));
 
 // Mock the rateLimiter module to use our test instance
@@ -98,10 +102,11 @@ describe.skip("AI Actions Rate Limiting", () => {
     it("should allow AI requests within burst limit", async () => {
       const userId = "user123";
 
-      const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+      const result = await processAiPrompts(mockPrompts);
 
       expect(result).toBeDefined();
-      expect(result.message).toBe("AI response");
+      expect(result.error).toBeNull();
+      expect(result.data?.message).toBe("AI response");
     });
 
     it("should enforce burst rate limit (5 requests per 10 seconds)", async () => {
@@ -109,19 +114,14 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit (5 requests)
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
-      // 6th request should fail
-      await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId)).rejects.toThrow(AppError);
-
-      try {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      } catch (error) {
-        expect(error).toBeInstanceOf(AppError);
-        expect((error as AppError).errorCode).toBe(ERROR_CODES.RATE_LIMIT_EXCEEDED);
-        expect((error as AppError).message).toContain("Too many AI requests");
-      }
+      // 6th request should return error
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
+      expect(result.error?.code).toBe(ERROR_CODES.RATE_LIMIT_EXCEEDED);
+      expect(result.error?.message).toContain("Too many AI requests");
     });
 
     it("should enforce general AI limit (30 requests per minute)", async () => {
@@ -133,14 +133,15 @@ describe.skip("AI Actions Rate Limiting", () => {
       // Use up general AI limit (30 requests) in chunks to avoid burst limit
       for (let chunk = 0; chunk < 6; chunk++) {
         for (let i = 0; i < 5; i++) {
-          await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+          await processAiPrompts(mockPrompts);
         }
         // Reset burst window between chunks
         vi.advanceTimersByTime(11000);
       }
 
-      // 31st request should fail due to general limit
-      await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId)).rejects.toThrow(AppError);
+      // 31st request should return error due to general limit
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
     });
 
     it("should reset limits after window expiration", async () => {
@@ -148,18 +149,20 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
       // Verify limit exceeded
-      await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId)).rejects.toThrow();
+      let result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
 
       // Advance time past burst window (10 seconds)
       vi.advanceTimersByTime(11000);
 
       // Should allow new requests
-      const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      expect(result.message).toBe("AI response");
+      result = await processAiPrompts(mockPrompts);
+      expect(result.error).toBeNull();
+      expect(result.data?.message).toBe("AI response");
     });
 
     it("should track different users separately", async () => {
@@ -168,21 +171,24 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // User 1 uses up burst limit
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId1);
+        await processAiPrompts(mockPrompts);
       }
 
       // User 1 should be rate limited
-      await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId1)).rejects.toThrow();
+      let result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
 
       // User 2 should still be able to make requests
-      const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId2);
-      expect(result.message).toBe("AI response");
+      result = await processAiPrompts(mockPrompts);
+      expect(result.error).toBeNull();
+      expect(result.data?.message).toBe("AI response");
     });
 
     it("should allow requests without userId (anonymous users)", async () => {
       // Should work without rate limiting when no userId provided
-      const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {});
-      expect(result.message).toBe("AI response");
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).toBeNull();
+      expect(result.data?.message).toBe("AI response");
     });
 
     it("should provide useful error messages with remaining time", async () => {
@@ -190,18 +196,12 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
-      try {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      } catch (error) {
-        expect(error).toBeInstanceOf(AppError);
-        const appError = error as AppError;
-        expect(appError.message).toMatch(/Try again in \d+ seconds/);
-        expect(appError.details).toHaveProperty("remaining");
-        expect(appError.details).toHaveProperty("resetTime");
-      }
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
+      expect(result.error?.message).toMatch(/Try again in \d+ seconds/);
     });
   });
 
@@ -209,9 +209,10 @@ describe.skip("AI Actions Rate Limiting", () => {
     it("should pass userId to underlying SendPromptsToAi function", async () => {
       const userId = "user123";
 
-      const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 1000, userId);
+      const result = await processAiPromptsWithRetry(mockPrompts, {}, 3, 1000);
 
-      expect(result.message).toBe("AI response");
+      expect(result.error).toBeNull();
+      expect(result.data?.message).toBe("AI response");
     });
 
     it("should not retry on rate limit errors", async () => {
@@ -219,13 +220,13 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit first
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
-      // Rate limit error should not be retried - it should fail immediately
-      await expect(SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 1000, userId)).rejects.toThrow(
-        AppError
-      );
+      // Rate limit error should not be retried - it should return error immediately
+      const result = await processAiPromptsWithRetry(mockPrompts, {}, 3, 1000);
+      expect(result.error).not.toBeNull();
+      expect(result.error?.code).toBe(ERROR_CODES.RATE_LIMIT_EXCEEDED);
     });
 
     it("should enforce rate limiting before retries", async () => {
@@ -233,15 +234,16 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
-      // Even with retries enabled, should fail immediately on rate limit
+      // Even with retries enabled, should return error immediately on rate limit
       const startTime = Date.now();
-      await expect(SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 1000, userId)).rejects.toThrow();
-
-      // Should fail fast, not wait for retries
+      const result = await processAiPromptsWithRetry(mockPrompts, {}, 3, 1000);
       const endTime = Date.now();
+
+      expect(result.error).not.toBeNull();
+      // Should fail fast, not wait for retries
       expect(endTime - startTime).toBeLessThan(100); // Should be very quick
     });
   });
@@ -253,8 +255,9 @@ describe.skip("AI Actions Rate Limiting", () => {
       // Simulate a user having a conversation with AI
       // Should be able to make several requests quickly, then wait
       for (let i = 0; i < 5; i++) {
-        const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-        expect(result.message).toBe("AI response");
+        const result = await processAiPrompts(mockPrompts);
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("AI response");
       }
 
       // Wait for burst window to reset
@@ -262,8 +265,9 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Should be able to make more requests
       for (let i = 0; i < 5; i++) {
-        const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-        expect(result.message).toBe("AI response");
+        const result = await processAiPrompts(mockPrompts);
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("AI response");
       }
     });
 
@@ -273,14 +277,14 @@ describe.skip("AI Actions Rate Limiting", () => {
       // Attempt rapid-fire requests (abuse scenario)
       const promises = [];
       for (let i = 0; i < 20; i++) {
-        promises.push(SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId).catch((e) => e));
+        promises.push(processAiPrompts(mockPrompts));
       }
 
       const results = await Promise.all(promises);
 
       // Only first 5 should succeed, rest should be rate limited
-      const successful = results.filter((r) => !(r instanceof AppError));
-      const rateLimited = results.filter((r) => r instanceof AppError);
+      const successful = results.filter((r) => r.error === null);
+      const rateLimited = results.filter((r) => r.error !== null);
 
       expect(successful).toHaveLength(5);
       expect(rateLimited).toHaveLength(15);
@@ -297,12 +301,14 @@ describe.skip("AI Actions Rate Limiting", () => {
       // Even with same rate limits, expensive models are naturally limited by cost
       // This test ensures rate limiting works regardless of model cost
       for (let i = 0; i < 5; i++) {
-        const result = await SendPromptsToAi(mockPrompts, expensiveModel, {}, userId);
-        expect(result.message).toBe("AI response");
+        const result = await processAiPrompts(mockPrompts);
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("AI response");
       }
 
       // Should still be rate limited the same way
-      await expect(SendPromptsToAi(mockPrompts, expensiveModel, {}, userId)).rejects.toThrow();
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
     });
 
     it("should handle edge case of user making request exactly at limit reset", async () => {
@@ -310,15 +316,16 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
       // Advance to exactly when window resets
       vi.advanceTimersByTime(10000);
 
       // Should be able to make new request
-      const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      expect(result.message).toBe("AI response");
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).toBeNull();
+      expect(result.data?.message).toBe("AI response");
     });
   });
 
@@ -328,7 +335,7 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up some requests
       for (let i = 0; i < 3; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
       // Get current remaining count
@@ -340,16 +347,12 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up remaining requests
       for (let i = 0; i < 2; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
       // Next request should fail with specific remaining count
-      try {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      } catch (error) {
-        const appError = error as AppError;
-        expect(appError.details).toHaveProperty("remaining", 0);
-      }
+      const result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
     });
 
     it("should distinguish between burst and general rate limit errors", async () => {
@@ -357,16 +360,13 @@ describe.skip("AI Actions Rate Limiting", () => {
 
       // Use up burst limit
       for (let i = 0; i < 5; i++) {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+        await processAiPrompts(mockPrompts);
       }
 
-      try {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      } catch (error) {
-        const appError = error as AppError;
-        expect(appError.message).toContain("Too many AI requests");
-        expect(appError.message).toMatch(/Try again in \d+ seconds/);
-      }
+      let result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
+      expect(result.error?.message).toContain("Too many AI requests");
+      expect(result.error?.message).toMatch(/Try again in \d+ seconds/);
 
       // Reset burst window but keep general window
       vi.advanceTimersByTime(11000);
@@ -374,17 +374,14 @@ describe.skip("AI Actions Rate Limiting", () => {
       // Continue until general limit
       for (let chunk = 0; chunk < 5; chunk++) {
         for (let i = 0; i < 5; i++) {
-          await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
+          await processAiPrompts(mockPrompts);
         }
         vi.advanceTimersByTime(11000);
       }
 
-      try {
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, {}, userId);
-      } catch (error) {
-        const appError = error as AppError;
-        expect(appError.message).toContain("Daily AI request limit reached");
-      }
+      result = await processAiPrompts(mockPrompts);
+      expect(result.error).not.toBeNull();
+      expect(result.error?.message).toContain("Daily AI request limit reached");
     });
   });
 });

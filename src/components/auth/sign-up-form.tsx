@@ -73,6 +73,14 @@ const SignUpForm: React.FC<Props> = ({}) => {
 
   const { isSubmitting } = form.formState;
 
+  /**
+   * Helper: Generate and wrap encryption key for new user
+   */
+  const generateUserEncryptionKey = useCallback(async (password: string) => {
+    const { wrappedPackage } = await createAndWrapContentKeyForUser(password);
+    return wrappedPackage;
+  }, []);
+
   const handleOnSubmit = useCallback(
     async (data: SignUpSchemaType) => {
       setFormError(null);
@@ -81,7 +89,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
       trackAction("signup_attempt");
 
       try {
-        const { wrappedPackage } = await createAndWrapContentKeyForUser(data.password);
+        const wrappedPackage = await generateUserEncryptionKey(data.password);
         await signUp(data, wrappedPackage);
 
         // Track successful signup conversion
@@ -119,7 +127,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
         }
       }
     },
-    [trackAction, trackConversion, trackError]
+    [trackAction, trackConversion, trackError, generateUserEncryptionKey]
   );
 
   return (

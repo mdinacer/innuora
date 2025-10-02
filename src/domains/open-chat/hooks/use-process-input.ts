@@ -1,14 +1,13 @@
 import { useCallback, useState } from "react";
 
-import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { handleUserInput } from "@/domains/open-chat/open-chat.action";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
+import { useAppUserStore } from "@/stores/app-user.store";
 import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
-const FALLBACK_MODEL = MODELS_CODES.M1;
 const RECENT_ANALYSIS_COUNT = 3;
 
 interface Props {
@@ -35,6 +34,8 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
       setIsProcessing(true);
 
       const userProfile = useUserDataStore.getState().profile;
+      const appUser = useAppUserStore.getState().user;
+      const deductCredits = useAppUserStore.getState().deductCredits;
 
       try {
         if (!session) {
@@ -54,6 +55,9 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         const recentAnalysis = session.analysisSnapshots?.slice(-RECENT_ANALYSIS_COUNT) ?? [];
         const history: OpenChatMessage[] = session.messages ?? [];
 
+        // Use appUser.authId directly for credit operations (more reliable than profile.userId)
+        const authId = appUser?.authId;
+
         const result = await handleUserInput(
           userInput,
           recentAnalysis,
@@ -61,8 +65,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           userProfile,
           session.memoryStore,
           locale,
-          session?.modelCode ?? FALLBACK_MODEL,
-          userProfile?.userId, // userId
+          authId, // Pass authId directly - this is Supabase auth user ID
           sessionId // sessionId
         );
 
@@ -79,6 +82,10 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           tokenUsage: { analysisUsage, responseUsage },
           creditsUsed,
         } = result;
+
+        // Update client-side balance to reflect server-side deduction
+        // Credits were already deducted on the server, just sync the UI
+        deductCredits(creditsUsed);
 
         // Validate response content
         if (!assistantMessage || typeof assistantMessage !== "string") {

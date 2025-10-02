@@ -7,11 +7,12 @@ import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { UpdateUserProfileSchema, UpdateUserProfileSchemaType } from "@/lib/zod/user-actions.schema";
+import type { ActionResult } from "@/types/action-result";
 import { UserWithRelations } from "@/types/user.types";
 import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";
 
 // Core user functions
-export async function getUserById(authUserId: string): Promise<AppUser | null> {
+export async function getUserById(authUserId: string): Promise<ActionResult<AppUser | null>> {
   await assertCurrentUserId(authUserId);
 
   return await logger.wrapOperation(
@@ -26,7 +27,7 @@ export async function getUserById(authUserId: string): Promise<AppUser | null> {
     }
   );
 }
-export async function getUserWithRelationsById(authUserId: string): Promise<UserWithRelations | null> {
+export async function getUserWithRelationsById(authUserId: string): Promise<ActionResult<UserWithRelations | null>> {
   await assertCurrentUserId(authUserId);
 
   return await logger.wrapOperation(
@@ -48,7 +49,16 @@ export async function getUserWithRelationsById(authUserId: string): Promise<User
 
 export async function getCurrentUser(): Promise<AppUser> {
   const currentAuthUser: AuthUser = await requireCurrentUser();
-  const user = await getUserById(currentAuthUser.id);
+  const userResult = await getUserById(currentAuthUser.id);
+
+  if (userResult.error) {
+    logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error(userResult.error.message), {
+      operation: "user_get_current",
+      userId: currentAuthUser.id,
+    });
+  }
+
+  const user = userResult.data;
 
   if (!user) {
     logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("Current user not found in database"), {
@@ -62,7 +72,16 @@ export async function getCurrentUser(): Promise<AppUser> {
 
 export async function getCurrentUserWithRelations(): Promise<UserWithRelations> {
   const currentAuthUser: AuthUser = await requireCurrentUser();
-  const userWithRelations = await getUserWithRelationsById(currentAuthUser.id);
+  const userResult = await getUserWithRelationsById(currentAuthUser.id);
+
+  if (userResult.error) {
+    logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error(userResult.error.message), {
+      operation: "user_get_current_with_relations",
+      userId: currentAuthUser.id,
+    });
+  }
+
+  const userWithRelations = userResult.data;
 
   if (!userWithRelations) {
     logger.logErrorAndThrow(
@@ -78,7 +97,7 @@ export async function getCurrentUserWithRelations(): Promise<UserWithRelations> 
   return userWithRelations!; // Non-null assertion since logErrorAndThrow throws
 }
 
-export async function createUserWithDefaults(authUserId: string): Promise<UserWithRelations> {
+export async function createUserWithDefaults(authUserId: string): Promise<ActionResult<UserWithRelations>> {
   return await logger.wrapOperation(
     () =>
       prisma.user.create({
@@ -114,20 +133,59 @@ export async function createUserWithDefaults(authUserId: string): Promise<UserWi
   );
 }
 
-export async function findOrCreateUser(authUserId: string): Promise<UserWithRelations> {
-  const existingUser = await getUserWithRelationsById(authUserId);
+export async function findOrCreateUser(authUserId: string): Promise<ActionResult<UserWithRelations>> {
+  return (await logger.wrapOperation(
+    async () => {
+      const existingUserResult = await getUserWithRelationsById(authUserId);
 
-  if (existingUser) {
-    return existingUser;
-  }
+      if (existingUserResult.error) {
+        // If there's an error fetching, try to create
+        const createResult = await createUserWithDefaults(authUserId);
+        if (createResult.error || !createResult.data) {
+          logger.logErrorAndThrow(
+            ERROR_CODES.USER_CREATE_FAILED,
+            new Error(createResult.error?.message || "Failed to create user"),
+            {
+              operation: "find_or_create_user",
+              userId: authUserId,
+              metadata: { reason: "create_failed_after_fetch_error" },
+            }
+          );
+        }
+        return createResult.data;
+      }
 
-  return await createUserWithDefaults(authUserId);
+      if (existingUserResult.data) {
+        return existingUserResult.data;
+      }
+
+      // User doesn't exist, create it
+      const createResult = await createUserWithDefaults(authUserId);
+      if (createResult.error || !createResult.data) {
+        logger.logErrorAndThrow(
+          ERROR_CODES.USER_CREATE_FAILED,
+          new Error(createResult.error?.message || "Failed to create user"),
+          {
+            operation: "find_or_create_user",
+            userId: authUserId,
+            metadata: { reason: "create_failed_user_not_found" },
+          }
+        );
+      }
+      return createResult.data;
+    },
+    ERROR_CODES.USER_NOT_FOUND,
+    {
+      operation: "find_or_create_user",
+      userId: authUserId,
+    }
+  )) as ActionResult<UserWithRelations>;
 }
 
 export async function updateUserById(
   authUserId: string,
   userData: Partial<Prisma.UserUpdateInput>
-): Promise<UserWithRelations> {
+): Promise<ActionResult<UserWithRelations>> {
   await assertCurrentUserId(authUserId);
 
   return await logger.wrapOperation(
@@ -150,12 +208,14 @@ export async function updateUserById(
   );
 }
 
-export async function updateCurrentUser(userData: Partial<Prisma.UserUpdateInput>): Promise<UserWithRelations> {
+export async function updateCurrentUser(
+  userData: Partial<Prisma.UserUpdateInput>
+): Promise<ActionResult<UserWithRelations>> {
   const currentAuthUser = await requireCurrentUser();
   return await updateUserById(currentAuthUser.id, userData);
 }
 
-export async function deleteUserById(authUserId: string): Promise<boolean> {
+export async function deleteUserById(authUserId: string): Promise<ActionResult<boolean>> {
   await assertCurrentUserId(authUserId);
 
   return await logger.wrapOperation(
@@ -167,7 +227,10 @@ export async function deleteUserById(authUserId: string): Promise<boolean> {
       });
 
       if (!user) {
-        throw new Error(`User not found: ${authUserId}`);
+        logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error(`User not found: ${authUserId}`), {
+          operation: "user_delete_by_id",
+          userId: authUserId,
+        });
       }
 
       await prisma.user.delete({
@@ -188,15 +251,18 @@ export async function deleteUserById(authUserId: string): Promise<boolean> {
   );
 }
 
-export async function deleteCurrentUser(): Promise<boolean> {
+export async function deleteCurrentUser(): Promise<ActionResult<boolean>> {
   const currentAuthUser = await requireCurrentUser();
   return await deleteUserById(currentAuthUser.id);
 }
 
 export async function checkUserExists(authUserId: string): Promise<boolean> {
   try {
-    const user = await getUserById(authUserId);
-    return !!user;
+    const result = await getUserById(authUserId);
+    if (result.error) {
+      return false;
+    }
+    return !!result.data;
   } catch {
     // For this function, we want to return false on any error (including access denied)
     // since it's a simple existence check
@@ -207,13 +273,15 @@ export async function checkUserExists(authUserId: string): Promise<boolean> {
 /**
  * Updates user profile information (display name and locale)
  */
-export async function updateUserProfile(profileData: UpdateUserProfileSchemaType): Promise<UserWithRelations> {
+export async function updateUserProfile(
+  profileData: UpdateUserProfileSchemaType
+): Promise<ActionResult<UserWithRelations>> {
   // Validate input
   const validatedData = UpdateUserProfileSchema.parse(profileData);
 
   const currentAuthUser = await requireCurrentUser();
 
-  return await logger.wrapOperation(
+  return (await logger.wrapOperation(
     async () => {
       return await prisma.$transaction(async (tx) => {
         const { displayName, locale } = validatedData;
@@ -266,7 +334,11 @@ export async function updateUserProfile(profileData: UpdateUserProfileSchemaType
         });
 
         if (!updatedUser) {
-          throw new Error("User not found after update");
+          logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("User not found after update"), {
+            operation: "user_profile_update",
+            userId: currentAuthUser.id,
+            metadata: { reason: "user_disappeared_after_update" },
+          });
         }
 
         return updatedUser;
@@ -284,5 +356,5 @@ export async function updateUserProfile(profileData: UpdateUserProfileSchemaType
       },
     },
     "User profile updated successfully"
-  );
+  )) as ActionResult<UserWithRelations>;
 }

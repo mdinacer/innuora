@@ -89,7 +89,7 @@ export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: W
       });
 
       if (error) {
-        throw error; // Will be caught and logged with proper error code
+        throw error; // Will be caught and logged with proper error code by wrapOperation
       }
 
       if (!data.user?.confirmation_sent_at) {
@@ -101,7 +101,8 @@ export async function signUp(singUpData: SignUpSchemaType, wrappedKeyPackage?: W
     ERROR_CODES.AUTH_SIGNUP_FAILED,
     {
       operation: "user_signup",
-      userId: singUpData.email, // Use email as temp identifier
+      // Don't pass userId here - if signup fails, user doesn't exist yet and will cause FK violation
+      // Email is tracked in metadata instead
       metadata: {
         email: email.toLowerCase(),
         hasKeyPackage: !!wrappedKeyPackage,
@@ -136,7 +137,8 @@ export async function signIn(signInData: SignInSchemaType) {
     ERROR_CODES.AUTH_SIGNIN_FAILED,
     {
       operation: "user_signin",
-      userId: email, // Use email as temp identifier
+      // Don't pass userId here - if login fails, user doesn't exist and will cause FK violation
+      // Email is tracked in metadata instead
       metadata: {
         email: email.toLowerCase(),
         remember,
@@ -146,6 +148,27 @@ export async function signIn(signInData: SignInSchemaType) {
   );
 }
 
+export async function signOutOthers() {
+  const supabase = await createClient();
+  const currentUser = await findCurrentUser();
+
+  await logger.wrapOperation(
+    async () => {
+      await supabase.auth.signOut({ scope: "others" });
+    },
+    ERROR_CODES.AUTH_SIGNOUT_FAILED,
+    {
+      operation: "user_signout",
+      userId: currentUser?.id,
+      metadata: {
+        sessionValid: !!currentUser,
+      },
+    },
+    "User signed out successfully"
+  );
+
+  return { success: true };
+}
 export async function signOut(scope?: "global" | "local" | "others") {
   const supabase = await createClient();
   const currentUser = await findCurrentUser();

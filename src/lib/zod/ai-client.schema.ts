@@ -30,9 +30,9 @@ export const AiModelSchema = z.object({
 });
 
 /**
- * Schema for SendPromptsToAi function
+ * Schema for processAiPrompts function
  */
-export const SendPromptsToAiSchema = z.object({
+export const ProcessAiPromptsSchema = z.object({
   model: AiModelSchema,
   prompts: z.array(ChatCompletionMessageSchema).min(1, "At least one prompt is required"),
   options: AiRequestOptionsSchema.optional(),
@@ -51,5 +51,5 @@ export const TokenUsageSchema = z.object({
 export type ChatCompletionMessageSchemaType = z.infer<typeof ChatCompletionMessageSchema>;
 export type AiRequestOptionsSchemaType = z.infer<typeof AiRequestOptionsSchema>;
 export type AiModelSchemaType = z.infer<typeof AiModelSchema>;
-export type SendPromptsToAiSchemaType = z.infer<typeof SendPromptsToAiSchema>;
+export type ProcessAiPromptsSchemaType = z.infer<typeof ProcessAiPromptsSchema>;
 export type TokenUsageSchemaType = z.infer<typeof TokenUsageSchema>;

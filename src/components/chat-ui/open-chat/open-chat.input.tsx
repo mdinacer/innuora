@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SendIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -15,31 +15,20 @@ interface Props {
 const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
   const { t } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.input" });
 
-  const { label, placeholder, actionTitle } = useMemo(
-    () => ({
-      label: t("label"),
-      placeholder: t("placeholder"),
-      actionTitle: t("actionTitle"),
-    }),
-    [t]
-  );
   const [inputValue, setInputValue] = useState("");
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
-  const handleSendMessage = useCallback(() => {
+  const handleSendMessage = () => {
     onSendMessage(inputValue);
     setInputValue("");
-  }, [inputValue, onSendMessage]);
+  };
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-      }
-    },
-    [handleSendMessage]
-  );
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -71,16 +60,16 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          aria-label={label}
-          placeholder={placeholder}
-          aria-placeholder={placeholder}
+          aria-label={t("label")}
+          placeholder={t("placeholder")}
+          aria-placeholder={t("placeholder")}
         />
         <button
           onClick={handleSendMessage}
           disabled={isDisabled}
           type="button"
-          aria-label={actionTitle}
-          title={actionTitle}
+          aria-label={t("actionTitle")}
+          title={t("actionTitle")}
           className={cn(
             "size-10 border-none rounded-full flex items-center justify-center",
             "bg-inn-bg-accent",

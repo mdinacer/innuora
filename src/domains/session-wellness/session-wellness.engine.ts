@@ -19,7 +19,13 @@ export class SessionWellnessEngine {
     const latestAnalysis = recentAnalyses[recentAnalyses.length - 1];
     if (latestAnalysis) {
       if (latestAnalysis.crisis !== "none" || latestAnalysis.intensity === "high") {
-        return { suggest_conclusion: false };
+        return {
+          suggest_conclusion: false,
+          should_end: false,
+          reasons: [],
+          loop_assessment: "none",
+          confidence: "high",
+        };
       }
     }
 
@@ -27,7 +33,9 @@ export class SessionWellnessEngine {
     if (this.shouldConcludeByLength(messageCount, durationMinutes)) {
       return {
         suggest_conclusion: true,
-        reason: "length",
+        should_end: messageCount > 50, // Hard limit
+        reasons: ["length"],
+        loop_assessment: "none",
         confidence: isExtended ? "high" : "medium",
       };
     }
@@ -36,16 +44,20 @@ export class SessionWellnessEngine {
     if (this.shouldConcludeByProgress(recentAnalyses, lastUserMessage)) {
       return {
         suggest_conclusion: true,
-        reason: "progress",
+        should_end: false,
+        reasons: ["productive_loop_complete"],
+        loop_assessment: "productive",
         confidence: "medium",
       };
     }
 
-    // Check for repetition patterns
+    // Check for repetition patterns (potential unproductive loop)
     if (this.shouldConcludeByRepetition(recentAnalyses)) {
       return {
         suggest_conclusion: true,
-        reason: "repetition",
+        should_end: false,
+        reasons: ["unproductive_loop"],
+        loop_assessment: "unproductive",
         confidence: "medium",
       };
     }
@@ -54,7 +66,9 @@ export class SessionWellnessEngine {
     if (this.shouldConcludeByFatigue(recentAnalyses, durationMinutes)) {
       return {
         suggest_conclusion: true,
-        reason: "fatigue",
+        should_end: false,
+        reasons: ["length"],
+        loop_assessment: "none",
         confidence: "low",
       };
     }
@@ -63,12 +77,20 @@ export class SessionWellnessEngine {
     if (this.shouldConcludeByNaturalEnd(lastUserMessage)) {
       return {
         suggest_conclusion: true,
-        reason: "natural_end",
+        should_end: false,
+        reasons: ["natural_end"],
+        loop_assessment: "none",
         confidence: "high",
       };
     }
 
-    return { suggest_conclusion: false };
+    return {
+      suggest_conclusion: false,
+      should_end: false,
+      reasons: [],
+      loop_assessment: "none",
+      confidence: "low",
+    };
   }
 
   private shouldConcludeByLength(messageCount: number, durationMinutes: number): boolean {

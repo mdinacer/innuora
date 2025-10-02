@@ -199,7 +199,7 @@ export async function getSessionsLastUpdate(): Promise<{ id: string; updatedAt: 
 export async function getSessionLastUpdate(sessionId: string): Promise<{ id: string; updatedAt: Date } | null> {
   const authUser = await requireCurrentUser();
 
-  return await logger.wrapOperation(
+  const result = await logger.wrapOperation(
     () =>
       prisma.session.findUnique({
         where: { id: sessionId, user: { authId: authUser.id } },
@@ -215,4 +215,10 @@ export async function getSessionLastUpdate(sessionId: string): Promise<{ id: str
       operation: "encrypted_session_get_last_update",
     }
   );
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }

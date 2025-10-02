@@ -29,12 +29,16 @@ describe("Encrypted Session Crypto", () => {
     clearStoredContentKey();
 
     // Generate fresh content key for each test
-    contentKey = await generateContentKey();
-    await storeContentKey(contentKey, false);
+    const keyResult = await generateContentKey();
+    if (keyResult.error) throw new Error(keyResult.error.message);
+    contentKey = keyResult.data!;
+
+    const storeResult = await storeContentKey(contentKey);
+    if (storeResult.error) throw new Error(storeResult.error.message);
   });
 
-  afterEach(() => {
-    clearStoredContentKey();
+  afterEach(async () => {
+    await clearStoredContentKey();
   });
 
   describe("encryptSession", () => {
@@ -44,7 +48,6 @@ describe("Encrypted Session Crypto", () => {
         userId: "user-123",
         title: "Test Session",
         subtitle: "Test subtitle",
-        modelCode: "M1",
         autoUpdateTitle: true,
         messages: [
           {
@@ -83,6 +86,7 @@ describe("Encrypted Session Crypto", () => {
             therapeutic_readiness: "ready",
             update_memory: true,
             recall_memory: false,
+            analysis_value: "medium",
           },
         ],
         metadata: {
@@ -104,7 +108,6 @@ describe("Encrypted Session Crypto", () => {
       expect(encryptedSession.userId).toBe(session.userId);
       expect(encryptedSession.title).toBe(session.title);
       expect(encryptedSession.subtitle).toBe(session.subtitle);
-      expect(encryptedSession.modelCode).toBe(session.modelCode);
       expect(encryptedSession.autoUpdateTitle).toBe(session.autoUpdateTitle);
       expect(encryptedSession.persistOnCloud).toBe(session.persistOnCloud);
 
@@ -220,7 +223,6 @@ describe("Encrypted Session Crypto", () => {
         userId: "user-123",
         title: "Complete Session",
         subtitle: "Test subtitle",
-        modelCode: "M1",
         autoUpdateTitle: true,
         createdAt: new Date("2024-01-01T09:00:00Z"),
         updatedAt: new Date("2024-01-01T10:00:00Z"),
@@ -261,6 +263,7 @@ describe("Encrypted Session Crypto", () => {
             therapeutic_readiness: "ready",
             update_memory: true,
             recall_memory: false,
+            analysis_value: "medium",
           },
         ],
         metadata: {
@@ -284,7 +287,6 @@ describe("Encrypted Session Crypto", () => {
       expect(decryptedSession.userId).toBe(originalSession.userId);
       expect(decryptedSession.title).toBe(originalSession.title);
       expect(decryptedSession.subtitle).toBe(originalSession.subtitle);
-      expect(decryptedSession.modelCode).toBe(originalSession.modelCode);
       expect(decryptedSession.autoUpdateTitle).toBe(originalSession.autoUpdateTitle);
       expect(decryptedSession.persistOnCloud).toBe(originalSession.persistOnCloud);
 
@@ -358,7 +360,6 @@ describe("Encrypted Session Crypto", () => {
         userId: "user-123",
         title: "No Encrypted Data",
         subtitle: null,
-        modelCode: "M1",
         autoUpdateTitle: false,
         createdAt: new Date("2024-01-01T09:00:00Z"),
         updatedAt: new Date("2024-01-01T09:05:00Z"),
@@ -389,35 +390,12 @@ describe("Encrypted Session Crypto", () => {
       expect(decryptedSession.metadata.tokenCount).toBe(0);
     });
 
-    it("should apply default model code when not specified", async () => {
-      const prismaSession: PrismaSession = {
-        id: "test-session-9",
-        userId: "user-123",
-        title: "Default Model",
-        subtitle: null,
-        modelCode: "M1",
-        autoUpdateTitle: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        metadata: null,
-        encryptedData: null,
-        persistOnCloud: false,
-      };
-
-      const decryptedSession = await decryptSession(prismaSession);
-
-      // Should apply default model code from environment or fallback
-      expect(decryptedSession.modelCode).toBeDefined();
-      expect(typeof decryptedSession.modelCode).toBe("string");
-    });
-
     it("should handle invalid encrypted data gracefully", async () => {
       const prismaSession: PrismaSession = {
         id: "test-session-10",
         userId: "user-123",
         title: "Invalid Encrypted Data",
         subtitle: null,
-        modelCode: "M1",
         autoUpdateTitle: false,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -447,7 +425,6 @@ describe("Encrypted Session Crypto", () => {
         userId: "user-123",
         title: "No Key Available",
         subtitle: null,
-        modelCode: "M1",
         autoUpdateTitle: false,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -467,7 +444,6 @@ describe("Encrypted Session Crypto", () => {
         userId: "user-456",
         title: "Round Trip Test",
         subtitle: "Testing data integrity",
-        modelCode: "M1",
         autoUpdateTitle: false,
         createdAt: new Date("2024-01-15T14:30:00Z"),
         updatedAt: new Date("2024-01-15T15:00:00Z"),
@@ -509,6 +485,7 @@ describe("Encrypted Session Crypto", () => {
             therapeutic_readiness: "ready",
             update_memory: true,
             recall_memory: false,
+            analysis_value: "medium",
           },
         ],
         metadata: {
@@ -532,7 +509,6 @@ describe("Encrypted Session Crypto", () => {
       expect(decryptedSession.userId).toBe(originalSession.userId);
       expect(decryptedSession.title).toBe(originalSession.title);
       expect(decryptedSession.subtitle).toBe(originalSession.subtitle);
-      expect(decryptedSession.modelCode).toBe(originalSession.modelCode);
       expect(decryptedSession.autoUpdateTitle).toBe(originalSession.autoUpdateTitle);
       expect(decryptedSession.persistOnCloud).toBe(originalSession.persistOnCloud);
 

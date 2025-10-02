@@ -47,10 +47,15 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
 
       const result = await getUserPurchaseHistory(limit);
 
-      if (result.success && result.purchases) {
-        setPurchases(result.purchases);
+      if (result.error) {
+        setError(result.error.message || "Failed to load purchase history");
+        return;
+      }
+
+      if (result.data.success && result.data.purchases) {
+        setPurchases(result.data.purchases);
       } else {
-        setError(result.error || "Failed to load purchase history");
+        setError("Failed to load purchase history");
       }
     } catch (err) {
       setError("An unexpected error occurred");

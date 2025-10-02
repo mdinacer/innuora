@@ -5,6 +5,8 @@ import matter from "gray-matter";
 import { ContentCategory, ContentMetadata } from "@/types/content.types";
 import { contentRegistry } from "./content-registry";
 
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 // =========================
 // Content Loader
 // =========================

@@ -1,6 +1,5 @@
 import z from "zod";
 
-import { ModelCode } from "@/domains/ai-conversation/ai-models";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { SessionDiagnosticsWithMetadata } from "@/domains/session-diagnostics/session-diagnostics.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
@@ -16,7 +15,9 @@ export type SessionOverview = {
   persistOnCloud: boolean;
   metadata: {
     messageCount: number;
-    tokenCount: number;
+    tokenCount: number; // Total tokens (for backward compatibility)
+    inputTokens: number; // Input/prompt tokens
+    outputTokens: number; // Output/completion tokens
     costUSD: number;
     creditsUsed: number;
   };
@@ -43,7 +44,6 @@ export interface Session {
   // Session diagnostics (encrypted)
   sessionDiagnostics: SessionDiagnosticsWithMetadata | null;
 
-  modelCode: ModelCode;
   persistOnCloud?: boolean;
   autoUpdateTitle: boolean;
   metadata: SessionMeta;
@@ -58,7 +58,9 @@ export interface SessionSummary {
 export interface SessionMeta {
   tokenUsage: ModelTokenUsage[];
   messageCount: number;
-  tokenCount: number;
+  tokenCount: number; // Total tokens (for backward compatibility)
+  inputTokens: number; // Input/prompt tokens (cheaper)
+  outputTokens: number; // Output/completion tokens (more expensive)
   costUSD: number;
   creditsUsed: number;
   activeDurationMs: number; // Actual conversation time (excludes idle gaps)
@@ -69,6 +71,8 @@ export interface SessionMeta {
 export const SessionMetadataSchema = z.object({
   messageCount: z.number().optional().default(0),
   tokenCount: z.number().optional().default(0),
+  inputTokens: z.number().optional().default(0),
+  outputTokens: z.number().optional().default(0),
   costUSD: z.number().optional().default(0),
   creditsUsed: z.number().optional().default(0),
   activeDurationMs: z.number().optional().default(0),

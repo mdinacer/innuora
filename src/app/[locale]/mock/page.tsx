@@ -2,15 +2,17 @@
 
 import { useCallback, useState } from "react";
 
-import { SendPromptsToAi } from "@/app/actions/ai-client-actions";
+import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import UserDiagnosticsView from "@/components/session-diagnostics/user-diagnostics-view";
 import { Button } from "@/components/ui/button";
-import { GPT_4_1_MINI_MODEL } from "@/domains/ai-conversation/ai-models";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
-import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
+// import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import { SessionDiagnosticsStd } from "@/domains/session-diagnostics/session-diagnostics.types";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const mockMessages: OpenChatMessage[] = [
   {
@@ -654,14 +656,18 @@ export default function Page() {
           .trim(),
       };
 
-      const userResult = await SendPromptsToAi([userPrompt], GPT_4_1_MINI_MODEL, { max_tokens: 2000 });
+      const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2000 });
 
-      if (userResult) {
-        console.log("✅ USER DIAGNOSTICS RESULT:");
-        console.log("📊 Tokens used:", userResult.modelTokenUsage);
-        console.log("📄 Content:", parseJsonObject(userResult.message));
-        console.log("\n" + "=".repeat(80) + "\n");
+      if (userResult.error) {
+        console.error("❌ AI call failed:", userResult.error.message);
+        return;
       }
+
+      const data = userResult.data;
+      console.log("✅ USER DIAGNOSTICS RESULT:");
+      console.log("📊 Tokens used:", data.modelTokenUsage);
+      console.log("📄 Content:", parseJsonObject(data.message));
+      console.log("\n" + "=".repeat(80) + "\n");
 
       // Test Advanced Therapist Diagnostics
     } catch (error) {

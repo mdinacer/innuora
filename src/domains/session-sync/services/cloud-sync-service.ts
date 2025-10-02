@@ -132,10 +132,15 @@ export class CloudSyncService {
       const prismaSession = this.preparePrismaSessionData(encryptedSession);
 
       // Sync to cloud database with retry
-      await this.retryService.retryWithBackoff(
+      const result = await this.retryService.retryWithBackoff(
         () => updateSession(sessionId, prismaSession),
         `cloud_sync_${sessionId}`
       );
+
+      // Update local store with new updatedAt timestamp from database
+      if (result.data) {
+        encryptedStore.updateSession(sessionId, { updatedAt: result.data.updatedAt });
+      }
 
       this.stateManager.setCloudStatus(sessionId, "synced");
       this.stateManager.setCloudSyncTime(sessionId);

@@ -128,11 +128,11 @@ model AuditLog {
   createdAt DateTime @default(now()) @map("created_at")
 
   // Indexes for performance
-  @@index([level])
-  @@index([operation])
+  @@index([userId, createdAt])
+  @@index([operation, createdAt])
+  @@index([level, createdAt])
   @@index([errorCode])
   @@index([sessionId])
-  @@index([userId])
   @@index([createdAt])
   @@map("audit_logs")
 }
@@ -154,7 +154,6 @@ model Session {
   // Core session info (non-encrypted)
   title           String // title of session
   subtitle        String? // subtitle of session
-  modelCode       ModelCode @default(M1)
   autoUpdateTitle Boolean   @default(false)
   persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
   metadata        Json // additional metadata { messageCount: int, tokenCount: int, creditsUsed: int }
@@ -163,6 +162,9 @@ model Session {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
+  // Performance indexes
+  @@index([userId, createdAt])
+  @@index([userId, updatedAt])
   @@map("sessions")
 }
 
@@ -186,10 +188,11 @@ model CreditTransaction {
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
 
-  @@index([userId])
-  @@index([createdAt])
+  // Performance indexes
+  @@index([userId, createdAt])
+  @@index([userId, type, createdAt])
+  @@index([reason, createdAt])
   @@index([type])
-  @@index([reason])
   @@map("credit_transactions")
 }
 
@@ -297,12 +300,6 @@ model SubscriptionRenewal {
 // =========================
 // Enums
 // =========================
-
-enum ModelCode {
-  M1
-  M2
-  M3
-}
 
 enum CreditTransactionType {
   CREDIT // User receives credits (purchase, bonus, refund)

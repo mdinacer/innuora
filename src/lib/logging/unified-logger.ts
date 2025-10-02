@@ -105,13 +105,14 @@ class UnifiedLogger {
 
   /**
    * Wrap async operations with automatic error logging
+   * Returns {data, error} instead of throwing (production-safe for Server Actions)
    */
   async wrapOperation<T>(
     operation: () => Promise<T>,
     errorCode: ErrorCode,
     context: LogContext,
     successMessage?: string
-  ): Promise<T> {
+  ): Promise<{ data: T; error: null } | { data: null; error: { message: string; code: string } }> {
     try {
       const result = await operation();
 
@@ -120,9 +121,36 @@ class UnifiedLogger {
         await this.logSuccess(successMessage, context);
       }
 
-      return result;
+      return { data: result, error: null };
     } catch (error) {
-      this.logErrorAndThrow(errorCode, error, context);
+      // Check if it's a Supabase AuthError and map to specific error code
+      let finalErrorCode = errorCode;
+      if (error && typeof error === "object" && "code" in error && "status" in error) {
+        // Import mapper dynamically to avoid circular deps
+        const { mapSupabaseAuthError } = await import("@/lib/errors/supabase-error-mapper");
+        finalErrorCode = mapSupabaseAuthError(error as any);
+      }
+
+      // Log the error (preserves audit trail)
+      const logEntry: LogEntry = {
+        level: LogLevel.ERROR,
+        message: error instanceof Error ? error.message : String(error),
+        context,
+        timestamp: new Date(),
+        errorCode: finalErrorCode,
+        error: error instanceof Error ? error : undefined,
+      };
+
+      this.log(logEntry).catch(() => {}); // Non-blocking
+
+      // Return error instead of throw (production-safe for Server Actions)
+      return {
+        data: null,
+        error: {
+          message: error instanceof Error ? error.message : "Operation failed",
+          code: finalErrorCode,
+        },
+      };
     }
   }
 

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 "use client";
 
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 
 import { ContentCategory, ContentItem } from "@/types/content.types";
 
@@ -24,7 +25,7 @@ interface ArticleLayoutProps {
 // =========================
 
 export default function ArticleLayout({ contentItem, relatedContent, category, markdownContent }: ArticleLayoutProps) {
-  const { metadata, excerpt } = contentItem;
+  const { metadata } = contentItem;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -72,10 +73,7 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
         <main className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 mb-8">
           <div className="prose prose-lg dark:prose-invert max-w-none">
             {markdownContent ? (
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight]}
-              >
+              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
                 {markdownContent}
               </ReactMarkdown>
             ) : (

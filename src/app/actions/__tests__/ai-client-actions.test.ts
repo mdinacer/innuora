@@ -7,8 +7,7 @@ import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppError } from "@/lib/errors";
-import { AiModel } from "@/types/ai-model.types";
-import { SendPromptsToAi, SendPromptsToAiWithRetry } from "../ai-client-actions";
+import { processAiPrompts, processAiPromptsWithRetry } from "../ai-client-actions";
 
 // Mock the dependencies
 vi.mock("@/lib/openai", () => ({
@@ -21,44 +20,41 @@ vi.mock("@/lib/openai", () => ({
   },
 }));
 
-vi.mock("@/domains/credits/credits-calculation", () => ({
-  calculateCreditsUsed: vi.fn(),
+vi.mock("@/domains/ai-conversation/ai-models", () => ({
+  AI_MODEL: "gpt-4.1-mini",
+  AI_MODEL_VENDOR: "openai",
+  AI_MODEL_INPUT_PRICE_PER_1K: 0.0004,
+  AI_MODEL_OUTPUT_PRICE_PER_1K: 0.0016,
+  AI_MODEL_MAX_OUTPUT: 2048,
+}));
+
+vi.mock("@/app/actions/auth-actions", () => ({
+  findCurrentUser: vi.fn(() => null), // No user by default (no rate limiting)
 }));
 
 vi.mock("@/lib/logging/unified-logger", () => ({
   logger: {
-    wrapOperation: vi.fn((fn) => fn()),
+    wrapOperation: vi.fn(async (fn, errorCode) => {
+      try {
+        const result = await fn();
+        return { data: result, error: null };
+      } catch (error) {
+        return {
+          data: null,
+          error: {
+            message: error instanceof Error ? error.message : String(error),
+            code: errorCode,
+          },
+        };
+      }
+    }),
     logErrorAndThrow: vi.fn((errorCode, error, context) => {
       throw new AppError(error.message, errorCode, context);
     }),
   },
 }));
 
-// Mock global fetch for OpenRouter
-global.fetch = vi.fn();
-
 describe("AI Client Actions", () => {
-  // Mock models
-  const mockOpenAIModel: AiModel = {
-    model: "gpt-4o",
-    apiPath: "gpt-4o",
-    context: 128000,
-    pricing: {
-      prompt: 0.0025,
-      completion: 0.01,
-    },
-    vendor: "openai",
-    mode: "paid",
-  };
-
-  const mockOpenRouterModel: AiModel = {
-    model: "mistral-7b",
-    apiPath: "mistralai/mistral-7b-instruct:free",
-    context: 32768,
-    vendor: "mistralai",
-    mode: "free",
-  };
-
   const mockPrompts: ChatCompletionMessageParam[] = [
     { role: "system", content: "You are a helpful assistant." },
     { role: "user", content: "Hello, how are you?" },
@@ -68,7 +64,7 @@ describe("AI Client Actions", () => {
     id: "chatcmpl-test",
     object: "chat.completion",
     created: Date.now(),
-    model: "gpt-4o",
+    model: "gpt-4.1-mini",
     choices: [
       {
         logprobs: null,
@@ -90,51 +86,42 @@ describe("AI Client Actions", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset environment variables
-    delete process.env.OPEN_ROUTER_API_KEY;
   });
 
-  describe("SendPromptsToAi", () => {
+  describe("processAiPrompts", () => {
     describe("OpenAI Integration", () => {
       it("should successfully call OpenAI and return response", async () => {
         // Arrange
         const mockOpenAI = await import("@/lib/openai");
-        const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
         vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(mockChatCompletion);
-        vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
 
         // Act
-        const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel);
+        const result = await processAiPrompts(mockPrompts);
 
         // Assert
-        expect(result).toEqual({
+        expect(result.error).toBeNull();
+        expect(result.data).toEqual({
           message: "Hello! I'm doing well, thank you for asking.",
           modelTokenUsage: {
             type: "completion",
-            model: "gpt-4o",
+            model: "gpt-4.1-mini",
             mode: "paid",
             usage: mockChatCompletion.usage,
             timestamp: expect.any(String),
             version: "",
             costUSD: 0,
           },
-          consumedCredits: 5,
+          consumedCredits: 2, // Input: Math.ceil((20/1000)*0.0004*100)=1 + Output: Math.ceil((15/1000)*0.0016*100)=1 = 2
         });
 
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledWith({
-          model: "gpt-4o",
+          model: "gpt-4.1-mini",
           messages: mockPrompts,
           stream: false,
           max_tokens: 700,
           temperature: 0.6,
           top_p: 0.9,
         });
-
-        expect(mockCalculateCredits.calculateCreditsUsed).toHaveBeenCalledWith(
-          mockOpenAIModel,
-          mockChatCompletion.usage
-        );
       });
 
       it("should handle OpenAI API errors gracefully", async () => {
@@ -143,8 +130,11 @@ describe("AI Client Actions", () => {
         const apiError = new Error("OpenAI API rate limit exceeded");
         vi.mocked(mockOpenAI.default.chat.completions.create).mockRejectedValue(apiError);
 
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel)).rejects.toThrow();
+        // Act
+        const result = await processAiPrompts(mockPrompts);
+
+        // Assert
+        expect(result.error).not.toBeNull();
       });
 
       it("should handle empty AI response", async () => {
@@ -158,148 +148,78 @@ describe("AI Client Actions", () => {
               message: { role: "assistant" as const, content: "" },
             },
           ],
-        };
+        } as any;
         vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(emptyCompletion);
 
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, mockOpenAIModel)).rejects.toThrow("AI returned empty content");
-      });
-    });
-
-    describe("OpenRouter Integration", () => {
-      beforeEach(() => {
-        process.env.OPEN_ROUTER_API_KEY = "test-openrouter-key";
-      });
-
-      it("should successfully call OpenRouter and return response", async () => {
-        // Arrange
-        const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-        vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(2);
-
-        vi.mocked(fetch).mockResolvedValue({
-          ok: true,
-          json: () => Promise.resolve(mockChatCompletion),
-        } as Response);
-
         // Act
-        const result = await SendPromptsToAi(mockPrompts, mockOpenRouterModel);
+        const result = await processAiPrompts(mockPrompts);
 
         // Assert
-        expect(result).toEqual({
-          message: "Hello! I'm doing well, thank you for asking.",
-          modelTokenUsage: {
-            type: "completion",
-            model: "gpt-4o",
-            mode: "free",
-            usage: mockChatCompletion.usage,
-            timestamp: expect.any(String),
-            version: "",
-            costUSD: 0,
-          },
-          consumedCredits: 2,
-        });
-
-        expect(fetch).toHaveBeenCalledWith("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer test-openrouter-key",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "mistralai/mistral-7b-instruct:free",
-            messages: mockPrompts,
-            stream: false,
-            max_tokens: 700,
-            temperature: 0.6,
-            top_p: 0.9,
-          }),
-        });
-      });
-
-      it("should handle missing OpenRouter API key", async () => {
-        // Arrange
-        delete process.env.OPEN_ROUTER_API_KEY;
-
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, mockOpenRouterModel)).rejects.toThrow(
-          "OPEN_ROUTER_API_KEY environment variable is not set"
-        );
-      });
-
-      it("should handle OpenRouter API errors", async () => {
-        // Arrange
-        vi.mocked(fetch).mockResolvedValue({
-          ok: false,
-          status: 429,
-          text: () => Promise.resolve("Rate limit exceeded"),
-        } as Response);
-
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, mockOpenRouterModel)).rejects.toThrow("429 - Rate limit exceeded");
-      });
-
-      it("should handle network errors gracefully", async () => {
-        // Arrange
-        vi.mocked(fetch).mockRejectedValue(new Error("Network error"));
-
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, mockOpenRouterModel)).rejects.toThrow();
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("AI returned empty content");
       });
     });
 
     describe("Input Validation", () => {
       it("should reject empty prompts array", async () => {
-        // Act & Assert
-        await expect(SendPromptsToAi([], mockOpenAIModel)).rejects.toThrow(AppError);
+        // Act
+        const result = await processAiPrompts([]);
+
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("Prompts array cannot be empty");
       });
 
       it("should reject prompts with missing role", async () => {
         // Arrange
         const invalidPrompts = [{ content: "Hello" }] as ChatCompletionMessageParam[];
 
-        // Act & Assert
-        await expect(SendPromptsToAi(invalidPrompts, mockOpenAIModel)).rejects.toThrow(AppError);
+        // Act
+        const result = await processAiPrompts(invalidPrompts);
+
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("missing required role or content");
       });
 
       it("should reject prompts with missing content", async () => {
         // Arrange
         const invalidPrompts = [{ role: "user" }] as ChatCompletionMessageParam[];
 
-        // Act & Assert
-        await expect(SendPromptsToAi(invalidPrompts, mockOpenAIModel)).rejects.toThrow(AppError);
-      });
+        // Act
+        const result = await processAiPrompts(invalidPrompts);
 
-      it("should reject missing AI model", async () => {
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, null as any)).rejects.toThrow("Cannot read properties of null");
-      });
-
-      it("should reject AI model without apiPath", async () => {
-        // Arrange
-        const invalidModel = { ...mockOpenAIModel, apiPath: "" };
-
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, invalidModel)).rejects.toThrow(AppError);
-      });
-
-      it("should reject AI model without vendor", async () => {
-        // Arrange
-        const invalidModel = { ...mockOpenAIModel, vendor: "" as any };
-
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, invalidModel)).rejects.toThrow(AppError);
-      });
-
-      it("should reject unsupported vendor", async () => {
-        // Arrange
-        const invalidModel = { ...mockOpenAIModel, vendor: "unsupported" as any };
-
-        // Act & Assert
-        await expect(SendPromptsToAi(mockPrompts, invalidModel)).rejects.toThrow(AppError);
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("missing required role or content");
       });
     });
 
     describe("Token Usage and Credit Calculation", () => {
+      it("should calculate credits correctly based on token usage", async () => {
+        // Arrange
+        const mockOpenAI = await import("@/lib/openai");
+        const completionWithMoreTokens = {
+          ...mockChatCompletion,
+          usage: {
+            prompt_tokens: 1000,
+            completion_tokens: 500,
+            total_tokens: 1500,
+          },
+        };
+        vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(completionWithMoreTokens);
+
+        // Act
+        const result = await processAiPrompts(mockPrompts);
+
+        // Assert
+        expect(result.error).toBeNull();
+        // Input: Math.ceil((1000/1000)*0.0004*100) = 1
+        // Output: Math.ceil((500/1000)*0.0016*100) = 1
+        // Total: 2 credits
+        expect(result.data?.consumedCredits).toBe(2);
+      });
+
       it("should handle missing usage data gracefully", async () => {
         // Arrange
         const mockOpenAI = await import("@/lib/openai");
@@ -307,11 +227,12 @@ describe("AI Client Actions", () => {
         vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(completionWithoutUsage);
 
         // Act
-        const result = await SendPromptsToAi(mockPrompts, mockOpenAIModel);
+        const result = await processAiPrompts(mockPrompts);
 
         // Assert
-        expect(result.consumedCredits).toBe(0);
-        expect(result.modelTokenUsage).toBeNull();
+        expect(result.error).toBeNull();
+        expect(result.data?.consumedCredits).toBe(0);
+        expect(result.data?.modelTokenUsage).toBeNull();
       });
 
       it("should merge custom options with defaults", async () => {
@@ -325,11 +246,11 @@ describe("AI Client Actions", () => {
         };
 
         // Act
-        await SendPromptsToAi(mockPrompts, mockOpenAIModel, customOptions);
+        await processAiPrompts(mockPrompts, customOptions);
 
         // Assert
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledWith({
-          model: "gpt-4o",
+          model: "gpt-4.1-mini",
           messages: mockPrompts,
           stream: false,
           max_tokens: 1000,
@@ -340,60 +261,52 @@ describe("AI Client Actions", () => {
     });
   });
 
-  describe("SendPromptsToAiWithRetry", () => {
+  describe("processAiPromptsWithRetry", () => {
     describe("Retry Logic", () => {
       it("should succeed on first attempt", async () => {
         // Arrange
         const mockOpenAI = await import("@/lib/openai");
-        const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
         vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(mockChatCompletion);
-        vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
 
         // Act
-        const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel);
+        const result = await processAiPromptsWithRetry(mockPrompts);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(1);
       });
 
       it("should retry on transient failures and eventually succeed", async () => {
         // Arrange
         const mockOpenAI = await import("@/lib/openai");
-        const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
         vi.mocked(mockOpenAI.default.chat.completions.create)
           .mockRejectedValueOnce(new Error("Temporary network error"))
           .mockRejectedValueOnce(new Error("Rate limit"))
           .mockResolvedValueOnce(mockChatCompletion);
 
-        vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
-
         // Act
-        const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 100);
+        const result = await processAiPromptsWithRetry(mockPrompts, {}, 3, 10);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(3);
       });
 
       it("should retry on generic network errors", async () => {
         // Arrange
         const mockOpenAI = await import("@/lib/openai");
-        const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
         vi.mocked(mockOpenAI.default.chat.completions.create)
           .mockRejectedValueOnce(new Error("Network timeout"))
           .mockResolvedValueOnce(mockChatCompletion);
 
-        vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
-
         // Act
-        const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 10);
+        const result = await processAiPromptsWithRetry(mockPrompts, {}, 3, 10);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(2);
       });
 
@@ -403,11 +316,12 @@ describe("AI Client Actions", () => {
         const persistentError = new Error("Persistent API error");
         vi.mocked(mockOpenAI.default.chat.completions.create).mockRejectedValue(persistentError);
 
-        // Act & Assert
-        await expect(SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 2, 10)).rejects.toThrow(
-          "Failed after 2 attempts"
-        );
+        // Act
+        const result = await processAiPromptsWithRetry(mockPrompts, {}, 2, 10);
 
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("Failed after 2 attempts");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(2);
       });
 
@@ -420,20 +334,37 @@ describe("AI Client Actions", () => {
         const startTime = Date.now();
 
         // Act
-        try {
-          await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 3, 50);
-        } catch {
-          // Expected to fail
-        }
+        await processAiPromptsWithRetry(mockPrompts, {}, 3, 50);
 
         const endTime = Date.now();
         const elapsed = endTime - startTime;
 
         // Assert
         // Should have waited approximately: 50ms + 100ms = 150ms
-        // Adding some tolerance for test execution time
         expect(elapsed).toBeGreaterThan(100);
         expect(elapsed).toBeLessThan(500);
+      });
+
+      it("should stop retrying on non-retryable errors", async () => {
+        // Arrange
+        const mockOpenAI = await import("@/lib/openai");
+        const emptyCompletion = {
+          ...mockChatCompletion,
+          choices: [
+            {
+              ...mockChatCompletion.choices[0],
+              message: { role: "assistant" as const, content: "" },
+            },
+          ],
+        } as any;
+        vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(emptyCompletion);
+
+        // Act
+        const result = await processAiPromptsWithRetry(mockPrompts, {}, 3, 10);
+
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("AI returned empty content");
       });
     });
 
@@ -443,27 +374,26 @@ describe("AI Client Actions", () => {
         const mockOpenAI = await import("@/lib/openai");
         vi.mocked(mockOpenAI.default.chat.completions.create).mockRejectedValue(new Error("Test error"));
 
-        // Act & Assert
-        await expect(SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 1, 10)).rejects.toThrow(
-          "Failed after 1 attempts"
-        );
+        // Act
+        const result = await processAiPromptsWithRetry(mockPrompts, {}, 1, 10);
 
+        // Assert
+        expect(result.error).not.toBeNull();
+        expect(result.error?.message).toContain("Failed after 1 attempts");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(1);
       });
 
       it("should work with maxRetries = 1 (no retries)", async () => {
         // Arrange
         const mockOpenAI = await import("@/lib/openai");
-        const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
         vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(mockChatCompletion);
-        vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
 
         // Act
-        const result = await SendPromptsToAiWithRetry(mockPrompts, mockOpenAIModel, {}, 1);
+        const result = await processAiPromptsWithRetry(mockPrompts, {}, 1);
 
         // Assert
-        expect(result.message).toBe("Hello! I'm doing well, thank you for asking.");
+        expect(result.error).toBeNull();
+        expect(result.data?.message).toBe("Hello! I'm doing well, thank you for asking.");
         expect(mockOpenAI.default.chat.completions.create).toHaveBeenCalledTimes(1);
       });
     });
@@ -476,21 +406,19 @@ describe("AI Client Actions", () => {
       (process.env as any).NODE_ENV = "development";
 
       const mockOpenAI = await import("@/lib/openai");
-      const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
       vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(mockChatCompletion);
-      vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
 
       // Mock console.info
       const consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
 
       // Act
-      await SendPromptsToAi(mockPrompts, mockOpenAIModel);
+      await processAiPrompts(mockPrompts);
 
       // Assert
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining("AI Service Called:"),
         expect.any(Object),
+        expect.any(Array),
         expect.any(String)
       );
 
@@ -505,16 +433,13 @@ describe("AI Client Actions", () => {
       (process.env as any).NODE_ENV = "production";
 
       const mockOpenAI = await import("@/lib/openai");
-      const mockCalculateCredits = await import("@/domains/credits/credits-calculation");
-
       vi.mocked(mockOpenAI.default.chat.completions.create).mockResolvedValue(mockChatCompletion);
-      vi.mocked(mockCalculateCredits.calculateCreditsUsed).mockReturnValue(5);
 
       // Mock console.info
       const consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
 
       // Act
-      await SendPromptsToAi(mockPrompts, mockOpenAIModel);
+      await processAiPrompts(mockPrompts);
 
       // Assert
       expect(consoleSpy).not.toHaveBeenCalled();

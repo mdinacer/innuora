@@ -1,13 +1,10 @@
 import { Session as PrismaSession } from "@prisma/client";
 
-import { MODELS_CODES } from "@/domains/ai-conversation/ai-models";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
 import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { EncryptedBlob, EncryptedBlobSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
-
-const DEFAULT_MODEL_CODE = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE ?? MODELS_CODES.M1;
 
 /** Ensure content key is available or raise a managed error */
 async function requireContentKey(operation: string, sessionId?: string): Promise<CryptoKey> {
@@ -22,7 +19,7 @@ async function requireContentKey(operation: string, sessionId?: string): Promise
 }
 
 export async function encryptSession(session: Partial<Session>): Promise<PrismaSession> {
-  return logger.wrapOperation(
+  const result = await logger.wrapOperation(
     async () => {
       const contentKey = await requireContentKey("crypto_encrypt_session", session.id);
 
@@ -46,7 +43,11 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
           ...(analysisSnapshots && { analysisSnapshots }),
         };
 
-        const encryptedData: EncryptedBlob = await encryptObjectWithKey(dataToEncrypt, contentKey);
+        const encryptResult = await encryptObjectWithKey(dataToEncrypt, contentKey);
+        if (encryptResult.error) {
+          throw new Error(encryptResult.error.message);
+        }
+        const encryptedData = encryptResult.data;
 
         sessionData.encryptedData = encryptedData as EncryptedBlob;
       }
@@ -64,10 +65,16 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
     },
     "Session encrypted successfully"
   );
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }
 
 export async function decryptSession(encryptedSession: PrismaSession): Promise<Session> {
-  return logger.wrapOperation(
+  const result = await logger.wrapOperation(
     async () => {
       const contentKey = await requireContentKey("crypto_decrypt_session", encryptedSession.id);
 
@@ -77,7 +84,6 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
         userId: encryptedSession.userId,
         title: encryptedSession.title,
         subtitle: encryptedSession.subtitle ?? "",
-        modelCode: encryptedSession.modelCode ?? DEFAULT_MODEL_CODE,
         autoUpdateTitle: encryptedSession.autoUpdateTitle ?? false,
         createdAt: encryptedSession.createdAt,
         updatedAt: encryptedSession.updatedAt,
@@ -96,6 +102,8 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
           : {
               messageCount: 0,
               tokenCount: 0,
+              inputTokens: 0,
+              outputTokens: 0,
               costUSD: 0,
               creditsUsed: 0,
               activeDurationMs: 0,
@@ -109,7 +117,11 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
       const parsedData = EncryptedBlobSchema.safeParse(encryptedSession.encryptedData);
 
       if (parsedData.success) {
-        const decryptedData = await decryptObjectWithKey<Partial<Session>>(parsedData.data, contentKey);
+        const decryptResult = await decryptObjectWithKey<Partial<Session>>(parsedData.data, contentKey);
+        if (decryptResult.error) {
+          throw new Error(decryptResult.error.message);
+        }
+        const decryptedData = decryptResult.data;
         session = { ...session, ...decryptedData };
       }
 
@@ -125,4 +137,10 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
     },
     "Session decrypted successfully"
   );
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }

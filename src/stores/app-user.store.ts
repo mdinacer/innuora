@@ -13,6 +13,7 @@ export interface AppUserStoreState extends PersistedStoreBaseProps {
   authUser: AuthUserData | null;
 
   // Getters
+  getCreditsBalance: () => number;
 
   // Setters
   setUser: (user: UserWithRelations | null) => void;
@@ -21,6 +22,11 @@ export interface AppUserStoreState extends PersistedStoreBaseProps {
   // Updaters
   updateUser: (update: Partial<UserWithRelations> | ((user: UserWithRelations) => UserWithRelations)) => void;
   updateAuthUser: (update: Partial<AuthUserData> | ((data: AuthUserData) => AuthUserData)) => void;
+
+  // Credits management
+  setCreditsBalance: (balance: number) => void;
+  deductCredits: (amount: number) => void;
+  addCredits: (amount: number) => void;
 
   // Clear
   clearUser: () => void;
@@ -37,6 +43,12 @@ export const useAppUserStore = create<AppUserStoreState>()(
   persist(
     (set, get) => ({
       ...initialState,
+
+      // Getters
+      getCreditsBalance: () => {
+        const user = get().user;
+        return user?.creditsBalance ?? 0;
+      },
 
       // Setters
 
@@ -55,6 +67,25 @@ export const useAppUserStore = create<AppUserStoreState>()(
         if (!current) return;
         const newData = typeof update === "function" ? update(current) : { ...current, ...update };
         set({ authUser: newData });
+      },
+
+      // Credits management
+      setCreditsBalance: (balance) => {
+        const current = get().user;
+        if (!current) return;
+        set({ user: { ...current, creditsBalance: balance } });
+      },
+      deductCredits: (amount) => {
+        const current = get().user;
+        if (!current) return;
+        const newBalance = Math.max(0, current.creditsBalance - amount);
+        set({ user: { ...current, creditsBalance: newBalance } });
+      },
+      addCredits: (amount) => {
+        const current = get().user;
+        if (!current) return;
+        const newBalance = current.creditsBalance + amount;
+        set({ user: { ...current, creditsBalance: newBalance } });
       },
 
       // Clear

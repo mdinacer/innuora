@@ -14,7 +14,13 @@ export default async function Layout({ children }: { children: React.ReactNode }
     redirect("/auth/sign-in");
   }
 
-  const { isOnboarded, role } = await findOrCreateUser(authUser.id);
+  const userResult = await findOrCreateUser(authUser.id);
+  if (userResult.error) {
+    // If we can't find or create user, redirect to sign-in
+    redirect("/auth/sign-in");
+  }
+
+  const { isOnboarded, role } = userResult.data;
   if (role !== "admin" && role !== "tester") {
     redirect("/");
   }

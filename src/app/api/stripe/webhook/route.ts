@@ -18,6 +18,7 @@ import {
   // StripeWebhookEvent, // TODO: Add support for additional webhook event types
 } from "@/lib/billing/stripe-webhook-types";
 import { logger } from "@/lib/logging/unified-logger";
+import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
 
 // =========================
 // Payment Event Handlers
@@ -39,24 +40,26 @@ async function handlePaymentSucceeded(event: PaymentIntentEvent): Promise<void> 
     // Process the payment and add credits
     const result = await processSuccessfulPayment(paymentIntent.id);
 
-    if (!result.success) {
+    if (result.error) {
       await logger.logWarning("Failed to process successful payment from webhook", {
         operation: "handle_payment_succeeded",
         metadata: {
           paymentIntentId: paymentIntent.id,
-          errorCode: result.errorCode,
-          error: result.error,
+          errorCode: result.error.code,
+          error: result.error.message,
         },
       });
       return;
     }
 
+    const data = result.data;
+
     await logger.logInfo("Payment processed successfully from webhook", {
       operation: "handle_payment_succeeded",
       metadata: {
         paymentIntentId: paymentIntent.id,
-        creditsAdded: result.creditsAdded,
-        newBalance: result.newBalance,
+        creditsAdded: data.creditsAdded,
+        newBalance: data.newBalance,
       },
     });
   } catch (error) {
@@ -337,6 +340,18 @@ async function processWebhookEvent(event: PaymentIntentEvent | InvoiceEvent | Su
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: Check webhook request rate to prevent DoS
+    const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "stripe-webhook";
+    const rateLimit = rateLimiter.checkLimit(ip, "WEBHOOK_REQUESTS");
+
+    if (!rateLimit.success) {
+      await logger.logWarning("Stripe webhook rate limit exceeded", {
+        operation: "stripe_webhook_rate_limit",
+        metadata: { ip, resetTime: rateLimit.resetTime },
+      });
+      return NextResponse.json({ error: "Rate limit exceeded", resetTime: rateLimit.resetTime }, { status: 429 });
+    }
+
     // Get request body and signature
     const body = await request.text();
     const headersList = await headers();

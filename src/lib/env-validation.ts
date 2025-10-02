@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 // Environment variable validation to prevent runtime crashes
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface RequiredEnvVars {
   // Database
   DATABASE_URL: string;
