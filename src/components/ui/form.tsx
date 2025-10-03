@@ -125,7 +125,9 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { t } = useTranslation();
   const { error, formMessageId } = useFormField();
-  const body = error?.message ? t(error.message, { defaultValue: error.message }) : props.children;
+  const body = error?.message
+    ? t(error.message, { defaultValue: error.message, ns: "", keyPrefix: "" })
+    : props.children;
 
   if (!body) {
     return null;

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import Markdown from "markdown-to-jsx";
 
 import { SessionDiagnosticsStd } from "@/domains/session-diagnostics/session-diagnostics.types";
 import { cn } from "@/lib/utils";
@@ -101,7 +101,7 @@ const UserDiagnosticsView: React.FC<Props> = ({ className, diagnostics }) => {
                 </Badge>
 
                 <div className="text-inn-text-primary first-letter:capitalize leading-relaxed">
-                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                  <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{item.text}</Markdown>
                 </div>
               </div>
             ))}
@@ -138,7 +138,7 @@ const UserDiagnosticsView: React.FC<Props> = ({ className, diagnostics }) => {
                 </div>
 
                 <div className="text-inn-text-secondary mb-2 first-letter:capitalize leading-relaxed">
-                  <ReactMarkdown>{item.description}</ReactMarkdown>
+                  <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{item.description}</Markdown>
                 </div>
 
                 <div className="flex gap-2">
@@ -191,7 +191,7 @@ const UserDiagnosticsView: React.FC<Props> = ({ className, diagnostics }) => {
                   </Badge>
                 </div>
                 <div className="text-inn-text-secondary leading-relaxed">
-                  <ReactMarkdown>{item.description}</ReactMarkdown>
+                  <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{item.description}</Markdown>
                 </div>
               </div>
             ))}
@@ -220,9 +220,15 @@ const UserDiagnosticsView: React.FC<Props> = ({ className, diagnostics }) => {
               <div key={index} className="rounded-xl bg-inn-bg-card p-5 border border-inn-bg-success">
                 <div className="flex justify-between items-start mb-2">
                   <div className="font-semibold text-inn-text-primary">
-                    <ReactMarkdown components={{ p: ({ children }) => <h3>{children}</h3> }}>
+                    <Markdown
+                      options={{
+                        forceBlock: false,
+                        disableParsingRawHTML: true,
+                        overrides: { p: { component: "h3" } },
+                      }}
+                    >
                       {item.title}
-                    </ReactMarkdown>
+                    </Markdown>
                   </div>
                   <Badge
                     className="uppercase"
@@ -234,7 +240,7 @@ const UserDiagnosticsView: React.FC<Props> = ({ className, diagnostics }) => {
                   </Badge>
                 </div>
                 <div className="text-base text-inn-text-secondary">
-                  <ReactMarkdown>{item.description}</ReactMarkdown>
+                  <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{item.description}</Markdown>
                 </div>
               </div>
             ))}
@@ -264,13 +270,19 @@ const UserDiagnosticsView: React.FC<Props> = ({ className, diagnostics }) => {
                     {index + 1}
                   </div>
                   <div className="font-semibold text-inn-text-primary">
-                    <ReactMarkdown components={{ p: ({ children }) => <h3>{children}</h3> }}>
+                    <Markdown
+                      options={{
+                        forceBlock: false,
+                        disableParsingRawHTML: true,
+                        overrides: { p: { component: "h3" } },
+                      }}
+                    >
                       {item.title}
-                    </ReactMarkdown>
+                    </Markdown>
                   </div>
                 </div>
                 <div className="text-sm opacity-90 mb-2">
-                  <ReactMarkdown>{item.description}</ReactMarkdown>
+                  <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{item.description}</Markdown>
                 </div>
 
                 <div>

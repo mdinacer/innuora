@@ -30,7 +30,6 @@ export default function PrivacySettings(): React.JSX.Element {
         const result = await getUserConfig();
 
         if (result.error) {
-          console.error("Failed to load privacy settings:", result.error.message);
           return;
         }
 
@@ -39,9 +38,7 @@ export default function PrivacySettings(): React.JSX.Element {
           setAnalyticsOptIn(config.analyticsOptIn);
           setShareImprovements(config.shareImprovements);
         }
-      } catch (error) {
-        console.error("Failed to load privacy settings:", error);
-      }
+      } catch {}
     }
     loadConfig();
   }, []);
@@ -56,8 +53,7 @@ export default function PrivacySettings(): React.JSX.Element {
       });
 
       toast.success("Privacy settings saved!");
-    } catch (error) {
-      console.error("Failed to save settings:", error);
+    } catch {
       toast.error("Failed to save settings. Please try again.");
     } finally {
       setIsLoading(false);

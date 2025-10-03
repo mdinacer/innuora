@@ -20,19 +20,19 @@ export default async function Layout({ children }: { children: React.ReactNode }
     redirect("/auth/sign-in");
   }
 
-  const { isOnboarded, role } = userResult.data;
-  if (role !== "admin" && role !== "tester") {
-    redirect("/");
-  }
+  const { isOnboarded } = userResult.data;
+  // if (role !== "admin" && role !== "tester") {
+  //   redirect("/");
+  // }
 
   if (!isOnboarded) {
     redirect("/onboarding");
   }
   return (
-    <div className="flex flex-col min-h-screen z-20 overflow-y-auto overflow-x-hidden w-screen standalone:w-full relative">
+    <main className="flex flex-col min-h-screen z-20 overflow-y-auto overflow-x-hidden w-screen standalone:w-full relative">
       <Suspense fallback={<LoadingComponent />}>{children}</Suspense>
       <DataLoader user={authUser} />
       <RequireKeyPhrase />
-    </div>
+    </main>
   );
 }

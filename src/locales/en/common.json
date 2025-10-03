@@ -1,6 +1,7 @@
 {
   "actions": {
     "continue": "Continue",
+    "showMore": "Show more",
     "showMoreWithCount": "Show {{count}} more",
     "showLess": "Show less",
     "signout": "Sign out"
@@ -8,6 +9,8 @@
   "app-name": "Innuora",
   "avatar-letter": "I",
   "back-to-app": "Back to {{app_name}}",
+  "finished": "Finished",
+  "guide": "Guide",
   "home": {
     "hero": {
       "badge": "AI-Powered Therapy",
@@ -162,11 +165,14 @@
     "fr": "French",
     "ar": "Arabic"
   },
+  "select_multiple": "Choose Any That Fit",
+  "select_single": "Choose One",
   "sessionWithCount_one": "{{count}} session",
   "sessionWithCount_other": "{{count}} sessions",
   "sessionWithCount_zero": "No sessions",
   "session_one": "session",
   "session_other": "sessions",
   "session_zero": "No sessions",
-  "signout": "Sign out"
+  "signout": "Sign out",
+  "your_turn": "Your turn"
 }

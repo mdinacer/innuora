@@ -23,9 +23,7 @@ export const SignUpSchema = z
     password: z
       .string({ message: ERROR_CODES.VALIDATION_PASSWORD_REQUIRED })
       .min(8, { message: ERROR_CODES.VALIDATION_PASSWORD_TOO_SHORT }),
-    // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, {
-    //   message: ERROR_CODES.VALIDATION_PASSWORD_WEAK,
-    // })
+
     confirmPassword: z.string({ message: ERROR_CODES.VALIDATION_PASSWORD_REQUIRED }),
     ageConfirm: z.boolean({ message: ERROR_CODES.VALIDATION_BOOLEAN_REQUIRED }),
     termsAgree: z.boolean({ message: ERROR_CODES.VALIDATION_BOOLEAN_REQUIRED }),

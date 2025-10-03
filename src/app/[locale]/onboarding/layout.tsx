@@ -15,8 +15,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     await createUserWithDefaults(authUser.id);
   }
 
-  if (user?.isOnboarded) {
-    redirect("/sessions");
-  }
-  return <>{children}</>;
+  // if (user?.isOnboarded) {
+  //   redirect("/sessions");
+  // }
+  return <main>{children}</main>;
 }

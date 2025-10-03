@@ -3,9 +3,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
-import remarkGfm from "remark-gfm";
+import Markdown from "markdown-to-jsx";
 
 import { ContentCategory, ContentItem } from "@/types/content.types";
 
@@ -73,9 +71,7 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
         <main className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 mb-8">
           <div className="prose prose-lg dark:prose-invert max-w-none">
             {markdownContent ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-                {markdownContent}
-              </ReactMarkdown>
+              <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{markdownContent}</Markdown>
             ) : (
               <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-6">
                 <h3 className="text-blue-800 dark:text-blue-200 font-semibold mb-2">Content Loading...</h3>

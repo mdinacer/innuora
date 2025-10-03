@@ -106,9 +106,8 @@ const JoinPage: React.FC<Props> = ({ className, pageData }) => {
           success: success,
           error: error,
         });
-      } catch (err) {
+      } catch {
         toast.error(error);
-        console.error(err);
       }
     },
     [error, pending, success]

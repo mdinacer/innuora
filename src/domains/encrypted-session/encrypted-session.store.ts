@@ -11,12 +11,15 @@ export interface SessionsStoreState extends PersistedStoreBaseProps {
   sessions: Record<string, PrismaSession>;
   publicIdMap: Record<string, string>; // publicId -> sessionId
   sessionIdMap: Record<string, string>; // sessionId -> publicId
+  currentUserId: string | null; // Database user ID for filtering sessions
 
   // Getters
   getSessionPublicId: (sessionId: string) => string | undefined;
   getSession: (sessionId: string) => PrismaSession | undefined;
+  getCurrentUserSessions: () => PrismaSession[]; // Get all sessions for current user
 
   // Mutators
+  setCurrentUserId: (userId: string | null) => void;
   setSession: (publicId: string, session: PrismaSession) => void;
   addSession: (session: PrismaSession) => void;
   updateSession: (
@@ -29,11 +32,15 @@ export interface SessionsStoreState extends PersistedStoreBaseProps {
   sessionExists: (sessionId: string) => boolean; // Now uses real session ID
 }
 
-const initialState: Pick<SessionsStoreState, "sessions" | "hasHydrated" | "publicIdMap" | "sessionIdMap"> = {
+const initialState: Pick<
+  SessionsStoreState,
+  "sessions" | "hasHydrated" | "publicIdMap" | "sessionIdMap" | "currentUserId"
+> = {
   sessions: {},
   hasHydrated: false,
   publicIdMap: {},
   sessionIdMap: {},
+  currentUserId: null,
 };
 
 export const useSessionStore = create<SessionsStoreState>()(
@@ -43,12 +50,37 @@ export const useSessionStore = create<SessionsStoreState>()(
 
       setHasHydrated: (value) => set({ hasHydrated: value }),
 
+      setCurrentUserId: (userId) => set({ currentUserId: userId }),
+
       getSessionPublicId: (sessionId) => get().sessionIdMap[sessionId],
 
-      getSession: (sessionId) => get().sessions[sessionId],
+      getSession: (sessionId) => {
+        const session = get().sessions[sessionId];
+        const currentUserId = get().currentUserId;
+
+        // Return session only if it belongs to current user
+        if (!session || !currentUserId) return undefined;
+        if (session.userId !== currentUserId) return undefined;
+
+        return session;
+      },
+
+      getCurrentUserSessions: () => {
+        const { sessions, currentUserId } = get();
+        if (!currentUserId) return [];
+
+        return Object.values(sessions).filter((session) => session.userId === currentUserId);
+      },
 
       addSession: (session) => {
         if (!session?.id) return;
+
+        // Validate session belongs to current user
+        const currentUserId = get().currentUserId;
+        if (currentUserId && session.userId !== currentUserId) {
+          return;
+        }
+
         const publicId = getUniqueId(get().publicIdMap);
         set((state) => ({
           sessions: {
@@ -175,11 +207,17 @@ export const useSessionStore = create<SessionsStoreState>()(
       },
 
       setSessions: (sessions) => {
+        const currentUserId = get().currentUserId;
         const newSessions: Record<string, PrismaSession> = {};
         const newPublicIdMap: Record<string, string> = {};
         const newSessionIdMap: Record<string, string> = {};
 
         sessions.forEach((s) => {
+          // Only add sessions belonging to current user
+          if (currentUserId && s.userId !== currentUserId) {
+            return; // Skip sessions from other users
+          }
+
           const publicId = getUniqueId(newPublicIdMap);
           newSessions[s.id] = s;
           newPublicIdMap[publicId] = s.id;
@@ -194,8 +232,11 @@ export const useSessionStore = create<SessionsStoreState>()(
       },
 
       sessionExists: (sessionId) => {
-        const { sessions } = get();
-        return Boolean(sessions[sessionId]);
+        const { sessions, currentUserId } = get();
+        const session = sessions[sessionId];
+
+        if (!session || !currentUserId) return false;
+        return session.userId === currentUserId;
       },
     }),
     {
@@ -205,9 +246,19 @@ export const useSessionStore = create<SessionsStoreState>()(
         publicIdMap: state.publicIdMap,
         sessionIdMap: state.sessionIdMap,
         sessions: state.sessions,
+        currentUserId: state.currentUserId,
       }),
       onRehydrateStorage: () => (state) => {
-        if (state) state.setHasHydrated(true);
+        if (state) {
+          state.setHasHydrated(true);
+
+          // Filter out sessions that don't belong to current user on hydration
+          const { sessions, currentUserId } = state;
+          if (currentUserId) {
+            const filteredSessions = Object.values(sessions).filter((session) => session.userId === currentUserId);
+            state.setSessions(filteredSessions);
+          }
+        }
       },
     }
   )

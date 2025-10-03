@@ -25,13 +25,10 @@ const SessionDetailsAnalysis: React.FC<Props> = ({ className, session }) => {
 
   const handleGenerateAnalysis = useCallback(async () => {
     if (session.analysisSnapshots.length === 0) {
-      console.log("No analysis snapshots found");
       return;
     }
 
     const analysis = combineToSessionAnalysis(session.analysisSnapshots);
-
-    console.log(analysis);
 
     await updateStoreSession(session.id, { ...session, aggregatedAnalysis: analysis });
 

@@ -106,16 +106,6 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
 
   const isInitialCheck = useRef(false);
 
-  // const content = useMemo(
-  //   () => ({
-  //     title: t("title", { keyPrefix: "sessions.newSessionsPrompt" }),
-  //     subtitle: t("subtitle", { keyPrefix: "sessions.newSessionsPrompt" }),
-  //     action: t("action", { keyPrefix: "sessions.newSessionsPrompt" }),
-  //     loading: t("loading", { keyPrefix: "sessions.newSessionsPrompt" }),
-  //   }),
-  //   [t]
-  // );
-
   const handleFetchCloudSyncInfo = useCallback(async () => {
     setSessions([]);
     setLoadingStatus({ loading: true, loaded: false, error: null });
@@ -140,8 +130,7 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
         }
       }
       setSessions(newSessions);
-    } catch (error) {
-      console.error(error);
+    } catch {
       setLoadingStatus({ loading: false, loaded: false, error: "Failed to fetch cloud sync info" });
     } finally {
       setLoadingStatus((prev) => ({ ...prev, loading: false }));
@@ -164,8 +153,7 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
 
       // Remove from list after success
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
-    } catch (error) {
-      console.error(error);
+    } catch {
       setLoadingStatus({ loading: false, loaded: false, error: "Failed to process session" });
     }
   }, []);
@@ -176,8 +164,7 @@ const SessionsCloudState: React.FC<Props> = ({ className }) => {
     try {
       await Promise.all(sessions.map((session) => handleProcessSession(session.id, session.state)));
       setSessions([]); // Clear all after bulk update
-    } catch (error) {
-      console.error(error);
+    } catch {
       setLoadingStatus({ loading: false, loaded: false, error: "Failed to update sessions" });
     }
   }, [handleProcessSession, sessions]);

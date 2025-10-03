@@ -1,68 +1,75 @@
 // =======================
-// CHAT MESSAGE TYPES - SIMPLIFIED
+// SIMPLIFIED MESSAGE TYPES
 // =======================
 
-import {
-  ActionContent,
-  FlowEndContent,
-  FlowStep,
-  OptionsContent,
-  ParagraphsContent,
-  StepType,
-  SystemContent,
-  UserInputContent,
-} from "./flow-session.types";
+import { EndContent, ParagraphsContent, UserInputContent, UserSelectContent } from "./flow-session.types";
 
+// Message types - reduced to just 2 main types
 export const MessageType = {
-  TEXT: "text",
-  PARAGRAPHS: "paragraphs",
-  USER_INPUT: "user_input",
-  OPTIONS: "options",
-  ACTION: "action",
-  REFLECTION: "reflection",
-  SYSTEM: "system",
-  FLOW_END: "flow_end",
-  USER_MESSAGE: "user_message",
+  APP: "app", // Any message from the app
+  USER: "user", // Any message from the user
 } as const;
 
 export type MessageType = (typeof MessageType)[keyof typeof MessageType];
 
-interface BaseChatMessage {
+// Message display variants for APP messages
+export const AppMessageVariant = {
+  TEXT: "text",
+  PARAGRAPHS: "paragraphs",
+  INPUT: "input",
+  SELECT: "select",
+  END: "end",
+} as const;
+
+export type AppMessageVariant = (typeof AppMessageVariant)[keyof typeof AppMessageVariant];
+
+// =======================
+// MESSAGE DEFINITIONS
+// =======================
+
+interface BaseMessage {
   readonly id: string;
   readonly type: MessageType;
   readonly timestamp: number;
-  readonly flowStepId?: string;
 }
 
-// Union type approach for chat messages - much cleaner
-export type ChatMessage = BaseChatMessage &
-  (
-    | { type: typeof MessageType.TEXT; content: string; flowStepId: string }
-    | {
-        type: typeof MessageType.PARAGRAPHS;
-        content: ParagraphsContent & { manualAdvance?: boolean };
-        flowStepId: string;
-      }
-    | { type: typeof MessageType.USER_INPUT; content: UserInputContent; flowStepId: string }
-    | { type: typeof MessageType.OPTIONS; content: OptionsContent; flowStepId: string }
-    | { type: typeof MessageType.ACTION; content: ActionContent; flowStepId: string }
-    | { type: typeof MessageType.REFLECTION; content: { title: string; reflection?: string; error?: string } }
-    | { type: typeof MessageType.SYSTEM; content: SystemContent; flowStepId: string }
-    | { type: typeof MessageType.FLOW_END; content: FlowEndContent; flowStepId: string }
-    | { type: typeof MessageType.USER_MESSAGE; content: string | string[]; flowStepId?: never }
+export type AppMessage = BaseMessage & {
+  type: typeof MessageType.APP;
+  flowStepId: string;
+} & (
+    | { variant: typeof AppMessageVariant.TEXT; content: string }
+    | { variant: typeof AppMessageVariant.PARAGRAPHS; content: ParagraphsContent }
+    | { variant: typeof AppMessageVariant.INPUT; content: UserInputContent }
+    | { variant: typeof AppMessageVariant.SELECT; content: UserSelectContent }
+    | { variant: typeof AppMessageVariant.END; content: EndContent }
   );
 
-// =======================
-// UTILITY TYPES
-// =======================
+export type UserMessage = BaseMessage & {
+  type: typeof MessageType.USER;
+  content: string | string[];
+  flowStepId?: string; // Optional reference to which step this was responding to
+};
 
-// Helper to get content type for a specific step/message type
-export type ContentFor<T extends StepType | MessageType> = Extract<FlowStep | ChatMessage, { type: T }>["content"];
+export type ChatMessage = AppMessage | UserMessage;
 
-// Helper to get steps/messages of specific type
-export type MessageOfType<T extends MessageType> = Extract<ChatMessage, { type: T }>;
+// Helper to create messages
+export function createAppMessage(flowStepId: string, variant: AppMessageVariant, content: any): AppMessage {
+  return {
+    id: `app_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    type: MessageType.APP,
+    timestamp: Date.now(),
+    flowStepId,
+    variant,
+    content,
+  } as AppMessage;
+}
 
-// Grouping types
-export type InteractiveMessage = MessageOfType<typeof MessageType.USER_INPUT | typeof MessageType.OPTIONS>;
-export type FlowStepMessage = Exclude<ChatMessage, { type: typeof MessageType.USER_MESSAGE }>;
-export type UserGeneratedMessage = MessageOfType<typeof MessageType.USER_MESSAGE | typeof MessageType.REFLECTION>;
+export function createUserMessage(content: string | string[], flowStepId?: string): UserMessage {
+  return {
+    id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    type: MessageType.USER,
+    timestamp: Date.now(),
+    content,
+    flowStepId,
+  };
+}

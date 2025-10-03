@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { APP_CONFIG } from "@/config/app";
@@ -17,15 +17,12 @@ interface LoadingComponentProps {
 
 export default function LoadingComponent({ isLoading = true, className, ...props }: LoadingComponentProps) {
   const { t } = useTranslation("pages");
-  const { title, subtitle, loadingMessage, loadedMessage } = useMemo(
-    () => ({
-      title: props.title || t("title", { keyPrefix: "loading", app_name: APP_CONFIG.name }),
-      subtitle: props.subtitle || t("subtitle", { keyPrefix: "loading" }),
-      loadingMessage: props.loadingMessage || t("loadingMessage", { keyPrefix: "loading" }),
-      loadedMessage: props.loadedMessage || t("loadedMessage", { keyPrefix: "loading" }),
-    }),
-    [props.loadedMessage, props.loadingMessage, props.subtitle, props.title, t]
-  );
+
+  // Simple lookups - no need for useMemo
+  const title = props.title || t("title", { keyPrefix: "loading", app_name: APP_CONFIG.name });
+  const subtitle = props.subtitle || t("subtitle", { keyPrefix: "loading" });
+  const loadingMessage = props.loadingMessage || t("loadingMessage", { keyPrefix: "loading" });
+  const loadedMessage = props.loadedMessage || t("loadedMessage", { keyPrefix: "loading" });
   return (
     <div className={cn("fixed inset-0 h-screen w-screen flex items-center justify-center z-[1000]", className)}>
       <div

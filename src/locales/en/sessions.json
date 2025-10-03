@@ -310,38 +310,11 @@
         }
       },
       {
-        "id": "confirm_inputs",
-        "content": {
-          "prompt": "Do you want to continue with what you’ve shared, or start over?",
-          "primary": {
-            "label": "Continue"
-          },
-          "secondary": {
-            "label": "Start over"
-          }
-        }
-      },
-      {
-        "id": "reset_onboarding_flow",
-        "content": {
-          "title": "Restarting Onboarding",
-          "message": "Resetting progress and returning to the beginning..."
-        }
-      },
-      {
-        "id": "sync_before_reflection",
-        "content": {
-          "title": "Saving Progress",
-          "message": "Applying session updates..."
-        }
-      },
-      {
         "id": "end",
         "content": {
           "title": "A Step Back Toward Yourself",
           "message": "**Thank you for letting yourself be seen here.** Take a slow breath. Even naming these pieces is already movement toward clarity.",
-          "primaryAction": "Begin with {{app_name}}",
-          "secondaryAction": "Continue as guest"
+          "primaryAction": "Begin with {{app_name}}"
         }
       }
     ]

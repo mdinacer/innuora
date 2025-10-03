@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { Form } from "@/components/ui/form";
 import { recoverContentKeyFromWrapped, storeContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { WrappedKeyPackageSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { logger } from "@/lib/logging/unified-logger";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";
 
@@ -30,30 +31,26 @@ const SignInForm: React.FC<Props> = ({ className }) => {
   const [formError, setFormError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const { title, subtitle, formFields, no_account } = useMemo(
-    () => ({
-      title: t("title", { keyPrefix: "auth.sign-in" }),
-      subtitle: t("subtitle", { keyPrefix: "auth.sign-in" }),
-      formFields: {
-        email: {
-          label: t("form.email.label", { keyPrefix: "auth.sign-in" }),
-          placeholder: t("form.email.placeholder", { keyPrefix: "auth.sign-in" }),
-        },
-        password: {
-          label: t("form.password.label", { keyPrefix: "auth.sign-in" }),
-          placeholder: t("form.password.placeholder", { keyPrefix: "auth.sign-in" }),
-        },
-        forgot_password: t("form.forgot_password", { keyPrefix: "auth.sign-in" }),
-        remember: t("form.remember", { keyPrefix: "auth.sign-in" }),
-        submit: t("form.submit", { keyPrefix: "auth.sign-in" }),
-      },
-      no_account: {
-        text: t("no_account.text", { keyPrefix: "auth.sign-in" }),
-        link: t("no_account.link", { keyPrefix: "auth.sign-in" }),
-      },
-    }),
-    [t]
-  );
+  // Simple translation lookups - no need for useMemo
+  const title = t("title", { keyPrefix: "auth.sign-in" });
+  const subtitle = t("subtitle", { keyPrefix: "auth.sign-in" });
+  const formFields = {
+    email: {
+      label: t("form.email.label", { keyPrefix: "auth.sign-in" }),
+      placeholder: t("form.email.placeholder", { keyPrefix: "auth.sign-in" }),
+    },
+    password: {
+      label: t("form.password.label", { keyPrefix: "auth.sign-in" }),
+      placeholder: t("form.password.placeholder", { keyPrefix: "auth.sign-in" }),
+    },
+    forgot_password: t("form.forgot_password", { keyPrefix: "auth.sign-in" }),
+    remember: t("form.remember", { keyPrefix: "auth.sign-in" }),
+    submit: t("form.submit", { keyPrefix: "auth.sign-in" }),
+  };
+  const no_account = {
+    text: t("no_account.text", { keyPrefix: "auth.sign-in" }),
+    link: t("no_account.link", { keyPrefix: "auth.sign-in" }),
+  };
 
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
@@ -117,6 +114,9 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
         // Enforces sign out of other sessions (Single session per user)
         await signOutOthers();
+
+        const supabase = createClient();
+        supabase.auth.setSession(result.data.session);
 
         // Mark as redirecting to prevent form re-enablement during navigation
         setIsRedirecting(true);

@@ -36,12 +36,12 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
         }
 
         setTransactions(result.data);
-      } catch (err) {
+      } catch {
         logger.logWarning("Failed to load credit transaction history", {
           operation: "credits_transaction_history_load_failed",
           userId,
           metadata: {
-            error: err instanceof Error ? err.message : String(err),
+            error: "Unknown error",
           },
         });
         setError("Failed to load transaction history");

@@ -8,15 +8,20 @@
   "app-name": "Innuora",
   "avatar-letter": "I",
   "back-to-app": "Retour vers Innuora",
+  "finished": "Fini",
+  "guide": "Guide",
   "languages": {
     "en": "Anglais",
     "fr": "Français",
     "ar": "Arabe"
   },
+  "select_multiple": "Choisissez tout ce qui s'applique",
+  "select_single": "Choisissez-en un",
   "sessionWithCount_one": "{{count}} session",
   "sessionWithCount_other": "{{count}} sessions",
   "sessionWithCount_zero": "aucune session",
   "session_one": "session",
   "session_other": "sessions",
-  "session_zero": "Aucune session"
+  "session_zero": "Aucune session",
+  "your_turn": "À vous"
 }

@@ -19,14 +19,12 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
       try {
         if (!session) {
           const error = "No session available for memory update";
-          console.error(error);
           setMemoryError(error);
           return { error };
         }
 
         if (!userMessage.trim()) {
           const error = "User message is required for memory update";
-          console.error(error);
           setMemoryError(error);
           return { error };
         }
@@ -37,7 +35,6 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         // Unwrap ActionResult
         if (result.error) {
           const error = `Memory generation failed: ${result.error.message}`;
-          console.error(error);
           setMemoryError(error);
           return { error };
         }
@@ -45,7 +42,6 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         const memoryResult = result.data;
         if (!memoryResult) {
           const error = "Memory generation failed - no response received";
-          console.error(error);
           setMemoryError(error);
           return { error };
         }
@@ -53,7 +49,6 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         const { tokenUsage, memory, creditsUsed } = memoryResult;
         if (!memory?.trim()) {
           const error = "Memory generation returned empty response";
-          console.error(error);
           setMemoryError(error);
           return { error };
         }
@@ -71,16 +66,16 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         let memoryArray: string[];
         try {
           memoryArray = JSON.parse(memory);
-        } catch (err) {
+        } catch {
           const error = "Invalid JSON in memory generation result";
-          console.error(error, memory, err);
+
           setMemoryError(error);
           return { error };
         }
 
         if (!Array.isArray(memoryArray)) {
           const error = "Memory result is not an array";
-          console.error(error, memoryArray);
+
           setMemoryError(error);
           return { error };
         }

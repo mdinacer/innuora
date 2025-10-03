@@ -26,7 +26,7 @@ interface ContentPageProps {
 // =========================
 
 export async function generateMetadata({ params }: ContentPageProps): Promise<Metadata> {
-  const { category, slug } = await params;
+  const { slug } = await params;
 
   // Initialize content registry if needed
   await initializeContentRegistry();
@@ -41,27 +41,9 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
     };
   }
 
-  const { title, description, keywords } = contentItem.metadata;
-
-  return {
-    title: `${title} | Innuora`,
-    description,
-    keywords: keywords.join(", "),
-    openGraph: {
-      title,
-      description,
-      type: "article",
-      siteName: "Innuora",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-    alternates: {
-      canonical: `/content/${category}/${slug}`,
-    },
-  };
+  // Use SEOGenerator for comprehensive metadata
+  const { SEOGenerator } = await import("@/lib/content/seo-generator");
+  return SEOGenerator.generateMetadata(contentItem.metadata);
 }
 
 // =========================
@@ -119,19 +101,25 @@ export default async function ContentPage({ params }: ContentPageProps) {
       const { content } = matter(fileContent);
       markdownContent = content;
     }
-  } catch (error) {
-    console.error(`Failed to load markdown content for ${slug}:`, error);
-  }
+  } catch {}
 
   // Get related content
   const relatedContent = contentRegistry.getRelated(contentItem);
 
+  // Generate structured data for SEO
+  const { SEOGenerator } = await import("@/lib/content/seo-generator");
+  const structuredData = SEOGenerator.generateStructuredData(contentItem.metadata, markdownContent);
+
   return (
-    <ArticleLayout
-      contentItem={contentItem}
-      relatedContent={relatedContent}
-      category={category as ContentCategory}
-      markdownContent={markdownContent}
-    />
+    <>
+      {/* JSON-LD Structured Data for SEO */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <ArticleLayout
+        contentItem={contentItem}
+        relatedContent={relatedContent}
+        category={category as ContentCategory}
+        markdownContent={markdownContent}
+      />
+    </>
   );
 }
