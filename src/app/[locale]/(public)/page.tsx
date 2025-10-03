@@ -2,8 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BotIcon } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import Markdown from "markdown-to-jsx";
 
 import BackgroundAnimation from "@/components/background-animation";
 import { APP_CONFIG } from "@/config/app";
@@ -125,12 +124,7 @@ function ConversationCard({ conversation, label }: ConversationCardProps) {
               [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 
               [&>ul]:list-inside [&>ul]:list-disc [&_*>li]:my-2"
             >
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
-              >
-                {conversation.text}
-              </ReactMarkdown>
+              <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{conversation.text}</Markdown>
             </div>
           </div>
         </div>
@@ -391,7 +385,7 @@ export default async function Home({
                 <ul className="space-y-3 text-base list-inside text-primary/80 rtl:text-lg">
                   {demo.insights.generic.points.map((item, index) => (
                     <li key={index} className="list-item">
-                      <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>{item}</ReactMarkdown>
+                      <Markdown options={{ forceInline: true, disableParsingRawHTML: true }}>{item}</Markdown>
                     </li>
                   ))}
                 </ul>
@@ -404,7 +398,7 @@ export default async function Home({
                 <ul className="space-y-3 text-base text-primary/80 rtl:text-lg list-inside">
                   {demo.insights.innuora.points.map((item, index) => (
                     <li key={index} className="list-item">
-                      <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>{item}</ReactMarkdown>
+                      <Markdown options={{ forceInline: true, disableParsingRawHTML: true }}>{item}</Markdown>
                     </li>
                   ))}
                 </ul>

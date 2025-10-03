@@ -34,7 +34,6 @@ export default function AppearanceSettings(): React.JSX.Element {
         const result = await getUserConfig();
 
         if (result.error) {
-          console.error("Failed to load user config:", result.error.message);
           return;
         }
 
@@ -44,9 +43,7 @@ export default function AppearanceSettings(): React.JSX.Element {
           setFontSize((config.fontSize as FontSize) || "medium");
           setAnimated(config.enableAnimation);
         }
-      } catch (error) {
-        console.error("Failed to load user config:", error);
-      }
+      } catch {}
     }
     loadConfig();
   }, []);
@@ -65,8 +62,7 @@ export default function AppearanceSettings(): React.JSX.Element {
       setTheme(themeMode);
 
       toast.success("Appearance settings saved!");
-    } catch (error) {
-      console.error("Failed to save settings:", error);
+    } catch {
       toast.error("Failed to save settings. Please try again.");
     } finally {
       setIsLoading(false);

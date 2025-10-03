@@ -2,16 +2,15 @@
 
 import React from "react";
 import { ChevronRightIcon, GraduationCapIcon } from "lucide-react";
+import Markdown from "markdown-to-jsx";
 import { useTranslation } from "react-i18next";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
-import { MessageOfType } from "@/types/flow-chat-messages.types";
+import { AppMessage, AppMessageVariant } from "@/types/flow-chat-messages.types";
 import FlowChatMessageHeader from "../flow-chat.message-header";
 
 interface Props {
-  message: MessageOfType<"paragraphs">;
+  message: AppMessage & { variant: typeof AppMessageVariant.PARAGRAPHS };
   isDisabled?: boolean;
   onMoveToNextStep: () => void;
 }
@@ -23,7 +22,7 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
     <>
       <FlowChatMessageHeader
         isAccent={false}
-        secondaryContent={t("app-name")}
+        secondaryContent={t("guide")}
         primaryContent={<GraduationCapIcon className="size-6 shrink-0" />}
       />
       <h3
@@ -35,14 +34,9 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
       {paragraphs.map((paragraph, index) => (
         <div
           key={index}
-          className="leading-7 rtl:leading-loose tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>ul]:list-inside [&>ul]:list-disc"
+          className="leading-7 rtl:leading-loose tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>ul]:list-inside [&>ul]:list-disc mb-4 last:mb-0"
         >
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
-          >
-            {paragraph}
-          </ReactMarkdown>
+          <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{paragraph}</Markdown>
         </div>
       ))}
 

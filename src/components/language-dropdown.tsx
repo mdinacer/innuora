@@ -106,6 +106,7 @@ const LanguageDropdown = () => {
             key={locale.value}
             disabled={i18n.language === locale.value || isSwitching}
             onClick={() => handleChange(locale.value as AppLocales)}
+            aria-current={i18n.language === locale.value ? "true" : undefined}
           >
             {isMobile ? locale.abbreviation : locale.label}
           </DropdownMenuItem>

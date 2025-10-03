@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -32,9 +32,8 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
 
   const fnsLocale = fnsLocalesMap[language as AppLocales];
 
-  const publicId = useMemo(() => {
-    return useSessionStore.getState().getSessionPublicId(session.id);
-  }, [session.id]);
+  // Simple store getter - no memoization needed
+  const publicId = useSessionStore.getState().getSessionPublicId(session.id);
 
   const {
     cloud,

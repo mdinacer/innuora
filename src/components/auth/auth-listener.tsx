@@ -8,10 +8,12 @@ import { createClient } from "@/lib/supabase/client";
 const AuthListener: React.FC = () => {
   const supabase = createClient();
   useEffect(() => {
-    console.log("Auth listener mounted");
-
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") {
+        // Clear current user ID to hide sessions
+        useSessionStore.getState().setCurrentUserId(null);
+
+        // Clear storage (sessions are backed up to cloud if persistOnCloud=true)
         useSessionStore.persist.clearStorage();
       }
     });

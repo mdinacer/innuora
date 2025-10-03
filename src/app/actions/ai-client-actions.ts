@@ -165,21 +165,6 @@ export async function processAiPrompts(
       // At this point, rawContent is guaranteed to be a non-empty string (logErrorAndThrow throws)
       const message = rawContent!;
 
-      // Log in development environment
-      if (process.env.NODE_ENV === "development") {
-        console.info(
-          `AI Service Called:
-          Model: ${AI_MODEL}
-          Vendor: ${AI_MODEL_VENDOR}
-          TokenUsage: %o
-          Prompts: %o
-          Response: %s`,
-          data?.usage,
-          prompts,
-          message
-        );
-      }
-
       // Calculate credits based on token usage and model pricing
       const consumedCredits = data.usage
         ? calculateCreditsFromUsage(

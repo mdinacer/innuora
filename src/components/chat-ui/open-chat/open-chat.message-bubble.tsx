@@ -2,8 +2,7 @@
 
 import React from "react";
 import { format } from "date-fns";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import Markdown from "markdown-to-jsx";
 
 import { CreditUtils } from "@/lib/credits/credit-config";
 import { cn } from "@/lib/utils";
@@ -49,12 +48,14 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
           {isUser ? (
             content
           ) : (
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
+            <Markdown
+              options={{
+                forceBlock: true,
+                disableParsingRawHTML: true,
+              }}
             >
               {content}
-            </ReactMarkdown>
+            </Markdown>
           )}
         </div>
       </div>

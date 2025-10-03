@@ -30,7 +30,6 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     // Get the current session from store to avoid stale closures
     const latestSession = useActiveSessionStore.getState().session;
     if (latestSession && sessionId) {
-      console.log(`[SessionState] Triggering sync for session ${sessionId}`);
       // Only trigger local sync here - cloud sync is handled separately by synchronizer
       sessionSynchronizer.queueLocalSync(sessionId, "update", latestSession);
       // Cloud sync is debounced and triggered automatically by the synchronizer
@@ -63,7 +62,6 @@ export function useSessionState({ sessionId }: OpenChatProps) {
       return true;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error occurred";
-      console.error(`Failed to load session ${sessionId}:`, error);
       setError(`Failed to load session: ${message}`);
       setLoaded(false);
       return false;
@@ -77,7 +75,6 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     const loadSessionAsync = async () => {
       // Always load from encrypted store as source of truth
       // The active store session might be stale or incomplete
-      console.log(`[SessionState] Loading session ${sessionId} from encrypted store`);
       await handleLoadSession(sessionId);
     };
 
@@ -89,16 +86,16 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     try {
       useActiveSessionStore.getState().addMessage(message);
       // No sync - all messages are part of AI rounds that will complete with sync
-    } catch (error) {
-      console.error("Failed to add message:", error);
+    } catch {
+      // Error handled silently - will be caught at round completion
     }
   }, []);
 
   const appendMessage = useCallback((content: string, role: "user" | "assistant", creditsUsed?: number) => {
     try {
       useActiveSessionStore.getState().appendMessage(content, role, creditsUsed);
-    } catch (error) {
-      console.error("Failed to append message:", error);
+    } catch {
+      // Error handled silently
     }
   }, []);
 
@@ -106,8 +103,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     try {
       useActiveSessionStore.getState().addAnalysis(analysis);
       // No immediate sync - will sync at round completion
-    } catch (error) {
-      console.error("Failed to add analysis:", error);
+    } catch {
+      // Error handled silently
     }
   }, []);
 
@@ -115,8 +112,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     try {
       useActiveSessionStore.getState().addTokenUsage(tokenUsage);
       // No immediate sync - will sync at round completion
-    } catch (error) {
-      console.error("Failed to add token usage:", error);
+    } catch {
+      // Error handled silently
     }
   }, []);
 
@@ -125,8 +122,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
       try {
         useActiveSessionStore.getState().updateSession(update);
         triggerSync();
-      } catch (error) {
-        console.error("Failed to update session:", error);
+      } catch {
+        // Error handled silently
       }
     },
     [triggerSync]
@@ -140,8 +137,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
       if (sessionId) {
         useSessionStore.getState().clearSession(sessionId);
       }
-    } catch (error) {
-      console.error("Failed to reset session:", error);
+    } catch {
+      // Error handled silently
     }
   }, [sessionId]);
 

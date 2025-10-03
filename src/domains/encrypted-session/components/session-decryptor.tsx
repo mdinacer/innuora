@@ -45,8 +45,7 @@ const SessionDecrypt: React.FC<Props> = ({ publicId, content: Content }) => {
       }
 
       setSession(decryptedSession);
-    } catch (error) {
-      console.error("Failed to decrypt session:", error);
+    } catch {
       setError("Failed to decrypt session");
     } finally {
       setIsLoading(false);

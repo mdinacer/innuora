@@ -41,7 +41,6 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
 
     if (!session.analysisSnapshots.length) {
       const error = "No analysis snapshots available";
-      console.error(error);
       setAnalysisError(error);
       return { error };
     }
@@ -53,7 +52,6 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
 
       if (!sessionAnalysis) {
         const error = "Failed to combine analysis snapshots";
-        console.error(error);
         setAnalysisError(error);
         return { error };
       }
@@ -63,7 +61,6 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
       // Unwrap ActionResult
       if (result.error) {
         const error = `AI analysis failed: ${result.error.message}`;
-        console.error(error);
         setAnalysisError(error);
         return { error };
       }
@@ -71,7 +68,6 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
       const aiResponse = result.data;
       if (!aiResponse) {
         const error = "AI analysis failed - no response received";
-        console.error(error);
         setAnalysisError(error);
         return { error };
       }
@@ -88,7 +84,6 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
 
       if (!aiResponse.summary) {
         const error = "AI analysis returned empty response";
-        console.error(error);
         setAnalysisError(error);
         return { error };
       }
@@ -96,9 +91,9 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
       let parsedJSON;
       try {
         parsedJSON = parseJsonObject(aiResponse.summary);
-      } catch (err) {
+      } catch {
         const error = "Invalid JSON in analysis result";
-        console.error(error, aiResponse.summary, err);
+
         setAnalysisError(error);
         return { error };
       }
@@ -106,7 +101,7 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
       const parsedData = SessionSummarySchema.safeParse(parsedJSON);
       if (!parsedData.success) {
         const error = "Analysis result doesn't match expected format";
-        console.error(error, parsedData.error.format());
+
         setAnalysisError(error);
         return { error };
       }
@@ -136,7 +131,6 @@ export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessi
       return { success: true };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error occurred";
-      console.error("Session analysis failed:", error);
       setAnalysisError(`Analysis failed: ${message}`);
       return { error: message };
     } finally {

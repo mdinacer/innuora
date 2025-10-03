@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { format } from "date-fns";
 import { ArrowDownIcon, FileTextIcon } from "lucide-react";
+import Markdown from "markdown-to-jsx";
 import { useTranslation } from "react-i18next";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 import { Button } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
@@ -116,12 +115,7 @@ const SessionDetailsSummary: React.FC<Props> = ({ className, session }) => {
       {continuitySummary && (
         <>
           <div className="leading-7 mb-4 rtl:leading-loose tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>ul]:list-inside [&>ul]:list-disc">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
-            >
-              {summary}
-            </ReactMarkdown>
+            <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{summary || ""}</Markdown>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 text-sm text-inn-text-secondary mb-6">

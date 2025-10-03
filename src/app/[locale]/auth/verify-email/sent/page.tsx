@@ -5,7 +5,6 @@ import { MailIcon, RefreshCcwIcon } from "lucide-react";
 import { findCurrentUser } from "@/app/actions/auth-actions";
 import { Button } from "@/components/mir-ui/button";
 import { APP_CONFIG } from "@/config/app";
-import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: `Check Your Email - ${APP_CONFIG.name}`,
@@ -18,11 +17,6 @@ export const metadata: Metadata = {
 
 export default async function VerificationEmailSentRoute() {
   const user = await findCurrentUser();
-
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getSession();
-
-  console.log(data);
 
   return (
     <main className="relative flex items-center justify-center px-6 py-12">

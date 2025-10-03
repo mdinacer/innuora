@@ -12,6 +12,16 @@ import {
 } from "@/app/actions/session-actions";
 import { Button } from "@/components/mir-ui/button";
 import Card from "@/components/mir-ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
@@ -29,40 +39,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
   const [cloudInfo, setCloudInfo] = useState<{ id: string; updatedAt: Date } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const transformForUpdate = useCallback(
-    (encryptedSession: any) => {
-      const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
-      // Store extracted IDs for potential future use
-      const metadata = {
-        originalId: id,
-        originalUserId: userId,
-        originalCreatedAt: createdAt,
-        originalUpdatedAt: updatedAt,
-      };
-
-      return {
-        ...rest,
-        subtitle: session.subtitle || null,
-        metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : metadata,
-        encryptedData: encryptedSession.encryptedData as EncryptedBlob,
-      };
-    },
-    [session.subtitle]
-  );
-
-  const transformForCreate = useCallback(
-    (encryptedSession: any) => {
-      const { encryptedData, metadata, ...rest } = encryptedSession;
-      return {
-        ...rest,
-        subtitle: session.subtitle || null,
-        metadata: metadata ? SessionMetadataSchema.parse(metadata) : {},
-        encryptedData: encryptedData as EncryptedBlob,
-      };
-    },
-    [session.subtitle]
-  );
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const pushToCloud = useCallback(async () => {
     setLoading(true);
@@ -71,6 +48,33 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
       const state = useSessionStore.getState();
       const encryptedSession = state.sessions[session.id];
       if (!encryptedSession) throw new Error("Session not found");
+
+      // Transform functions (defined inline to avoid dependency issues)
+      const transformForUpdate = (encryptedSession: any) => {
+        const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
+        const metadata = {
+          originalId: id,
+          originalUserId: userId,
+          originalCreatedAt: createdAt,
+          originalUpdatedAt: updatedAt,
+        };
+        return {
+          ...rest,
+          subtitle: session.subtitle || null,
+          metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : metadata,
+          encryptedData: encryptedSession.encryptedData as EncryptedBlob,
+        };
+      };
+
+      const transformForCreate = (encryptedSession: any) => {
+        const { encryptedData, metadata, ...rest } = encryptedSession;
+        return {
+          ...rest,
+          subtitle: session.subtitle || null,
+          metadata: metadata ? SessionMetadataSchema.parse(metadata) : {},
+          encryptedData: encryptedData as EncryptedBlob,
+        };
+      };
 
       let result;
       if (session.persistOnCloud) {
@@ -102,7 +106,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
     } finally {
       setLoading(false);
     }
-  }, [session, transformForUpdate, transformForCreate, router]);
+  }, [session, router]);
 
   const pullFromCloud = useCallback(async () => {
     setLoading(true);
@@ -125,8 +129,6 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
     }
   }, [session.id]);
   const removeFromCloud = useCallback(async () => {
-    if (!confirm("Remove this session from cloud? This cannot be undone.")) return;
-
     setLoading(true);
     setError(null);
     try {
@@ -134,6 +136,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
       const state = useSessionStore.getState();
       await updateStoreSession(session.id, { ...session, persistOnCloud: false }, state);
       setCloudInfo(null);
+      setShowDeleteDialog(false);
       router.refresh();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to remove");
@@ -152,9 +155,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
     try {
       const data = await getSessionUpdateInfo(session.id);
       setCloudInfo(data);
-    } catch (error) {
-      console.error("Failed to get cloud info:", error);
-    }
+    } catch {}
   }, [session.id, isOnCloud]);
 
   const status = useMemo<SyncStatus>(() => {
@@ -205,8 +206,14 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
         {error && <div className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</div>}
 
         {!isOnCloud && (
-          <Button variant="secondary" size="full" onClick={pushToCloud} disabled={loading}>
-            <CloudIcon className="size-4 shrink-0" />
+          <Button
+            variant="secondary"
+            size="full"
+            onClick={pushToCloud}
+            disabled={loading}
+            aria-label="Push session to cloud storage"
+          >
+            <CloudIcon className="size-4 shrink-0" aria-hidden="true" />
             {loading ? "Pushing..." : "Push to Cloud"}
           </Button>
         )}
@@ -215,35 +222,73 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
           <>
             <div
               className={`flex flex-col items-center justify-between p-3 rounded-xl ${statusStyles.bg} ${statusStyles.border}`}
+              role="status"
+              aria-label={`Sync status: ${statusStyles.label}`}
             >
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${statusStyles.dot}`}></div>
+                <div className={`w-2 h-2 rounded-full ${statusStyles.dot}`} aria-hidden="true"></div>
                 <span className="text-sm font-medium">{statusStyles.label}</span>
               </div>
               <span className="text-xs">{cloudInfo ? cloudInfo.updatedAt.toLocaleTimeString() : "—"}</span>
             </div>
 
             {status === "cloudNewer" && (
-              <Button variant="secondary" size="full" onClick={pullFromCloud} disabled={loading}>
-                <DownloadIcon className="size-4 shrink-0" />
+              <Button
+                variant="secondary"
+                size="full"
+                onClick={pullFromCloud}
+                disabled={loading}
+                aria-label="Pull updates from cloud"
+              >
+                <DownloadIcon className="size-4 shrink-0" aria-hidden="true" />
                 {loading ? "Pulling..." : "Pull Updates"}
               </Button>
             )}
 
             {status === "localNewer" && (
-              <Button variant="outline" size="full" onClick={pushToCloud} disabled={loading}>
-                <UploadIcon className="size-4 shrink-0" />
+              <Button
+                variant="outline"
+                size="full"
+                onClick={pushToCloud}
+                disabled={loading}
+                aria-label="Push local updates to cloud"
+              >
+                <UploadIcon className="size-4 shrink-0" aria-hidden="true" />
                 {loading ? "Pushing..." : "Push Updates"}
               </Button>
             )}
 
-            <Button variant="destructive" size="full" onClick={removeFromCloud} disabled={loading}>
-              <CloudOffIcon className="size-4 shrink-0" />
-              {loading ? "Removing..." : "Remove from Cloud"}
+            <Button
+              variant="destructive"
+              size="full"
+              onClick={() => setShowDeleteDialog(true)}
+              disabled={loading}
+              aria-label="Remove session from cloud storage"
+            >
+              <CloudOffIcon className="size-4 shrink-0" aria-hidden="true" />
+              Remove from Cloud
             </Button>
           </>
         )}
       </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove session from cloud?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this session from cloud storage. This action cannot be undone. The session
+              will remain stored locally on your device.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={removeFromCloud} disabled={loading}>
+              {loading ? "Removing..." : "Remove"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };

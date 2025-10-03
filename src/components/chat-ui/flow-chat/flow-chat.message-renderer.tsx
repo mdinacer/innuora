@@ -4,19 +4,16 @@ import React, { useCallback, useMemo } from "react";
 
 import FlowChatMessageBubble from "@/components/chat-ui/flow-chat/flow-chat.message-bubble";
 import {
-  FlowAction,
   FlowEnd,
   FlowParagraphs,
-  FlowReflection,
-  FlowSystemAction,
   FlowTextMessage,
   FlowUserInput,
   FlowUserMessage,
   FlowUserOptions,
 } from "@/components/chat-ui/flow-chat/messages";
 import { cn } from "@/lib/utils";
-import { UserOption } from "@/lib/zod/session-flow-schema";
-import { ChatMessage, MessageType } from "@/types/flow-chat-messages.types";
+import { AppMessageVariant, ChatMessage, MessageType } from "@/types/flow-chat-messages.types";
+import { UserOption } from "@/types/flow-session.types";
 
 interface Props {
   className?: string;
@@ -28,23 +25,25 @@ interface Props {
     onUserInput: (key: string, value: string, meta: { id: string; label: string }) => void;
     onUserSelect: (key: string, selection: UserOption | UserOption[], meta: { id: string; label: string }) => void;
   };
-  onFlowEnd: (actionType: "primary" | "secondary") => void;
+  onFlowEnd: (actionType: "primary" | "secondary") => Promise<void>;
 }
 
 // Utility function to get message-specific styling
-const getMessageStyling = (messageType: MessageType) => {
-  const styleMap = {
-    [MessageType.USER_MESSAGE]: "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white",
-    [MessageType.FLOW_END]: "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white",
-    [MessageType.USER_INPUT]: "bg-inn-bg-card text-inn-text-primary",
-    [MessageType.OPTIONS]: "bg-inn-bg-card text-inn-text-primary",
-    [MessageType.SYSTEM]: "bg-inn-bg-card text-inn-text-primary",
-    [MessageType.ACTION]: "bg-inn-bg-secondary text-white",
-    [MessageType.REFLECTION]: "bg-inn-bg-secondary text-white",
-    [MessageType.TEXT]: "bg-inn-bg-secondary text-white",
-  } as const;
+const getMessageStyling = (messageType: MessageType, variant?: AppMessageVariant) => {
+  if (messageType === MessageType.USER) {
+    return "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white";
+  }
 
-  return styleMap[messageType as keyof typeof styleMap] || "bg-inn-bg-card text-inn-text-primary";
+  // APP message variants
+  if (variant === AppMessageVariant.END) {
+    return "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white";
+  }
+
+  if (variant === AppMessageVariant.INPUT || variant === AppMessageVariant.SELECT) {
+    return "bg-inn-bg-card text-inn-text-primary";
+  }
+
+  return "bg-inn-bg-secondary text-inn-text-primary";
 };
 
 // Fallback component for unknown message types
@@ -60,15 +59,15 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
   className,
   isCurrentStep = false,
   onFlowEnd,
-  actions: { moveToNextStep, moveToStep, onUserInput, onUserSelect },
+  actions: { moveToNextStep, onUserInput, onUserSelect },
 }) => {
   const { type } = message;
-
-  const isUser = type === MessageType.USER_MESSAGE;
+  const isUser = type === MessageType.USER;
+  const variant = type === MessageType.APP ? message.variant : undefined;
 
   const handleUserInput = useCallback(
     (key: string, value: string) => {
-      if (message.type !== MessageType.USER_INPUT) return;
+      if (message.type !== MessageType.APP || message.variant !== AppMessageVariant.INPUT) return;
       const { id, content } = message;
       onUserInput(key, value, { id: id, label: content.label });
     },
@@ -77,7 +76,7 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
 
   const handleUserOptionSelect = useCallback(
     (key: string, selection: UserOption | UserOption[]) => {
-      if (message.type !== MessageType.OPTIONS) return;
+      if (message.type !== MessageType.APP || message.variant !== AppMessageVariant.SELECT) return;
       const { id, content } = message;
       onUserSelect(key, selection, {
         id: id,
@@ -88,39 +87,38 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
   );
 
   const messageContent = useMemo(() => {
-    switch (type) {
-      case MessageType.TEXT:
-        return <FlowTextMessage message={message} />;
-      case MessageType.USER_MESSAGE:
-        return <FlowUserMessage message={message} />;
-      case MessageType.PARAGRAPHS:
-        return <FlowParagraphs isDisabled={!isCurrentStep} message={message} onMoveToNextStep={moveToNextStep} />;
-      case MessageType.USER_INPUT:
-        return <FlowUserInput message={message} onUserInput={handleUserInput} />;
-      case MessageType.OPTIONS:
-        return <FlowUserOptions message={message} onUserSelect={handleUserOptionSelect} />;
-      case MessageType.ACTION:
-        return (
-          <FlowAction
-            isDisabled={!isCurrentStep}
-            message={message}
-            onUserAction={(action, nextStepId) => {
-              moveToStep(nextStepId);
-            }}
-          />
-        );
-      case MessageType.REFLECTION:
-        return <FlowReflection message={message} />;
-      case MessageType.SYSTEM:
-        return <FlowSystemAction message={message} />;
-      case MessageType.FLOW_END:
-        return <FlowEnd isDisabled={!isCurrentStep} message={message} onAction={onFlowEnd} />;
-      default:
-        return <UnknownMessageFallback messageType={type} />;
+    if (type === MessageType.USER) {
+      return <FlowUserMessage message={message} />;
     }
-  }, [handleUserInput, handleUserOptionSelect, isCurrentStep, message, moveToNextStep, moveToStep, onFlowEnd, type]);
 
-  const messageStyling = useMemo(() => getMessageStyling(type), [type]);
+    // APP messages with variants
+    if (type === MessageType.APP) {
+      const appMessage = message;
+      switch (appMessage.variant) {
+        case AppMessageVariant.TEXT:
+          return <FlowTextMessage message={appMessage} />;
+        case AppMessageVariant.PARAGRAPHS:
+          return <FlowParagraphs isDisabled={!isCurrentStep} message={appMessage} onMoveToNextStep={moveToNextStep} />;
+        case AppMessageVariant.INPUT:
+          return <FlowUserInput message={appMessage} onUserInput={handleUserInput} isCurrentStep={isCurrentStep} />;
+        case AppMessageVariant.SELECT:
+          return (
+            <FlowUserOptions message={appMessage} onUserSelect={handleUserOptionSelect} isCurrentStep={isCurrentStep} />
+          );
+        case AppMessageVariant.END:
+          return <FlowEnd isCurrentStep={isCurrentStep} message={appMessage} onAction={onFlowEnd} />;
+        default: {
+          //const _exhaustiveCheck: never = appMessage;
+          return <UnknownMessageFallback messageType={`APP:unknown`} />;
+        }
+      }
+    }
+
+    return <UnknownMessageFallback messageType={type} />;
+  }, [handleUserInput, handleUserOptionSelect, isCurrentStep, message, moveToNextStep, onFlowEnd, type]);
+
+  // Simple styling lookup - no memoization needed
+  const messageStyling = getMessageStyling(type, variant);
 
   return (
     <FlowChatMessageBubble
@@ -136,26 +134,4 @@ const FlowChatMessageRenderer: React.FC<Props> = ({
   );
 };
 
-export default React.memo(FlowChatMessageRenderer, (prev, next) => {
-  // Check if message changed (deep comparison of relevant fields)
-  if (
-    prev.message.id !== next.message.id ||
-    prev.message.type !== next.message.type ||
-    JSON.stringify(prev.message.content) !== JSON.stringify(next.message.content) ||
-    prev.message.flowStepId !== next.message.flowStepId
-  ) {
-    return false; // Props changed, should re-render
-  }
-
-  // Check other props
-  if (prev.isCurrentStep !== next.isCurrentStep || prev.className !== next.className) {
-    return false;
-  }
-
-  // Actions object reference comparison (assumes parent memoizes actions)
-  if (prev.actions !== next.actions) {
-    return false;
-  }
-
-  return true; // Props are the same, skip re-render
-});
+export default FlowChatMessageRenderer;

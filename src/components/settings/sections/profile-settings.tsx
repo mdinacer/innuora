@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Calendar, Globe, Mail, User, UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -79,8 +79,7 @@ export default function ProfileSettings() {
       }
 
       setIsEditing(false);
-    } catch (error) {
-      console.error("Profile update failed:", error);
+    } catch {
       toast.error(t("settings.profile.updateError", { ns: "pages" }));
     } finally {
       setIsLoading(false);
@@ -98,31 +97,29 @@ export default function ProfileSettings() {
     setIsEditing(false);
   };
 
-  const content = useMemo(
-    () => ({
-      anonymousUser: t("settings.profile.anonymousUser"),
-      verified: t("settings.profile.verified"),
-      memberSince: t("settings.profile.memberSince", { date: memberSince ? format(memberSince, "PP") : " - " }),
-      displayName: t("settings.profile.displayName"),
-      enterDisplayName: t("settings.profile.enterDisplayName"),
-      notSet: t("settings.profile.notSet"),
-      emailAddress: t("settings.profile.emailAddress"),
-      emailVerificationNotice: t("settings.profile.emailVerificationNotice"),
-      language: t("settings.profile.language"),
-      cancel: t("settings.profile.cancel"),
-      editProfile: t("settings.profile.editProfile"),
-      saveChanges: t("settings.profile.saveChanges"),
-      accountInformation: t("settings.profile.accountInformation"),
-      userId: t("settings.profile.userId"),
-      accountType: t("settings.profile.accountType"),
-      accountStatus: t("settings.profile.accountStatus"),
-      active: t("settings.profile.active"),
-      verification: t("settings.profile.verification"),
-      emailVerified: t("settings.profile.emailVerified"),
-      emailNotVerified: t("settings.profile.emailNotVerified"),
-    }),
-    [memberSince, t]
-  );
+  // Simple translation lookups - no need for useMemo
+  const content = {
+    anonymousUser: t("settings.profile.anonymousUser"),
+    verified: t("settings.profile.verified"),
+    memberSince: t("settings.profile.memberSince", { date: memberSince ? format(memberSince, "PP") : " - " }),
+    displayName: t("settings.profile.displayName"),
+    enterDisplayName: t("settings.profile.enterDisplayName"),
+    notSet: t("settings.profile.notSet"),
+    emailAddress: t("settings.profile.emailAddress"),
+    emailVerificationNotice: t("settings.profile.emailVerificationNotice"),
+    language: t("settings.profile.language"),
+    cancel: t("settings.profile.cancel"),
+    editProfile: t("settings.profile.editProfile"),
+    saveChanges: t("settings.profile.saveChanges"),
+    accountInformation: t("settings.profile.accountInformation"),
+    userId: t("settings.profile.userId"),
+    accountType: t("settings.profile.accountType"),
+    accountStatus: t("settings.profile.accountStatus"),
+    active: t("settings.profile.active"),
+    verification: t("settings.profile.verification"),
+    emailVerified: t("settings.profile.emailVerified"),
+    emailNotVerified: t("settings.profile.emailNotVerified"),
+  };
 
   if (!user || !authUser) return null;
 

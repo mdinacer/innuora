@@ -57,11 +57,11 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
       } else {
         setError("Failed to load purchase history");
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
       logger.logWarning("Purchase history loading error", {
         operation: "purchase_history_load",
-        metadata: { error: err instanceof Error ? err.message : String(err) },
+        metadata: { error: "Unknown error" },
       });
     } finally {
       setIsLoading(false);

@@ -21,7 +21,6 @@ export async function GET(request: NextRequest) {
     if (!error) {
       redirect("/auth/verify-email/result?status=success");
     } else {
-      console.error("Email verification failed:", error.message);
       const errorCode = mapSupabaseAuthError(error);
       redirect(`/auth/verify-email/result?status=error&errorCode=${encodeURIComponent(errorCode)}`);
     }

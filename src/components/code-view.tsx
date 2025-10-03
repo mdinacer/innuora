@@ -1,5 +1,5 @@
 import React from "react";
-import Markdown from "react-markdown";
+import Markdown from "markdown-to-jsx";
 
 import { cn } from "@/lib/utils";
 
@@ -23,7 +23,7 @@ const CodeView: React.FC<CodeViewProps> = ({ data, className, isMarkdown = false
     >
       {isMarkdown ? (
         <code className=" whitespace-pre leading-7 tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-2 [&>ul]:list-inside [&>ul]:list-disc">
-          <Markdown allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}>
+          <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>
             {JSON.stringify(data, null, 2)}
           </Markdown>
         </code>

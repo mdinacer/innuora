@@ -27,7 +27,8 @@ const SignUpForm: React.FC<Props> = ({}) => {
   const [formError, setFormError] = useState<string | null>(null);
   const { trackConversion, trackError, trackAction } = useAnalytics();
 
-  const { title, subtitle, formFields, haveAccount } = {
+  const { title, subtitle, formFields, haveAccount, errorText } = {
+    errorText: t("errors:validation.password_too_short", { ns: "", keyPrefix: "" }),
     title: t("title"),
     subtitle: t("subtitle"),
     formFields: {
@@ -161,6 +162,8 @@ const SignUpForm: React.FC<Props> = ({}) => {
 
       {/* <!-- Sign Up Form --> */}
       <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-card">
+        <p>{errorText}</p>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleOnSubmit)} className="grid gap-y-8">
             <TextField

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import FlowChatMessageHeader from "@/components/chat-ui/flow-chat/flow-chat.message-header";
 import { cn } from "@/lib/utils";
-import { MessageOfType } from "@/types/flow-chat-messages.types";
+import { AppMessage, AppMessageVariant } from "@/types/flow-chat-messages.types";
 import { UserOption } from "@/types/flow-session.types";
 
 interface OptionItemProps {
@@ -53,6 +53,9 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
                 "border-inn-bg-accent bg-inn-bg-accent ": isSelected,
               }
             )}
+            role="checkbox"
+            aria-checked={isSelected}
+            aria-hidden="true"
           >
             <CheckIcon className="size-3 shrink-0 text-white" />
           </div>
@@ -74,16 +77,17 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
 };
 
 interface Props {
-  message: MessageOfType<"options">;
+  message: AppMessage & { variant: typeof AppMessageVariant.SELECT };
+  isCurrentStep?: boolean;
   onUserSelect: (key: string, selection: UserOption | UserOption[]) => void;
 }
 
-const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
-  const { t } = useTranslation("common", { keyPrefix: "actions" });
+const FlowChatUserOptions: React.FC<Props> = ({ message, isCurrentStep, onUserSelect }) => {
+  const { t } = useTranslation("common");
   const [isCollapsed, setCollapsed] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<UserOption[]>([]);
   const { mode, label, hint, maxSelected, options, key } = message.content;
-  const modeText = mode === "single" ? "Select One" : "Select Multiple";
+  const modeText = t(mode === "single" ? "select_single" : "select_multiple");
 
   const handleUserSelect = useCallback(() => {
     if (mode === "single") {
@@ -122,6 +126,10 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
     [isCollapsed, maxSelected, mode, selectedOptions.length, selectedSet]
   );
 
+  if (!isCurrentStep) {
+    return label;
+  }
+
   return (
     <>
       <FlowChatMessageHeader
@@ -155,16 +163,20 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
           <button
             className={cn(
               "show-more-btn",
-              "bg-transparent border border-inn-border-light",
+              "bg-inn-bg-soft border border-inn-border-light",
               "py-2 px-4 rounded-2xl text-sm rtl:text-base rtl:font-arabic-body font-medium cursor-pointer",
               "transition-all duration-200 ease-in-out",
               " inline-flex items-center gap-1.5",
-              "hover:border-inn-bg-accent hover:text-inn-bg-accent"
+              "hover:border-inn-bg-flame hover:text-inn-bg-flame"
             )}
             onClick={() => setCollapsed((prev) => !prev)}
+            aria-expanded={!isCollapsed}
+            aria-label={isCollapsed ? "Show more options" : "Show fewer options"}
           >
-            <span>{isCollapsed ? t("showMoreWithCount", { count: options.length - 4 }) : t("showLess")}</span>
-            <ChevronDownIcon className={cn("size-3.5", { "rotate-180": !isCollapsed })} />
+            <span>
+              {isCollapsed ? t("showMore", { keyPrefix: "actions" }) : t("showLess", { keyPrefix: "actions" })}
+            </span>
+            <ChevronDownIcon className={cn("size-3.5", { "rotate-180": !isCollapsed })} aria-hidden="true" />
           </button>
         </div>
       )}
@@ -182,7 +194,7 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, onUserSelect }) => {
         disabled={!selectedOptions.length}
         onClick={handleUserSelect}
       >
-        {t("continue")}
+        {t("continue", { keyPrefix: "actions" })}
       </button>
     </>
   );

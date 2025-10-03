@@ -1,4 +1,5 @@
 import { User } from "@supabase/supabase-js";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
@@ -18,7 +19,7 @@ import {
 // Mock logger - wrapOperation returns ActionResult for functions that return values
 vi.mock("@/lib/logging/unified-logger", () => ({
   logger: {
-    wrapOperation: vi.fn(async (fn, errorCode, metadata) => {
+    wrapOperation: vi.fn(async (fn, errorCode, _metadata) => {
       try {
         const result = await fn();
         // If function returns a value, wrap in ActionResult

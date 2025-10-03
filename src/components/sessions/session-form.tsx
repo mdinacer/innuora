@@ -109,7 +109,6 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
 
         // Handle error
         if (result.error) {
-          console.error("Failed to create cloud session:", result.error);
           return;
         }
 

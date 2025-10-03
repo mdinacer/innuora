@@ -1,18 +1,23 @@
 {
   "actions": {
     "continue": "متابعة",
-    "showMoreWithCount": "عرض {{count}} إضافية",
+    "showMore": "عرض المزيد",
     "showLess": "عرض أقل",
+    "showMoreWithCount": "عرض {{count}} إضافية",
     "signout": "تسجيل الخروج"
   },
   "app-name": "Innuora",
   "avatar-letter": "I",
   "back-to-app": "العودة إلى {{app_name}}",
+  "finished": "اكتمل",
+  "guide": "إرشاد",
   "languages": {
     "en": "الإنجليزية",
     "fr": "الفرنسية",
     "ar": "العربية"
   },
+  "select_multiple": "اختاري ما ينطبق عليك",
+  "select_single": "اختاري خيارًا واحدًا",
   "sessionWithCount_few": "{{count}} جلسات",
   "sessionWithCount_many": "{{count}} جلسة",
   "sessionWithCount_one": "جلسة واحدة",
@@ -24,5 +29,6 @@
   "session_one": "جلسة واحدة",
   "session_other": "جلسة",
   "session_two": "جلستان",
-  "session_zero": "لا توجد جلسات"
+  "session_zero": "لا توجد جلسات",
+  "your_turn": "الآن دورك"
 }

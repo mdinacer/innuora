@@ -7,7 +7,7 @@ import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCredits } from "@/app/actions/credit-actions";
 import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
-import { buildUserProfilePrompt } from "@/domains/ai-conversation/prompts/prompt.user-context";
+import { buildUserProfileContext } from "@/domains/ai-conversation/prompts/prompt.user-context";
 import { ModulesPromptBuilder } from "@/domains/cbt-modules/modules-prompt-builder";
 import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
 import { handleLightweightUserInput } from "@/domains/open-chat/open-chat-lightweight.action";
@@ -83,7 +83,8 @@ async function buildConversationPrompts(
     );
   }
 
-  const profileContextPrompt = profile ? buildUserProfilePrompt(profile) : "";
+  // Build profile context (localized) - will be merged into persona prompt for efficiency
+  const profileContext = profile ? `\n\n${buildUserProfileContext(profile, locale)}` : "";
 
   let memoryPrompt: ChatCompletionMessageParam | null = null;
 
@@ -95,16 +96,16 @@ async function buildConversationPrompts(
     } as ChatCompletionMessageParam;
   }
 
+  // Merge profile context into persona system prompt for token efficiency
   const fullPersonaPrompt: ChatCompletionMessageParam = {
     role: "system",
-    content: PERSONA_PROMPTS_LOCALIZED[locale].replace("{{TONE_DESCRIPTION}}", toneInstruction || ""),
+    content: PERSONA_PROMPTS_LOCALIZED[locale].replace("{{TONE_DESCRIPTION}}", toneInstruction || "") + profileContext,
   };
 
   // Compose prompts efficiently
   return [
     SecurityProtocolPrompt,
     fullPersonaPrompt,
-    ...(profileContextPrompt ? [profileContextPrompt] : []),
     modulesPrompt,
     ...(chatHistoryPrompt ? [chatHistoryPrompt] : []),
     ...(memoryPrompt ? [memoryPrompt] : []),

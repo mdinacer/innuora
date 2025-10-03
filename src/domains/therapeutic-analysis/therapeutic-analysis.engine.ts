@@ -14,12 +14,10 @@ export class TherapeuticAnalysisEngine {
       const parsedJSON = parseJsonObject(aiResponse);
       const parsedAnalysisResult = TherapeuticAnalysisSchema.safeParse(parsedJSON);
       if (!parsedAnalysisResult.success) {
-        console.error("TherapeuticAnalysis validation failed:", parsedAnalysisResult.error);
         return null;
       }
       return parsedAnalysisResult.data;
-    } catch (error) {
-      console.error("Failed to parse AI response:", error);
+    } catch {
       return null;
     }
   }
@@ -29,8 +27,6 @@ export class TherapeuticAnalysisEngine {
     prevData: TherapeuticAnalysis[],
     sessionMetadata?: { messageCount: number; activeDurationMs: number }
   ): ChatCompletionMessageParam {
-    console.log("prevData", prevData);
-
     const sessionContext = sessionMetadata
       ? {
           message_count: sessionMetadata.messageCount,

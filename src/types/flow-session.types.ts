@@ -1,50 +1,23 @@
 // =======================
-// FLOW TYPES - SIMPLIFIED
+// SIMPLIFIED FLOW TYPES
 // =======================
 
-export type SessionType = "onboarding" | "deep" | "healing";
-export type SessionPhase = "structured_flow" | "open_chat" | "closure";
-
-// Consolidated enums
+// Step types - reduced from 9 to 5
 export const StepType = {
-  TEXT: "text",
-  PARAGRAPHS: "paragraphs",
-  USER_INPUT: "user_input",
-  OPTIONS: "options",
-  ACTION: "action",
-  REFLECTION: "reflection",
-  BRANCH: "branch",
-  SYSTEM: "system",
-  FLOW_END: "flow_end",
+  APP_MESSAGE: "app_message", // App says something (text or rich content)
+  USER_INPUT: "user_input", // User types text
+  USER_SELECT: "user_select", // User picks option(s)
+  PARAGRAPHS: "paragraphs", // Rich content display
+  END: "end", // Flow complete
 } as const;
 
-export const AdvanceMode = {
-  AUTO: "auto",
-  MANUAL: "manual",
-  AWAIT: "await",
-} as const;
-
-export const MergeMode = {
-  APPEND: "append",
-  REPLACE: "replace",
-} as const;
-
-export const MergeTarget = {
-  SESSION_SUMMARY: "session_summary",
-  BELIEF_MAP: "belief_map",
-  NONE: "none",
-} as const;
+export type StepType = (typeof StepType)[keyof typeof StepType];
 
 export const SelectMode = {
   SINGLE: "single",
   MULTIPLE: "multiple",
 } as const;
 
-// Extract types
-export type StepType = (typeof StepType)[keyof typeof StepType];
-export type AdvanceMode = (typeof AdvanceMode)[keyof typeof AdvanceMode];
-export type MergeMode = (typeof MergeMode)[keyof typeof MergeMode];
-export type MergeTarget = (typeof MergeTarget)[keyof typeof MergeTarget];
 export type SelectMode = (typeof SelectMode)[keyof typeof SelectMode];
 
 // =======================
@@ -72,7 +45,7 @@ export interface UserInputContent {
   charLimit?: number;
 }
 
-export interface OptionsContent {
+export interface UserSelectContent {
   label: string;
   key: string;
   mode: SelectMode;
@@ -81,52 +54,11 @@ export interface OptionsContent {
   maxSelected?: number;
 }
 
-export interface ReflectionContent {
-  title: string;
-  mergeMode?: MergeMode;
-  mergeTarget?: MergeTarget;
-  includeOnboardingData?: boolean;
-  includeMirSummary?: boolean;
-  includeChatSummary?: boolean;
-  // prompt: (inputValues: Record<string, unknown>) => string;
-}
-
-export interface ActionContent {
-  prompt: string;
-  primary: { label: string; nextStepId: string };
-  secondary: { label: string; nextStepId: string };
-}
-
-export interface FlowEndContent {
+export interface EndContent {
   title: string;
   message: string;
   primaryAction: string;
   secondaryAction?: string;
-  shouldUpdateMirSummary?: boolean;
-}
-
-export interface BranchContent {
-  condition: (inputValues: Record<string, unknown>) => boolean;
-  whenTrueStepId: string;
-  whenFalseStepId: string;
-}
-
-// =======================
-// SYSTEM ACTIONS
-// =======================
-
-export type SystemAction =
-  | { type: "reset_flow" } // Reset flow (currentStepId)
-  | { type: "wipe_messages" } // Wipe messages to empty array
-  | { type: "reset_values" } // Reset input values
-  | { type: "reset_session" } // Reset Flow, Messages, and Input Values
-  | { type: "restart_session"; stepId?: string; resetValues?: boolean } // Reset Flow, Messages, and Input Values
-  | { type: "callback"; name: string; args?: Record<string, any> }; // Execute external callback
-
-export interface SystemContent {
-  title?: string;
-  message?: string;
-  actions: SystemAction[];
 }
 
 // =======================
@@ -136,28 +68,21 @@ export interface SystemContent {
 interface BaseStep {
   id: string;
   type: StepType;
-  nextStepId?: string; // Optional for end steps and branch steps
-  advanceMode?: AdvanceMode;
-  autoAdvanceDelay?: number;
+  nextStepId?: string;
+  autoAdvanceDelay?: number; // For APP_MESSAGE auto-advance
 }
 
-// Union type approach - simpler than separate interfaces
 export type FlowStep = BaseStep &
   (
-    | { type: typeof StepType.TEXT; content: string }
+    | { type: typeof StepType.APP_MESSAGE; content: string }
     | { type: typeof StepType.PARAGRAPHS; content: ParagraphsContent }
     | { type: typeof StepType.USER_INPUT; content: UserInputContent }
-    | { type: typeof StepType.OPTIONS; content: OptionsContent }
-    | { type: typeof StepType.ACTION; content: ActionContent }
-    | { type: typeof StepType.REFLECTION; content: ReflectionContent; id: "reflection" }
-    | { type: typeof StepType.BRANCH; content: BranchContent }
-    | { type: typeof StepType.SYSTEM; content: SystemContent }
-    | { type: typeof StepType.FLOW_END; content: FlowEndContent; id: "end" }
+    | { type: typeof StepType.USER_SELECT; content: UserSelectContent }
+    | { type: typeof StepType.END; content: EndContent; id: "end" }
   );
 
 export interface SessionFlow {
   id: string;
-  //type: SessionType;
   title: string;
   subtitle: string;
   steps: FlowStep[];
@@ -165,8 +90,6 @@ export interface SessionFlow {
   defaultAutoAdvanceDelay?: number;
 }
 
+// Helper types
 export type StepOfType<T extends StepType> = Extract<FlowStep, { type: T }>;
-// Helper to get steps/messages of specific type
-export type UserInputStep = StepOfType<typeof StepType.USER_INPUT | typeof StepType.OPTIONS>;
-export type AutoAdvancingStep = Extract<FlowStep, { advanceMode: typeof AdvanceMode.AUTO }>;
-export type SystemActionCallback = (args?: Record<string, unknown>) => void | Promise<void>;
+export type UserInputStep = StepOfType<typeof StepType.USER_INPUT | typeof StepType.USER_SELECT>;

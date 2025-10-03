@@ -1,10 +1,10 @@
 import React from "react";
 
 import { cn } from "@/lib/utils";
-import { MessageOfType } from "@/types/flow-chat-messages.types";
+import { UserMessage } from "@/types/flow-chat-messages.types";
 
 interface Props {
-  message: MessageOfType<"user_message">;
+  message: UserMessage;
 }
 
 const FlowChatUserMessage: React.FC<Props> = ({ message }) => {

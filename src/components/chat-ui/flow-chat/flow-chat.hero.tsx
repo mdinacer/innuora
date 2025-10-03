@@ -1,6 +1,5 @@
 import { ChevronRightIcon } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import Markdown from "markdown-to-jsx";
 
 import { cn } from "@/lib/utils";
 
@@ -50,12 +49,7 @@ const FlowChatHeroCard = (props: Props) => {
               key={index}
               className="leading-7 tracking-normal rtl:text-lg [&>ol]:list-inside [&>ol]:list-decimal [&>p:not(:last-child)]:my-3 [&>ul]:list-inside [&>ul]:list-disc"
             >
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                allowedElements={["p", "strong", "em", "a", "ul", "ol", "li", "br", "del", "u"]}
-              >
-                {paragraph}
-              </ReactMarkdown>
+              <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{paragraph}</Markdown>
             </div>
           ))}
         </div>

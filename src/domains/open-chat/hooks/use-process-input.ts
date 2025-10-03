@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react";
+import { Profile } from "@prisma/client";
 
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { handleUserInput } from "@/domains/open-chat/open-chat.action";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import { useAppUserStore } from "@/stores/app-user.store";
-import { useUserDataStore } from "@/stores/user-data.store";
+//import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 const RECENT_ANALYSIS_COUNT = 3;
@@ -33,21 +34,19 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
       setProcessingError(null);
       setIsProcessing(true);
 
-      const userProfile = useUserDataStore.getState().profile;
+      const userProfile = useAppUserStore.getState().user?.profile as Profile;
       const appUser = useAppUserStore.getState().user;
       const deductCredits = useAppUserStore.getState().deductCredits;
 
       try {
         if (!session) {
           const error = "No session found";
-          console.error(error);
           setProcessingError(error);
           return { error };
         }
 
         if (!userInput.trim()) {
           const error = "User input is required";
-          console.error(error);
           setProcessingError(error);
           return { error };
         }
@@ -71,7 +70,6 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
 
         if (!result) {
           const error = "AI processing failed - no response received";
-          console.error(error);
           setProcessingError(error);
           return { error };
         }
@@ -90,7 +88,6 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         // Validate response content
         if (!assistantMessage || typeof assistantMessage !== "string") {
           const error = "Invalid AI response format";
-          console.error(error, { assistantMessage });
           setProcessingError(error);
           return { error };
         }
