@@ -125,6 +125,10 @@ export const RATE_LIMIT_RULES = {
     windowMs: 60 * 1000,
     maxRequests: 100,
   },
+  WEBHOOK_REQUESTS: {
+    windowMs: 60 * 1000, // 1 minute window
+    maxRequests: 100, // Allow up to 100 webhook requests per minute
+  },
 } as const;
 
 export const rateLimiter = new MemoryRateLimiter(RATE_LIMIT_RULES);

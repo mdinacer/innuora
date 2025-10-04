@@ -3,7 +3,7 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import { deductCredits } from "@/app/actions/credit-actions";
+import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { SESSION_ADVANCED_SUMMARY_INSTRUCTIONS } from "@/domains/session-summary/session-summary.prompt";
 import { AppLocales } from "@/lib/i18n";
@@ -54,9 +54,8 @@ export async function getSessionSummary(
 
   // Deduct credits for summary generation
   if (authId && aiResponse.consumedCredits > 0) {
-    const deductResult = await deductCredits(authId, aiResponse.consumedCredits, "ai_summary", sessionId, {
+    const deductResult = await deductCreditsFromUser(authId, aiResponse.consumedCredits, "ai_summary", sessionId, {
       operation: "session_summary_generation",
-      modelCode: "M3", // GPT-3.5-turbo
       tokensUsed: aiResponse.modelTokenUsage?.usage?.total_tokens || 0,
       locale,
     });

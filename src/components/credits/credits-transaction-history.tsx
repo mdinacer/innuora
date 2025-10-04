@@ -13,12 +13,11 @@ import { CreditUtils } from "@/lib/credits/credit-config";
 import { logger } from "@/lib/logging/unified-logger";
 
 interface CreditsTransactionHistoryProps {
-  userId: string;
   limit?: number;
   className?: string;
 }
 
-export function CreditsTransactionHistory({ userId, limit = 20, className = "" }: CreditsTransactionHistoryProps) {
+export function CreditsTransactionHistory({ limit = 20, className = "" }: CreditsTransactionHistoryProps) {
   const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +27,7 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
       try {
         setIsLoading(true);
         setError(null);
-        const result = await getUserCreditHistory(userId, limit);
+        const result = await getUserCreditHistory(limit);
 
         if (result.error) {
           setError(result.error.message);
@@ -39,7 +38,6 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
       } catch {
         logger.logWarning("Failed to load credit transaction history", {
           operation: "credits_transaction_history_load_failed",
-          userId,
           metadata: {
             error: "Unknown error",
           },
@@ -50,10 +48,8 @@ export function CreditsTransactionHistory({ userId, limit = 20, className = "" }
       }
     }
 
-    if (userId) {
-      loadTransactions();
-    }
-  }, [userId, limit]);
+    loadTransactions();
+  }, [limit]);
 
   const getTransactionIcon = useCallback((type: CreditTransactionType) => {
     return type === CreditTransactionType.CREDIT ? (

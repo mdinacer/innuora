@@ -281,65 +281,47 @@ export async function updateUserProfile(
 
   const currentAuthUser = await requireCurrentUser();
 
+  const currentUser = await getCurrentUser();
+
   return (await logger.wrapOperation(
     async () => {
       return await prisma.$transaction(async (tx) => {
         const { displayName, locale } = validatedData;
 
-        // Prepare update operations
-        const updates: Promise<any>[] = [];
+        // Build the nested update data
+        const updateData: any = {};
 
-        // Update profile if displayName is provided
         if (displayName !== undefined) {
-          updates.push(
-            tx.profile.upsert({
-              where: { userId: currentAuthUser.id },
+          updateData.profile = {
+            upsert: {
+              create: { displayName },
               update: { displayName },
-              create: {
-                userId: currentAuthUser.id,
-                displayName,
-              },
-            })
-          );
+            },
+          };
         }
 
-        // Update user config if locale is provided
         if (locale !== undefined) {
-          updates.push(
-            tx.userConfig.upsert({
-              where: { userId: currentAuthUser.id },
-              update: { locale },
+          updateData.config = {
+            upsert: {
               create: {
-                userId: currentAuthUser.id,
                 locale,
                 autoSave: false,
                 theme: ThemeMode.system,
               },
-            })
-          );
+              update: { locale },
+            },
+          };
         }
 
-        // Execute all updates in parallel
-        if (updates.length > 0) {
-          await Promise.all(updates);
-        }
-
-        // Return updated user with relations
-        const updatedUser = await tx.user.findUnique({
-          where: { authId: currentAuthUser.id },
+        // Single update with nested writes
+        const updatedUser = await tx.user.update({
+          where: { id: currentUser.id },
+          data: updateData,
           include: {
             profile: true,
             config: true,
           },
         });
-
-        if (!updatedUser) {
-          logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("User not found after update"), {
-            operation: "user_profile_update",
-            userId: currentAuthUser.id,
-            metadata: { reason: "user_disappeared_after_update" },
-          });
-        }
 
         return updatedUser;
       });

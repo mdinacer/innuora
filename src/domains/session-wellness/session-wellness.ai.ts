@@ -1,7 +1,7 @@
 //import { OpenAI } from "openai";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import { deductCredits } from "@/app/actions/credit-actions";
+import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { getActiveSessionDuration } from "@/domains/active-session/active-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
@@ -127,13 +127,18 @@ export class AISessionWellnessEngine {
 
       // Deduct credits for wellness evaluation
       if (authId && response.consumedCredits > 0) {
-        const deductResult = await deductCredits(authId, response.consumedCredits, "ai_wellness_check", session.id, {
-          operation: "session_wellness_evaluation",
-          modelCode: "M1", // GPT-4.1-mini
-          tokensUsed: response.modelTokenUsage?.usage?.total_tokens || 0,
-          messageCount,
-          durationMinutes,
-        });
+        const deductResult = await deductCreditsFromUser(
+          authId,
+          response.consumedCredits,
+          "ai_wellness_check",
+          session.id,
+          {
+            operation: "session_wellness_evaluation",
+            tokensUsed: response.modelTokenUsage?.usage?.total_tokens || 0,
+            messageCount,
+            durationMinutes,
+          }
+        );
 
         if (deductResult.error) {
           logger.logWarning("Credit deduction failed for wellness evaluation", {

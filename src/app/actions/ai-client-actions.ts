@@ -25,26 +25,8 @@ const DEFAULT_AI_OPTIONS: RequestOptions = {
   top_p: 0.9,
 };
 
-/**
- * Calculates credits from token usage based on model pricing
- * Credits = (tokens / 1000) * pricePerK * 100, rounded up with minimum 1 credit
- *
- * @param inputTokens - Number of input/prompt tokens
- * @param outputTokens - Number of output/completion tokens
- * @param inputPricePer1K - Price per 1000 input tokens in USD
- * @param outputPricePer1K - Price per 1000 output tokens in USD
- * @returns Total credits consumed (minimum 1)
- */
-function calculateCreditsFromUsage(
-  inputTokens: number,
-  outputTokens: number,
-  inputPricePer1K: number,
-  outputPricePer1K: number
-): number {
-  const inputCredits = Math.ceil((inputTokens / 1000) * inputPricePer1K * 100);
-  const outputCredits = Math.ceil((outputTokens / 1000) * outputPricePer1K * 100);
-  return Math.max(1, inputCredits + outputCredits);
-}
+// Credit calculation is now centralized in credit-config.ts
+// No local calculation needed - import CreditUtils instead
 
 /**
  * Calls OpenAI API using the official SDK
@@ -112,6 +94,9 @@ export async function processAiPrompts(
         "@/domains/ai-conversation/ai-models"
       );
 
+      // Import centralized credit calculation
+      const { CreditUtils } = await import("@/lib/credits/credit-config");
+
       // Validate inputs
       assertValidPrompts(prompts);
 
@@ -164,10 +149,10 @@ export async function processAiPrompts(
 
       // At this point, rawContent is guaranteed to be a non-empty string (logErrorAndThrow throws)
       const message = rawContent!;
-
-      // Calculate credits based on token usage and model pricing
+      console.log({ usage: data.usage, prompts, response: message });
+      // Calculate credits using centralized system (includes markup + infrastructure overhead)
       const consumedCredits = data.usage
-        ? calculateCreditsFromUsage(
+        ? CreditUtils.calculateCreditsFromAIUsage(
             data.usage.prompt_tokens,
             data.usage.completion_tokens,
             AI_MODEL_INPUT_PRICE_PER_1K,

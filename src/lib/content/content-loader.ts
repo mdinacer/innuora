@@ -12,8 +12,15 @@ import { contentRegistry } from "./content-registry";
 // =========================
 
 /**
+ * Supported locales for content
+ */
+export const SUPPORTED_CONTENT_LOCALES = ["en", "ar", "fr"] as const;
+export type SupportedContentLocale = (typeof SUPPORTED_CONTENT_LOCALES)[number];
+
+/**
  * Loads content metadata from actual markdown files
  * and registers it with the content registry
+ * Now supports multiple locales with fallback to English
  */
 export async function initializeContentRegistry(): Promise<void> {
   // Check if already initialized
@@ -25,17 +32,17 @@ export async function initializeContentRegistry(): Promise<void> {
   contentRegistry.clear();
 
   try {
-    // Get the content directory path
-    const contentDir = path.join(process.cwd(), "src", "content", "articles");
+    // Get the content directory path - now using /en/ subdirectory as the source of truth
+    const contentDir = path.join(process.cwd(), "src", "content", "articles", "en");
 
     // Check if content directory exists
     if (!fs.existsSync(contentDir)) {
-      console.warn("Content directory not found, falling back to taxonomy");
+      console.warn("English content directory not found, falling back to taxonomy");
       await initializeFromTaxonomy();
       return;
     }
 
-    // Read all markdown files from content directory
+    // Read all markdown files from English content directory for registry
     const categories = fs
       .readdirSync(contentDir, { withFileTypes: true })
       .filter((dirent) => dirent.isDirectory())
@@ -89,6 +96,96 @@ export async function initializeContentRegistry(): Promise<void> {
     // Fallback to taxonomy if file reading fails
     await initializeFromTaxonomy();
   }
+}
+
+/**
+ * Load localized markdown content for a specific article
+ * Falls back to English if the requested locale doesn't exist
+ */
+export function loadLocalizedContent(
+  category: string,
+  slug: string,
+  locale: string = "en"
+): { content: string; locale: string } | null {
+  try {
+    // Normalize locale to supported locale
+    const normalizedLocale = normalizeLocale(locale);
+
+    // Try to load content in requested locale
+    const localizedPath = path.join(
+      process.cwd(),
+      "src",
+      "content",
+      "articles",
+      normalizedLocale,
+      category,
+      `${slug}.md`
+    );
+
+    if (fs.existsSync(localizedPath)) {
+      const fileContent = fs.readFileSync(localizedPath, "utf-8");
+      const { content } = matter(fileContent);
+      return { content, locale: normalizedLocale };
+    }
+
+    // Fallback to English if locale not found
+    if (normalizedLocale !== "en") {
+      const englishPath = path.join(process.cwd(), "src", "content", "articles", "en", category, `${slug}.md`);
+
+      if (fs.existsSync(englishPath)) {
+        const fileContent = fs.readFileSync(englishPath, "utf-8");
+        const { content } = matter(fileContent);
+        return { content, locale: "en" };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`Failed to load content for ${category}/${slug} in locale ${locale}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Check if content exists in a specific locale
+ */
+export function contentExistsInLocale(category: string, slug: string, locale: string): boolean {
+  const normalizedLocale = normalizeLocale(locale);
+  const localizedPath = path.join(
+    process.cwd(),
+    "src",
+    "content",
+    "articles",
+    normalizedLocale,
+    category,
+    `${slug}.md`
+  );
+  return fs.existsSync(localizedPath);
+}
+
+/**
+ * Get available locales for a specific article
+ */
+export function getAvailableLocales(category: string, slug: string): SupportedContentLocale[] {
+  const availableLocales: SupportedContentLocale[] = [];
+
+  for (const locale of SUPPORTED_CONTENT_LOCALES) {
+    if (contentExistsInLocale(category, slug, locale)) {
+      availableLocales.push(locale);
+    }
+  }
+
+  return availableLocales;
+}
+
+/**
+ * Normalize locale to supported locale (fallback to English)
+ */
+function normalizeLocale(locale: string): SupportedContentLocale {
+  const normalized = locale.toLowerCase().split("-")[0]; // "en-US" -> "en"
+  return SUPPORTED_CONTENT_LOCALES.includes(normalized as SupportedContentLocale)
+    ? (normalized as SupportedContentLocale)
+    : "en";
 }
 
 /**

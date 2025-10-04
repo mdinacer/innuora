@@ -1,0 +1,85 @@
+"use server";
+
+import { requireCurrentUser } from "@/app/actions/auth-actions";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { logger } from "@/lib/logging/unified-logger";
+import { prisma } from "@/lib/prisma";
+
+/**
+ * User data needed for most operations
+ * Fetched once per request to avoid multiple DB calls
+ */
+export interface AuthenticatedUserContext {
+  authId: string; // Supabase auth ID
+  id: string; // Database user ID
+  tier: "STARTER" | "REGULAR" | "PREMIUM";
+  creditsBalance: number;
+  role: string | null;
+}
+
+/**
+ * Get authenticated user with all necessary context
+ * Call this ONCE at the start of your server action, then pass the result around
+ *
+ * Performance: Single database query per request
+ */
+export async function getAuthenticatedUserContext(): Promise<AuthenticatedUserContext> {
+  // Step 1: Verify authentication (no DB call - checks session)
+  const authUser = await requireCurrentUser();
+
+  // Step 2: Single database lookup with all needed fields
+  const user = await prisma.user.findUnique({
+    where: { authId: authUser.id },
+    select: {
+      id: true,
+      creditsBalance: true,
+      role: true,
+      // Tier will be added in migration
+      // tier: true,
+    },
+  });
+
+  if (!user) {
+    logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("User not found in database"), {
+      operation: "get_authenticated_user_context",
+      metadata: { authId: authUser.id },
+    });
+    throw new Error("User not found"); // TypeScript needs this for null check
+  }
+
+  return {
+    authId: authUser.id,
+    id: user.id,
+    tier: "STARTER", // TODO: Replace with user.tier after migration
+    creditsBalance: user.creditsBalance,
+    role: user.role,
+  };
+}
+
+/**
+ * Internal helper: Get user by authId (for webhooks, admin actions, etc.)
+ * NOT exported to client - only used by other server functions
+ */
+export async function _getUserByAuthIdInternal(authId: string): Promise<AuthenticatedUserContext> {
+  const user = await prisma.user.findUnique({
+    where: { authId },
+    select: {
+      id: true,
+      creditsBalance: true,
+      role: true,
+      // tier: true, // TODO: Uncomment after migration
+    },
+  });
+
+  if (!user) {
+    throw new Error(`User not found: ${authId}`);
+  }
+
+  return {
+    authId,
+    id: user.id,
+    tier: "STARTER", // TODO: Replace with user.tier
+    creditsBalance: user.creditsBalance,
+    role: user.role,
+  };
+}

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
-import { addCredits } from "@/app/actions/credit-actions";
+import { addCreditsToUser } from "@/app/actions/credit-actions";
 import { BILLING_ERROR_CODES, BillingProductKey, BillingUtils, TRANSACTION_CONFIG } from "@/lib/billing/billing-config";
 import {
   createOrGetCustomer,
@@ -255,7 +255,7 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         // Process the payment in a transaction
         const result = await prisma.$transaction(async (tx) => {
           // Add credits to user account (userId here is already authId from payment metadata)
-          const creditResultWrapper = await addCredits(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
+          const creditResultWrapper = await addCreditsToUser(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
             paymentIntentId,
             productKey,
             stripeCustomerId: paymentIntent.customer as string,
@@ -384,7 +384,7 @@ export async function processRefund(
         });
 
         // Deduct credits from user account
-        const { deductCredits } = await import("@/app/actions/credit-actions");
+        const { deductCreditsFromUser } = await import("@/app/actions/credit-actions");
 
         // Get user's authId for credit operations
         const user = await prisma.user.findUnique({
@@ -406,7 +406,7 @@ export async function processRefund(
           );
         }
 
-        const deductResult = await deductCredits(
+        const deductResult = await deductCreditsFromUser(
           user!.authId,
           originalTransaction.amount,
           TRANSACTION_CONFIG.reasons.REFUND,

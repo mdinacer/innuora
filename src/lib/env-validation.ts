@@ -98,12 +98,6 @@ function validateSpecificValues(): void {
   if (supabaseUrl && !supabaseUrl.includes(".supabase.co")) {
     console.warn("⚠️ NEXT_PUBLIC_SUPABASE_URL may not be a valid Supabase URL");
   }
-
-  // Validate model code
-  const modelCode = process.env.NEXT_PUBLIC_DEFAULT_MODEL_CODE;
-  if (modelCode && !["M1", "M2", "M3"].includes(modelCode)) {
-    console.warn("⚠️ NEXT_PUBLIC_DEFAULT_MODEL_CODE should be M1, M2, or M3");
-  }
 }
 
 /**

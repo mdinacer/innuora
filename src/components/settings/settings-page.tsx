@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, CreditCard, Database, Lock, Monitor, Settings as SettingsIcon, Shield, User } from "lucide-react";
+import { CreditCard, Database, Lock, Monitor, Settings as SettingsIcon, Shield, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import BillingManagement from "@/components/billing/billing-management";
 // Settings sections components (we'll create these)
 import AppearanceSettings from "@/components/settings/sections/appearance-settings";
 import DataSettings from "@/components/settings/sections/data-settings";
-import NotificationSettings from "@/components/settings/sections/notification-settings";
 import PrivacySettings from "@/components/settings/sections/privacy-settings";
 import ProfileSettings from "@/components/settings/sections/profile-settings";
 import SecuritySettings from "@/components/settings/sections/security-settings";
@@ -23,8 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { useAppUserStore } from "@/stores/app-user.store";
 import { UserWithRelations } from "@/types/user.types";
+import { ThemeToggle } from "../chat-ui";
 
 // =========================
 // Types
@@ -59,13 +60,6 @@ const settingsSections: SettingsSection[] = [
     label: "Appearance",
     icon: <Monitor className="h-4 w-4" />,
     component: AppearanceSettings,
-    requiresProps: false,
-  },
-  {
-    id: "notifications",
-    label: "Notifications",
-    icon: <Bell className="h-4 w-4" />,
-    component: NotificationSettings,
     requiresProps: false,
   },
   {
@@ -110,6 +104,7 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-6xl mx-auto rtl:font-arabic-body rtl:space-x-reverse">
+      <ThemeToggle />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -125,12 +120,12 @@ export default function SettingsPage() {
       <Tabs
         value={activeSection}
         onValueChange={setActiveSection}
-        className="flex gap-8 sm:flex-row rtl:sm:flex-row-reverse"
+        className="relative flex gap-8 flex-col md:flex-row rtl:sm:flex-row-reverse"
       >
         {/* Sidebar Navigation */}
-        <div className="sm:w-64 w-full flex-shrink-0">
+        <div className="w-full md:w-64 flex-shrink-0">
           <Select onValueChange={(value) => setActiveSection(value)} defaultValue={activeSection}>
-            <SelectTrigger className="w-full sm:hidden">
+            <SelectTrigger className="md:hidden w-full">
               <SelectValue placeholder="Select a fruit" />
             </SelectTrigger>
             <SelectContent className="bg-inn-bg-card">
@@ -149,20 +144,33 @@ export default function SettingsPage() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <TabsList dir={i18n.dir()} className="sm:flex  flex-col h-auto w-full bg-transparent p-0 space-y-1 hidden">
+          <TabsList
+            dir={i18n.dir()}
+            className="hidden md:flex flex-col h-auto rounded-2xl border border-inn-border-light bg-inn-bg-card p-2 space-y-1 md:sticky md:top-6 "
+          >
             {settingsSections.map((section) => (
               <TabsTrigger
                 key={section.id}
                 value={section.id}
-                className="w-full justify-start px-4 py-3 text-left data-[state=active]:bg-inn-bg-accent dark:data-[state=active]:bg-inn-bg-accent data-[state=active]:text-blue-700 data-[state=active]:border-r-2 data-[state=active]:border-blue-600 hover:bg-inn-bg-accent-dark hover:text-white dark:hover:text-white transition-colors"
+                className={cn(
+                  "rounded-xl text-sm sm:text-base font-medium",
+                  "transition-all duration-200 ease-in",
+                  "not-[data-state=active]:hover:bg-inn-bg-secondary",
+                  "data-[state=active]:bg-inn-bg-accent data-[state=active]:text-white",
+                  "dark:data-[state=active]:bg-inn-bg-accent dark:data-[state=active]:text-white",
+                  "w-full justify-start px-3 sm:px-4 py-2.5 sm:py-3"
+                )}
               >
                 <div className="flex items-center gap-3 w-full">
                   {section.icon}
                   <span className="font-medium rtl:font-arabic-body">
-                    {t(section.id, { ns: "pages", keyPrefix: "settings.sections" })}
+                    {t(`${section.id}.label`, { ns: "pages", keyPrefix: "settings.sections" })}
                   </span>
                   {section.badge && (
-                    <Badge variant="secondary" className="ml-auto text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="ml-auto hidden sm:inline text-xs bg-inn-bg-flame text-white py-0.5 px-2 rounded-xl hover:bg-inn-bg-flame-dark hover:text-white "
+                    >
                       {section.badge}
                     </Badge>
                   )}
@@ -176,15 +184,22 @@ export default function SettingsPage() {
         <div className="flex-1 min-w-0">
           {settingsSections.map((section) => {
             const SectionComponent = section.component;
+            const { label, description } = t(section.id, {
+              ns: "pages",
+              keyPrefix: "settings.sections",
+              returnObjects: true,
+              defaultValue: { label: "", description: "" },
+            }) as { label: string; description: string };
             return (
               <TabsContent dir={i18n.dir()} key={section.id} value={section.id} className="mt-0">
-                <div className="bg-inn-bg-card rounded-lg border border-inn-border-light p-6">
+                <div className="">
                   <div className="mb-6">
                     <div className="flex items-center gap-3 mb-2">
-                      {section.icon}
-                      <h2 className="text-xl font-semibold ">
-                        {t(section.id, { ns: "pages", keyPrefix: "settings.sections" })}
-                      </h2>
+                      <div className="">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2">{label}</h2>
+                        <p className="text-sm sm:text-base text-[var(--text-secondary)]">{description}</p>
+                      </div>
+
                       {section.badge && (
                         <Badge variant="secondary" className="text-xs">
                           {section.badge}

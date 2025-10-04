@@ -1,36 +1,12 @@
 // Credits system utilities and constants
-import { encodingForModel } from "js-tiktoken";
+// Note: This file contains ONLY client-safe utilities
+// Model pricing and configuration are server-side only (see credit-config.ts)
 
-import { logger } from "@/lib/logging/unified-logger";
 import { CreditUtils } from "./credit-config";
 
 // Credit conversion: 1 credit = $0.005 USD (0.5¢)
+// This is safe to expose - it's public pricing information
 export const CREDIT_UNIT_USD = 0.005;
-
-// Business cost configuration
-export const COST_CONFIG = {
-  infraBufferUSD: 0.015, // Infrastructure overhead per conversation
-  markupMultiplier: 3, // 3x markup (66% margin)
-} as const;
-
-// API pricing for AI models (USD per 1K tokens)
-export const AI_MODEL_PRICING_USD = {
-  M1: {
-    // GPT-4o-mini
-    inputPer1K: 0.00015,
-    outputPer1K: 0.0006,
-  },
-  M2: {
-    // GPT-4o
-    inputPer1K: 0.0025,
-    outputPer1K: 0.01,
-  },
-  M3: {
-    // Claude-3.5-Sonnet
-    inputPer1K: 0.003,
-    outputPer1K: 0.015,
-  },
-} as const;
 
 /**
  * Convert credits to USD value
@@ -60,117 +36,127 @@ export function formatUSD(amount: number): string {
   return `$${amount.toFixed(2)}`;
 }
 
-/**
- * Calculate credits cost for AI conversation using centralized configuration
- */
-export function calculateCreditsFromTokens(
-  modelCode: keyof typeof AI_MODEL_PRICING_USD,
-  inputTokens: number,
-  outputTokens: number
-): number {
-  const totalTokens = inputTokens + outputTokens;
+// Diagnostic tier levels (client-safe)
+export type DiagnosticTier = "free" | "regular" | "premium";
 
-  // Use centralized credit configuration for token-to-credit conversion
-  const rawCredits = CreditUtils.tokensToCredits(totalTokens);
-
-  // Apply billing rules (rounding, minimum charge)
-  return CreditUtils.applyBillingRules(rawCredits);
-}
-
-// Model mapping for tiktoken
-const TIKTOKEN_MODEL_MAP = {
-  M1: "gpt-4", // GPT-4.1 Mini uses GPT-4 encoding
-  M2: "gpt-4o", // GPT-4o
-  M3: "gpt-3.5-turbo", // GPT-3.5 Turbo
-} as const;
-
-/**
- * Get accurate token count using js-tiktoken
- */
-function getAccurateTokenCount(content: string, modelCode: keyof typeof AI_MODEL_PRICING_USD): number | null {
-  try {
-    const tiktokenModel = TIKTOKEN_MODEL_MAP[modelCode];
-    if (!tiktokenModel) {
-      return null;
-    }
-
-    const encoding = encodingForModel(tiktokenModel);
-    const tokens = encoding.encode(content);
-
-    return tokens.length;
-  } catch (error) {
-    // Silently fall back to character-based estimation
-    logger.logWarning("js-tiktoken not available, falling back to character estimation", {
-      operation: "credits_utils_tiktoken_fallback",
-      metadata: {
-        modelCode,
-        contentLength: content.length,
-        error: error instanceof Error ? error.message : String(error),
-      },
-    });
-    return null;
-  }
-}
-
-/**
- * Estimate credits cost from content using centralized configuration
- */
-export function estimateCreditsFromContent(content: string, modelCode: keyof typeof AI_MODEL_PRICING_USD): number {
-  // Try accurate token counting first
-  const accurateTokenCount = getAccurateTokenCount(content, modelCode);
-
-  let estimatedInputTokens: number;
-
-  if (accurateTokenCount !== null) {
-    // Use accurate token count
-    estimatedInputTokens = accurateTokenCount;
-  } else {
-    // Fallback to character-based estimation: ~4 characters per token
-    estimatedInputTokens = Math.ceil(content.length / 4);
-  }
-
-  // Conservative estimate for output tokens (1.5x input)
-  const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 1.5);
-
-  // Use centralized credit calculation
-  const totalTokens = estimatedInputTokens + estimatedOutputTokens;
-  const rawCredits = CreditUtils.tokensToCredits(totalTokens);
-
-  return CreditUtils.applyBillingRules(rawCredits);
-}
-
-/**
- * Get accurate input token count only (for real-time estimation UI)
- */
-export function getInputTokenCount(content: string, modelCode: keyof typeof AI_MODEL_PRICING_USD): number {
-  const accurateTokenCount = getAccurateTokenCount(content, modelCode);
-
-  if (accurateTokenCount !== null) {
-    return accurateTokenCount;
-  }
-
-  // Fallback to character-based estimation
-  return Math.ceil(content.length / 4);
-}
-
-// Credit package bundles for purchase
-export const CREDIT_PACKAGES = {
-  starter: {
-    price: 5.0,
-    credits: 1000,
-    bonus: 0,
-    description: "Perfect for trying Innuora",
+// Diagnostic feature access by tier
+export const DIAGNOSTIC_FEATURES = {
+  free: {
+    sections: ["whats_happening"] as const,
+    description: "See what patterns we notice",
+    exportable: false,
   },
   regular: {
-    price: 10.0,
-    credits: 2200, // 10% bonus
-    bonus: 200,
-    description: "Most popular choice",
+    sections: [
+      "whats_happening",
+      "hidden_rules",
+      "why_heavy",
+      "meta_patterns",
+      "leverage_points",
+      "where_to_start",
+      "relevant_resources",
+    ] as const,
+    description: "Full actionable insights for self-work",
+    exportable: true,
+    exportFormat: "pdf" as const,
   },
   premium: {
-    price: 25.0,
-    credits: 6000, // 20% bonus
-    bonus: 1000,
-    description: "Best value for power users",
+    sections: [
+      "themes",
+      "cognitive_distortions",
+      "emotional_state",
+      "risk_assessment",
+      "therapist_focus",
+      "clinical_interpretations",
+      "treatment_recommendations",
+      "professional_language",
+      "clinical_insights",
+    ] as const,
+    description: "Clinical-grade diagnostic for therapist collaboration",
+    exportable: true,
+    exportFormat: "pdf" as const,
+    shareWithTherapist: true,
   },
 } as const;
+
+// Credit package bundles - VALUE-BASED PRICING
+// Pricing reflects the clinical value delivered, not just API costs
+export const CREDIT_PACKAGES = {
+  // FREE TIER - Marketing hook to experience the system
+  free: {
+    price: 0,
+    credits: 50,
+    bonus: 0,
+    diagnosticTier: "free" as DiagnosticTier,
+    description: "Try Innuora's structured CBT system",
+    features: [
+      "50 conversation credits (~12 messages)",
+      "Basic pattern insights (what's happening)",
+      "Experience CBT module quality",
+    ],
+    valueProposition: "See how Innuora understands you",
+  },
+
+  // STARTER TIER - Try the full system
+  starter: {
+    price: 35.0,
+    credits: 700,
+    bonus: 0,
+    diagnosticTier: "regular" as DiagnosticTier,
+    description: "Try the full system",
+    features: [
+      "700 conversation credits (~175 messages)",
+      "Full actionable diagnostic reports",
+      "Hidden rules & leverage points",
+      "Concrete next steps",
+      "PDF export for personal use",
+    ],
+    valueProposition: "Experience clinical-grade self-insight",
+    estimatedUsage: "~150 messages + 15 full diagnostics per month",
+  },
+
+  // REGULAR TIER - Most popular, monthly self-work
+  regular: {
+    price: 75.0,
+    credits: 1500,
+    bonus: 100,
+    diagnosticTier: "regular" as DiagnosticTier,
+    mostPopular: true,
+    description: "Monthly structured support",
+    features: [
+      "1,500 conversation credits (~375 messages)",
+      "Full actionable diagnostic reports",
+      "Pattern tracking across sessions",
+      "All self-work insights + resources",
+      "PDF export for personal use",
+    ],
+    valueProposition: "Professional-grade CBT companion for serious self-work",
+    estimatedUsage: "~330 messages + 55 full diagnostics per month",
+    savings: "2x more credits vs Starter for 2.1x price",
+  },
+
+  // PREMIUM TIER - Clinical-grade for therapist collaboration
+  premium: {
+    price: 150.0,
+    credits: 3000,
+    bonus: 300,
+    diagnosticTier: "premium" as DiagnosticTier,
+    description: "Clinical-grade companion",
+    features: [
+      "3,000 conversation credits (~750 messages)",
+      "Unlimited clinical diagnostic reports ($500+ value each)",
+      "Therapist-grade clinical interpretations",
+      "Treatment recommendations",
+      "Risk assessment tracking",
+      "Email export to therapist",
+      "All regular features included",
+    ],
+    valueProposition: "Professional assessment + therapy companion",
+    estimatedUsage: "~660 messages + 100 clinical diagnostics per month",
+    savings: "4x more credits vs Starter for 4.3x price",
+    clinicalValue: "$1,500+ in professional psychological assessments",
+  },
+} as const;
+
+// Type helper for package keys
+export type PackageKey = keyof typeof CREDIT_PACKAGES;

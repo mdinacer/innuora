@@ -25,7 +25,6 @@ interface Purchase {
 }
 
 interface PurchaseHistoryProps {
-  userId: string;
   className?: string;
   limit?: number;
 }
@@ -34,7 +33,7 @@ interface PurchaseHistoryProps {
 // Purchase History Component
 // =========================
 
-export function PurchaseHistory({ userId, className = "", limit = 10 }: PurchaseHistoryProps) {
+export function PurchaseHistory({ className = "", limit = 10 }: PurchaseHistoryProps) {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,10 +69,8 @@ export function PurchaseHistory({ userId, className = "", limit = 10 }: Purchase
   }, [limit]);
 
   useEffect(() => {
-    if (userId) {
-      loadPurchaseHistory();
-    }
-  }, [userId, limit, loadPurchaseHistory]);
+    loadPurchaseHistory();
+  }, [limit, loadPurchaseHistory]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
