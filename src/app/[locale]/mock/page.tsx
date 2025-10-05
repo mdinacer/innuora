@@ -3,14 +3,13 @@
 import { useCallback, useState } from "react";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import UserDiagnosticsView from "@/components/session-diagnostics/user-diagnostics-view";
-import { Button } from "@/components/ui/button";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 // import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import { SessionDiagnosticsStd } from "@/domains/session-diagnostics/session-diagnostics.types";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+import UserMenu from "@/user-menu";
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -680,14 +679,15 @@ export default function Page() {
 
   return (
     <div className="h-screen w-full flex items-center bg-inn-bg-primary justify-center">
-      <p>{mockMessages.filter((m) => m.role === "user").length}</p>
+      <UserMenu />
       {/* <CodeView data={mockMessages} className="absolute top-0 left-0 z-10" /> */}
+      {/* <p>{mockMessages.filter((m) => m.role === "user").length}</p>
       <div className="relative h-full w-full max-w-5xl mx-auto flex flex-col">
         <Button onClick={testPrompt} disabled={loading}>
           {loading ? "Testing Diagnostics..." : "Test Enhanced Diagnostic Prompts"}
         </Button>
         <UserDiagnosticsView diagnostics={mockUserDiagnosticsResponse} className="flex-1 p-6" />
-      </div>
+      </div> */}
     </div>
   );
 }

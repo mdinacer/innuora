@@ -132,20 +132,36 @@ export const CreditUXUtils = {
     return Math.floor(days / 7);
   },
 
+  getApproximationDisplayText: (credits: number): string => {
+    const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
+    const days = CreditUXUtils.creditsToEstimatedDays(credits);
+
+    if (weeks >= 4) {
+      return `Approx. ${weeks} weeks of steady reflection`;
+    } else if (days >= 7) {
+      return `Approx. ${Math.floor(days / 7)} weeks of support`;
+    } else if (days >= 3) {
+      return `Approx. ${days} days of conversations`;
+    } else if (days >= 1) {
+      return `Approx. ${days} day${days > 1 ? "s" : ""} remaining`;
+    } else {
+      return `Time to renew for uninterrupted support`;
+    }
+  },
   getBalanceDisplayText: (credits: number): string => {
     const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
     const days = CreditUXUtils.creditsToEstimatedDays(credits);
 
     if (weeks >= 4) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available\n(enough for ~${weeks} weeks of daily conversations)`;
+      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${weeks} weeks of steady reflection`;
     } else if (days >= 7) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available\n(enough for ~${Math.floor(days / 7)} weeks of support)`;
+      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${Math.floor(days / 7)} weeks of support`;
     } else if (days >= 3) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available\n(~${days} days of conversations)`;
+      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${days} days of conversations`;
     } else if (days >= 1) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available\n(~${days} day${days > 1 ? "s" : ""} remaining)`;
+      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${days} day${days > 1 ? "s" : ""} remaining`;
     } else {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available\n(time to top up for uninterrupted support)`;
+      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Time to renew for uninterrupted support`;
     }
   },
 

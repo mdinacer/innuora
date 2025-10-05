@@ -62,7 +62,29 @@ export const STRIPE_CONFIG = {
  * - Regular ($75): 1/4 cost of therapy, structured CBT companion
  * - Premium ($150): Includes unlimited $500 assessments
  */
-export const BILLING_PRODUCTS = {
+
+export type DiagnosticTier = "regular" | "premium";
+
+export interface BillingProduct {
+  priceId: string;
+  credits: number;
+  price: number;
+  popular: boolean;
+  label: string;
+  tagline: string;
+  features: string[];
+  diagnosticTier: DiagnosticTier;
+  bonus?: number;
+  savings?: string;
+  clinicalValue?: string;
+}
+
+export type BillingProducts = {
+  starter: BillingProduct;
+  regular: BillingProduct;
+  premium: BillingProduct;
+};
+export const BILLING_PRODUCTS: BillingProducts = {
   // FREE TIER - Not a Stripe product, handled separately
   // 50 credits, basic insights only, no payment required
 

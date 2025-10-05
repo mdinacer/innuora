@@ -109,9 +109,6 @@ importers:
       markdown-to-jsx:
         specifier: ^7.7.13
         version: 7.7.13(react@19.1.0)
-      mathjs:
-        specifier: ^14.7.0
-        version: 14.7.0
       nanoid:
         specifier: ^5.1.5
         version: 5.1.5
@@ -2414,10 +2411,6 @@ packages:
       { integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw== }
     engines: { node: ">= 10" }
 
-  complex.js@2.4.2:
-    resolution:
-      { integrity: sha512-qtx7HRhPGSCBtGiST4/WGHuW+zeaND/6Ld+db6PbrulIB1i2Ev/2UPiqcmpQNPSyfBKraC0EOvOKCB5dGZKt3g== }
-
   concat-map@0.0.1:
     resolution:
       { integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg== }
@@ -2665,10 +2658,6 @@ packages:
       { integrity: sha512-9RiGKvCwaqxO2owP61uQ4BgNborAQskMR6QusfWzQqv7AZOg5oGehdY2pRJMTKuwxd1IDBP4rSbI5lHzU7SMsQ== }
     engines: { node: ">=18" }
     hasBin: true
-
-  escape-latex@1.2.0:
-    resolution:
-      { integrity: sha512-nV5aVWW1K0wEiUIEdZ4erkGGH8mDxGyxSeqPzRNtWP7ataw+/olFObw7hujFWlVjNsaDFw5VZ5NzVSIqRgfTiw== }
 
   escape-string-regexp@4.0.0:
     resolution:
@@ -2931,10 +2920,6 @@ packages:
     resolution:
       { integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg== }
     engines: { node: ">= 0.4" }
-
-  fraction.js@5.3.4:
-    resolution:
-      { integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ== }
 
   fsevents@2.3.2:
     resolution:
@@ -3307,10 +3292,6 @@ packages:
       { integrity: sha512-H0dkQoCa3b2VEeKQBOxFph+JAbcrQdE7KC0UkqwpLmv2EC4P41QXP+rqo9wYodACiG5/WM5s9oDApTU8utwj9g== }
     engines: { node: ">= 0.4" }
 
-  javascript-natural-sort@0.7.1:
-    resolution:
-      { integrity: sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw== }
-
   jiti@2.5.1:
     resolution:
       { integrity: sha512-twQoecYPiVA5K/h6SxtORw/Bs3ar+mLUtoPSc7iMXzQzK8d7eJ/R09wmTwAjiamETn1cXYPGfNnu7DMoHgu12w== }
@@ -3531,12 +3512,6 @@ packages:
     resolution:
       { integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g== }
     engines: { node: ">= 0.4" }
-
-  mathjs@14.7.0:
-    resolution:
-      { integrity: sha512-RaMhb+9MSESjDZNox/FzzuFpIUI+oxGLyOy1t3BMoW53pGWnTzZtlucJ5cvbit0dIMYlCq00gNbW1giZX4/1Rg== }
-    engines: { node: ">= 18" }
-    hasBin: true
 
   mdn-data@2.12.2:
     resolution:
@@ -4139,10 +4114,6 @@ packages:
       { integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA== }
     engines: { node: ">=4" }
 
-  seedrandom@3.0.5:
-    resolution:
-      { integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg== }
-
   semver@6.3.1:
     resolution:
       { integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA== }
@@ -4383,10 +4354,6 @@ packages:
       { integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw== }
     engines: { node: ">=18" }
 
-  tiny-emitter@2.1.0:
-    resolution:
-      { integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q== }
-
   tinybench@2.9.0:
     resolution:
       { integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg== }
@@ -4500,11 +4467,6 @@ packages:
     resolution:
       { integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg== }
     engines: { node: ">= 0.4" }
-
-  typed-function@4.2.1:
-    resolution:
-      { integrity: sha512-EGjWssW7Tsk4DGfE+5yluuljS1OGYWiI1J6e8puZz9nTMM51Oug8CD5Zo4gWMsOhq5BI+1bF+rWTm4Vbj3ivRA== }
-    engines: { node: ">= 18" }
 
   typescript@5.9.2:
     resolution:
@@ -6475,8 +6437,6 @@ snapshots:
 
   commander@7.2.0: {}
 
-  complex.js@2.4.2: {}
-
   concat-map@0.0.1: {}
 
   confbox@0.2.2: {}
@@ -6742,8 +6702,6 @@ snapshots:
       "@esbuild/win32-arm64": 0.25.10
       "@esbuild/win32-ia32": 0.25.10
       "@esbuild/win32-x64": 0.25.10
-
-  escape-latex@1.2.0: {}
 
   escape-string-regexp@4.0.0: {}
 
@@ -7031,8 +6989,6 @@ snapshots:
   for-each@0.3.5:
     dependencies:
       is-callable: 1.2.7
-
-  fraction.js@5.3.4: {}
 
   fsevents@2.3.2:
     optional: true
@@ -7344,8 +7300,6 @@ snapshots:
       has-symbols: 1.1.0
       set-function-name: 2.0.2
 
-  javascript-natural-sort@0.7.1: {}
-
   jiti@2.5.1: {}
 
   js-tiktoken@1.0.21:
@@ -7511,18 +7465,6 @@ snapshots:
       react: 19.1.0
 
   math-intrinsics@1.1.0: {}
-
-  mathjs@14.7.0:
-    dependencies:
-      "@babel/runtime": 7.28.3
-      complex.js: 2.4.2
-      decimal.js: 10.6.0
-      escape-latex: 1.2.0
-      fraction.js: 5.3.4
-      javascript-natural-sort: 0.7.1
-      seedrandom: 3.0.5
-      tiny-emitter: 2.1.0
-      typed-function: 4.2.1
 
   mdn-data@2.12.2: {}
 
@@ -7969,8 +7911,6 @@ snapshots:
       extend-shallow: 2.0.1
       kind-of: 6.0.3
 
-  seedrandom@3.0.5: {}
-
   semver@6.3.1: {}
 
   semver@7.7.2: {}
@@ -8214,8 +8154,6 @@ snapshots:
       mkdirp: 3.0.1
       yallist: 5.0.0
 
-  tiny-emitter@2.1.0: {}
-
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
@@ -8311,8 +8249,6 @@ snapshots:
       is-typed-array: 1.1.15
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
-
-  typed-function@4.2.1: {}
 
   typescript@5.9.2: {}
 

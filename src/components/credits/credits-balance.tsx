@@ -10,9 +10,10 @@ import { useAppUserStore } from "@/stores/app-user.store";
 interface CreditsBalanceProps {
   className?: string;
   showUSDValue?: boolean;
+  content?: (props: { currentBalance: number; subText: string; usdValue: string }) => React.ReactNode;
 }
 
-export function CreditsBalance({ className = "", showUSDValue = false }: CreditsBalanceProps) {
+export function CreditsBalance({ className = "", showUSDValue = false, content }: CreditsBalanceProps) {
   // Get credits from Zustand store for real-time updates
   const user = useAppUserStore((state) => state.user);
   const hasHydrated = useAppUserStore((state) => state.hasHydrated);
@@ -36,6 +37,14 @@ export function CreditsBalance({ className = "", showUSDValue = false }: Credits
         {showUSDValue && <Skeleton className="h-4 w-16 mt-1" />}
       </div>
     );
+  }
+
+  if (content) {
+    return content({
+      currentBalance: balance,
+      subText: CreditUXUtils.getApproximationDisplayText(balance),
+      usdValue: formatUSD(usdValue),
+    });
   }
 
   return (

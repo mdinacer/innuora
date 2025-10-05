@@ -13,7 +13,12 @@ interface Props {
 
 export default function Header({ middleContent, sideContent, className }: Props) {
   return (
-    <header className={cn("border-b border-inn-border-light/20 relative", className)}>
+    <header
+      className={cn(
+        "border-b border-inn-border-light/20 bg-inn-bg-primary/50 backdrop-blur-md backdrop-saturate-200 relative",
+        className
+      )}
+    >
       <div className="relative z-[200] max-w-6xl mx-auto px-6 py-4  flex items-center justify-between">
         <Link
           href="/"

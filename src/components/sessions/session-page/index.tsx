@@ -188,11 +188,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
             />
           ) : null
         }
-        headerActions={
-          <>
-            <Menu disabled={!messages?.length} onAction={handleActions} />
-          </>
-        }
+        headerActions={<Menu disabled={!messages?.length} onAction={handleActions} />}
       />
     </>
   );

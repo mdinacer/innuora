@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { EllipsisVerticalIcon, FileTextIcon, MinusCircleIcon, RotateCcwIcon } from "lucide-react";
+import { EllipsisVerticalIcon, MinusCircleIcon, RotateCcwIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -18,7 +18,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -35,7 +34,7 @@ type ActionData = {
     };
   };
 };
-type Action = "reset" | "end" | "export";
+type Action = "reset" | "end";
 
 interface Props {
   disabled?: boolean;
@@ -51,7 +50,6 @@ const OpenChatUIMenu = ({ onAction, disabled }: Props) => {
     () => ({
       reset: t("reset_session", { returnObjects: true }) as ActionData,
       end: t("end_session", { returnObjects: true }) as ActionData,
-      export: t("export_session", { returnObjects: true }) as ActionData,
     }),
     [t]
   );
@@ -94,15 +92,6 @@ const OpenChatUIMenu = ({ onAction, disabled }: Props) => {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="bg-inn-bg-card">
-          <DropdownMenuItem
-            onClick={() => {
-              handleActionSelect("export");
-            }}
-          >
-            <FileTextIcon />
-            {actions.export.label}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
               handleActionSelect("reset");

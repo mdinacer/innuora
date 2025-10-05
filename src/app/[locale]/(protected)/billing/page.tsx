@@ -1,8 +1,10 @@
 import { Metadata } from "next";
 
 import { DynamicPages } from "@/components/dynamic-loaders";
+import Header from "@/components/header";
 import { APP_CONFIG } from "@/config/app";
 import { createClient } from "@/lib/supabase/server";
+import UserMenu from "@/user-menu";
 
 // =========================
 // Metadata
@@ -37,7 +39,8 @@ export default async function BillingPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-30">
+      <Header className="fixed inset-x-0 top-0 py-1" sideContent={<UserMenu />} />
       <DynamicPages.BillingManagement />
     </div>
   );
