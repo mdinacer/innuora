@@ -16,6 +16,8 @@ interface ArticleLayoutProps {
   relatedContent: ContentItem[];
   category: ContentCategory;
   markdownContent: string;
+  currentLocale?: string; // Actual locale used (for future language switcher)
+  availableLocales?: string[]; // Available translations (for future language switcher)
 }
 
 // =========================

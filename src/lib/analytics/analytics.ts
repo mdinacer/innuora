@@ -64,11 +64,31 @@ class AnalyticsService {
   }
 
   /**
+   * Check if user has consented to analytics (GDPR compliance)
+   */
+  private hasAnalyticsConsent(): boolean {
+    // Check localStorage for consent (set by CookieConsentBanner)
+    if (typeof window !== "undefined") {
+      const consent = localStorage.getItem("analytics-consent");
+      // Only track if explicitly consented
+      return consent === "true";
+    }
+    // Server-side: don't track without client consent
+    return false;
+  }
+
+  /**
    * Track user behavior event for business intelligence
+   * GDPR-compliant: Only tracks if user has explicitly consented
    */
   async track(event: AnalyticsEvent, properties: AnalyticsProperties = {}): Promise<void> {
     if (!this.config.enabled) return;
     if (!this.shouldSample()) return;
+
+    // CRITICAL: Check analytics consent before tracking (GDPR compliance)
+    if (!this.hasAnalyticsConsent()) {
+      return; // User has not consented to analytics
+    }
 
     try {
       // Log to audit system for business intelligence

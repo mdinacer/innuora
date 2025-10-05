@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 
-import { findCurrentUser } from "@/app/actions/auth-actions";
 import { getUserCreditsBalance } from "@/app/actions/credit-actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -30,14 +29,7 @@ export function InsufficientCreditsWarning({
         try {
           setIsLoading(true);
 
-          // Get current authenticated user
-          const user = await findCurrentUser();
-          if (!user) {
-            setIsLoading(false);
-            return;
-          }
-
-          const result = await getUserCreditsBalance(user.id);
+          const result = await getUserCreditsBalance();
 
           if (result.error) {
             setCurrentBalance(0);

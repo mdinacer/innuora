@@ -1,10 +1,13 @@
 "use server";
 
+import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import { deductCredits } from "@/app/actions/credit-actions";
-import { LanguagePrompt } from "@/domains/ai-conversation/prompts";
+import { deductCreditsFromUser } from "@/app/actions/credit-actions";
+import { SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
+import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
+import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
@@ -21,11 +24,16 @@ interface LightweightResponseResult {
 /**
  * Handles low-value user inputs with lightweight AI processing
  * Used for simple acknowledgments, brief confirmations, minimal content
+ *
+ * NOTE: "Lightweight" refers to optimization strategy (simpler modules, fewer rounds),
+ * NOT reduced quality. Full context, memory, and localization are maintained.
  */
 export async function handleLightweightUserInput(
   userInput: string,
   analysis: TherapeuticAnalysis,
   messages: OpenChatMessage[],
+  profile: Profile | null,
+  prevMemory: string | null,
   locale: AppLocales = "en",
   userId?: string,
   sessionId?: string
@@ -43,28 +51,69 @@ export async function handleLightweightUserInput(
       authId = user?.authId;
     }
 
-    const languagePrompt = LanguagePrompt[locale];
+    // Get tone descriptor for lightweight response
+    const toneDescriptor = {
+      low: { en: "calm and warm", ar: "هادئة ودافئة", fr: "calme et chaleureuse" },
+      moderate: { en: "grounded and empathetic", ar: "متوازنة ومتفهمة", fr: "ancrée et empathique" },
+      high: { en: "gentle and contained", ar: "لطيفة ومتمالكة", fr: "douce et contenante" },
+    }[analysis.intensity]?.[locale];
 
-    // Build lightweight conversation prompt
-    const lightweightPrompts: ChatCompletionMessageParam[] = [
-      {
-        role: "system",
-        content: `You are Innuora, a warm conversational companion.
+    // Build lightweight persona (simplified, brief, contextual)
+    const lightweightPersona: Record<AppLocales, string> = {
+      en: `You are Innuora, a warm conversational companion.
 
-The user just gave a brief acknowledgment or simple response. Provide a natural, contextually appropriate reply that:
-- Acknowledges their input appropriately
-- Continues the conversation thread naturally if there is one
-- Keep it very brief (1 sentence maximum)
-- Be warm and conversational, not clinical
-- Show you're listening and ready to continue
+The user gave a brief acknowledgment or simple response. Reply naturally:
+- Keep it very short (1-2 sentences max)
+- Be ${toneDescriptor}, not clinical
+- Continue the conversation thread naturally
+- Show you're listening and present`,
 
-${languagePrompt?.content || ""}`.trim(),
-      },
-      {
-        role: "user",
-        content: userInput.trim(),
-      },
-    ];
+      ar: `أنت Innuora، رفيقة محادثة دافئة.
+
+المستخدم أعطى إقرارًا موجزًا أو ردًا بسيطًا. أجيبي بشكل طبيعي:
+- اجعليه قصيرًا جدًا (جملة أو جملتان كحد أقصى)
+- كوني ${toneDescriptor}، وليس سريريًا
+- واصلي خط المحادثة بشكل طبيعي
+- أظهري أنك تستمعين وحاضرة`,
+
+      fr: `Vous êtes Innuora, une compagne de conversation chaleureuse.
+
+L'utilisateur a donné un bref accusé de réception ou une réponse simple. Répondez naturellement:
+- Restez très bref (1-2 phrases max)
+- Soyez ${toneDescriptor}, pas clinique
+- Continuez le fil de conversation naturellement
+- Montrez que vous écoutez et êtes présente`,
+    };
+
+    const personaPrompt: ChatCompletionMessageParam = {
+      role: "system",
+      content: lightweightPersona[locale],
+    };
+
+    // Build lightweight conversation context
+    const lightweightPrompts: ChatCompletionMessageParam[] = [SecurityProtocolPrompt, personaPrompt];
+
+    // Add last conversation round only (1 round = 1 user + 1 assistant message) for continuity
+    const chatContextManager = new ChatContextManager();
+    const lastRoundPrompt = chatContextManager.buildChatHistoryPrompt(messages, 1, 2); // 1 round, 2 messages per round
+    if (lastRoundPrompt) {
+      lightweightPrompts.push(lastRoundPrompt);
+    }
+
+    // Add memory only if analysis indicates recall is needed
+    if (analysis.recall_memory && prevMemory) {
+      const memoryInstructions = SESSION_MEMORY_REFERENCE_INSTRUCTIONS.replace("{{session_memory}}", prevMemory);
+      lightweightPrompts.push({
+        role: "assistant",
+        content: memoryInstructions,
+      });
+    }
+
+    // Add user input
+    lightweightPrompts.push({
+      role: "user",
+      content: userInput.trim(),
+    });
 
     // Generate lightweight AI response
     const result = await processAiPromptsWithRetry(lightweightPrompts, {}, 2, 1000);
@@ -82,7 +131,7 @@ ${languagePrompt?.content || ""}`.trim(),
     // Handle credit deduction
     let creditsUsed = 0;
     if (userId && authId && aiResponse.consumedCredits) {
-      await deductCredits(authId, aiResponse.consumedCredits, "ai_usage", sessionId, {
+      await deductCreditsFromUser(authId, aiResponse.consumedCredits, "ai_usage", sessionId, {
         messageLength: userInput.length,
         responseLength: aiResponse.message.length,
         processingType: "lightweight",

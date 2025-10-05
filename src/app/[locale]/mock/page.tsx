@@ -3,13 +3,13 @@
 import { useCallback, useState } from "react";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import UserDiagnosticsView from "@/components/session-diagnostics/user-diagnostics-view";
-import { Button } from "@/components/ui/button";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
+import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 // import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import { SessionDiagnosticsStd } from "@/domains/session-diagnostics/session-diagnostics.types";
 import { parseJsonObject } from "@/lib/utils/parse-json";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
+import UserMenu from "@/user-menu";
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -650,7 +650,7 @@ export default function Page() {
     try {
       const userPrompt = {
         role: "system" as const,
-        content: ADVANCED_THERAPIST_DIAGNOSTIC_PROMPT.replace("{{session_summary}}", mockSessionSummary)
+        content: INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS.replace("{{session_summary}}", mockSessionSummary)
           .replace("{{session_memory}}", mockSessionMemory)
           .replace("{{session_analysis}}", JSON.stringify(mockSessionAnalysis))
           .trim(),
@@ -679,13 +679,15 @@ export default function Page() {
 
   return (
     <div className="h-screen w-full flex items-center bg-inn-bg-primary justify-center">
+      <UserMenu />
       {/* <CodeView data={mockMessages} className="absolute top-0 left-0 z-10" /> */}
+      {/* <p>{mockMessages.filter((m) => m.role === "user").length}</p>
       <div className="relative h-full w-full max-w-5xl mx-auto flex flex-col">
         <Button onClick={testPrompt} disabled={loading}>
           {loading ? "Testing Diagnostics..." : "Test Enhanced Diagnostic Prompts"}
         </Button>
         <UserDiagnosticsView diagnostics={mockUserDiagnosticsResponse} className="flex-1 p-6" />
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -885,5 +887,198 @@ const mockUserDiagnosticsResponse: SessionDiagnosticsStd = {
       goal: "cultivate non-judgmental awareness",
       difficulty: "beginner",
     },
+  ],
+};
+
+const mockTherapisDiagnostics = {
+  themes: [
+    {
+      id: "theme_skepticism_therapy",
+      title: "Skepticism about Therapy Effectiveness",
+      description:
+        "Client expresses doubts regarding the benefit of therapy, reflecting potential ambivalence and reduced engagement.",
+      severity: "medium",
+      trajectory: "stable",
+      evidence: [
+        "User expresses skepticism about therapy effectiveness",
+        "Session summary notes skepticism about therapy",
+      ],
+    },
+    {
+      id: "theme_work_stress_interpersonal",
+      title: "Work Stress and Interpersonal Strain",
+      description:
+        "High work demands with looming deadlines and interpersonal reliance contribute to elevated stress levels.",
+      severity: "high",
+      trajectory: "stable",
+      evidence: ["Work is busy with deadlines, people leaning on them", "Feeling overwhelmed by work deadlines"],
+    },
+    {
+      id: "theme_relationship_distress",
+      title: "Partner Relationship Distance",
+      description:
+        "Client reports recent emotional distance in partner relationship, potentially contributing to feelings of isolation.",
+      severity: "medium",
+      trajectory: "stable",
+      evidence: ["Partner has been distant recently"],
+    },
+    {
+      id: "theme_self_criticism_guilt",
+      title: "Self-Criticism and Guilt",
+      description:
+        "Strong inner critic and pervasive guilt related to perceived laziness, weakness, and failure to meet high standards.",
+      severity: "high",
+      trajectory: "stable",
+      evidence: [
+        "Strong inner critic calling them 'lazy' or 'failing'",
+        "Feels guilty when trying to be soft with themselves",
+        "Self-criticism frequency: 14",
+        "Guilt related to self-perception and pressure",
+      ],
+    },
+    {
+      id: "theme_cognitive_rigidity_perfectionism",
+      title: "Cognitive Rigidity and Perfectionism",
+      description:
+        "Rigid internalized rules and perfectionistic standards drive harsh self-judgment and intolerance of perceived weakness or mistakes.",
+      severity: "high",
+      trajectory: "stable",
+      evidence: [
+        "Rigid silent rules such as 'I must do everything perfectly', 'I should never make mistakes'",
+        "Expectations to control thoughts perfectly",
+      ],
+    },
+    {
+      id: "theme_sleep_difficulties",
+      title: "Sleep Difficulties",
+      description:
+        "Difficulty initiating sleep with prolonged nocturnal rumination, exacerbated by self-critical thoughts and guilt.",
+      severity: "medium",
+      trajectory: "stable",
+      evidence: ["Struggles with sleep, lying awake at 2am", "Rumination about unfinished tasks from the day"],
+    },
+    {
+      id: "theme_emotional_overwhelm_trapped",
+      title: "Emotional Overwhelm and Feeling Trapped",
+      description:
+        "Client experiences high emotional intensity with feelings of being overwhelmed and trapped by internal pressures and external demands.",
+      severity: "high",
+      trajectory: "stable",
+      evidence: ["Feeling overwhelmed", "Feeling trapped", "Pressure to be strong"],
+    },
+  ],
+  cognitive_distortions: [
+    {
+      id: "distortion_all_or_nothing",
+      title: "All-or-Nothing Thinking",
+      description: "Viewing situations in absolute terms, e.g., success or failure without middle ground.",
+      frequency: 10,
+      severity: "moderate",
+    },
+    {
+      id: "distortion_rumination",
+      title: "Rumination",
+      description: "Repetitive and passive focus on distressing thoughts and problems without resolution.",
+      frequency: 16,
+      severity: "moderate",
+    },
+    {
+      id: "distortion_should_statements",
+      title: "Should Statements",
+      description:
+        "Rigid rules and expectations about how self and others must behave, leading to guilt and frustration.",
+      frequency: 19,
+      severity: "moderate",
+    },
+    {
+      id: "distortion_emotional_reasoning",
+      title: "Emotional Reasoning",
+      description: "Assuming that feelings reflect objective reality, e.g., feeling like a failure means being one.",
+      frequency: 16,
+      severity: "moderate",
+    },
+    {
+      id: "distortion_labeling",
+      title: "Labeling",
+      description: "Assigning global negative labels to self rather than specific behaviors.",
+      frequency: 9,
+      severity: "moderate",
+    },
+    {
+      id: "distortion_personalization",
+      title: "Personalization",
+      description: "Taking excessive responsibility for events or outcomes beyond one’s control.",
+      frequency: 10,
+      severity: "low",
+    },
+    {
+      id: "distortion_mental_filter",
+      title: "Mental Filter",
+      description: "Focusing exclusively on negative details while ignoring positives.",
+      frequency: 1,
+      severity: "moderate",
+    },
+    {
+      id: "distortion_discounting_positives",
+      title: "Discounting the Positives",
+      description: "Rejecting positive experiences by insisting they 'don’t count'.",
+      frequency: 1,
+      severity: "moderate",
+    },
+  ],
+  emotional_state: {
+    primary: "exhaustion",
+    secondary: ["anxiety", "guilt", "frustration", "hopelessness"],
+    congruence: "aligned",
+  },
+  risk_assessment: {
+    level: "moderate_concern",
+    notes:
+      "No current crisis or suicidal ideation reported; however, high levels of self-criticism, guilt, and perfectionism coupled with sleep disturbance and rumination warrant close monitoring for escalation of depressive or anxiety symptoms.",
+  },
+  therapist_focus: [
+    "Establish therapeutic alliance addressing skepticism and ambivalence toward therapy.",
+    "Target maladaptive perfectionism and rigid cognitive rules.",
+    "Develop strategies to reduce self-criticism and enhance self-compassion.",
+    "Implement cognitive restructuring to challenge pervasive cognitive distortions.",
+    "Introduce behavioral interventions to improve sleep hygiene and reduce rumination.",
+    "Address work-related stress and interpersonal relationship difficulties.",
+    "Monitor emotional overwhelm and develop adaptive emotion regulation skills.",
+  ],
+  clinical_interpretations: [
+    "Client presents with a constellation of cognitive distortions and rigid perfectionistic schemas contributing to chronic self-criticism and emotional distress.",
+    "The presence of high self-imposed standards and harsh internal rules likely maintain a maladaptive cycle of guilt and rumination, impairing sleep and recovery.",
+    "Skepticism about therapy may reflect previous negative experiences or fear of vulnerability, necessitating validation and motivational enhancement.",
+    "Work stress and relationship strain act as external stressors exacerbating internal distress and feelings of being overwhelmed.",
+    "The client's emotional state is congruent with described cognitive and behavioral patterns, indicating internal consistency of symptom presentation.",
+  ],
+  treatment_recommendations: [
+    "Cognitive Behavioral Therapy (CBT) focusing on cognitive restructuring of perfectionism-related distortions and self-critical beliefs.",
+    "Compassion-Focused Therapy (CFT) techniques to cultivate self-kindness and reduce shame and guilt.",
+    "Mindfulness-based interventions tailored to improve acceptance of thoughts and reduce rumination.",
+    "Sleep hygiene education and stimulus control strategies to address insomnia symptoms.",
+    "Stress management and problem-solving training related to work and interpersonal contexts.",
+    "Motivational interviewing techniques to enhance engagement and reduce therapy skepticism.",
+    "Regular symptom monitoring and risk assessment for potential escalation of mood or anxiety symptoms.",
+  ],
+  professional_language: [
+    "Perfectionistic cognitive schemas",
+    "Maladaptive cognitive distortions",
+    "Self-critical internal dialogue",
+    "Emotional dysregulation",
+    "Rumination and insomnia",
+    "Therapeutic alliance and engagement",
+    "Compassion cultivation",
+    "Cognitive restructuring",
+    "Behavioral activation",
+    "Motivational enhancement",
+  ],
+  clinical_insights: [
+    "Rigid internal rules and perfectionism are central maintaining factors of the client’s distress and impaired functioning.",
+    "Addressing self-critical cognitions and enhancing self-compassion can disrupt the cycle of guilt and emotional overwhelm.",
+    "Therapy skepticism is a potential barrier that requires empathic exploration and validation to foster trust and collaboration.",
+    "Sleep disturbances linked to nocturnal rumination can exacerbate emotional and cognitive symptoms, necessitating targeted intervention.",
+    "External stressors, including work demands and relationship distance, interact with internal vulnerabilities to sustain symptomatology.",
+    "Moderate risk level underscores the importance of ongoing monitoring and supportive interventions to prevent clinical deterioration.",
   ],
 };

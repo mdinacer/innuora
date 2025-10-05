@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { RefreshCcwIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const OnboardingSession = ({ className, sessionFlow }: Props) => {
+  const router = useRouter();
   const {
     t,
     i18n: { language },
@@ -60,10 +62,11 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
         if (data) {
           updateUser(data);
         }
-        // router.push("/sessions");
-        // resetSession();
+        router.push("/sessions");
+        resetSession();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [responses, updateUser]
   );
 

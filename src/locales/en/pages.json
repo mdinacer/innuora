@@ -596,13 +596,34 @@
   },
   "settings": {
     "sections": {
-      "profile": "Profile",
-      "appearance": "Appearance",
-      "notifications": "Notifications",
-      "privacy": "Privacy & Safety",
-      "security": "Security",
-      "billing": "Billing & Credits",
-      "data": "Data & Storage"
+      "profile": {
+        "label": "Profile",
+        "description": "Manage your personal information and account preferences."
+      },
+      "appearance": {
+        "label": "Appearance",
+        "description": "Customize the look and feel of the application, including theme and layout options."
+      },
+      "notifications": {
+        "label": "Notifications",
+        "description": "Control how and when you receive alerts, emails, and in-app updates."
+      },
+      "privacy": {
+        "label": "Privacy & Safety",
+        "description": "Adjust visibility, data sharing, and safety settings to protect your account."
+      },
+      "security": {
+        "label": "Security",
+        "description": "Update your password, enable two-factor authentication, and secure your account access."
+      },
+      "billing": {
+        "label": "Billing & Credits",
+        "description": "Manage payment methods, view invoices, and track your credits usage."
+      },
+      "data": {
+        "label": "Data & Storage",
+        "description": "Review data usage, manage storage limits, and configure retention settings."
+      }
     },
     "profile": {
       "title": "Profile",

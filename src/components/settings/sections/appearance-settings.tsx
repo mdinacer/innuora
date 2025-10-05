@@ -1,66 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Layout, Monitor, Moon, Sun, Type } from "lucide-react";
+import { useState } from "react";
+import { LanguagesIcon, Monitor, Moon, Sun, Type } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-import { getUserConfig, updateAppearanceSettings } from "@/app/actions/user-config-actions";
-import { Badge } from "@/components/ui/badge";
+import { updateAppearanceSettings } from "@/app/actions/user-config-actions";
 import { Button } from "@/components/ui/button";
-
-// =========================
-// Types
-// =========================
+import { cn } from "@/lib/utils";
 
 type ThemeMode = "light" | "dark" | "system";
 type FontSize = "small" | "medium" | "large";
 
-// =========================
-// Appearance Settings Component
-// =========================
-
 export default function AppearanceSettings(): React.JSX.Element {
+  const {
+    i18n: { language },
+  } = useTranslation();
   const { theme, setTheme } = useTheme();
   const [themeMode, setThemeMode] = useState<ThemeMode>((theme as ThemeMode | undefined) || "system");
   const [fontSize, setFontSize] = useState<FontSize>("medium");
-  const [enableAnimation, setAnimated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load user config on component mount
-  useEffect(() => {
-    async function loadConfig() {
-      try {
-        const result = await getUserConfig();
-
-        if (result.error) {
-          return;
-        }
-
-        const config = result.data;
-        if (config) {
-          setThemeMode((config.theme as ThemeMode) || "system");
-          setFontSize((config.fontSize as FontSize) || "medium");
-          setAnimated(config.enableAnimation);
-        }
-      } catch {}
-    }
-    loadConfig();
-  }, []);
-
-  // Save settings function
   const saveSettings = async () => {
     setIsLoading(true);
     try {
       await updateAppearanceSettings({
         theme: themeMode,
         fontSize: fontSize,
-        enableAnimation: enableAnimation,
       });
 
-      // Update theme in next-themes
       setTheme(themeMode);
-
       toast.success("Appearance settings saved!");
     } catch {
       toast.error("Failed to save settings. Please try again.");
@@ -72,7 +42,7 @@ export default function AppearanceSettings(): React.JSX.Element {
   const themeOptions = [
     { id: "light", label: "Light", icon: <Sun className="h-4 w-4" />, description: "Light theme" },
     { id: "dark", label: "Dark", icon: <Moon className="h-4 w-4" />, description: "Dark theme" },
-    { id: "system", label: "System", icon: <Monitor className="h-4 w-4" />, description: "Match system preference" },
+    { id: "system", label: "System", icon: <Monitor className="h-4 w-4" />, description: "Match system" },
   ];
 
   const fontSizeOptions = [
@@ -81,106 +51,127 @@ export default function AppearanceSettings(): React.JSX.Element {
     { id: "large", label: "Large", example: "18px" },
   ];
 
+  const languageOptions = [
+    { id: "ar", label: "العربية", native: "Arabic" },
+    { id: "en", label: "English", native: "English" },
+    { id: "fr", label: "Français", native: "French" },
+  ];
+
   return (
-    <div className="space-y-8">
-      {/* Theme Mode */}
-      <p>{theme}</p>
-      <div>
+    <div className="space-y-6">
+      {/* UI Language */}
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
-          <Monitor className="h-5 w-5 " />
-          <h3 className="text-lg font-medium ">Theme</h3>
+          <LanguagesIcon className="h-5 w-5 text-inn-bg-accent" />
+          <h3 className="text-xl font-semibold">Language</h3>
         </div>
-        <p className="text-sm  mb-4">Choose how Innuora looks and feels across all your devices.</p>
+        <p className="text-sm text-inn-text-secondary mb-6">Choose the language Innuora uses throughout the app.</p>
+
+        <div className="grid grid-cols-3 gap-4">
+          {languageOptions.map((option) => (
+            <button
+              key={option.id}
+              className={cn(
+                "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                language === option.id
+                  ? "border-inn-bg-accent bg-inn-bg-soft"
+                  : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
+              )}
+            >
+              <div className="text-center">
+                <div className="font-semibold mb-1">{option.label}</div>
+                <div className="text-xs text-inn-text-secondary">{option.native}</div>
+                {language === option.id && (
+                  <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
+                    Current
+                  </div>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Theme Mode */}
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+        <div className="flex items-center gap-2 mb-4">
+          <Monitor className="h-5 w-5 text-inn-bg-accent" />
+          <h3 className="text-xl font-semibold">Theme</h3>
+        </div>
+        <p className="text-sm text-inn-text-secondary mb-6">
+          Choose how Innuora looks and feels across all your devices.
+        </p>
 
         <div className="grid grid-cols-3 gap-4">
           {themeOptions.map((option) => (
             <button
               key={option.id}
               onClick={() => setThemeMode(option.id as ThemeMode)}
-              className={`relative p-4 border-2 rounded-lg text-left transition-all hover:border-gray-300 ${
-                themeMode === option.id ? "border-blue-500 " : "border-gray-200 "
-              }`}
+              className={cn(
+                "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                themeMode === option.id
+                  ? "border-inn-bg-accent bg-inn-bg-soft"
+                  : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
+              )}
             >
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center justify-center gap-2 mb-2">
                 {option.icon}
-                <span className="font-medium">{option.label}</span>
-                {themeMode === option.id && (
-                  <Badge variant="default" className="text-xs">
-                    Current
-                  </Badge>
-                )}
+                <span className="font-semibold">{option.label}</span>
               </div>
-              <p className="text-xs ">{option.description}</p>
+              <p className="text-xs text-inn-text-secondary text-center">{option.description}</p>
+              {themeMode === option.id && (
+                <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
+                  Active
+                </div>
+              )}
             </button>
           ))}
         </div>
       </div>
 
       {/* Font Size */}
-      <div>
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
-          <Type className="h-5 w-5 " />
-          <h3 className="text-lg font-medium ">Font Size</h3>
+          <Type className="h-5 w-5 text-inn-bg-accent" />
+          <h3 className="text-xl font-semibold">Font Size</h3>
         </div>
-        <p className="text-sm  mb-4">Adjust the text size for better readability.</p>
+        <p className="text-sm text-inn-text-secondary mb-6">Adjust text size for better readability.</p>
 
         <div className="grid grid-cols-3 gap-4">
           {fontSizeOptions.map((option) => (
             <button
               key={option.id}
               onClick={() => setFontSize(option.id as FontSize)}
-              className={`relative p-4 border-2 rounded-lg text-left transition-all hover:border-gray-300 ${
-                fontSize === option.id ? "border-blue-500 " : "border-gray-200 "
-              }`}
+              className={cn(
+                "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                fontSize === option.id
+                  ? "border-inn-bg-accent bg-inn-bg-soft"
+                  : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
+              )}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">{option.label}</span>
+              <div className="text-center">
+                <div className="font-semibold mb-2">{option.label}</div>
+                <div className="text-inn-text-secondary" style={{ fontSize: option.example }}>
+                  Aa
+                </div>
                 {fontSize === option.id && (
-                  <Badge variant="default" className="text-xs">
-                    Current
-                  </Badge>
+                  <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
+                    Active
+                  </div>
                 )}
               </div>
-              <p className="text-xs ">{option.example}</p>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Layout Options */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Layout className="h-5 w-5 " />
-          <h3 className="text-lg font-medium ">Layout</h3>
-        </div>
-        {/* <p className="text-sm  mb-4">Customize the layout and spacing of the interface.</p> */}
-
-        <div className="space-y-4 hidden sm:block">
-          {/* Animated Mode */}
-          <div className="flex items-center justify-between p-4  rounded-lg">
-            <div>
-              <h4 className="font-medium ">Background Animation</h4>
-              <p className="text-sm ">Show a background animation in the background.</p>
-            </div>
-            <button
-              onClick={() => setAnimated(!enableAnimation)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                enableAnimation ? "bg-blue-600" : "bg-gray-200"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full  transition-transform ${
-                  enableAnimation ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Save Button */}
-      <div className="flex justify-end pt-4 border-t border-gray-200">
-        <Button onClick={saveSettings} disabled={isLoading}>
+      <div className="flex justify-end">
+        <Button
+          onClick={saveSettings}
+          disabled={isLoading}
+          className="rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:opacity-90 transition shadow-lg"
+        >
           {isLoading ? "Saving..." : "Save Appearance Settings"}
         </Button>
       </div>

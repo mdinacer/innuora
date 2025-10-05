@@ -51,30 +51,102 @@ export const STRIPE_CONFIG = {
 //   },
 // } as const;
 
-export const BILLING_PRODUCTS = {
+/**
+ * VALUE-BASED PRICING - B2C Credit Packages
+ *
+ * Pricing reflects clinical value delivered (professional-grade diagnostics),
+ * not just API token costs. See docs/PRICING_STRATEGY.md for full rationale.
+ *
+ * Price positioning:
+ * - Starter ($35): Less than therapy book, try full system
+ * - Regular ($75): 1/4 cost of therapy, structured CBT companion
+ * - Premium ($150): Includes unlimited $500 assessments
+ */
+
+export type DiagnosticTier = "regular" | "premium";
+
+export interface BillingProduct {
+  priceId: string;
+  credits: number;
+  price: number;
+  popular: boolean;
+  label: string;
+  tagline: string;
+  features: string[];
+  diagnosticTier: DiagnosticTier;
+  bonus?: number;
+  savings?: string;
+  clinicalValue?: string;
+}
+
+export type BillingProducts = {
+  starter: BillingProduct;
+  regular: BillingProduct;
+  premium: BillingProduct;
+};
+export const BILLING_PRODUCTS: BillingProducts = {
+  // FREE TIER - Not a Stripe product, handled separately
+  // 50 credits, basic insights only, no payment required
+
+  // STARTER TIER - Try the full system
   starter: {
     priceId: process.env.STRIPE_PRICE_STARTER || "price_starter",
-    credits: 60, // ~30 rounds (enough for one deep session)
-    price: 15.0,
+    credits: 700, // ~175 messages OR ~150 messages + 15 full diagnostics
+    price: 35.0,
     popular: false,
-    label: "Starter Pack",
-    tagline: "Get started with one safe session",
+    label: "Starter",
+    tagline: "Experience clinical-grade self-insight",
+    features: [
+      "700 conversation credits (~175 messages)",
+      "Full actionable diagnostic reports",
+      "Hidden rules & leverage points",
+      "Concrete next steps",
+      "PDF export for personal use",
+    ],
+    diagnosticTier: "regular" as const, // 7-section actionable diagnostics
   },
+
+  // REGULAR TIER - Most popular, monthly self-work
   regular: {
     priceId: process.env.STRIPE_PRICE_REGULAR || "price_regular",
-    credits: 240, // ~120 rounds (~4 sessions or a month of weekly use)
-    price: 40.0,
+    credits: 1500, // ~375 messages OR ~330 messages + 55 full diagnostics
+    price: 75.0,
     popular: true,
-    label: "Growth Pack",
-    tagline: "Best balance of value and consistency",
+    label: "Regular",
+    tagline: "Professional-grade CBT companion for serious self-work",
+    features: [
+      "1,500 conversation credits (~375 messages)",
+      "Full actionable diagnostic reports",
+      "Pattern tracking across sessions",
+      "All self-work insights + resources",
+      "PDF export for personal use",
+    ],
+    diagnosticTier: "regular" as const, // 7-section actionable diagnostics
+    bonus: 100, // Bonus credits vs buying Starter twice
+    savings: "2x more credits vs Starter for 2.1x price",
   },
+
+  // PREMIUM TIER - Clinical-grade for therapist collaboration
   premium: {
     priceId: process.env.STRIPE_PRICE_PREMIUM || "price_premium",
-    credits: 720, // ~360 rounds (~12 sessions or ~3 months of weekly use)
-    price: 99.0,
+    credits: 3000, // ~750 messages OR ~660 messages + 100 clinical diagnostics
+    price: 150.0,
     popular: false,
-    label: "Premium Pack",
-    tagline: "For sustained deep support without limits",
+    label: "Premium",
+    tagline: "Professional assessment + therapy companion",
+    features: [
+      "3,000 conversation credits (~750 messages)",
+      "Unlimited clinical diagnostic reports ($500+ value each)",
+      "Therapist-grade clinical interpretations",
+      "Treatment recommendations",
+      "Risk assessment tracking",
+      "Email export to therapist",
+      "All regular features included",
+    ],
+    diagnosticTier: "premium" as const, // 9-section clinical diagnostics
+    bonus: 300, // Bonus credits
+    savings: "4x more credits vs Starter for 4.3x price",
+    clinicalValue: "$1,500+ in professional psychological assessments",
   },
 } as const;
 
@@ -106,8 +178,8 @@ export const TRANSACTION_CONFIG = {
 
   // Limits and constraints
   limits: {
-    maxCreditsPerPurchase: 50000,
-    minCreditsPerPurchase: 100,
+    maxCreditsPerPurchase: 10000, // Allow up to ~3x Premium tier
+    minCreditsPerPurchase: 700, // Starter tier minimum
     maxTransactionsPerDay: 10,
   },
 } as const;
@@ -157,8 +229,8 @@ export const BILLING_SECURITY = {
   validation: {
     maxMetadataSize: 1024, // bytes
     allowedCurrencies: ["usd"] as const,
-    minAmount: 500, // cents ($5.00)
-    maxAmount: 10000, // cents ($100.00)
+    minAmount: 3500, // cents ($35.00) - Starter tier minimum
+    maxAmount: 15000, // cents ($150.00) - Premium tier
   },
 } as const;
 

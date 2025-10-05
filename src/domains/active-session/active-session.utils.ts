@@ -18,30 +18,27 @@ export function getActiveSessionDuration(session: Session): {
 
 export function resetSessionData(session: Session): Session {
   return {
-    id: session.id,
-    userId: session.userId,
-    title: session.title,
-    subtitle: session.subtitle,
+    ...session,
+    // id: session.id,
+    // userId: session.userId,
+    // title: session.title,
+    // subtitle: session.subtitle,
+    // autoUpdateTitle: session.autoUpdateTitle,
+    // persistOnCloud: session.persistOnCloud,
+    // metadata: session.metadata,
+    // createdAt: session.createdAt,
+    metadata: {
+      ...session.metadata,
+      messageCount: 0,
+      activeDurationMs: 0,
+      lastActiveAt: new Date(),
+    },
     messages: [],
     memoryStore: null,
     continuitySummary: null,
     aggregatedAnalysis: null,
     analysisSnapshots: [],
     sessionDiagnostics: null,
-    autoUpdateTitle: session.autoUpdateTitle,
-    persistOnCloud: session.persistOnCloud,
-    metadata: {
-      tokenUsage: [],
-      messageCount: 0,
-      tokenCount: 0,
-      inputTokens: 0,
-      outputTokens: 0,
-      costUSD: 0,
-      creditsUsed: 0,
-      activeDurationMs: 0,
-      lastActiveAt: new Date(),
-    },
-    createdAt: session.createdAt,
     updatedAt: new Date(), // Update timestamp when resetting
   };
 }

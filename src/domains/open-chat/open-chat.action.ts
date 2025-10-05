@@ -4,7 +4,7 @@ import { Profile } from "@prisma/client";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import { deductCredits } from "@/app/actions/credit-actions";
+import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfileContext } from "@/domains/ai-conversation/prompts/prompt.user-context";
@@ -186,11 +186,22 @@ async function handleLowValueInput(
   analysisUsage: ModelTokenUsage | null,
   analysisCredits: number,
   messages: OpenChatMessage[],
+  profile: Profile | null,
+  prevMemory: string | null,
   locale: AppLocales,
   userId?: string,
   sessionId?: string
 ): Promise<HandleUserInputResult> {
-  const lightweightResult = await handleLightweightUserInput(userInput, analysis, messages, locale, userId, sessionId);
+  const lightweightResult = await handleLightweightUserInput(
+    userInput,
+    analysis,
+    messages,
+    profile,
+    prevMemory,
+    locale,
+    userId,
+    sessionId
+  );
 
   const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
 
@@ -286,7 +297,7 @@ async function processCreditsDeduction(
     },
   });
 
-  const deductResult = await deductCredits(authId, totalCredits, "ai_usage", sessionId, {
+  const deductResult = await deductCreditsFromUser(authId, totalCredits, "ai_usage", sessionId, {
     analysisCredits: analysisCredits || 0,
     responseCredits: responseCredits || 0,
     messageLength: userInput.length,
@@ -361,6 +372,8 @@ export async function handleUserInput(
         analysisUsage,
         analysisCredits || 0,
         messages,
+        profile,
+        prevMemory,
         locale,
         userId,
         sessionId

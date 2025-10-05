@@ -154,7 +154,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   return (
     <>
-      <CodeView data={messages} className="absolute top-6 left-6" />
+      <CodeView data={session} className="absolute top-6 left-6" />
       <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
 
       {/* Credits Balance Display */}
@@ -188,11 +188,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
             />
           ) : null
         }
-        headerActions={
-          <>
-            <Menu disabled={!messages?.length} onAction={handleActions} />
-          </>
-        }
+        headerActions={<Menu disabled={!messages?.length} onAction={handleActions} />}
       />
     </>
   );

@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, Eye, Key, Shield } from "lucide-react";
+import { Clock, Download, Key, Shield } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-// =========================
-// Types
-// =========================
-
-// =========================
-// Security Settings Component
-// =========================
+import { cn } from "@/lib/utils";
 
 export default function SecuritySettings(): React.JSX.Element {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
@@ -29,120 +21,129 @@ export default function SecuritySettings(): React.JSX.Element {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Security Overview */}
-      <Alert>
-        <Shield className="h-4 w-4" />
-        <AlertDescription>
+      <Alert className="rounded-2xl border-inn-bg-accent/30 bg-inn-bg-soft">
+        <Shield className="h-4 w-4 text-inn-bg-accent" />
+        <AlertDescription className="text-inn-text-secondary">
           Your account security is strong. We recommend enabling two-factor authentication for additional protection.
         </AlertDescription>
       </Alert>
 
       {/* Password & Authentication */}
-      <div>
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
-          <Key className="h-5 w-5" />
-          <h3 className="text-lg font-medium">Password & Authentication</h3>
+          <Key className="h-5 w-5 text-inn-bg-accent" />
+          <h3 className="text-xl font-semibold">Password & Authentication</h3>
         </div>
 
         <div className="space-y-4">
           {/* Change Password */}
-          <div className="flex items-center justify-between p-4 rounded-lg">
+          <div className="flex items-center justify-between rounded-xl border border-inn-border-light p-4 hover:border-inn-bg-accent/50 transition">
             <div>
-              <h4 className="font-medium">Password</h4>
-              <p className="text-sm">Last changed 3 months ago</p>
+              <h4 className="font-semibold mb-1">Password</h4>
+              <p className="text-sm text-inn-text-secondary">Last changed 3 months ago</p>
             </div>
-            <Button variant="outline">Change Password</Button>
+            <Button
+              variant="outline"
+              className="rounded-2xl border-inn-border-light hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+            >
+              Change Password
+            </Button>
           </div>
 
           {/* Two-Factor Authentication */}
-          <div className="flex items-center justify-between p-4 rounded-lg">
-            <div>
-              <h4 className="font-medium">Two-Factor Authentication</h4>
-              <p className="text-sm">Add an extra layer of security to your account</p>
-              {twoFactorEnabled && (
-                <Badge variant="default" className="mt-2 text-xs">
-                  Enabled
-                </Badge>
-              )}
+          <div className="rounded-xl border border-inn-border-light p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h4 className="font-semibold mb-1">Two-Factor Authentication</h4>
+                <p className="text-sm text-inn-text-secondary">Add an extra layer of security to your account</p>
+              </div>
+              <div className="flex items-center gap-3">
+                {!twoFactorEnabled && (
+                  <div className="rounded-full bg-orange-500/20 border border-orange-500/40 px-3 py-1 text-xs font-medium text-orange-600">
+                    Recommended
+                  </div>
+                )}
+                <Button
+                  onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
+                  className={cn(
+                    "rounded-2xl px-6 py-2 font-semibold shadow-lg transition",
+                    twoFactorEnabled
+                      ? "bg-inn-bg-secondary text-inn-text-primary hover:bg-inn-bg-secondary/80"
+                      : "bg-inn-bg-accent text-white hover:opacity-90"
+                  )}
+                >
+                  {twoFactorEnabled ? "Disable" : "Enable"}
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              {!twoFactorEnabled && (
-                <Badge variant="outline" className="text-xs text-orange-600 border-orange-600">
-                  Recommended
-                </Badge>
-              )}
-              <Button
-                variant={twoFactorEnabled ? "outline" : "default"}
-                onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-              >
-                {twoFactorEnabled ? "Disable" : "Enable"}
-              </Button>
-            </div>
-          </div>
 
-          {twoFactorEnabled && (
-            <div className="ml-4 p-3 bg-green-50 border-l-4 border-green-400 rounded-r-lg">
-              <p className="text-sm text-green-800">
-                <strong>Two-factor authentication is active.</strong> Your account is protected with SMS verification.
-              </p>
-            </div>
-          )}
+            {twoFactorEnabled && (
+              <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 mt-4">
+                <p className="text-sm text-green-600 font-medium">
+                  ✓ Two-factor authentication is active. Your account is protected with SMS verification.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Session Management */}
-      <div>
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="h-5 w-5" />
-          <h3 className="text-lg font-medium">Session Management</h3>
+          <Clock className="h-5 w-5 text-inn-bg-accent" />
+          <h3 className="text-xl font-semibold">Session Management</h3>
         </div>
 
-        <div className="space-y-4">
-          {/* Session Timeout */}
-          <div className="grid grid-cols-3 gap-4 items-center">
-            <label htmlFor="session-timeout" className="text-sm font-medium text-gray-700">
-              Auto-logout after
-            </label>
-            <div className="col-span-2">
-              <select
-                id="session-timeout"
-                value={sessionTimeout}
-                onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {timeoutOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+        <div className="rounded-xl border border-inn-border-light p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-semibold mb-1">Auto-logout</h4>
+              <p className="text-sm text-inn-text-secondary">Automatically sign out after period of inactivity</p>
             </div>
+            <select
+              value={sessionTimeout}
+              onChange={(e) => setSessionTimeout(Number(e.target.value))}
+              className="rounded-xl border border-inn-border-light bg-inn-bg-card px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-inn-bg-accent transition"
+            >
+              {timeoutOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
 
-      {/* Privacy & Security Settings */}
-      <div>
+      {/* Data Export */}
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
-          <Eye className="h-5 w-5" />
-          <h3 className="text-lg font-medium">Privacy & Security</h3>
+          <Download className="h-5 w-5 text-inn-bg-accent" />
+          <h3 className="text-xl font-semibold">Data Export</h3>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 rounded-lg">
-            <div>
-              <h4 className="font-medium">Download Your Data</h4>
-              <p className="text-sm">Get a copy of all your data stored with Innuora</p>
-            </div>
-            <Button variant="outline">Request Data</Button>
+        <div className="flex items-center justify-between rounded-xl border border-inn-border-light p-4 hover:border-inn-bg-accent/50 transition">
+          <div>
+            <h4 className="font-semibold mb-1">Download Your Data</h4>
+            <p className="text-sm text-inn-text-secondary">Get a copy of all your data stored with Innuora</p>
           </div>
+          <Button
+            variant="outline"
+            className="rounded-2xl border-inn-border-light hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+          >
+            Request Data
+          </Button>
         </div>
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end pt-4 border-t border-gray-200">
-        <Button>Save Security Settings</Button>
+      <div className="flex justify-end">
+        <Button className="rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:opacity-90 transition shadow-lg">
+          Save Security Settings
+        </Button>
       </div>
     </div>
   );

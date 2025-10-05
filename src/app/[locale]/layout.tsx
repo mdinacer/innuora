@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { dir } from "i18next";
 
 import AuthListener from "@/components/auth/auth-listener";
+import { CookieConsentBanner } from "@/components/legal/cookie-consent-banner";
 import { PWAInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -53,6 +54,7 @@ export default async function RootLayout({
             {children}
             <Toaster />
             <PWAInstallPrompt variant="floating" autoShow showDelay={5000} />
+            <CookieConsentBanner />
           </TranslationProvider>
         </ThemeProvider>
         {process.env.NODE_ENV === "production" && (

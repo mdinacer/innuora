@@ -6,6 +6,7 @@ import { User as AuthUser } from "@supabase/supabase-js";
 import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 import { UpdateUserProfileSchema, UpdateUserProfileSchemaType } from "@/lib/zod/user-actions.schema";
 import type { ActionResult } from "@/types/action-result";
 import { UserWithRelations } from "@/types/user.types";
@@ -215,6 +216,10 @@ export async function updateCurrentUser(
   return await updateUserById(currentAuthUser.id, userData);
 }
 
+/**
+ * GDPR-compliant user deletion (Right to Erasure - Article 17)
+ * Permanently deletes user and ALL associated data
+ */
 export async function deleteUserById(authUserId: string): Promise<ActionResult<boolean>> {
   await assertCurrentUserId(authUserId);
 
@@ -231,11 +236,86 @@ export async function deleteUserById(authUserId: string): Promise<ActionResult<b
           operation: "user_delete_by_id",
           userId: authUserId,
         });
+        throw new Error("Unreachable");
       }
 
-      await prisma.user.delete({
+      // GDPR-compliant complete deletion in transaction
+      await prisma.$transaction(async (tx) => {
+        // 1. Delete all audit logs (explicit deletion - references authId)
+        await tx.auditLog.deleteMany({ where: { userId: authUserId } });
+
+        // 2. Delete all sessions (CASCADE should work but explicit for certainty)
+        await tx.session.deleteMany({ where: { userId: user.id } });
+
+        // 3. Delete all credit transactions
+        await tx.creditTransaction.deleteMany({ where: { userId: user.id } });
+
+        // 4. Delete all subscription renewals first (foreign key constraint)
+        const subscriptions = await tx.subscription.findMany({
+          where: { userId: user.id },
+          select: { id: true },
+        });
+        for (const sub of subscriptions) {
+          await tx.subscriptionRenewal.deleteMany({ where: { subscriptionId: sub.id } });
+        }
+
+        // 5. Delete all subscriptions
+        await tx.subscription.deleteMany({ where: { userId: user.id } });
+
+        // 6. Delete profile
+        await tx.profile.deleteMany({ where: { userId: user.id } });
+
+        // 7. Delete user config
+        await tx.userConfig.deleteMany({ where: { userId: user.id } });
+
+        // 8. Finally delete user
+        await tx.user.delete({ where: { authId: authUserId } });
+      });
+
+      // 9. Delete from Supabase Auth (outside transaction)
+      try {
+        const supabase = await createClient();
+        const { error: authError } = await supabase.auth.admin.deleteUser(authUserId);
+
+        if (authError) {
+          logger.logWarning("Failed to delete user from Supabase Auth", {
+            operation: "user_delete_supabase_auth",
+            userId: authUserId,
+            metadata: { error: authError.message },
+          });
+          // Log but don't fail - database deletion already succeeded
+        }
+      } catch (authDeleteError) {
+        logger.logWarning("Exception during Supabase Auth deletion", {
+          operation: "user_delete_supabase_auth",
+          userId: authUserId,
+          metadata: { error: String(authDeleteError) },
+        });
+      }
+
+      // 10. Verify deletion (GDPR requirement - must confirm erasure)
+      const remainingUser = await prisma.user.findUnique({
         where: { authId: authUserId },
       });
+
+      const remainingAuditLogs = await prisma.auditLog.count({
+        where: { userId: authUserId },
+      });
+
+      if (remainingUser || remainingAuditLogs > 0) {
+        logger.logErrorAndThrow(
+          ERROR_CODES.USER_DELETE_FAILED,
+          new Error("User deletion verification failed - data still exists"),
+          {
+            operation: "user_delete_verification",
+            userId: authUserId,
+            metadata: {
+              remainingUser: !!remainingUser,
+              remainingAuditLogs,
+            },
+          }
+        );
+      }
 
       return true;
     },
@@ -244,10 +324,11 @@ export async function deleteUserById(authUserId: string): Promise<ActionResult<b
       operation: "user_delete_by_id",
       userId: authUserId,
       metadata: {
-        action: "delete_user_account",
+        action: "gdpr_right_to_erasure",
+        compliance: "GDPR Article 17",
       },
     },
-    "User account deleted"
+    "User account and all associated data permanently deleted (GDPR compliant)"
   );
 }
 
@@ -281,65 +362,47 @@ export async function updateUserProfile(
 
   const currentAuthUser = await requireCurrentUser();
 
+  const currentUser = await getCurrentUser();
+
   return (await logger.wrapOperation(
     async () => {
       return await prisma.$transaction(async (tx) => {
         const { displayName, locale } = validatedData;
 
-        // Prepare update operations
-        const updates: Promise<any>[] = [];
+        // Build the nested update data
+        const updateData: any = {};
 
-        // Update profile if displayName is provided
         if (displayName !== undefined) {
-          updates.push(
-            tx.profile.upsert({
-              where: { userId: currentAuthUser.id },
+          updateData.profile = {
+            upsert: {
+              create: { displayName },
               update: { displayName },
-              create: {
-                userId: currentAuthUser.id,
-                displayName,
-              },
-            })
-          );
+            },
+          };
         }
 
-        // Update user config if locale is provided
         if (locale !== undefined) {
-          updates.push(
-            tx.userConfig.upsert({
-              where: { userId: currentAuthUser.id },
-              update: { locale },
+          updateData.config = {
+            upsert: {
               create: {
-                userId: currentAuthUser.id,
                 locale,
                 autoSave: false,
                 theme: ThemeMode.system,
               },
-            })
-          );
+              update: { locale },
+            },
+          };
         }
 
-        // Execute all updates in parallel
-        if (updates.length > 0) {
-          await Promise.all(updates);
-        }
-
-        // Return updated user with relations
-        const updatedUser = await tx.user.findUnique({
-          where: { authId: currentAuthUser.id },
+        // Single update with nested writes
+        const updatedUser = await tx.user.update({
+          where: { id: currentUser.id },
+          data: updateData,
           include: {
             profile: true,
             config: true,
           },
         });
-
-        if (!updatedUser) {
-          logger.logErrorAndThrow(ERROR_CODES.USER_NOT_FOUND, new Error("User not found after update"), {
-            operation: "user_profile_update",
-            userId: currentAuthUser.id,
-            metadata: { reason: "user_disappeared_after_update" },
-          });
-        }
 
         return updatedUser;
       });

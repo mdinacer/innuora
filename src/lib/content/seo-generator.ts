@@ -59,6 +59,7 @@ export class SEOGenerator {
           en: `/en${canonicalUrl}`,
           ar: `/ar${canonicalUrl}`,
           fr: `/fr${canonicalUrl}`,
+          "x-default": `/en${canonicalUrl}`,
         },
       },
 

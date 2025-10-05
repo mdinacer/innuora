@@ -1,11 +1,8 @@
-import fs from "fs";
-import path from "path";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import matter from "gray-matter";
 
 import ArticleLayout from "@/components/content/article-layout";
-import { initializeContentRegistry } from "@/lib/content/content-loader";
+import { getAvailableLocales, initializeContentRegistry, loadLocalizedContent } from "@/lib/content/content-loader";
 import { contentRegistry } from "@/lib/content/content-registry";
 import { ContentCategory } from "@/types/content.types";
 
@@ -64,7 +61,7 @@ export async function generateStaticParams() {
 // =========================
 
 export default async function ContentPage({ params }: ContentPageProps) {
-  const { category, slug } = await params;
+  const { locale, category, slug } = await params;
 
   // Initialize content registry
   await initializeContentRegistry();
@@ -92,16 +89,17 @@ export default async function ContentPage({ params }: ContentPageProps) {
     notFound();
   }
 
-  // Load the actual markdown content
-  let markdownContent = "";
-  try {
-    const filePath = path.join(process.cwd(), "src", "content", "articles", category, `${slug}.md`);
-    if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(filePath, "utf-8");
-      const { content } = matter(fileContent);
-      markdownContent = content;
-    }
-  } catch {}
+  // Load the actual markdown content in user's locale (with fallback to English)
+  const contentResult = loadLocalizedContent(category, slug, locale);
+
+  if (!contentResult) {
+    notFound();
+  }
+
+  const { content: markdownContent, locale: actualLocale } = contentResult;
+
+  // Get available locales for this article (for language switcher if needed)
+  const availableLocales = getAvailableLocales(category, slug);
 
   // Get related content
   const relatedContent = contentRegistry.getRelated(contentItem);
@@ -119,6 +117,8 @@ export default async function ContentPage({ params }: ContentPageProps) {
         relatedContent={relatedContent}
         category={category as ContentCategory}
         markdownContent={markdownContent}
+        currentLocale={actualLocale}
+        availableLocales={availableLocales}
       />
     </>
   );

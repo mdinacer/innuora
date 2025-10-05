@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { CheckCircle, CreditCard, Loader2, XCircle } from "lucide-react";
+import { CheckCircle, CreditCard, Loader2, XCircle, XIcon } from "lucide-react";
 
 import { createCreditPurchaseIntent } from "@/app/actions/billing-actions";
 import { Button } from "@/components/ui/button";
@@ -66,53 +67,55 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
     createIntent();
   }, [userId, productKey, userEmail, userName, onError]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
 
-    if (!stripe || !elements || !clientSecret) {
-      return;
-    }
-
-    setIsProcessing(true);
-    setPaymentStatus("processing");
-
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) {
-      onError("Payment form not loaded properly");
-      setIsProcessing(false);
-      setPaymentStatus("failed");
-      return;
-    }
-
-    try {
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            email: userEmail,
-            name: userName,
-          },
-        },
-      });
-
-      if (error) {
-        onError(error.message || "Payment failed");
-        setPaymentStatus("failed");
-      } else if (paymentIntent.status === "succeeded") {
-        setPaymentStatus("succeeded");
-        onSuccess({
-          creditsAdded: product.credits,
-          newBalance: 0, // This will be updated from the server
-        });
+      if (!stripe || !elements || !clientSecret) {
+        return;
       }
-    } catch {
-      onError("An unexpected error occurred");
-      setPaymentStatus("failed");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
+      setIsProcessing(true);
+      setPaymentStatus("processing");
+
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        onError("Payment form not loaded properly");
+        setIsProcessing(false);
+        setPaymentStatus("failed");
+        return;
+      }
+
+      try {
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              email: userEmail,
+              name: userName,
+            },
+          },
+        });
+
+        if (error) {
+          onError(error.message || "Payment failed");
+          setPaymentStatus("failed");
+        } else if (paymentIntent.status === "succeeded") {
+          setPaymentStatus("succeeded");
+          onSuccess({
+            creditsAdded: product.credits,
+            newBalance: 0, // This will be updated from the server
+          });
+        }
+      } catch {
+        onError("An unexpected error occurred");
+        setPaymentStatus("failed");
+      } finally {
+        setIsProcessing(false);
+      }
+    },
+    [clientSecret, elements, onError, onSuccess, product.credits, stripe, userEmail, userName]
+  );
   if (!clientSecret) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -123,9 +126,9 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 p-6">
       {/* Product Summary */}
-      <div className="bg-gray-50 p-4 rounded-lg">
+      <div className="rounded-2xl bg-inn-bg-soft border border-inn-border-light p-4">
         <h3 className="font-semibold text-lg">
           {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} Pack - {timeFrame} weeks of support
         </h3>
@@ -184,13 +187,18 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isProcessing} className="flex-1">
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={isProcessing}
+          className="flex-1 rounded-2xl border border-inn-border-light px-6 py-3 text-base font-semibold hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+        >
           Cancel
-        </Button>
-        <Button
+        </button>
+        <button
           type="submit"
           disabled={!stripe || isProcessing || paymentStatus === "succeeded"}
-          className="flex-1 bg-blue-600 hover:bg-blue-700"
+          className="flex-1 rounded-2xl bg-inn-bg-accent px-6 py-3 text-nowrap text-base font-semibold text-white hover:translate-y-[-1px] transition shadow-lg"
         >
           {isProcessing ? (
             <>
@@ -200,7 +208,7 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
           ) : (
             `Secure ${timeFrame} weeks of support`
           )}
-        </Button>
+        </button>
       </div>
 
       {/* Security Notice */}
@@ -316,9 +324,20 @@ export function PaymentModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Secure Your Support</DialogTitle>
+      <DialogContent
+        showCloseButton={false}
+        className="sm:max-w-lg p-0 bg-inn-bg-card rounded-3xl border border-inn-border-light shadow-[0_20px_60px] shadow-black/30 max-w-[500px] max-h-[90vh]"
+      >
+        <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-inn-border-light">
+          <div>
+            <DialogTitle className="text-xl font-bold">Secure Your Support</DialogTitle>
+            <DialogDescription className="hidden" />
+          </div>
+          <DialogClose asChild>
+            <button className="w-8 h-8 rounded-full hover:bg-inn-bg-secondary flex items-center justify-center transition">
+              <XIcon className="size-5 shrink-0" />
+            </button>
+          </DialogClose>
         </DialogHeader>
 
         <Elements stripe={stripePromise}>
