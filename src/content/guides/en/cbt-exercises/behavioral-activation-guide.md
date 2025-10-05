@@ -184,7 +184,7 @@ Stretch activities (difficult but valuable):
 - Did I do it? (Yes/partial/no)
 - Mood before: \_\_\_/10
 - Mood after: \_\_\_/10
-- What I noticed: ******\_\_\_******
+- What I noticed: **\*\***\_\_\_**\*\***
 
 **Weekly review questions:**
 

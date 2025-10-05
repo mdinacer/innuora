@@ -84,19 +84,19 @@ Use emojis to quickly log mood:
 
 ### Daily Mood Log Template
 
-**Date**: ********\_********
+**Date**: **\*\*\*\***\_**\*\*\*\***
 
 **Sleep**: Hours: **_ Quality (1-10): _**
 
 **Morning Mood (0-10)**: **\_
-**Primary Emotions**: ************\_**************
+**Primary Emotions**: \*\***\*\***\*\***\_**\*\***\*\***\*\***
 (anxiety, sadness, irritability, calm, contentment, etc.)
 
 **Afternoon Mood (0-10)**: **\_
-**Primary Emotions**: ************\_**************
+**Primary Emotions**: \*\***\*\***\*\***\_**\*\***\*\***\*\***
 
 **Evening Mood (0-10)**: **\_
-**Primary Emotions**: ************\_**************
+**Primary Emotions**: \*\***\*\***\*\***\_**\*\***\*\***\*\***
 
 **Activities Today**:
 
