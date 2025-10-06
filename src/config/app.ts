@@ -30,9 +30,12 @@ export const APP_CONFIG = {
 
   // Contact Information
   contact: {
-    support: "support@innuora.com",
-    privacy: "privacy@innuora.com",
-    business: "hello@innuora.com",
+    support: "innuora@gmail.com",
+    privacy: "innuora@gmail.com",
+    business: "innuora@gmail.com",
+    // support: "support@innuora.com",
+    // privacy: "privacy@innuora.com",
+    // business: "hello@innuora.com",
   },
 
   // Domains & URLs
@@ -153,19 +156,3 @@ export type AvatarLetter = typeof AVATAR_LETTERS;
 export type AppName = typeof APP_NAMES;
 export type EmailAddress = typeof EMAIL_ADDRESSES;
 export type SocialUrl = typeof SOCIAL_URLS;
-
-// =========================
-// Legacy Support (for gradual migration)
-// =========================
-
-/** @deprecated Use APP_CONFIG.name instead */
-export const MIRAEL_NAME = APP_CONFIG.name;
-
-/** @deprecated Use APP_CONFIG.company.legalName instead */
-export const MIRAEL_LEGAL_ENTITY = APP_CONFIG.company.legalName;
-
-/** @deprecated Use EMAIL_ADDRESSES instead */
-export const MIRAEL_EMAILS = {
-  support: APP_CONFIG.contact.support,
-  privacy: APP_CONFIG.contact.privacy,
-};

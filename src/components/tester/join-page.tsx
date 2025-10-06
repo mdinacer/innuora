@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -11,6 +12,7 @@ import { createTester } from "@/app/actions/tester-actions";
 import TextField from "@/components/input/text-field";
 import TextareaField from "@/components/input/textarea-field";
 import { Form } from "@/components/ui/form";
+import { APP_CONFIG } from "@/config/app";
 import { cn } from "@/lib/utils";
 
 const advancedTesterSchema = z.object({
@@ -24,59 +26,12 @@ const advancedTesterSchema = z.object({
 
 type AdvancedTester = z.infer<typeof advancedTesterSchema>;
 
-export type JoinPageData = {
-  hero: {
-    badge: string;
-    title: string;
-    description: string;
-  };
-  form: {
-    email: {
-      label: string;
-      placeholder: string;
-      required: string;
-    };
-    occupation: {
-      label: string;
-      placeholder: string;
-      helpText: string;
-    };
-    struggles: {
-      label: string;
-      placeholder: string;
-      helpText: string;
-    };
-    coping: {
-      label: string;
-      placeholder: string;
-      helpText: string;
-    };
-    source: {
-      label: string;
-      placeholder: string;
-      helpText: string;
-    };
-    notes: {
-      label: string;
-      placeholder: string;
-      helpText: string;
-    };
-    submitButton: string;
-    thankYouNote: string;
-  };
-  messages: {
-    success: string;
-    pending: string;
-    error: string;
-  };
-};
-
 interface Props {
   className?: string;
-  pageData: JoinPageData;
 }
 
-const JoinPage: React.FC<Props> = ({ className, pageData }) => {
+const JoinPage: React.FC<Props> = ({ className }) => {
+  const { t } = useTranslation(["pages", "common"]);
   const form = useForm<AdvancedTester>({
     resolver: zodResolver(advancedTesterSchema),
     defaultValues: {
@@ -88,13 +43,64 @@ const JoinPage: React.FC<Props> = ({ className, pageData }) => {
       notes: "",
     },
   });
+  // const {
+  //   hero,
+  //   form: formData,
+  //   messages: { success, pending, error },
+  // } = pageData;
+
+  const { isSubmitting } = form.formState;
+
   const {
     hero,
     form: formData,
     messages: { success, pending, error },
-  } = pageData;
-
-  const { isSubmitting } = form.formState;
+  } = {
+    hero: {
+      badge: t("advancedTester.hero.badge"),
+      title: t("advancedTester.hero.title", { app_name: APP_CONFIG.name }),
+      description: t("advancedTester.hero.description", { app_name: APP_CONFIG.name }),
+    },
+    form: {
+      email: {
+        label: t("advancedTester.form.email.label"),
+        placeholder: t("advancedTester.form.email.placeholder"),
+        required: t("advancedTester.form.email.required"),
+      },
+      occupation: {
+        label: t("advancedTester.form.occupation.label"),
+        placeholder: t("advancedTester.form.occupation.placeholder"),
+        helpText: t("advancedTester.form.occupation.helpText"),
+      },
+      struggles: {
+        label: t("advancedTester.form.struggles.label"),
+        placeholder: t("advancedTester.form.struggles.placeholder"),
+        helpText: t("advancedTester.form.struggles.helpText"),
+      },
+      coping: {
+        label: t("advancedTester.form.coping.label"),
+        placeholder: t("advancedTester.form.coping.placeholder"),
+        helpText: t("advancedTester.form.coping.helpText"),
+      },
+      source: {
+        label: t("advancedTester.form.source.label", { app_name: APP_CONFIG.name }),
+        placeholder: t("advancedTester.form.source.placeholder"),
+        helpText: t("advancedTester.form.source.helpText"),
+      },
+      notes: {
+        label: t("advancedTester.form.notes.label"),
+        placeholder: t("advancedTester.form.notes.placeholder", { app_name: APP_CONFIG.name }),
+        helpText: t("advancedTester.form.notes.helpText"),
+      },
+      submitButton: t("advancedTester.form.submitButton"),
+      thankYouNote: t("advancedTester.form.thankYouNote", { app_name: APP_CONFIG.name }),
+    },
+    messages: {
+      success: t("advancedTester.messages.success"),
+      pending: t("advancedTester.messages.pending"),
+      error: t("advancedTester.messages.error"),
+    },
+  };
 
   const handleOnSubmit = useCallback(
     async (data: AdvancedTester) => {
