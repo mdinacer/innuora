@@ -593,7 +593,7 @@
       "help": "Help",
       "support": "Support"
     },
-    "copyright": "© 2025 {{legal_name}}. All rights reserved."
+    "copyright": "© 2025 {{app_name}}. All rights reserved."
   },
   "sessions": {
     "title": "Your Sessions",
