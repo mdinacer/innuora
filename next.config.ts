@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/testers",
-        destination: "https://forms.gle/FFNeK8GUzFnzo6sJ9",
+        destination: "https://forms.gle/QR8KQiXuo6oT77KG7",
         permanent: false,
       },
     ];
