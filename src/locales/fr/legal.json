@@ -235,6 +235,10 @@
         "description": "À la résiliation, tous les droits qui vous sont accordés en vertu de ces Conditions cesseront immédiatement."
       }
     },
+    "securityAndDataProtection": {
+      "title": "Sécurité et protection des données",
+      "message": "Nous mettons en œuvre des mesures de sécurité adaptées pour protéger vos données. En cas de violation grave de la sécurité impliquant l’un de nos prestataires, nous nous réservons le droit de prendre des mesures exceptionnelles, y compris la suppression des données concernées, afin de préserver votre confidentialité. Les utilisateurs seront informés dans la mesure du possible."
+    },
     "intellectualProperty": {
       "title": "Propriété intellectuelle",
       "ownership": "{{app_name}}, y compris sa conception, ses fonctionnalités, ses logiciels et ses marques, est la propriété de {{app_name}}, Inc. et est protégé par les lois sur la propriété intellectuelle.",

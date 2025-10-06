@@ -56,7 +56,7 @@ export default function PrivacySettings(): React.JSX.Element {
       </Alert>
 
       {/* Data Encryption */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Lock className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">Data Encryption</h3>
@@ -93,7 +93,7 @@ export default function PrivacySettings(): React.JSX.Element {
       </div>
 
       {/* Cloud Sync & Storage */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Globe className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">Cloud Sync & Storage</h3>
@@ -117,7 +117,7 @@ export default function PrivacySettings(): React.JSX.Element {
       </div>
 
       {/* Data Management */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Clock className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">Data Retention</h3>

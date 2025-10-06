@@ -52,7 +52,7 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
 
       <div className="space-y-6">
         {/* <!-- Profile Information --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
           <div className="flex items-center gap-2 mb-6">
             <UserIcon className="size-5 text-inn-bg-accent shrink-0" />
             <h3 className="text-xl font-bold">{sections.profile.title}</h3>
@@ -81,11 +81,11 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
 
         <UserProfileForm
           userProfile={user.profile!}
-          className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle"
+          className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10"
         />
 
         {/* <!-- Email Information --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
           <div className="flex items-center gap-2 mb-4">
             <CalendarIcon className="size-5 text-inn-bg-accent shrink-0" />
 
@@ -104,7 +104,7 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
         </div>
 
         {/* <!-- Account Information --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
           <div className="flex items-center gap-2 mb-4">
             <ShieldIcon className="size-5 text-inn-bg-accent shrink-0" />
 

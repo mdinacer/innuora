@@ -148,7 +148,7 @@ export default function AppearanceSettings(): React.JSX.Element {
   return (
     <div className="space-y-6">
       {/* UI Language */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <LanguagesIcon className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">{sections.language.title}</h3>
@@ -161,7 +161,7 @@ export default function AppearanceSettings(): React.JSX.Element {
               key={key}
               onClick={() => setLocale(key as AppLocales)}
               className={cn(
-                "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                "rounded-xl border-2 p-4 transition-all hover:shadow-[0_4px_20px] shadow-inn-bg-accent/15",
                 language === key
                   ? "border-inn-bg-accent bg-inn-bg-soft"
                   : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
@@ -182,7 +182,7 @@ export default function AppearanceSettings(): React.JSX.Element {
       </div>
 
       {/* Theme Mode */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Monitor className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">{sections.theme.title}</h3>
@@ -197,7 +197,7 @@ export default function AppearanceSettings(): React.JSX.Element {
                 key={key}
                 onClick={() => setThemeMode(key as ThemeMode)}
                 className={cn(
-                  "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                  "rounded-xl border-2 p-4 transition-all hover:shadow-[0_4px_20px] shadow-inn-bg-accent/15",
                   themeMode === key
                     ? "border-inn-bg-accent bg-inn-bg-soft"
                     : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
@@ -220,7 +220,7 @@ export default function AppearanceSettings(): React.JSX.Element {
       </div>
 
       {/* Font Size */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Type className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">{sections.fontSize.title}</h3>
@@ -233,7 +233,7 @@ export default function AppearanceSettings(): React.JSX.Element {
               key={id}
               onClick={() => setFontSize(id as FontSize)}
               className={cn(
-                "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                "rounded-xl border-2 p-4 transition-all hover:shadow-[0_4px_20px] shadow-inn-bg-accent/15",
                 fontSize === id
                   ? "border-inn-bg-accent bg-inn-bg-soft"
                   : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"

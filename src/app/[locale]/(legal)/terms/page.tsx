@@ -214,7 +214,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
     },
   };
   return (
-    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
+    <main className="relative font-sans rtl:font-arabic-body rtl:text-lg min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h1 className="text-4xl rtl:font-arabic md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
@@ -230,7 +230,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
         <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
           <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.intro.headline}</h2>
           <p className="mb-4 opacity-90">{content.intro.message}</p>
-          <p className="text-sm opacity-80">{content.intro.note}</p>
+          <p className="text-sm rtl:text-base opacity-80">{content.intro.note}</p>
         </div>
       </section>
 
@@ -241,19 +241,25 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
           <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4 rtl:font-arabic">{content.contact.title}</h2>
             <div className="space-y-2 text-muted-foreground">
-              <p className="space-x-2 rtl:space-x-reverse">
+              <p className="flex items-center gap-x-2">
                 <strong className="text-inn-text-primary">{content.contact.entity}</strong>
-                <span>{APP_CONFIG.company.legalName}</span>
+                <span className="font-sans">{APP_CONFIG.company.legalName}</span>
               </p>
-              <p className="space-x-2 rtl:space-x-reverse">
+              <p className="flex items-center gap-x-2">
                 <strong className="text-inn-text-primary">{content.contact.support}</strong>
-                <Link href={`mailto:${APP_CONFIG.contact.support}`} className="text-inn-bg-accent hover:underline">
+                <Link
+                  href={`mailto:${APP_CONFIG.contact.support}`}
+                  className="text-inn-bg-accent hover:underline font-sans"
+                >
                   {APP_CONFIG.contact.support}
                 </Link>
               </p>
-              <p className="space-x-2 rtl:space-x-reverse">
+              <p className="flex items-center gap-x-2">
                 <strong className="text-inn-text-primary">{content.contact.privacy}</strong>
-                <Link href={`mailto:${APP_CONFIG.contact.privacy}`} className="text-inn-bg-accent hover:underline">
+                <Link
+                  href={`mailto:${APP_CONFIG.contact.privacy}`}
+                  className="text-inn-bg-accent hover:underline font-sans"
+                >
                   {APP_CONFIG.contact.privacy}
                 </Link>
               </p>
@@ -266,7 +272,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
           <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.eligibility.title}</h2>
             <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15 mb-4">
-              <p className="text-sm font-semibold text-inn-text-primary space-x-2 rtl:space-x-reverse">
+              <p className="text-sm rtl:text-base font-semibold text-inn-text-primary space-x-2 rtl:space-x-reverse">
                 <span>{content.eligibility.ageRequirement}</span> {APP_CONFIG.legal.ageRequirement}
               </p>
             </div>
@@ -336,7 +342,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             <h2 className="text-2xl font-bold mb-3">{content.natureOfService.title}</h2>
             <p className="mb-4 opacity-90">{content.natureOfService.message}</p>
             <div className="p-4 rounded-xl bg-[rgba(255,255,255,0.1)] mt-4">
-              <p className="text-sm opacity-90">{content.natureOfService.disclaimer} </p>
+              <p className="text-sm rtl:text-base opacity-90">{content.natureOfService.disclaimer} </p>
             </div>
           </div>
         </section>
@@ -377,7 +383,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
                 <p key={index}>{item}</p>
               ))}
               <div className="p-3 rounded-lg bg-inn-bg-input">
-                <p className="text-sm">{content.fees.refundPolicy}</p>
+                <p className="text-sm rtl:text-base">{content.fees.refundPolicy}</p>
               </div>
             </div>
           </div>
@@ -397,7 +403,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             </div>
           </div>
           <div className="mt-4 p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm rtl:text-base text-muted-foreground">
               <strong>{content.termination.effect.label}</strong> {content.termination.effect.description}
             </p>
           </div>
@@ -415,7 +421,9 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
           <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.intellectualProperty.title}</h2>
             <p className="text-muted-foreground mb-3">{content.intellectualProperty.ownership}</p>
-            <p className="text-sm text-muted-foreground italic">{content.intellectualProperty.branding} </p>
+            <p className="text-sm rtl:text-base text-muted-foreground italic">
+              {content.intellectualProperty.branding}{" "}
+            </p>
           </div>
         </section>
 
@@ -443,7 +451,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
             <h2 className="text-2xl font-bold mb-4">{content.liability.title}</h2>
             <p className="text-muted-foreground mb-3">{content.liability.message}</p>
             <div className="p-4 rounded-xl bg-inn-bg-input">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm rtl:text-base text-muted-foreground">
                 <strong>{content.liability.cap.label}</strong> {content.liability.cap.message}
               </p>
             </div>
@@ -478,13 +486,17 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
               <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">
                 {content.additionalTerms.thirdPartyServices.title}
               </h3>
-              <p className="text-sm text-muted-foreground">{content.additionalTerms.thirdPartyServices.description}</p>
+              <p className="text-sm rtl:text-base text-muted-foreground">
+                {content.additionalTerms.thirdPartyServices.description}
+              </p>
             </div>
             <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
               <h3 className="rtl:font-arabic  text-lg font-semibold mb-2">
                 {content.additionalTerms.exportControls.title}
               </h3>
-              <p className="text-sm text-muted-foreground">{content.additionalTerms.exportControls.description}</p>
+              <p className="text-sm rtl:text-base text-muted-foreground">
+                {content.additionalTerms.exportControls.description}
+              </p>
             </div>
           </div>
         </section>
@@ -494,7 +506,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
           <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-black/5">
             <h2 className="text-2xl font-bold mb-4">{content.changes.title}</h2>
             <p className="text-muted-foreground mb-3">{content.changes.message}</p>
-            <p className="text-sm text-muted-foreground italic">{content.changes.note} </p>
+            <p className="text-sm rtl:text-base text-muted-foreground italic">{content.changes.note} </p>
           </div>
         </section>
 

@@ -67,7 +67,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
       <button
         type="button"
         onClick={onPurchase}
-        className="w-full rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:translate-y-[-2px] transition shadow-floating"
+        className="w-full rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:translate-y-[-2px] transition shadow-[0_8px_30px] shadow-inn-bg-accent/25"
       >
         Purchase
       </button>

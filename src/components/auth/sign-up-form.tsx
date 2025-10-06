@@ -147,7 +147,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
 
       {formError && (
         <div className="mb-6 ">
-          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 shadow-subtle">
+          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
             <div className="flex items-center gap-3">
               <XCircleIcon className="size-5 text-red-600 shrink-0 " />
               <div>
@@ -161,7 +161,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
       )}
 
       {/* <!-- Sign Up Form --> */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-card">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_4px_20px] shadow-inn-bg-accent/15">
         <p>{errorText}</p>
 
         <Form {...form}>
