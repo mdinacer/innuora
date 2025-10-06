@@ -24,7 +24,7 @@ export default async function Footer({ locale = "en", showDisclaimer = true }: P
       support: t("policies_footer.links.support"),
       eula: t("policies_footer.links.eula"),
     },
-    copyright: t("policies_footer.copyright", { legal_name: APP_CONFIG.company.legalName }),
+    copyright: t("policies_footer.copyright", { app_name: APP_CONFIG.company.legalName }),
   };
   return (
     <footer className="relative border-t border-inn-border-light">
