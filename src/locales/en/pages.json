@@ -1,4 +1,62 @@
 {
+  "account": {
+    "title": "Account Management",
+    "subtitle": "Manage your personal information and therapeutic profile.",
+    "description": "Your profile helps {{app_name}} provide personalized support. Update it anytime your situation changes.",
+    "placeholders": {
+      "noDisplayName": "User"
+    },
+    "sections": {
+      "profile": {
+        "title": "Profile Information",
+        "memberSince": "Member since {{date}}"
+      },
+      "email": {
+        "title": "Email Address",
+        "immutableNotice": "Email cannot be changed directly. Contact support if needed.",
+        "verified": "Verified"
+      },
+      "account": {
+        "title": "Account Information",
+        "typeLabel": "Account Type",
+        "typeDescription": "Your current account type",
+        "statusLabel": "Account Status",
+        "statusDescription": "Your account is active and verified"
+      }
+    },
+    "fields": {
+      "displayName": {
+        "label": "Display Name"
+      },
+      "ageGroup": {
+        "title": "Age Group"
+      },
+      "identityConnection": {
+        "title": "Identity Connection"
+      },
+      "socialPressure": {
+        "title": "Social Pressure",
+        "helperText": "Select up to 4"
+      },
+      "emotionalConcerns": {
+        "title": "Emotional Concerns",
+        "helperText": "Select up to 4"
+      },
+      "copingMechanism": {
+        "title": "Coping Mechanism"
+      },
+      "emotionalAspirations": {
+        "title": "Emotional Aspirations",
+        "helperText": "Select up to 3"
+      }
+    },
+    "actions": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "edit": "Edit Profile"
+    }
+  },
   "advancedTester": {
     "hero": {
       "badge": "Advanced Testing",
@@ -592,64 +650,6 @@
         },
         "cancel": "Cancel"
       }
-    }
-  },
-  "account": {
-    "title": "Account Management",
-    "subtitle": "Manage your personal information and therapeutic profile.",
-    "description": "Your profile helps {{app_name}} provide personalized support. Update it anytime your situation changes.",
-    "placeholders": {
-      "noDisplayName": "User"
-    },
-    "sections": {
-      "profile": {
-        "title": "Profile Information",
-        "memberSince": "Member since {{date}}"
-      },
-      "email": {
-        "title": "Email Address",
-        "immutableNotice": "Email cannot be changed directly. Contact support if needed.",
-        "verified": "Verified"
-      },
-      "account": {
-        "title": "Account Information",
-        "typeLabel": "Account Type",
-        "typeDescription": "Your current account type",
-        "statusLabel": "Account Status",
-        "statusDescription": "Your account is active and verified"
-      }
-    },
-    "fields": {
-      "displayName": {
-        "label": "Display Name"
-      },
-      "ageGroup": {
-        "title": "Age Group"
-      },
-      "identityConnection": {
-        "title": "Identity Connection"
-      },
-      "socialPressure": {
-        "title": "Social Pressure",
-        "helperText": "Select up to 4"
-      },
-      "emotionalConcerns": {
-        "title": "Emotional Concerns",
-        "helperText": "Select up to 4"
-      },
-      "copingMechanism": {
-        "title": "Coping Mechanism"
-      },
-      "emotionalAspirations": {
-        "title": "Emotional Aspirations",
-        "helperText": "Select up to 3"
-      }
-    },
-    "actions": {
-      "save": "Save Changes",
-      "saving": "Saving...",
-      "cancel": "Cancel",
-      "edit": "Edit Profile"
     }
   },
   "settings": {

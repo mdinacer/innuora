@@ -1,9 +1,43 @@
 {
   "advancedTester": {
     "hero": {
-      "badge": "Programme de Test Exclusif",
-      "title": "Aidez à façonner l'avenir de {{app_name}}",
-      "description": "Rejoignez notre programme de test avancé et partagez vos expériences et besoins pour nous aider à ajuster {{app_name}} afin qu’il vous voie, vous entende et vous comprenne pleinement. Vos retours influenceront directement la façon dont nous développons cet outil de soutien émotionnel."
+      "badge": "Tests avancés",
+      "title": "Contribuez à l’avenir de {{app_name}}",
+      "description": "Rejoignez notre programme de test avancé et partagez vos retours pendant que nous affinons les conversations réflexives de l’IA de {{app_name}}. Vos observations auront un impact direct sur la manière dont nous développons cet outil de soutien émotionnel."
+    },
+    "form": {
+      "email": {
+        "label": "Adresse e-mail",
+        "placeholder": "vous@example.com",
+        "required": "L’adresse e-mail est requise"
+      },
+      "occupation": {
+        "label": "Profession / Rôle",
+        "placeholder": "ex. : Ingénieur logiciel, Enseignant, Étudiant, etc.",
+        "helpText": "Nous aide à comprendre différents profils d’utilisateurs et leurs besoins."
+      },
+      "struggles": {
+        "label": "Difficultés générales / Défis émotionnels",
+        "placeholder": "Quelles situations ou difficultés émotionnelles souhaitez-vous explorer ? (ex. : stress professionnel, préoccupations relationnelles, prises de décision, etc.)",
+        "helpText": "Partagez les sujets sur lesquels vous aimeriez réfléchir ou obtenir un accompagnement. Cela nous aide à mieux cerner vos besoins."
+      },
+      "coping": {
+        "label": "Mécanismes d’adaptation / Gestion du stress",
+        "placeholder": "Comment gérez-vous actuellement le stress ou les émotions difficiles ? (ex. : écriture, sport, échanges avec des proches, méditation, etc.)",
+        "helpText": "Comprendre vos stratégies actuelles nous aide à concevoir des outils complémentaires plus adaptés."
+      },
+      "source": {
+        "label": "Comment avez-vous découvert {{app_name}} ?",
+        "placeholder": "ex. : Twitter, recommandation d’un ami, article de blog, etc.",
+        "helpText": "Nous aide à identifier les canaux de communication les plus efficaces."
+      },
+      "notes": {
+        "label": "Commentaires ou remarques supplémentaires",
+        "placeholder": "Souhaitez-vous ajouter quelque chose concernant votre intérêt pour {{app_name}} ou vos attentes vis-à-vis des outils d’IA émotionnelle ?",
+        "helpText": "Partagez toute autre idée, question ou domaine que vous aimeriez explorer durant la phase de test."
+      },
+      "submitButton": "Envoyer la candidature",
+      "thankYouNote": "Merci pour votre intérêt à contribuer à {{app_name}}. Nous examinerons les candidatures et contacterons les participants sélectionnés au fur et à mesure du déploiement du programme. Rappel : {{app_name}} n’est ni une thérapie ni un service d’urgence."
     },
     "messages": {
       "success": "Candidature envoyée",
