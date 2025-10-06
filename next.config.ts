@@ -8,6 +8,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/testers",
+        destination: "https://forms.gle/FFNeK8GUzFnzo6sJ9",
+        permanent: false,
+      },
+    ];
+  },
   /* config options here */
   reactStrictMode: true,
 
