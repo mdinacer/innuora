@@ -1,36 +1,97 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Prisma } from "@prisma/client";
 import { LanguagesIcon, Monitor, Moon, Sun, Type } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-import { updateAppearanceSettings } from "@/app/actions/user-config-actions";
+import { updateUserConfig } from "@/app/actions/user-config-actions";
 import { Button } from "@/components/ui/button";
+import { APP_CONFIG } from "@/config/app";
+import { AppLocales } from "@/lib/i18n";
+import i18nConfig from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
+import { useAppUserStore } from "@/stores/app-user.store";
 
 type ThemeMode = "light" | "dark" | "system";
 type FontSize = "small" | "medium" | "large";
 
+const THEME_ICONS = {
+  light: Sun,
+  dark: Moon,
+  system: Monitor,
+};
+
 export default function AppearanceSettings(): React.JSX.Element {
   const {
+    t,
     i18n: { language },
-  } = useTranslation();
-  const { theme, setTheme } = useTheme();
-  const [themeMode, setThemeMode] = useState<ThemeMode>((theme as ThemeMode | undefined) || "system");
-  const [fontSize, setFontSize] = useState<FontSize>("medium");
+  } = useTranslation("common");
+  const hasHydrated = useAppUserStore((state) => state.hasHydrated);
+  const userConfig = useAppUserStore((state) => state.user?.config);
+  const { setTheme } = useTheme();
+  const [themeMode, setThemeMode] = useState<ThemeMode | undefined>(undefined);
+  const [fontSize, setFontSize] = useState<FontSize | undefined>(undefined);
+  const [locale, setLocale] = useState<AppLocales | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const currentPathname = usePathname();
+
+  const isInitialRunRef = useRef(true);
+
+  const handleChangeLocale = useCallback(
+    (newLocale: AppLocales) => {
+      // set cookie for next-i18n-router
+      setIsLoading(true);
+      const days = 30;
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      const expires = date.toUTCString();
+      document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/`;
+
+      // redirect to the new locale path
+      if (language === i18nConfig.defaultLocale && !i18nConfig.prefixDefault) {
+        router.push("/" + newLocale + currentPathname);
+      } else {
+        router.push(currentPathname.replace(`/${language}`, `/${newLocale}`));
+      }
+
+      router.refresh();
+    },
+    [language, currentPathname, router]
+  );
 
   const saveSettings = async () => {
+    if (!themeMode || !fontSize) return;
     setIsLoading(true);
     try {
-      await updateAppearanceSettings({
-        theme: themeMode,
-        fontSize: fontSize,
-      });
+      const updateData: Prisma.UserConfigCreateWithoutUserInput = {
+        ...(themeMode ? { theme: themeMode } : {}),
+        ...(fontSize ? { fontSize: fontSize } : {}),
+        ...(locale ? { locale: locale } : {}),
+      };
+
+      if (Object.keys(updateData).length === 0) {
+        return;
+      }
+
+      const { data, error } = await updateUserConfig(updateData);
+
+      if (data && !error) {
+        useAppUserStore.getState().updateUserConfig((config) => ({
+          ...config,
+          ...data,
+        }));
+      }
 
       setTheme(themeMode);
+      if (locale && locale !== language) {
+        handleChangeLocale(locale);
+      }
+
       toast.success("Appearance settings saved!");
     } catch {
       toast.error("Failed to save settings. Please try again.");
@@ -39,23 +100,50 @@ export default function AppearanceSettings(): React.JSX.Element {
     }
   };
 
-  const themeOptions = [
-    { id: "light", label: "Light", icon: <Sun className="h-4 w-4" />, description: "Light theme" },
-    { id: "dark", label: "Dark", icon: <Moon className="h-4 w-4" />, description: "Dark theme" },
-    { id: "system", label: "System", icon: <Monitor className="h-4 w-4" />, description: "Match system" },
-  ];
+  const actions = {
+    save: t("pages:settings.appearance.actions.save"),
+    saving: t("pages:settings.appearance.actions.saving"),
+    cancel: t("pages:settings.appearance.actions.cancel"),
+  };
 
-  const fontSizeOptions = [
-    { id: "small", label: "Small", example: "14px" },
-    { id: "medium", label: "Medium", example: "16px" },
-    { id: "large", label: "Large", example: "18px" },
-  ];
+  const sections = (t("pages:settings.appearance.sections", {
+    returnObjects: true,
+    defaultValue: "",
+    app_name: APP_CONFIG.name,
+  }) || {}) as Record<"fontSize" | "theme" | "language", { title: string; description: string; status: string }>;
 
-  const languageOptions = [
-    { id: "ar", label: "العربية", native: "Arabic" },
-    { id: "en", label: "English", native: "English" },
-    { id: "fr", label: "Français", native: "French" },
-  ];
+  const { themeOptions, fontSizeOptions, languageOptions } = {
+    themeOptions: (t("lists.theme", { returnObjects: true, defaultValue: "" }) || {}) as Record<
+      ThemeMode,
+      { label: string; description: string }
+    >,
+    fontSizeOptions: (t("lists.fontSize", { returnObjects: true, defaultValue: "" }) || {}) as Record<
+      FontSize,
+      { label: string; value: string }
+    >,
+    languageOptions: (t("lists.languages", { returnObjects: true, defaultValue: "" }) || {}) as Record<
+      AppLocales,
+      { label: string; native: string }
+    >,
+  };
+
+  useEffect(() => {
+    if (!isInitialRunRef.current) return;
+    if (hasHydrated && !!userConfig) {
+      setThemeMode(userConfig.theme as ThemeMode);
+      setFontSize(userConfig.fontSize as FontSize);
+      setLocale(language as AppLocales);
+      isInitialRunRef.current = false;
+    }
+  }, [hasHydrated, language, userConfig]);
+
+  if (!hasHydrated) {
+    return <div>Loading</div>;
+  }
+
+  if (!userConfig) {
+    return <></>;
+  }
 
   return (
     <div className="space-y-6">
@@ -63,17 +151,18 @@ export default function AppearanceSettings(): React.JSX.Element {
       <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
           <LanguagesIcon className="h-5 w-5 text-inn-bg-accent" />
-          <h3 className="text-xl font-semibold">Language</h3>
+          <h3 className="text-xl font-semibold">{sections.language.title}</h3>
         </div>
-        <p className="text-sm text-inn-text-secondary mb-6">Choose the language Innuora uses throughout the app.</p>
+        <p className="text-sm text-inn-text-secondary mb-6">{sections.language.description}</p>
 
         <div className="grid grid-cols-3 gap-4">
-          {languageOptions.map((option) => (
+          {Object.entries(languageOptions).map(([key, option]) => (
             <button
-              key={option.id}
+              key={key}
+              onClick={() => setLocale(key as AppLocales)}
               className={cn(
                 "rounded-xl border-2 p-4 transition-all hover:shadow-card",
-                language === option.id
+                language === key
                   ? "border-inn-bg-accent bg-inn-bg-soft"
                   : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
               )}
@@ -81,9 +170,9 @@ export default function AppearanceSettings(): React.JSX.Element {
               <div className="text-center">
                 <div className="font-semibold mb-1">{option.label}</div>
                 <div className="text-xs text-inn-text-secondary">{option.native}</div>
-                {language === option.id && (
+                {locale === key && (
                   <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
-                    Current
+                    {sections.language.status}
                   </div>
                 )}
               </div>
@@ -96,36 +185,37 @@ export default function AppearanceSettings(): React.JSX.Element {
       <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
           <Monitor className="h-5 w-5 text-inn-bg-accent" />
-          <h3 className="text-xl font-semibold">Theme</h3>
+          <h3 className="text-xl font-semibold">{sections.theme.title}</h3>
         </div>
-        <p className="text-sm text-inn-text-secondary mb-6">
-          Choose how Innuora looks and feels across all your devices.
-        </p>
+        <p className="text-sm text-inn-text-secondary mb-6">{sections.theme.description}</p>
 
         <div className="grid grid-cols-3 gap-4">
-          {themeOptions.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => setThemeMode(option.id as ThemeMode)}
-              className={cn(
-                "rounded-xl border-2 p-4 transition-all hover:shadow-card",
-                themeMode === option.id
-                  ? "border-inn-bg-accent bg-inn-bg-soft"
-                  : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
-              )}
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                {option.icon}
-                <span className="font-semibold">{option.label}</span>
-              </div>
-              <p className="text-xs text-inn-text-secondary text-center">{option.description}</p>
-              {themeMode === option.id && (
-                <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
-                  Active
+          {Object.entries(themeOptions).map(([key, option]) => {
+            const Icon = THEME_ICONS[key as ThemeMode];
+            return (
+              <button
+                key={key}
+                onClick={() => setThemeMode(key as ThemeMode)}
+                className={cn(
+                  "rounded-xl border-2 p-4 transition-all hover:shadow-card",
+                  themeMode === key
+                    ? "border-inn-bg-accent bg-inn-bg-soft"
+                    : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
+                )}
+              >
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Icon className="size-4 shrink-0" />
+                  <span className="font-semibold">{option.label}</span>
                 </div>
-              )}
-            </button>
-          ))}
+                <p className="text-xs text-inn-text-secondary text-center">{option.description}</p>
+                {themeMode === key && (
+                  <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
+                    {sections.theme.status}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -133,30 +223,30 @@ export default function AppearanceSettings(): React.JSX.Element {
       <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
         <div className="flex items-center gap-2 mb-4">
           <Type className="h-5 w-5 text-inn-bg-accent" />
-          <h3 className="text-xl font-semibold">Font Size</h3>
+          <h3 className="text-xl font-semibold">{sections.fontSize.title}</h3>
         </div>
-        <p className="text-sm text-inn-text-secondary mb-6">Adjust text size for better readability.</p>
+        <p className="text-sm text-inn-text-secondary mb-6">{sections.fontSize.description}</p>
 
         <div className="grid grid-cols-3 gap-4">
-          {fontSizeOptions.map((option) => (
+          {Object.entries(fontSizeOptions).map(([id, option]) => (
             <button
-              key={option.id}
-              onClick={() => setFontSize(option.id as FontSize)}
+              key={id}
+              onClick={() => setFontSize(id as FontSize)}
               className={cn(
                 "rounded-xl border-2 p-4 transition-all hover:shadow-card",
-                fontSize === option.id
+                fontSize === id
                   ? "border-inn-bg-accent bg-inn-bg-soft"
                   : "border-inn-border-light bg-inn-bg-card hover:border-inn-bg-accent/50"
               )}
             >
               <div className="text-center">
                 <div className="font-semibold mb-2">{option.label}</div>
-                <div className="text-inn-text-secondary" style={{ fontSize: option.example }}>
+                <div className="text-inn-text-secondary min-h-7" style={{ fontSize: option.value }}>
                   Aa
                 </div>
-                {fontSize === option.id && (
+                {fontSize === id && (
                   <div className="mt-2 inline-block rounded-full bg-inn-bg-accent px-3 py-1 text-xs font-medium text-white">
-                    Active
+                    {sections.fontSize.status}
                   </div>
                 )}
               </div>
@@ -172,7 +262,7 @@ export default function AppearanceSettings(): React.JSX.Element {
           disabled={isLoading}
           className="rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:opacity-90 transition shadow-lg"
         >
-          {isLoading ? "Saving..." : "Save Appearance Settings"}
+          {isLoading ? actions.saving : actions.save}
         </Button>
       </div>
     </div>

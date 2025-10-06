@@ -1,3 +1,4 @@
+import { Profile, UserConfig } from "@prisma/client";
 import { User as AuthUser } from "@supabase/supabase-js";
 import localforage from "localforage";
 import { create } from "zustand";
@@ -21,6 +22,8 @@ export interface AppUserStoreState extends PersistedStoreBaseProps {
 
   // Updaters
   updateUser: (update: Partial<UserWithRelations> | ((user: UserWithRelations) => UserWithRelations)) => void;
+  updateUserProfile: (update: Partial<Profile> | ((user: Profile) => Profile)) => void;
+  updateUserConfig: (update: Partial<UserConfig> | ((user: UserConfig) => UserConfig)) => void;
   updateAuthUser: (update: Partial<AuthUserData> | ((data: AuthUserData) => AuthUserData)) => void;
 
   // Credits management
@@ -61,6 +64,20 @@ export const useAppUserStore = create<AppUserStoreState>()(
         if (!current) return;
         const newUser = typeof update === "function" ? update(current) : { ...current, ...update };
         set({ user: newUser });
+      },
+      updateUserProfile: (update) => {
+        const current = get().user;
+        const currentProfile = get().user?.profile;
+        if (!current || !currentProfile) return;
+        const newProfile = typeof update === "function" ? update(currentProfile) : { ...currentProfile, ...update };
+        set({ user: { ...current, profile: newProfile } });
+      },
+      updateUserConfig: (update) => {
+        const current = get().user;
+        const currentConfig = current?.config;
+        if (!current || !currentConfig) return;
+        const newConfig = typeof update === "function" ? update(currentConfig) : { ...currentConfig, ...update };
+        set({ user: { ...current, config: newConfig } });
       },
       updateAuthUser: (update) => {
         const current = get().authUser;

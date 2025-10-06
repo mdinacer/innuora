@@ -16,6 +16,290 @@
     "fr": "الفرنسية",
     "ar": "العربية"
   },
+  "lists": {
+    "fontSize": {
+      "small": {
+        "label": "صغير",
+        "value": "14px"
+      },
+      "medium": {
+        "label": "متوسط",
+        "value": "16px"
+      },
+      "large": {
+        "label": "كبير",
+        "value": "18px"
+      }
+    },
+    "theme": {
+      "light": {
+        "label": "فاتح",
+        "description": "المظهر الفاتح"
+      },
+      "dark": {
+        "label": "داكن",
+        "description": "المظهر الداكن"
+      },
+      "system": {
+        "label": "النظام",
+        "description": "مطابق لإعدادات النظام"
+      }
+    },
+    "languages": {
+      "ar": {
+        "label": "العربية",
+        "native": "Arabic"
+      },
+      "en": {
+        "label": "الإنجليزية",
+        "native": "English"
+      },
+      "fr": {
+        "label": "الفرنسية",
+        "native": "French"
+      }
+    },
+    "age-group": {
+      "enum": {
+        "Age18_24": "18-24",
+        "Age25_34": "25-34",
+        "Age35_44": "35-44",
+        "Age45_54": "45-54",
+        "Age55_plus": "55+"
+      },
+      "list": [
+        {
+          "label": "18-24",
+          "value": "Age18_24",
+          "description": "مرحلة البدايات والنمو"
+        },
+        {
+          "label": "25-34",
+          "value": "Age25_34",
+          "description": "سن النضج والتطور المهني والشخصي"
+        },
+        {
+          "label": "35-44",
+          "value": "Age35_44",
+          "description": "مرحلة التوازن والعمق"
+        },
+        {
+          "label": "45-54",
+          "value": "Age45_54",
+          "description": "فترة الخبرة وإعادة التقييم"
+        },
+        {
+          "label": "55+",
+          "value": "Age55_plus",
+          "description": "مرحلة النضج والسلام الداخلي"
+        }
+      ]
+    },
+    "identity_connection": {
+      "enum": {
+        "authentic": "أشعر أنني نفسي",
+        "conflicted": "بين حالتين",
+        "disconnected": "أشعر بالابتعاد",
+        "lost": "أشعر بالضياع"
+      },
+      "list": [
+        {
+          "label": "أشعر أنني نفسي",
+          "value": "authentic",
+          "description": "حاضرة، حقيقية، على طبيعتي."
+        },
+        {
+          "label": "بين حالتين",
+          "value": "conflicted",
+          "description": "أحيانًا أنا، وأحيانًا أتصرف كما يُتوقع."
+        },
+        {
+          "label": "أشعر بالابتعاد",
+          "value": "disconnected",
+          "description": "ظاهريًا بخير، لكنني بعيدة عن نفسي."
+        },
+        {
+          "label": "أشعر بالضياع",
+          "value": "lost",
+          "description": "يصعب التعرف على نفسي أحيانًا."
+        }
+      ]
+    },
+    "social_pressure": {
+      "enum": {
+        "family": "العائلة",
+        "friends": "الأصدقاء أو الزملاء",
+        "work_or_school": "العمل أو الدراسة",
+        "romantic": "العلاقات العاطفية",
+        "cultural_or_religious": "البيئة الدينية أو الثقافية",
+        "self": "نفسي"
+      },
+      "list": [
+        {
+          "label": "العائلة",
+          "value": "family",
+          "description": "المحافظة على الانسجام مهما كانت التكلفة."
+        },
+        {
+          "label": "الأصدقاء أو الزملاء",
+          "value": "friends",
+          "description": "التصرف بلُطف حتى لو لم يكن ذلك صادقًا."
+        },
+        {
+          "label": "العمل أو الدراسة",
+          "value": "work_or_school",
+          "description": "دائمًا أؤدي وأُنجز، مهما كنت متعبة."
+        },
+        {
+          "label": "العلاقات العاطفية",
+          "value": "romantic",
+          "description": "الظهور بمظهر المثالية أو قليلة الحاجة."
+        },
+        {
+          "label": "البيئة الدينية أو الثقافية",
+          "value": "cultural_or_religious",
+          "description": "إخفاء أجزاء من نفسي لتلبية التوقعات."
+        },
+        {
+          "label": "نفسي",
+          "value": "self",
+          "description": "أضع لنفسي معايير قاسية ولا أشعر أني كافية."
+        }
+      ]
+    },
+    "emotional_concerns": {
+      "enum": {
+        "anxiety": "القلق أو التوتر",
+        "self_worth": "تدني تقدير الذات",
+        "overthinking": "الإفراط في التفكير",
+        "loneliness": "الوحدة",
+        "burnout": "الإنهاك النفسي",
+        "mood_swings": "تقلّب المزاج",
+        "identity_crisis": "ارتباك الهوية",
+        "self_harm": "إيذاء النفس"
+      },
+      "list": [
+        {
+          "label": "القلق أو التوتر",
+          "value": "anxiety",
+          "description": "توتر دائم أو شعور بعدم الارتياح."
+        },
+        {
+          "label": "تدني تقدير الذات",
+          "value": "self_worth",
+          "description": "إحساس دائم بعدم الكفاية."
+        },
+        {
+          "label": "الإفراط في التفكير",
+          "value": "overthinking",
+          "description": "دوائر من الشك وإعادة التحليل."
+        },
+        {
+          "label": "الوحدة",
+          "value": "loneliness",
+          "description": "أشعر أن لا أحد يراني بعمق."
+        },
+        {
+          "label": "الإنهاك النفسي",
+          "value": "burnout",
+          "description": "أستمر بالعمل رغم التعب الداخلي."
+        },
+        {
+          "label": "تقلّب المزاج",
+          "value": "mood_swings",
+          "description": "مشاعري تتغير بسرعة كبيرة."
+        },
+        {
+          "label": "ارتباك الهوية",
+          "value": "identity_crisis",
+          "description": "أجهل من أكون خارج أدواري."
+        },
+        {
+          "label": "أخرى / لست متأكدة",
+          "value": "other",
+          "description": "من الطبيعي ألا أجد ما يصفني تمامًا."
+        }
+      ]
+    },
+    "coping_mechanism": {
+      "enum": {
+        "shutdown": "أنغلق عاطفيًا",
+        "self_critical": "أنتقد نفسي",
+        "push_through": "أكمل رغم الإرهاق",
+        "overwhelmed": "أتفاعل بشكل مفرط"
+      },
+      "list": [
+        {
+          "label": "أنغلق عاطفيًا",
+          "value": "shutdown",
+          "description": "أتبلد أو أنفصل لحماية نفسي."
+        },
+        {
+          "label": "أنتقد نفسي",
+          "value": "self_critical",
+          "description": "ألوم نفسي وأشعر أن عليّ أن أكون أقوى."
+        },
+        {
+          "label": "أكمل رغم الإرهاق",
+          "value": "push_through",
+          "description": "أستمر بابتسامة وأتجاهل احتياجاتي."
+        },
+        {
+          "label": "أتفاعل بشكل مفرط",
+          "value": "overwhelmed",
+          "description": "مشاعري تتصاعد بسرعة ويصعب تهدئتها."
+        }
+      ]
+    },
+    "emotional_aspirations": {
+      "enum": {
+        "clarity": "الوضوح",
+        "calm": "الهدوء",
+        "confidence": "الثقة بالنفس",
+        "self_compassion": "الرحمة الذاتية",
+        "connection": "الاتصال",
+        "direction": "الاتجاه أو المعنى",
+        "other": "أخرى"
+      },
+      "list": [
+        {
+          "label": "الوضوح",
+          "value": "clarity",
+          "description": "أن أفهم ما أشعر به بوضوح."
+        },
+        {
+          "label": "الهدوء",
+          "value": "calm",
+          "description": "أن أشعر بسلام وأقل توترًا."
+        },
+        {
+          "label": "الثقة بالنفس",
+          "value": "confidence",
+          "description": "أن أصدق نفسي واختياراتي."
+        },
+        {
+          "label": "الرحمة الذاتية",
+          "value": "self_compassion",
+          "description": "أن أتعامل مع نفسي بلطف بدل القسوة."
+        },
+        {
+          "label": "الاتصال",
+          "value": "connection",
+          "description": "أن أشعر أنني مرئية ومفهومة ومُحتواة."
+        },
+        {
+          "label": "الاتجاه أو المعنى",
+          "value": "direction",
+          "description": "أن أتحرك نحو ما يهمني حقًا."
+        },
+        {
+          "label": "لست متأكدة",
+          "value": "not_sure",
+          "description": "ما زلت أكتشف ما أحتاجه."
+        }
+      ]
+    }
+  },
   "select_multiple": "اختاري ما ينطبق عليك",
   "select_single": "اختاري خيارًا واحدًا",
   "sessionWithCount_few": "{{count}} جلسات",

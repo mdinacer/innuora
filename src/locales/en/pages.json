@@ -594,14 +594,102 @@
       }
     }
   },
+  "account": {
+    "title": "Account Management",
+    "subtitle": "Manage your personal information and therapeutic profile.",
+    "description": "Your profile helps {{app_name}} provide personalized support. Update it anytime your situation changes.",
+    "placeholders": {
+      "noDisplayName": "User"
+    },
+    "sections": {
+      "profile": {
+        "title": "Profile Information",
+        "memberSince": "Member since {{date}}"
+      },
+      "email": {
+        "title": "Email Address",
+        "immutableNotice": "Email cannot be changed directly. Contact support if needed.",
+        "verified": "Verified"
+      },
+      "account": {
+        "title": "Account Information",
+        "typeLabel": "Account Type",
+        "typeDescription": "Your current account type",
+        "statusLabel": "Account Status",
+        "statusDescription": "Your account is active and verified"
+      }
+    },
+    "fields": {
+      "displayName": {
+        "label": "Display Name"
+      },
+      "ageGroup": {
+        "title": "Age Group"
+      },
+      "identityConnection": {
+        "title": "Identity Connection"
+      },
+      "socialPressure": {
+        "title": "Social Pressure",
+        "helperText": "Select up to 4"
+      },
+      "emotionalConcerns": {
+        "title": "Emotional Concerns",
+        "helperText": "Select up to 4"
+      },
+      "copingMechanism": {
+        "title": "Coping Mechanism"
+      },
+      "emotionalAspirations": {
+        "title": "Emotional Aspirations",
+        "helperText": "Select up to 3"
+      }
+    },
+    "actions": {
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "edit": "Edit Profile"
+    }
+  },
   "settings": {
+    "title": "Settings",
+    "description": "Manage your account preferences, privacy settings, and application configuration.",
+    "accessDenied": {
+      "title": "Access Denied",
+      "message": "You do not have permission to view this page."
+    },
+    "appearance": {
+      "sections": {
+        "language": {
+          "title": "Language",
+          "description": "Choose the language {{app_name}} uses throughout the app.",
+          "status": "Current"
+        },
+        "theme": {
+          "title": "Theme",
+          "description": "Choose how {{app_name}} looks and feels across all your devices.",
+          "status": "Active"
+        },
+        "fontSize": {
+          "title": "Font Size",
+          "description": "Adjust text size for better readability.",
+          "status": "Active"
+        }
+      },
+      "actions": {
+        "save": "Save Appearance Settings",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      }
+    },
     "sections": {
       "profile": {
         "label": "Profile",
         "description": "Manage your personal information and account preferences."
       },
       "appearance": {
-        "label": "Appearance",
+        "label": "Appearance Settings",
         "description": "Customize the look and feel of the application, including theme and layout options."
       },
       "notifications": {
@@ -624,31 +712,6 @@
         "label": "Data & Storage",
         "description": "Review data usage, manage storage limits, and configure retention settings."
       }
-    },
-    "profile": {
-      "title": "Profile",
-      "anonymousUser": "Anonymous User",
-      "verified": "Verified",
-      "memberSince": "Member since {{date}}",
-      "displayName": "Display Name",
-      "enterDisplayName": "Enter your display name",
-      "notSet": "Not set",
-      "emailAddress": "Email Address",
-      "emailVerificationNotice": "Email changes require verification",
-      "language": "Language",
-      "cancel": "Cancel",
-      "editProfile": "Edit Profile",
-      "saveChanges": "Save Changes",
-      "accountInformation": "Account Information",
-      "userId": "User ID:",
-      "accountType": "Account Type:",
-      "accountStatus": "Account Status:",
-      "active": "Active",
-      "verification": "Verification",
-      "emailVerified": "Email Verified",
-      "emailNotVerified": "Email Not Verified",
-      "updateSuccess": "Profile updated successfully",
-      "updateError": "Failed to update profile. Please try again."
     }
   }
 }

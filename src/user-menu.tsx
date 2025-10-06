@@ -27,7 +27,7 @@ import { useAppUserStore } from "./stores/app-user.store";
 const ITEMS = [
   { label: "Account", icon: User2Icon, href: "/settings/account" },
   { label: "My Sessions", icon: CalendarIcon, href: "/sessions" },
-  { label: "Billing & Credits", icon: CreditCardIcon, href: "/settings/billing" },
+  { label: "Billing & Credits", icon: CreditCardIcon, href: "/billing" },
   { label: "Settings", icon: CogIcon, href: "/settings" },
 ];
 

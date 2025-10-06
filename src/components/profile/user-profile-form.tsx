@@ -9,6 +9,7 @@ import {
   EmotionalConcern,
   IdentityConnectionLevel,
   Prisma,
+  Profile,
   SocialPressureSource,
 } from "@prisma/client";
 import { useForm } from "react-hook-form";
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 
 import { updateCurrentUser } from "@/app/actions/user-actions";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 import { UserProfileInput, UserProfileSchema } from "@/lib/zod/user-profile.schema";
 import { useAppUserStore } from "@/stores/app-user.store";
 import CheckboxGroupField from "../input/checkbox-group-field";
@@ -27,6 +29,7 @@ import { Form } from "../ui/form";
 
 interface Props {
   className?: string;
+  userProfile?: Profile;
 }
 
 const defaultValues: UserProfileInput = {
@@ -39,15 +42,40 @@ const defaultValues: UserProfileInput = {
   emotionalAspirations: [],
 };
 
-const UserProfileForm: React.FC<Props> = ({}) => {
-  const { t } = useTranslation(["common"]);
-  const user = useAppUserStore((state) => state.user);
-  const updateUser = useAppUserStore((state) => state.updateUser);
+const UserProfileForm: React.FC<Props> = ({ className, userProfile }) => {
+  const { t } = useTranslation(["pages", "common"]);
+
   const [isEditing, setIsEditing] = useState(false);
   const form = useForm<UserProfileInput>({
     resolver: zodResolver(UserProfileSchema),
-    defaultValues: user?.profile ? UserProfileSchema.parse(user.profile) : defaultValues,
+    defaultValues: userProfile ? UserProfileSchema.parse(userProfile) : defaultValues,
   });
+
+  const fields = {
+    description: t("account.description"),
+    displayName: t("account.fields.displayName.label"),
+    ageGroup: t("account.fields.ageGroup.title"),
+    identityConnection: t("account.fields.identityConnection.title"),
+    socialPressure: {
+      title: t("account.fields.socialPressure.title"),
+      helperText: t("account.fields.socialPressure.helperText"),
+    },
+    emotionalConcerns: {
+      title: t("account.fields.emotionalConcerns.title"),
+      helperText: t("account.fields.emotionalConcerns.helperText"),
+    },
+    copingMechanism: t("account.fields.copingMechanism.title"),
+    emotionalAspirations: {
+      title: t("account.fields.emotionalAspirations.title"),
+      helperText: t("account.fields.emotionalAspirations.helperText"),
+    },
+    actions: {
+      edit: t("account.actions.edit"),
+      save: t("account.actions.save"),
+      saving: t("account.actions.saving"),
+      cancel: t("account.actions.cancel"),
+    },
+  };
 
   const data = {
     ageGroup: {
@@ -132,7 +160,7 @@ const UserProfileForm: React.FC<Props> = ({}) => {
         });
       } else {
         // Update local store
-        updateUser(result.data);
+        useAppUserStore.getState().setUser(result.data);
 
         // Show success toast
         toast.success("Profile updated successfully", {
@@ -158,30 +186,31 @@ const UserProfileForm: React.FC<Props> = ({}) => {
 
   if (!isEditing) {
     return (
-      <div className="flex flex-col gap-y-6">
-        <div className="flex md:flex-row flex-col  gap-y-2 items-center justify-between">
-          <p className="text-sm text-inn-text-secondary mb-2">
-            Your profile helps Innuora provide personalized support. Update it anytime your situation changes.
-          </p>
-          <Button className="w-full md:w-auto justify-center text-nowrap" onClick={() => setIsEditing(true)}>
-            Edit Profile
+      <div className={cn("flex flex-col gap-y-6", className)}>
+        <div className="flex md:flex-row flex-col gap-y-2 items-center justify-between">
+          <p className="text-sm text-inn-text-secondary mb-2">{fields.description} </p>
+          <Button
+            className="w-full md:w-auto rounded-2xl bg-inn-bg-accent px-6 py-3 text-base font-semibold text-white hover:translate-y-[-1px] transition shadow-lg whitespace-nowrap"
+            onClick={() => setIsEditing(true)}
+          >
+            {fields.actions.edit}
           </Button>
         </div>
         <div className="grid gap-6 w-full">
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Display Name</span>
+            <span className="text-sm text-inn-text-secondary">{fields.displayName}</span>
             <span className="col-span-2">{formValues.displayName}</span>
           </div>
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Age Group</span>
+            <span className="text-sm text-inn-text-secondary">{fields.ageGroup}</span>
             <span className="col-span-2">{data.ageGroup.enum[formValues.ageGroup!]}</span>
           </div>
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Identity Connection</span>
+            <span className="text-sm text-inn-text-secondary">{fields.identityConnection}</span>
             <span className="col-span-2">{data.identityConnection.enum[formValues.identityConnection!]}</span>
           </div>
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Social Pressure Sources</span>
+            <span className="text-sm text-inn-text-secondary">{fields.socialPressure.title}</span>
             <ul className="list-disc list-inside col-span-2">
               {formValues.socialPressureSources.map((source) => (
                 <li className="list-item" key={source}>
@@ -191,7 +220,7 @@ const UserProfileForm: React.FC<Props> = ({}) => {
             </ul>
           </div>
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Emotional Concerns</span>
+            <span className="text-sm text-inn-text-secondary">{fields.emotionalConcerns.title}</span>
             <ul className="list-disc list-inside col-span-2">
               {formValues.emotionalConcerns.map((source) => (
                 <li className="list-item" key={source}>
@@ -202,12 +231,12 @@ const UserProfileForm: React.FC<Props> = ({}) => {
           </div>
 
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Coping Mechanisms</span>
+            <span className="text-sm text-inn-text-secondary">{fields.copingMechanism}</span>
             <span className="col-span-2">{data.copingMechanism.enum[formValues.copingMechanism!]}</span>
           </div>
 
           <div className="grid grid-cols-3">
-            <span className="text-sm text-inn-text-secondary">Emotional Aspirations</span>
+            <span className="text-sm text-inn-text-secondary">{fields.emotionalAspirations.title}</span>
             <ul className="list-disc list-inside col-span-2">
               {formValues.emotionalAspirations.map((source) => (
                 <li className="list-item" key={source}>
@@ -221,154 +250,154 @@ const UserProfileForm: React.FC<Props> = ({}) => {
     );
   }
   return (
-    <div>
-      <Form {...form}>
-        <form className=" grid gap-4" onSubmit={form.handleSubmit(handleSubmit)}>
-          <TextField control={form.control} name="displayName" label="Display Name" />
+    <Form {...form}>
+      <form className={cn(" grid gap-4", className)} onSubmit={form.handleSubmit(handleSubmit)}>
+        <TextField control={form.control} name="displayName" label={fields.displayName} />
 
-          <Accordion type="single" collapsible className="w-full space-y-3" defaultValue="age-group">
-            <AccordionItem
-              value="age-group"
-              className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-            >
-              <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
-                Age Group
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
-                <RadiogroupField
-                  control={form.control}
-                  name="ageGroup"
-                  data={data.ageGroup.list}
-                  labelExtractor={(item) => item.label}
-                  valueExtractor={(item) => item.value}
-                />
-              </AccordionContent>
-            </AccordionItem>
+        <Accordion type="single" collapsible className="w-full space-y-3" defaultValue="age-group">
+          <AccordionItem
+            value="age-group"
+            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+          >
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+              {fields.ageGroup}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
+              <RadiogroupField
+                control={form.control}
+                name="ageGroup"
+                data={data.ageGroup.list}
+                labelExtractor={(item) => item.label}
+                valueExtractor={(item) => item.value}
+              />
+            </AccordionContent>
+          </AccordionItem>
 
-            <AccordionItem
-              value="identity-connection"
-              className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-            >
-              <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
-                Identity Connection
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
-                <RadiogroupField
-                  control={form.control}
-                  name="identityConnection"
-                  data={data.identityConnection.list}
-                  labelExtractor={(item) => item.label}
-                  valueExtractor={(item) => item.value}
-                  descriptionExtractor={(item) => item.description}
-                />
-              </AccordionContent>
-            </AccordionItem>
+          <AccordionItem
+            value="identity-connection"
+            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+          >
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+              {fields.identityConnection}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
+              <RadiogroupField
+                control={form.control}
+                name="identityConnection"
+                data={data.identityConnection.list}
+                labelExtractor={(item) => item.label}
+                valueExtractor={(item) => item.value}
+                descriptionExtractor={(item) => item.description}
+              />
+            </AccordionContent>
+          </AccordionItem>
 
-            <AccordionItem
-              value="social-pressure"
-              className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-            >
-              <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
-                Social Pressure
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
-                <CheckboxGroupField
-                  maxSelected={4}
-                  control={form.control}
-                  name="socialPressureSources"
-                  data={data.socialPressure.list}
-                  labelExtractor={(item) => item.label}
-                  valueExtractor={(item) => item.value}
-                  descriptionExtractor={(item) => item.description}
-                  helperText="Select up to 4"
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem
-              value="emotional-concerns"
-              className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-            >
-              <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
-                Emotional Concerns
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
-                <CheckboxGroupField
-                  maxSelected={4}
-                  control={form.control}
-                  name="emotionalConcerns"
-                  data={data.emotionalConcerns.list}
-                  labelExtractor={(item) => item.label}
-                  valueExtractor={(item) => item.value}
-                  descriptionExtractor={(item) => item.description}
-                  helperText="Select up to 4"
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem
-              value="coping_mechanism"
-              className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-            >
-              <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
-                Coping Mechanism
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
-                <RadiogroupField
-                  control={form.control}
-                  name="copingMechanism"
-                  data={data.copingMechanism.list}
-                  labelExtractor={(item) => item.label}
-                  valueExtractor={(item) => item.value}
-                  descriptionExtractor={(item) => item.description}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem
-              value="emotional_aspirations"
-              className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-            >
-              <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
-                Emotional Aspirations
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
-                <CheckboxGroupField
-                  maxSelected={3}
-                  control={form.control}
-                  name="emotionalAspirations"
-                  data={data.emotionalAspirations.list}
-                  labelExtractor={(item) => item.label}
-                  valueExtractor={(item) => item.value}
-                  descriptionExtractor={(item) => item.description}
-                  helperText="Select up to 3"
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <AccordionItem
+            value="social-pressure"
+            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+          >
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+              {fields.socialPressure.title}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
+              <CheckboxGroupField
+                maxSelected={4}
+                control={form.control}
+                name="socialPressureSources"
+                data={data.socialPressure.list}
+                labelExtractor={(item) => item.label}
+                valueExtractor={(item) => item.value}
+                descriptionExtractor={(item) => item.description}
+                helperText={fields.socialPressure.helperText}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem
+            value="emotional-concerns"
+            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+          >
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+              {fields.emotionalConcerns.title}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
+              <CheckboxGroupField
+                maxSelected={4}
+                control={form.control}
+                name="emotionalConcerns"
+                data={data.emotionalConcerns.list}
+                labelExtractor={(item) => item.label}
+                valueExtractor={(item) => item.value}
+                descriptionExtractor={(item) => item.description}
+                helperText={fields.emotionalConcerns.helperText}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem
+            value="coping_mechanism"
+            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+          >
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+              {fields.copingMechanism}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
+              <RadiogroupField
+                control={form.control}
+                name="copingMechanism"
+                data={data.copingMechanism.list}
+                labelExtractor={(item) => item.label}
+                valueExtractor={(item) => item.value}
+                descriptionExtractor={(item) => item.description}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem
+            value="emotional_aspirations"
+            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+          >
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+              {fields.emotionalAspirations.title}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
+              <CheckboxGroupField
+                maxSelected={3}
+                control={form.control}
+                name="emotionalAspirations"
+                data={data.emotionalAspirations.list}
+                labelExtractor={(item) => item.label}
+                valueExtractor={(item) => item.value}
+                descriptionExtractor={(item) => item.description}
+                helperText={fields.emotionalAspirations.helperText}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
-          <div className="flex items-center justify-end gap-4">
-            <Button
-              type="submit"
-              className="mt-4 justify-center col-span-2"
-              disabled={!isValid || !isDirty || isSubmitting}
-            >
-              {isSubmitting ? "Saving..." : "Save Changes"}
-            </Button>
-            <Button
-              onClick={() => {
-                // Reset form to original values
-                form.reset(user?.profile ? UserProfileSchema.parse(user.profile) : defaultValues);
-                setIsEditing(false);
-              }}
-              type="button"
-              variant={"outline"}
-              className="mt-4 justify-center"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+        <div className="flex items-center justify-end gap-4">
+          <Button
+            size={"lg"}
+            type="submit"
+            className="mt-4 justify-center col-span-2"
+            disabled={!isValid || !isDirty || isSubmitting}
+          >
+            {isSubmitting ? fields.actions.saving : fields.actions.save}
+          </Button>
+          <Button
+            size={"lg"}
+            onClick={() => {
+              // Reset form to original values
+              form.reset(userProfile ? UserProfileSchema.parse(userProfile) : defaultValues);
+              setIsEditing(false);
+            }}
+            type="button"
+            variant={"outline"}
+            className="mt-4 justify-center"
+            disabled={isSubmitting}
+          >
+            {fields.actions.cancel}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

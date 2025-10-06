@@ -166,34 +166,81 @@
     "ar": "Arabic"
   },
   "lists": {
+    "fontSize": {
+      "small": {
+        "label": "Small",
+        "value": "14px"
+      },
+      "medium": {
+        "label": "Medium",
+        "value": "16px"
+      },
+      "large": {
+        "label": "Large",
+        "value": "18px"
+      }
+    },
+    "theme": {
+      "light": {
+        "label": "Light",
+        "description": "Light theme"
+      },
+      "dark": {
+        "label": "Dark",
+        "description": "Dark theme"
+      },
+      "system": {
+        "label": "System",
+        "description": "Match system"
+      }
+    },
+    "languages": {
+      "ar": {
+        "label": "العربية",
+        "native": "Arabic"
+      },
+      "en": {
+        "label": "English",
+        "native": "English"
+      },
+      "fr": {
+        "label": "Français",
+        "native": "French"
+      }
+    },
     "age-group": {
       "enum": {
-        "Age18_24": "18-24 · Early adulthood",
-        "Age25_34": "25-34 · Growing years",
-        "Age35_44": "35-44 · Deeper stride",
-        "Age45_54": "45-54 · Seasoned phase",
-        "Age55_plus": "55+ · Evolving beautifully"
+        "Age18_24": "18-24",
+        "Age25_34": "25-34",
+        "Age35_44": "35-44",
+        "Age45_54": "45-54",
+        "Age55_plus": "55+"
       },
       "list": [
         {
-          "label": "18-24 · Early adulthood",
-          "value": "Age18_24"
+          "label": "18-24",
+          "value": "Age18_24",
+          "description": "Early adulthood"
         },
         {
-          "label": "25-34 · Growing years",
-          "value": "Age25_34"
+          "label": "25-34",
+          "value": "Age25_34",
+          "description": "Growing years"
         },
         {
-          "label": "35-44 · Deeper stride",
-          "value": "Age35_44"
+          "label": "35-44",
+          "value": "Age35_44",
+          "description": "Deeper stride"
         },
         {
-          "label": "45-54 · Seasoned phase",
-          "value": "Age45_54"
+          "label": "45-54",
+          "value": "Age45_54",
+          "description": "Seasoned phase"
         },
         {
-          "label": "55+ · Evolving beautifully",
-          "value": "Age55_plus"
+          "label": "55+",
+          "value": "Age55_plus",
+          "description": "Evolving beautifully"
         }
       ]
     },

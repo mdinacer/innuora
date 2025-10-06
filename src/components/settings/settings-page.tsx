@@ -1,37 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Database, Lock, Monitor, Settings as SettingsIcon, Shield, User } from "lucide-react";
+import { Database, Lock, Monitor, Settings as SettingsIcon, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import BillingManagement from "@/components/billing/billing-management";
 // Settings sections components (we'll create these)
 import AppearanceSettings from "@/components/settings/sections/appearance-settings";
 import DataSettings from "@/components/settings/sections/data-settings";
 import PrivacySettings from "@/components/settings/sections/privacy-settings";
-import ProfileSettings from "@/components/settings/sections/profile-settings";
 import SecuritySettings from "@/components/settings/sections/security-settings";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useAppUserStore } from "@/stores/app-user.store";
 import { UserWithRelations } from "@/types/user.types";
-import { ThemeToggle } from "../chat-ui";
-
-// =========================
-// Types
-// =========================
-
-// interface SettingsPageProps {}
 
 type SettingsSection = {
   id: string;
@@ -48,13 +30,6 @@ type SettingsSection = {
 // =========================
 
 const settingsSections: SettingsSection[] = [
-  {
-    id: "profile",
-    label: "Profile",
-    icon: <User className="h-4 w-4" />,
-    component: ProfileSettings,
-    requiresProps: true,
-  },
   {
     id: "appearance",
     label: "Appearance",
@@ -77,13 +52,6 @@ const settingsSections: SettingsSection[] = [
     requiresProps: false,
   },
   {
-    id: "billing",
-    label: "Billing & Credits",
-    icon: <CreditCard className="h-4 w-4" />,
-    component: () => <BillingManagement />,
-    requiresProps: true,
-  },
-  {
     id: "data",
     label: "Data & Storage",
     icon: <Database className="h-4 w-4" />,
@@ -98,33 +66,26 @@ const settingsSections: SettingsSection[] = [
 // =========================
 
 export default function SettingsPage() {
-  const [activeSection, setActiveSection] = useState("profile");
-  const { i18n, t } = useTranslation();
+  const [activeSection, setActiveSection] = useState("appearance");
+  const { i18n, t } = useTranslation("pages");
   const user = useAppUserStore((state) => state.user);
 
   return (
     <div className="max-w-6xl mx-auto rtl:font-arabic-body rtl:space-x-reverse">
-      <ThemeToggle />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <SettingsIcon className="h-6 w-6 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+          <SettingsIcon className="h-6 w-6 text-inn-bg-accent" />
+          <h1 className="text-3xl font-bold text-gray-900">{t("settings.title")}</h1>
         </div>
-        <p className="text-gray-600">
-          Manage your account preferences, privacy settings, and application configuration.
-        </p>
+        <p className="text-gray-600">{t("settings.description")}</p>
       </div>
 
       {/* Settings Navigation and Content */}
-      <Tabs
-        value={activeSection}
-        onValueChange={setActiveSection}
-        className="relative flex gap-8 flex-col md:flex-row rtl:sm:flex-row-reverse"
-      >
+      <Tabs value={activeSection} onValueChange={setActiveSection} className="relative flex gap-8 flex-col">
         {/* Sidebar Navigation */}
-        <div className="w-full md:w-64 flex-shrink-0">
-          <Select onValueChange={(value) => setActiveSection(value)} defaultValue={activeSection}>
+        <div className="w-full shrink-0">
+          {/* <Select onValueChange={(value) => setActiveSection(value)} defaultValue={activeSection}>
             <SelectTrigger className="md:hidden w-full">
               <SelectValue placeholder="Select a fruit" />
             </SelectTrigger>
@@ -143,37 +104,35 @@ export default function SettingsPage() {
                 ))}
               </SelectGroup>
             </SelectContent>
-          </Select>
-          <TabsList
-            dir={i18n.dir()}
-            className="hidden md:flex flex-col h-auto rounded-2xl border border-inn-border-light bg-inn-bg-card p-2 space-y-1 md:sticky md:top-6 "
-          >
+          </Select> */}
+          <TabsList dir={i18n.dir()} className="bg-transparent max-w-auto w-full">
             {settingsSections.map((section) => (
               <TabsTrigger
                 key={section.id}
                 value={section.id}
                 className={cn(
-                  "rounded-xl text-sm sm:text-base font-medium",
-                  "transition-all duration-200 ease-in",
-                  "not-[data-state=active]:hover:bg-inn-bg-secondary",
-                  "data-[state=active]:bg-inn-bg-accent data-[state=active]:text-white",
-                  "dark:data-[state=active]:bg-inn-bg-accent dark:data-[state=active]:text-white",
-                  "w-full justify-start px-3 sm:px-4 py-2.5 sm:py-3"
+                  "flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap",
+                  "data-[state=active]:font-medium data-[state=active]:text-inn-bg-accent data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                  "dark:data-[state=active]:text-inn-bg-accent dark:data-[state=active]:bg-transparent dark:data-[state=active]:shadow-none",
+                  "text-inn-text-secondary hover:text-inn-text-primary",
+                  "transition-all duration-300 ease-in-out",
+                  "border-none rounded-none",
+                  "w-full "
                 )}
               >
                 <div className="flex items-center gap-3 w-full">
                   {section.icon}
-                  <span className="font-medium rtl:font-arabic-body">
+                  <span className="font-medium rtl:text-right rtl:mt-0.5 rtl:text-base ltr:text-left flex-1 rtl:font-arabic-body sr-only sm:not-sr-only">
                     {t(`${section.id}.label`, { ns: "pages", keyPrefix: "settings.sections" })}
                   </span>
-                  {section.badge && (
+                  {/* {section.badge && (
                     <Badge
                       variant="secondary"
                       className="ml-auto hidden sm:inline text-xs bg-inn-bg-flame text-white py-0.5 px-2 rounded-xl hover:bg-inn-bg-flame-dark hover:text-white "
                     >
                       {section.badge}
                     </Badge>
-                  )}
+                  )} */}
                 </div>
               </TabsTrigger>
             ))}
@@ -195,7 +154,7 @@ export default function SettingsPage() {
                 <div className="">
                   <div className="mb-6">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="">
+                      <div>
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2">{label}</h2>
                         <p className="text-sm sm:text-base text-[var(--text-secondary)]">{description}</p>
                       </div>

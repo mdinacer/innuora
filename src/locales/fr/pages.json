@@ -561,37 +561,65 @@
     }
   },
   "settings": {
-    "sections": {
-      "profile": "Profil",
-      "appearance": "Apparence",
-      "notifications": "Notifications",
-      "privacy": "Confidentialité et sécurité",
-      "security": "Sécurité",
-      "billing": "Facturation et crédits",
-      "data": "Données et stockage"
+    "title": "Paramètres",
+    "description": "Gérez vos préférences de compte, vos paramètres de confidentialité et la configuration de l’application.",
+    "accessDenied": {
+      "title": "Accès refusé",
+      "message": "Vous n’avez pas l’autorisation d’accéder à cette page."
     },
-    "profile": {
-      "title": "Profil",
-      "anonymousUser": "Utilisateur Anonyme",
-      "verified": "Vérifié",
-      "memberSince": "Membre depuis {{date}}",
-      "displayName": "Nom d'affichage",
-      "enterDisplayName": "Entrez votre nom d'affichage",
-      "notSet": "Non défini",
-      "emailAddress": "Adresse e-mail",
-      "emailVerificationNotice": "Les modifications de l'e-mail nécessitent une vérification",
-      "language": "Langue",
-      "cancel": "Annuler",
-      "editProfile": "Modifier le profil",
-      "saveChanges": "Enregistrer les modifications",
-      "accountInformation": "Informations du compte",
-      "userId": "ID utilisateur",
-      "accountType": "Type de compte",
-      "accountStatus": "Statut du compte",
-      "active": "Actif",
-      "verification": "Vérification",
-      "emailVerified": "E-mail vérifié",
-      "emailNotVerified": "E-mail non vérifié"
+    "appearance": {
+      "sections": {
+        "language": {
+          "title": "Langue",
+          "description": "Choisissez la langue utilisée par {{app_name}} dans l’ensemble de l’application.",
+          "status": "Langue actuelle"
+        },
+        "theme": {
+          "title": "Thème",
+          "description": "Définissez l’apparence et l’ambiance de {{app_name}} sur tous vos appareils.",
+          "status": "Actif"
+        },
+        "fontSize": {
+          "title": "Taille du texte",
+          "description": "Ajustez la taille du texte pour améliorer la lisibilité et le confort visuel.",
+          "status": "Actif"
+        }
+      },
+      "actions": {
+        "save": "Enregistrer les paramètres d’apparence",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler"
+      }
+    },
+    "sections": {
+      "profile": {
+        "label": "Profil",
+        "description": "Gérez vos informations personnelles et vos préférences de compte."
+      },
+      "appearance": {
+        "label": "Apparence",
+        "description": "Personnalisez l’aspect et la mise en page de l’application, y compris le thème et la présentation."
+      },
+      "notifications": {
+        "label": "Notifications",
+        "description": "Contrôlez la manière et le moment où vous recevez des alertes, des e-mails et des mises à jour."
+      },
+      "privacy": {
+        "label": "Confidentialité et sécurité",
+        "description": "Ajustez la visibilité, le partage des données et les paramètres de sécurité pour protéger votre compte."
+      },
+      "security": {
+        "label": "Sécurité",
+        "description": "Mettez à jour votre mot de passe, activez l’authentification à deux facteurs et sécurisez l’accès à votre compte."
+      },
+      "billing": {
+        "label": "Facturation et crédits",
+        "description": "Gérez vos moyens de paiement, consultez vos factures et suivez votre utilisation des crédits."
+      },
+      "data": {
+        "label": "Données et stockage",
+        "description": "Consultez l’utilisation des données, gérez les limites de stockage et configurez la conservation des informations."
+      }
     }
   }
 }
