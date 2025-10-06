@@ -42,6 +42,10 @@ export const SignInForm = dynamic(() => import("@/components/auth/sign-in-form")
   loading: () => <div className="animate-pulse bg-gray-200 h-48 rounded-md"></div>,
 });
 
+// Account components
+export const AccountManagement = dynamic(() => import("@/components/profile/account-page"), {
+  loading: () => <LoadingSpinner className="h-96" />,
+});
 // Billing components (Stripe integration)
 export const BillingManagement = dynamic(() => import("@/components/billing/billing-management"), {
   loading: () => <LoadingSpinner className="h-96" />,
@@ -63,6 +67,7 @@ export const CreditsTransactionHistory = dynamic(() => import("@/components/cred
 
 // Export collections for easier imports
 export const DynamicPages = {
+  AccountManagement,
   SessionPage,
   SessionDetails,
   BillingManagement,

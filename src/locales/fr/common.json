@@ -15,6 +15,290 @@
     "fr": "Français",
     "ar": "Arabe"
   },
+  "lists": {
+    "fontSize": {
+      "small": {
+        "label": "Petit",
+        "value": "14px"
+      },
+      "medium": {
+        "label": "Moyen",
+        "value": "16px"
+      },
+      "large": {
+        "label": "Grand",
+        "value": "18px"
+      }
+    },
+    "theme": {
+      "light": {
+        "label": "Clair",
+        "description": "Thème clair"
+      },
+      "dark": {
+        "label": "Sombre",
+        "description": "Thème sombre"
+      },
+      "system": {
+        "label": "Système",
+        "description": "Selon les paramètres du système"
+      }
+    },
+    "languages": {
+      "ar": {
+        "label": "العربية",
+        "native": "Arabe"
+      },
+      "en": {
+        "label": "English",
+        "native": "Anglais"
+      },
+      "fr": {
+        "label": "Français",
+        "native": "Français"
+      }
+    },
+    "age-group": {
+      "enum": {
+        "Age18_24": "18-24",
+        "Age25_34": "25-34",
+        "Age35_44": "35-44",
+        "Age45_54": "45-54",
+        "Age55_plus": "55+"
+      },
+      "list": [
+        {
+          "label": "18-24",
+          "value": "Age18_24",
+          "description": "Premières années de vie adulte"
+        },
+        {
+          "label": "25-34",
+          "value": "Age25_34",
+          "description": "Années de croissance et de construction"
+        },
+        {
+          "label": "35-44",
+          "value": "Age35_44",
+          "description": "Équilibre et affirmation de soi"
+        },
+        {
+          "label": "45-54",
+          "value": "Age45_54",
+          "description": "Période d’expérience et de réflexion"
+        },
+        {
+          "label": "55+",
+          "value": "Age55_plus",
+          "description": "Épanouissement et sérénité"
+        }
+      ]
+    },
+    "identity_connection": {
+      "enum": {
+        "authentic": "Je me sens moi-même",
+        "conflicted": "Entre deux",
+        "disconnected": "Je me sens distante",
+        "lost": "Je me sens perdue"
+      },
+      "list": [
+        {
+          "label": "Je me sens moi-même",
+          "value": "authentic",
+          "description": "Présente, vraie, alignée."
+        },
+        {
+          "label": "Entre deux",
+          "value": "conflicted",
+          "description": "Parfois moi, parfois dans le rôle qu’on attend."
+        },
+        {
+          "label": "Je me sens distante",
+          "value": "disconnected",
+          "description": "Présente en surface, absente à l’intérieur."
+        },
+        {
+          "label": "Je me sens perdue",
+          "value": "lost",
+          "description": "Difficile de me reconnaître parfois."
+        }
+      ]
+    },
+    "social_pressure": {
+      "enum": {
+        "family": "Famille",
+        "friends": "Amis ou pairs",
+        "work_or_school": "Travail ou études",
+        "romantic": "Relations amoureuses",
+        "cultural_or_religious": "Contexte culturel ou religieux",
+        "self": "Moi-même"
+      },
+      "list": [
+        {
+          "label": "Famille",
+          "value": "family",
+          "description": "Maintenir l’harmonie, peu importe le coût."
+        },
+        {
+          "label": "Amis ou pairs",
+          "value": "friends",
+          "description": "Être agréable même quand c’est lourd."
+        },
+        {
+          "label": "Travail ou études",
+          "value": "work_or_school",
+          "description": "Toujours performer, toujours prouver."
+        },
+        {
+          "label": "Relations amoureuses",
+          "value": "romantic",
+          "description": "Être aimable, peu exigeante, parfaite."
+        },
+        {
+          "label": "Contexte culturel ou religieux",
+          "value": "cultural_or_religious",
+          "description": "Cacher certaines parties de moi pour correspondre."
+        },
+        {
+          "label": "Moi-même",
+          "value": "self",
+          "description": "Trop d’attentes, jamais assez de bienveillance."
+        }
+      ]
+    },
+    "emotional_concerns": {
+      "enum": {
+        "anxiety": "Anxiété ou surcharge",
+        "self_worth": "Faible estime de soi",
+        "overthinking": "Trop réfléchir",
+        "loneliness": "Solitude",
+        "burnout": "Épuisement",
+        "mood_swings": "Sauts d’humeur",
+        "identity_crisis": "Crise d’identité",
+        "self_harm": "Auto-agression"
+      },
+      "list": [
+        {
+          "label": "Anxiété ou surcharge",
+          "value": "anxiety",
+          "description": "Tension constante ou inquiétude diffuse."
+        },
+        {
+          "label": "Faible estime de soi",
+          "value": "self_worth",
+          "description": "Sensation persistante de ne pas être à la hauteur."
+        },
+        {
+          "label": "Trop réfléchir",
+          "value": "overthinking",
+          "description": "Remuer les mêmes pensées sans fin."
+        },
+        {
+          "label": "Solitude",
+          "value": "loneliness",
+          "description": "Se sentir invisible, même entourée."
+        },
+        {
+          "label": "Épuisement",
+          "value": "burnout",
+          "description": "Continuer à fonctionner malgré le vide intérieur."
+        },
+        {
+          "label": "Sauts d’humeur",
+          "value": "mood_swings",
+          "description": "Émotions qui montent et descendent brutalement."
+        },
+        {
+          "label": "Crise d’identité",
+          "value": "identity_crisis",
+          "description": "Ne plus savoir qui je suis derrière les rôles."
+        },
+        {
+          "label": "Autre / incertaine",
+          "value": "other",
+          "description": "C’est normal si rien ne correspond exactement."
+        }
+      ]
+    },
+    "coping_mechanism": {
+      "enum": {
+        "shutdown": "Je me ferme émotionnellement",
+        "self_critical": "Je deviens critique envers moi-même",
+        "push_through": "Je continue malgré tout",
+        "overwhelmed": "Je me sens submergée"
+      },
+      "list": [
+        {
+          "label": "Je me ferme émotionnellement",
+          "value": "shutdown",
+          "description": "Je me coupe de mes émotions pour me protéger."
+        },
+        {
+          "label": "Je deviens critique envers moi-même",
+          "value": "self_critical",
+          "description": "Je me blâme et me dis que je devrais être plus forte."
+        },
+        {
+          "label": "Je continue malgré tout",
+          "value": "push_through",
+          "description": "Je souris, j’avance, mais j’ignore mes besoins."
+        },
+        {
+          "label": "Je me sens submergée",
+          "value": "overwhelmed",
+          "description": "Mes émotions deviennent trop intenses à gérer."
+        }
+      ]
+    },
+    "emotional_aspirations": {
+      "enum": {
+        "clarity": "Clarté",
+        "calm": "Calme",
+        "confidence": "Confiance",
+        "self_compassion": "Bienveillance envers soi",
+        "connection": "Lien et présence",
+        "direction": "Direction ou sens",
+        "other": "Autre"
+      },
+      "list": [
+        {
+          "label": "Clarté",
+          "value": "clarity",
+          "description": "Comprendre mes émotions avec lucidité."
+        },
+        {
+          "label": "Calme",
+          "value": "calm",
+          "description": "Moins de tension, plus de paix."
+        },
+        {
+          "label": "Confiance",
+          "value": "confidence",
+          "description": "Croire en mes choix et ma voix."
+        },
+        {
+          "label": "Bienveillance envers soi",
+          "value": "self_compassion",
+          "description": "Être douce avec moi-même au lieu d’être dure."
+        },
+        {
+          "label": "Lien et présence",
+          "value": "connection",
+          "description": "Me sentir vue, entendue et en lien."
+        },
+        {
+          "label": "Direction ou sens",
+          "value": "direction",
+          "description": "Aller vers ce qui a du sens, pas seulement tenir bon."
+        },
+        {
+          "label": "Je ne sais pas encore",
+          "value": "not_sure",
+          "description": "Découvrir ce dont j’ai besoin au fur et à mesure."
+        }
+      ]
+    }
+  },
   "select_multiple": "Choisissez tout ce qui s'applique",
   "select_single": "Choisissez-en un",
   "sessionWithCount_one": "{{count}} session",

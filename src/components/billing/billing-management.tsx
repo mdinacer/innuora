@@ -78,7 +78,7 @@ export function BillingManagement({ className = "" }: BillingManagementProps = {
               )}
             >
               <tab.icon className="size-[18px]" />
-              <span className=" sm:inline hidden">{tab.label}</span>
+              <span className="sm:inline hidden">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>

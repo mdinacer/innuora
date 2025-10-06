@@ -19,17 +19,13 @@ export async function findTesterByEmail(email: string) {
 }
 
 export async function createTester(data: Prisma.TesterCreateInput, redirectUrl: string) {
-  const admin = await requireAdmin();
-
   const tester = await logger.wrapOperation(
     () => prisma.tester.create({ data }),
     ERROR_CODES.TESTER_CREATE_FAILED,
     {
-      userId: admin.id,
       operation: "admin_create_tester",
       metadata: {
         testerEmail: data.email,
-        adminRole: admin.role,
         action: "create_tester",
       },
     },
