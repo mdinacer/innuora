@@ -54,7 +54,7 @@ export default async function JoinPageSuccess({ className, locale = "en" }: Prop
 
       {/* <!-- What Happens Next --> */}
       <section className="max-w-3xl mx-auto px-6 pb-16">
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-card animate-slide-up">
+        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_4px_20px] shadow-inn-bg-accent/15 animate-slide-up">
           <h2 className="rtl:font-arabic text-2xl font-bold mb-6 text-center">{pageData.nextSteps.title}</h2>
 
           <div className="space-y-6">

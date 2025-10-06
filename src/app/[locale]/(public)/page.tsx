@@ -308,7 +308,7 @@ export default async function Home({
           </Link>
           <Link
             href="#demo"
-            className="inline-flex justify-center rounded-2xl border border-inn-border-light bg-transparent rtl:pt-4 px-6 py-3 font-semibold text-inn-text-primary hover:text-inn-bg-accent hover:border-inn-bg-accent transition"
+            className="inline-flex justify-center rounded-2xl border border-inn-border-light bg-transparent rtl:pt-4 px-6 py-3 font-semibold text-inn-text-primary hover:text-inn-bg-accent hover:border-inn-bg-accent transition-all"
           >
             {hero.cta.demo}
           </Link>
@@ -346,7 +346,7 @@ export default async function Home({
           </h2>
           <p className="text-base rtl:text-lg text-inn-text-secondary max-w-2xl mx-auto mb-4">{demo.subtitle}</p>
         </div>
-        <div className="rounded-3xl border border-inn-border-light bg-inn-bg-card sm:p-8 p-4 shadow-md">
+        <div className="rounded-3xl border border-inn-border-light bg-inn-bg-card/40 backdrop-blur-sm sm:p-8 p-4 shadow-md">
           <div className="flex justify-center items-center gap-4 pb-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-inn-bg-accent"></div>
@@ -362,7 +362,7 @@ export default async function Home({
             </div>
           </div>
           <div
-            className="space-y-6 max-h-[500px] overflow-y-auto rtl:pl-3 ltr:pr-3 overscroll-content overflow-x-hidden pr-2"
+            className="space-y-6 max-h-[500px] border-t border-t-inn-border-light pt-[10%] overflow-y-auto rtl:pl-3 ltr:pr-3 overscroll-content overflow-x-hidden pr-2"
             id="conversationContainer"
           >
             {demo.conversation.map((conversation, index) => (

@@ -31,7 +31,7 @@ export default function SecuritySettings(): React.JSX.Element {
       </Alert>
 
       {/* Password & Authentication */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Key className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">Password & Authentication</h3>
@@ -91,7 +91,7 @@ export default function SecuritySettings(): React.JSX.Element {
       </div>
 
       {/* Session Management */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Clock className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">Session Management</h3>
@@ -119,7 +119,7 @@ export default function SecuritySettings(): React.JSX.Element {
       </div>
 
       {/* Data Export */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-subtle">
+      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Download className="h-5 w-5 text-inn-bg-accent" />
           <h3 className="text-xl font-semibold">Data Export</h3>

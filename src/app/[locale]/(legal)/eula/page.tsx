@@ -102,7 +102,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
     },
   };
   return (
-    <main className="relative font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
+    <main className="relative  font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
       {/* <!-- Hero Section --> */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h1 className="rtl:font-arabic text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
@@ -119,7 +119,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
         <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
           <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.notice.title}</h2>
           <p className="mb-4 opacity-90">{content.notice.message}</p>
-          <p className="text-sm opacity-80">{content.notice.warning}</p>
+          <p className="text-sm rtl:text-base opacity-80">{content.notice.warning}</p>
         </div>
       </section>
 
@@ -179,7 +179,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.termination.title}</h2>
             <p className="text-inn-text-secondary mb-3">{content.termination.message}</p>
             <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
-              <p className="text-sm text-inn-text-secondary">
+              <p className="text-sm rtl:text-base text-inn-text-secondary">
                 <strong>{content.termination.uponTermination.label}</strong>{" "}
                 {content.termination.uponTermination.message}
               </p>
@@ -193,7 +193,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
             <h2 className="rtl:font-arabic text-2xl font-bold mb-4">{content.disclaimer.title}</h2>
             <p className="text-inn-text-secondary">{content.disclaimer.message}</p>
             <div className="mt-4 p-4 rounded-xl bg-inn-bg-input">
-              <p className="text-sm text-inn-text-secondary">{content.disclaimer.note}</p>
+              <p className="text-sm rtl:text-base text-inn-text-secondary">{content.disclaimer.note}</p>
             </div>
           </div>
         </section>
@@ -233,7 +233,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
           <div className="rounded-2xl p-8 text-center text-white bg-gradient-to-b from-inn-bg-accent to-inn-bg-accent-dark">
             <h2 className="rtl:font-arabic text-2xl font-bold mb-3">{content.summary.title}</h2>
             <p className="mb-4 opacity-90">{content.summary.message}</p>
-            <p className="text-sm opacity-80">{content.summary.acknowledgment}</p>
+            <p className="text-sm rtl:text-base opacity-80">{content.summary.acknowledgment}</p>
           </div>
         </section>
       </div>

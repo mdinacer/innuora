@@ -97,7 +97,7 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
           <div className="space-y-4 opacity-90">
             <p className="rtl:text-lg rtl:font-medium">{content.intro.message}</p>
             <div className="p-4 rounded-xl bg-white/10 mt-4">
-              <p className="text-sm opacity-90 rtl:text-base">{content.intro.note}</p>
+              <p className="text-sm rtl:text-base opacity-90 ">{content.intro.note}</p>
             </div>
           </div>
         </div>
@@ -130,7 +130,10 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
                 <thead className="bg-inn-bg-input">
                   <tr>
                     {content.dataWeCollect.table.headers.map((header, index) => (
-                      <th key={index} className="px-6 py-4 text-left text-sm font-semibold text-inn-text-primary">
+                      <th
+                        key={index}
+                        className="px-6 py-4 ltr:text-left rtl:text-right text-sm rtl:text-base font-semibold text-inn-text-primary"
+                      >
                         {header}
                       </th>
                     ))}
@@ -161,11 +164,11 @@ export default async function PrivacyPolicyRoute({ params }: { params: Promise<{
                 return (
                   <div key={index} className="space-y-2">
                     <h3 className="font-semibold text-inn-text-primary">{header}</h3>
-                    <p className="text-sm text-inn-text-secondary">
+                    <p className="text-sm rtl:text-base text-inn-text-secondary">
                       <strong>{descriptionCol}: </strong>
                       {description}
                     </p>
-                    <p className="text-sm text-inn-text-secondary">
+                    <p className="text-sm rtl:text-base text-inn-text-secondary">
                       <strong>{storageCol}: </strong>
                       {storage}
                     </p>
