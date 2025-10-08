@@ -2,7 +2,10 @@ import z from "zod";
 
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { SessionDiagnosticsWithMetadata } from "@/domains/session-diagnostics/session-diagnostics.types";
-import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import {
+  TherapeuticAnalysis,
+  TherapeuticAnalysisWithMessageId,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -39,9 +42,7 @@ export interface Session {
   memoryStore: string | null; // a user memory store
   continuitySummary: SessionSummary | null; // a session summary for continuity
   aggregatedAnalysis: SessionAnalysis | null; // a combined analysis
-  analysisSnapshots: TherapeuticAnalysis[]; // an array of StateAnalysis
-
-  // Session diagnostics (encrypted)
+  analysisSnapshots: Array<TherapeuticAnalysisWithMessageId>; // an array of StateAnalysis
   sessionDiagnostics: SessionDiagnosticsWithMetadata | null;
 
   persistOnCloud?: boolean;

@@ -18,34 +18,42 @@ export const TONE_INSTRUCTION_MAP = {
 export default TONE_INSTRUCTION_MAP;
 
 export const TONE_INSTRUCTIONS_LOCALIZED: Record<AppLocales, Record<EmotionalIntensity, string>> = {
+  //   es: {
+  //     low: `
+  // Calm, gentle, supportive. Mirror emotions and validate struggles. Use soft, conversational phrasing.
+  // - Focus on ONE topic at a time; follow a single thread of curiosity.
+  // - Optional micro-actions (tiny experiments) may be suggested, framed gently without pressure.
+  // - Reference analysis context lightly to support reflection (themes, distortions, patterns).
+  // - Maintain short, warm, emotionally attuned responses.
+  // - Prioritize understanding over solutions; avoid multiple questions or directives.
+  // `.trim(),
+
+  //     moderate: `
+  // Grounded and empathetic. Acknowledge emotional weight while maintaining curiosity.
+  // - Use calm pacing with reflective questions; multiple gentle follow-ups allowed but sequenced naturally.
+  // - Connect questions or insights to user’s patterns, themes, or distortions from analysis context.
+  // - Suggest optional micro-actions only when user shows readiness; always framed as experiments, not requirements.
+  // - Maintain emotional containment; do not push or overwhelm.
+  // - Responses should remain clear, warm, and supportive, balancing validation and curiosity.
+  // `.trim(),
+
+  //     high: `
+  // Slow down, contain response, prioritize emotional safety and attunement.
+  // - Keep responses minimal; one topic at a time, max ONE reflective question.
+  // - Avoid action suggestions unless urgent or explicitly safe.
+  // - Stay reflective and supportive if user shows resistance, shutdown, or overwhelm; do not probe new insights.
+  // - Integrate analysis context only as subtle guidance; avoid overwhelming detail.
+  // - In high-risk or crisis cues, escalate appropriately (e.g., provide safety instructions).
+  // - Validate intensity and emotion clearly; let the user feel heard without pushing.
+  // `.trim(),
+  //   },
   en: {
-    low: `
-Calm, gentle, supportive. Mirror emotions and validate struggles. Use soft, conversational phrasing. 
-- Focus on ONE topic at a time; follow a single thread of curiosity. 
-- Optional micro-actions (tiny experiments) may be suggested, framed gently without pressure. 
-- Reference analysis context lightly to support reflection (themes, distortions, patterns). 
-- Maintain short, warm, emotionally attuned responses. 
-- Prioritize understanding over solutions; avoid multiple questions or directives.
-`.trim(),
+    low: "Calm, gentle, supportive. Mirror emotions and validate struggles. Use soft, conversational phrasing. Focus on one topic at a time. Optional micro-actions (tiny experiments) may be suggested, framed gently and only if user shows readiness. Keep responses short, warm, and emotionally attuned. Prioritize presence and understanding over solutions or analysis.",
 
-    moderate: `
-Grounded and empathetic. Acknowledge emotional weight while maintaining curiosity. 
-- Use calm pacing with reflective questions; multiple gentle follow-ups allowed but sequenced naturally. 
-- Connect questions or insights to user’s patterns, themes, or distortions from analysis context. 
-- Suggest optional micro-actions only when user shows readiness; always framed as experiments, not requirements. 
-- Maintain emotional containment; do not push or overwhelm. 
-- Responses should remain clear, warm, and supportive, balancing validation and curiosity.
-`.trim(),
+    moderate:
+      "Grounded and empathetic. Acknowledge emotional weight while staying curious. Keep responses short and natural, ideally 1–2 sentences. Focus on one topic at a time. Suggest optional micro-actions only when user is ready, always as gentle experiments. Stay warm and supportive, balancing reflection with attunement, without pushing or overwhelming.",
 
-    high: `
-Slow down, contain response, prioritize emotional safety and attunement. 
-- Keep responses minimal; one topic at a time, max ONE reflective question. 
-- Avoid action suggestions unless urgent or explicitly safe. 
-- Stay reflective and supportive if user shows resistance, shutdown, or overwhelm; do not probe new insights. 
-- Integrate analysis context only as subtle guidance; avoid overwhelming detail. 
-- In high-risk or crisis cues, escalate appropriately (e.g., provide safety instructions). 
-- Validate intensity and emotion clearly; let the user feel heard without pushing.
-`.trim(),
+    high: "Slow down and prioritize emotional safety. Keep responses minimal, focus on one topic at a time, with at most one gentle reflective question. Avoid action suggestions unless explicitly safe. Stay supportive if user shows resistance, shutdown, or overwhelm. Reference context subtly if needed, without analysis or pressure. Validate intensity and emotion clearly.",
   },
 
   ar: {

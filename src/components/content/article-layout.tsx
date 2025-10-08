@@ -28,13 +28,13 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
   const { metadata } = contentItem;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br ">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Breadcrumb Navigation */}
         <nav className="mb-6">
           <Link
             href={`/content/${category}`}
-            className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+            className="inline-flex items-center text-sm text-inn-bg-accent-dark hover:text-inn-bg-accent transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             Back to {category.replace(/-/g, " ")}
@@ -43,41 +43,41 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
 
         {/* Article Header */}
         <header className="mb-8">
-          <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap items-center gap-4 mb-4 text-sm ">
             {/* Category Badge */}
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+            <span className="inline-flex items-center capitalize px-3 py-1 rounded-full bg-inn-bg-soft border-inn-border-light text-inn-bg-accent">
               <Tag className="w-4 h-4 mr-1" />
               {category.replace(/-/g, " ")}
             </span>
 
             {/* Reading Time */}
             {metadata.readingTime && (
-              <span className="inline-flex items-center">
+              <span className="inline-flex items-center text-inn-text-secondary">
                 <Clock className="w-4 h-4 mr-1" />
                 {metadata.readingTime} min read
               </span>
             )}
 
             {/* Intent Badge */}
-            <span className={`px-2 py-1 rounded text-xs font-medium ${getIntentColor(metadata.intent)}`}>
+            <span className={`px-3 py-1 rounded capitalize text-xs font-medium ${getIntentColor(metadata.intent)}`}>
               {metadata.intent}
             </span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{metadata.title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{metadata.title}</h1>
 
-          <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">{metadata.description}</p>
+          <p className="text-lg text-inn-text-secondary leading-relaxed">{metadata.description}</p>
         </header>
 
         {/* Content Area */}
-        <main className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 mb-8">
+        <main className="border-inn-border-light border bg-inn-bg-card rounded-lg shadow-[0_2px_8px] shadow-inn-bg-accent/10 p-8 mb-8">
           <div className="prose prose-lg dark:prose-invert max-w-none">
             {markdownContent ? (
               <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>{markdownContent}</Markdown>
             ) : (
-              <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-6">
-                <h3 className="text-blue-800 dark:text-blue-200 font-semibold mb-2">Content Loading...</h3>
-                <p className="text-blue-700 dark:text-blue-300">
+              <div className="bg-inn-bg-soft border-l-4 border-inn-bg-accent p-4 mb-6">
+                <h3 className="text-inn-text-primary font-semibold mb-2">Content Loading...</h3>
+                <p className="text-inn-text-secondary">
                   Unable to load article content. Please check if the file exists.
                 </p>
               </div>
@@ -85,13 +85,13 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
 
             {/* Keywords */}
             {metadata.keywords.length > 0 && (
-              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
-                <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Related Topics</h4>
+              <div className="mt-8 pt-6 border-t border-inn-border-light">
+                <h4 className="text-sm font-semibold text-inn-text-secondary mb-3">Related Topics</h4>
                 <div className="flex flex-wrap gap-2">
                   {metadata.keywords.map((keyword) => (
                     <span
                       key={keyword}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm"
+                      className="px-3 py-1 bg-inn-bg-soft border border-inn-border-light text-inn-text-secondary capitalize rounded-full text-sm"
                     >
                       {keyword}
                     </span>
@@ -104,14 +104,14 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
 
         {/* Related Content */}
         {relatedContent.length > 0 && (
-          <section className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
+          <section className="bg-inn-bg-card border border-inn-border-light rounded-lg shadow-[0_2px_8px] shadow-inn-bg-accent/10 p-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Related Articles</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {relatedContent.map((item) => (
                 <Link
                   key={item.metadata.slug}
                   href={`/content/${item.metadata.category}/${item.metadata.slug}`}
-                  className="block p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-md transition-shadow"
+                  className="block p-4 border border-inn-border-light rounded-2xl bg-inn-bg-soft hover:shadow-[0_4px_20px] hover:shadow-inn-bg-accent/15 hover:border-inn-bg-accent transition-shadow"
                 >
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
                     {item.metadata.title}
@@ -142,7 +142,7 @@ export default function ArticleLayout({ contentItem, relatedContent, category, m
 
 function getIntentColor(intent: string): string {
   const colors = {
-    informational: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    informational: "bg-inn-bg-soft text-inn-bg-accent",
     actionable: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
     supportive: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
     therapeutic: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",

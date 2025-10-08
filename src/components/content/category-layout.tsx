@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Clock, Star } from "lucide-react";
+import { BookOpen, Clock, Star, StarIcon } from "lucide-react";
 
 import { ContentCategory, ContentItem } from "@/types/content.types";
 
@@ -39,7 +39,7 @@ export default function CategoryLayout({ category, categoryInfo, content, featur
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Breadcrumb */}
         <nav className="mb-6">
@@ -128,8 +128,8 @@ function ContentCard({ item, featured = false }: ContentCardProps) {
   return (
     <Link
       href={`/content/${metadata.category}/${metadata.slug}`}
-      className={`block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${
-        featured ? "ring-2 ring-blue-500 ring-opacity-50" : ""
+      className={`block bg-inn-bg-card border border-inn-border-light rounded-2xl hover:shadow-[0_4px_20px] hover:shadow-inn-bg-accent/15 transition-all duration-200 overflow-hidden ${
+        featured ? "ring-1 ring-inn-bg-accent/50 " : "hover:border-inn-bg-accent"
       }`}
     >
       <div className="p-6">
@@ -138,8 +138,8 @@ function ContentCard({ item, featured = false }: ContentCardProps) {
           <div className="flex-1">
             {featured && (
               <div className="flex items-center mb-2">
-                <Star className="w-4 h-4 text-yellow-500 mr-1" />
-                <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400">Featured</span>
+                <StarIcon className="w-4 h-4 text-inn-bg-flame mr-1" />
+                <span className="text-xs font-medium text-inn-bg-flame">Featured</span>
               </div>
             )}
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2">
@@ -156,10 +156,10 @@ function ContentCard({ item, featured = false }: ContentCardProps) {
         {/* Metadata */}
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-3">
-            <span className={`px-2 py-1 rounded ${getPriorityColor(metadata.priority)} font-medium`}>
+            <span className={`px-3 capitalize py-1 rounded-2xl ${getPriorityColor(metadata.priority)} font-medium`}>
               {metadata.priority}
             </span>
-            <span className="capitalize">{metadata.intent}</span>
+            <span className="capitalize text-sm">{metadata.intent}</span>
           </div>
           {metadata.readingTime && (
             <div className="flex items-center">

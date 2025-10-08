@@ -1,6 +1,8 @@
 // Note: Unused imports removed to fix ESLint warnings
 // These are available but not used in this service file
 
+import { TherapeuticAnalysisWithMessageId } from "../therapeutic-analysis/therapeutic-analysis.types";
+
 // Note: generateSessionSummary and generateSessionDiagnostics are implemented as server actions
 // in /src/app/actions/session-diagnostics-actions.ts following the project pattern
 
@@ -64,4 +66,34 @@ Behavioral patterns: ${aggregatedPatterns.map((p) => `${p.type} (${p.severity})`
   `.trim();
 
   return analysisText;
+}
+
+export function getCriticalMessageIds(
+  analysisMap: TherapeuticAnalysisWithMessageId[],
+  options?: {
+    minIntensity?: "low" | "moderate" | "high";
+    includeCrisis?: boolean;
+    importantDistortions?: string[];
+  }
+): string[] {
+  const { minIntensity = "moderate", includeCrisis = true, importantDistortions = [] } = options || {};
+  const intensityRank = { low: 1, moderate: 2, high: 3 };
+
+  return analysisMap
+    .filter((analysis) => {
+      // High intensity
+      if (intensityRank[analysis.intensity] >= intensityRank[minIntensity]) return true;
+
+      // Crisis detected
+      if (includeCrisis && analysis.crisis !== "none") return true;
+
+      // Contains important distortions
+      if (importantDistortions.length > 0) {
+        const found = analysis.distortions.some((d) => importantDistortions.includes(d.type));
+        if (found) return true;
+      }
+
+      return false;
+    })
+    .map(({ messageId }) => messageId);
 }

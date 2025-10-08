@@ -102,6 +102,7 @@ export const TherapeuticAnalysisSchema = z.object({
 
 // === Type inferred from schema ===
 export type TherapeuticAnalysis = z.infer<typeof TherapeuticAnalysisSchema>;
+export type TherapeuticAnalysisWithMessageId = TherapeuticAnalysis & { messageId: string };
 
 // === Advanced Session Diagnostics ===
 export const CONFIDENCE_LEVEL_MAP = {

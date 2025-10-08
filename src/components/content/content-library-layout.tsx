@@ -73,18 +73,18 @@ export default function ContentLibraryLayout({
   totalArticles,
 }: ContentLibraryLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <header className="mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4">Content Library</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-inn-text-primary mb-4">Content Library</h1>
+          <p className="text-xl text-inn-text-secondary leading-relaxed max-w-3xl mx-auto mb-6">
             Explore our comprehensive collection of mental health resources, therapeutic guides, and practical tools to
             support your wellbeing journey.
           </p>
 
           {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-inn-text-secondary">
             <div className="flex items-center">
               <BookOpen className="w-4 h-4 mr-2" />
               {totalArticles} articles
@@ -105,8 +105,8 @@ export default function ContentLibraryLayout({
         {/* Featured Content */}
         {featuredContent.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-              <Star className="w-6 h-6 mr-2 text-yellow-500" />
+            <h2 className="text-2xl font-bold text-inn-text-primary mb-6 flex items-center">
+              <Star className="w-6 h-6 mr-2 text-inn-bg-flame" />
               Featured Articles
             </h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -119,7 +119,7 @@ export default function ContentLibraryLayout({
 
         {/* Categories Grid */}
         <section>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Browse by Category</h2>
+          <h2 className="text-2xl font-bold text-inn-text-primary mb-6">Browse by Category</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Object.entries(contentByCategory).map(([category, articles]) => (
               <CategoryCard key={category} category={category as ContentCategory} articles={articles} />
@@ -128,15 +128,15 @@ export default function ContentLibraryLayout({
         </section>
 
         {/* Call to Action */}
-        <section className="mt-16 text-center bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Need Personalized Support?</h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
+        <section className="mt-16 text-center bg-inn-bg-card rounded-2xl border border-inn-border-light shadow-[0_2px_8px] shadow-inn-bg-accent/8 p-8">
+          <h3 className="text-2xl font-bold text-inn-text-primary mb-4">Need Personalized Support?</h3>
+          <p className="text-inn-text-secondary mb-6 max-w-2xl mx-auto">
             While our content library provides valuable insights, our AI-powered therapeutic chat offers personalized
             guidance tailored to your specific needs and situation.
           </p>
           <Link
             href="/sessions"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="inline-flex items-center px-6 py-3 bg-inn-bg-accent-dark text-white rounded-lg hover:bg-inn-bg-accent-dark transition-colors font-medium"
           >
             Start a Session
           </Link>
@@ -160,22 +160,22 @@ function FeaturedContentCard({ item }: FeaturedContentCardProps) {
   return (
     <Link
       href={`/content/${metadata.category}/${metadata.slug}`}
-      className="block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ring-2 ring-blue-500 ring-opacity-50"
+      className="block  bg-inn-bg-card rounded-2xl shadow-[0_2px_8px] shadow-inn-bg-accent/8  hover:shadow-[0_4px_20px] hover:shadow-inn-bg-accent/15 transition-all duration-200 overflow-hidden ring-1 ring-inn-bg-accent/40"
     >
       <div className="p-6">
         {/* Featured Badge */}
         <div className="flex items-center mb-3">
-          <Star className="w-4 h-4 text-yellow-500 mr-1" />
-          <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400">Featured</span>
+          <Star className="w-4 h-4 text-inn-bg-flame mr-2" />
+          <span className="text-xs font-medium text-inn-bg-flame">Featured</span>
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2 mb-3">
+        <h3 className="text-lg font-semibold text-inn-text-primary leading-tight line-clamp-2 mb-3">
           {metadata.title}
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
+        <p className="text-inn-text-secondary text-sm leading-relaxed mb-4 line-clamp-3">
           {excerpt || metadata.description}
         </p>
 
@@ -210,18 +210,18 @@ function CategoryCard({ category, articles }: CategoryCardProps) {
   return (
     <Link
       href={`/content/${category}`}
-      className="block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 p-6 group"
+      className="block bg-inn-bg-card border border-inn-border-light rounded-2xl shadow-[0_2px_8px] shadow-inn-bg-accent/8 hover:shadow-[0_4px_20px] hover:shadow-inn-bg-accent/15 transition-all hover:border-inn-bg-accent duration-200 p-6 group"
     >
       {/* Icon and Title */}
       <div className="flex items-center mb-3">
         <span className="text-2xl mr-3">{info.icon}</span>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <h3 className="text-lg font-semibold text-inn-text-primary group-hover:text-inn-bg-accent transition-colors">
           {info.title}
         </h3>
       </div>
 
       {/* Description */}
-      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">{info.description}</p>
+      <p className="text-inn-text-secondary text-sm leading-relaxed mb-4">{info.description}</p>
 
       {/* Stats */}
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">

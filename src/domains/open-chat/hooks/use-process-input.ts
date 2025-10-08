@@ -30,7 +30,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
   );
 
   const processInput = useCallback(
-    async (userInput: string) => {
+    async (userInput: string, messageId: string) => {
       setProcessingError(null);
       setIsProcessing(true);
 
@@ -92,7 +92,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           return { error };
         }
 
-        if (newAnalysis) addAnalysis(newAnalysis);
+        if (newAnalysis) addAnalysis(newAnalysis, messageId);
         if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
         if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
 

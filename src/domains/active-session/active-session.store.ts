@@ -22,8 +22,8 @@ interface ActiveSessionStoreState {
 
   // Session actions
   addMessage: (message: OpenChatMessage) => void;
-  appendMessage: (content: string, role: "user" | "assistant", creditsUsed?: number) => void;
-  addAnalysis: (analysis: TherapeuticAnalysis) => void;
+  appendMessage: (content: string, role: "user" | "assistant", creditsUsed?: number) => string | null;
+  addAnalysis: (analysis: TherapeuticAnalysis, messageId: string) => void;
   addTokenUsage: (tokenUsage: ModelTokenUsage) => void;
   updateTotalCost: (cost: number | ((cost: number) => number)) => void;
   addCreditsUsed: (credits: number) => void;
@@ -81,9 +81,8 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
   },
 
   appendMessage: (content, role, creditsUsed) => {
-    if (!content.trim()) return;
     const current = get().session;
-    if (!current) return;
+    if (!current) return null;
 
     // Update active duration when user sends a message
     if (role === "user") {
@@ -106,23 +105,28 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
       });
     }
 
+    //const messageId = generateMessageId(`${role}-message-${current.id}`);
+    const messageId = generateMessageId();
+
     get().addMessage({
-      id: generateMessageId(`${role}-message-${current.id}`),
+      id: messageId,
       role: role,
       content: content,
       timestamp: Date.now(),
       creditsUsed: creditsUsed,
     });
+
+    return messageId;
   },
 
-  addAnalysis: (analysis) => {
+  addAnalysis: (analysis, messageId) => {
     const current = get().session;
     if (!current) return;
 
     set({
       session: {
         ...current,
-        analysisSnapshots: [...current.analysisSnapshots, analysis],
+        analysisSnapshots: [...current.analysisSnapshots, { ...analysis, messageId }],
         updatedAt: new Date(),
       },
       isDirty: true,

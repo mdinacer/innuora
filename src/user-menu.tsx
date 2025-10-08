@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   CalendarIcon,
   ChevronDownIcon,
@@ -21,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { createClient } from "./lib/supabase/client";
 import { cn } from "./lib/utils";
 import { useAppUserStore } from "./stores/app-user.store";
 
@@ -36,6 +38,7 @@ interface Props {
 }
 
 const UserMenu: React.FC<Props> = () => {
+  const router = useRouter();
   const user = useAppUserStore((state) => state.user);
   const authUser = useAppUserStore((state) => state.authUser);
   const [open, setOpen] = useState(false);
@@ -49,6 +52,15 @@ const UserMenu: React.FC<Props> = () => {
       setOpen((prev) => !prev);
     }
   }, []);
+
+  const handleSignout = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signOut({ scope: "global" });
+
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -133,7 +145,12 @@ const UserMenu: React.FC<Props> = () => {
           Help & Support
         </DropdownMenuItem>
 
-        <DropdownMenuItem variant="destructive" className="text-sm font-medium px-3 py-2.5 rounded-xl" role="menuitem">
+        <DropdownMenuItem
+          onClick={handleSignout}
+          variant="destructive"
+          className="text-sm font-medium px-3 py-2.5 rounded-xl"
+          role="menuitem"
+        >
           <LogOutIcon className="size-[18px]" aria-hidden="true" />
           Log out
         </DropdownMenuItem>

@@ -41,10 +41,9 @@ export function getUniqueId(existingMap: Record<string, string>) {
 
 export async function createStoreSession(data: Partial<Session>, state?: SessionsStoreState) {
   const storeState = state ?? useSessionStore.getState();
-  const { sessions, publicIdMap } = storeState;
+  const { sessions } = storeState;
   // Generate real session ID
   const sessionId = data?.id ?? crypto.randomUUID();
-  const publicId = getUniqueId(publicIdMap);
 
   // Check if session ID already exists
   if (sessions[sessionId]) {
@@ -66,8 +65,11 @@ export async function createStoreSession(data: Partial<Session>, state?: Session
   try {
     const encryptedSession = await encryptSession(sessionData);
 
-    storeState.setSession(publicId, encryptedSession);
+    console.log("encryptedSession", encryptedSession);
 
+    storeState.addSession(encryptedSession);
+
+    console.log("storeSession", storeState.getSession(sessionId));
     return sessionId;
   } catch (error) {
     logger.logErrorAndThrow(ERROR_CODES.SESSION_CREATE_FAILED, error, {

@@ -27,6 +27,7 @@ import { createStoreSession, getDecryptedStoreSession } from "@/domains/encrypte
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { generateId } from "@/domains/session-flow/utils/generate-id";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
+import { useAppUserStore } from "@/stores/app-user.store";
 import TextareaField from "../input/textarea-field";
 import { Button } from "../mir-ui/button";
 
@@ -42,6 +43,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
   const encryptedStore = useSessionStore();
+  const user = useAppUserStore((state) => state.user);
 
   const form = useForm<SessionCreate>({
     resolver: zodResolver(SessionCreateSchema),
@@ -91,6 +93,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
 
   const handleOnSubmit = useCallback(
     async (data: SessionCreate) => {
+      if (!user) return;
       if (onSubmit) {
         onSubmit(data);
         return;
@@ -129,16 +132,13 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
         useSessionStore.getState().addSession(session);
       } else {
         // Create local-only session
-        await createStoreSession(
-          {
-            id,
-            title: data.title || generateId("Session"),
-            subtitle: data.subtitle,
-            autoUpdateTitle: data.autoUpdateTitle,
-            persistOnCloud: data.persistOnCloud,
-          },
-          encryptedStore
-        );
+        await createStoreSession({
+          title: data.title || generateId("Session"),
+          subtitle: data.subtitle,
+          autoUpdateTitle: data.autoUpdateTitle,
+          persistOnCloud: data.persistOnCloud,
+          userId: user.id,
+        });
       }
 
       // Get the updated session and call onSubmit
@@ -149,7 +149,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
 
       setOpen(false);
     },
-    [onSubmit, session, encryptedStore, onSubmitted]
+    [onSubmit, session, encryptedStore, onSubmitted, user]
   );
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
