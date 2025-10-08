@@ -154,7 +154,12 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   return (
     <>
-      <CodeView data={session} className="absolute top-6 left-6" />
+      <CodeView
+        data={{
+          session,
+        }}
+        className="absolute top-6 left-6"
+      />
       <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
 
       {/* Credits Balance Display */}

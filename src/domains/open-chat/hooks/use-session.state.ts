@@ -91,17 +91,21 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     }
   }, []);
 
-  const appendMessage = useCallback((content: string, role: "user" | "assistant", creditsUsed?: number) => {
-    try {
-      useActiveSessionStore.getState().appendMessage(content, role, creditsUsed);
-    } catch {
-      // Error handled silently
-    }
-  }, []);
+  const appendMessage = useCallback(
+    (content: string, role: "user" | "assistant", creditsUsed?: number): string | null => {
+      try {
+        return useActiveSessionStore.getState().appendMessage(content, role, creditsUsed);
+      } catch {
+        return null;
+        // Error handled silently
+      }
+    },
+    []
+  );
 
-  const addAnalysis = useCallback((analysis: TherapeuticAnalysis) => {
+  const addAnalysis = useCallback((analysis: TherapeuticAnalysis, messageId: string) => {
     try {
-      useActiveSessionStore.getState().addAnalysis(analysis);
+      useActiveSessionStore.getState().addAnalysis(analysis, messageId);
       // No immediate sync - will sync at round completion
     } catch {
       // Error handled silently

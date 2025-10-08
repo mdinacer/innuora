@@ -56,11 +56,12 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
     },
     ERROR_CODES.SESSION_ENCRYPTION_FAILED,
     {
+      userId: session.userId,
       operation: "crypto_encrypt_session",
       sessionId: session.id,
       metadata: {
-        // hasMessages: messages.length > 0,
-        // messageCount: messages.length,
+        hasMessages: session?.messages?.length ? session.messages.length > 0 : false,
+        messageCount: session?.messages?.length,
       },
     },
     "Session encrypted successfully"

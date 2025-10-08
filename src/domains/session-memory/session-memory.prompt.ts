@@ -35,8 +35,7 @@ export const CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS = `
 **Role**: Internal memory system. Extract only observable facts, events, and concrete situations from user messages.
 
 ## Input
-- **Existing Memory**: {{existing_memory}}
-- **New User Messages**: {{user_messages}}
+- **User Messages**: {{user_messages}}
 
 ## Rules
 1. **Include only factual content**:

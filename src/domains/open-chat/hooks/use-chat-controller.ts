@@ -64,11 +64,12 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
     async (message: string) => {
       if (!session) return;
 
-      appendUserMessage(message.trim());
+      const messageId = appendUserMessage(message.trim());
 
+      if (!messageId) return;
       try {
         setProcessing(true);
-        const result = await processInput(message);
+        const result = await processInput(message, messageId);
         if (!result) return;
 
         const { assistantMessage, shouldUpdateMemory, tokenUsage, creditsUsed } = result;

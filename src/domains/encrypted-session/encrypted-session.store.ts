@@ -99,6 +99,8 @@ export const useSessionStore = create<SessionsStoreState>()(
       },
 
       setSession: (publicId, session) => {
+        console.log("setSession", publicId, session);
+
         set((state) => {
           const oldSessionId = state.publicIdMap[publicId];
           if (!oldSessionId) return state;
@@ -253,11 +255,11 @@ export const useSessionStore = create<SessionsStoreState>()(
           state.setHasHydrated(true);
 
           // Filter out sessions that don't belong to current user on hydration
-          const { sessions, currentUserId } = state;
-          if (currentUserId) {
-            const filteredSessions = Object.values(sessions).filter((session) => session.userId === currentUserId);
-            state.setSessions(filteredSessions);
-          }
+          // const { sessions, currentUserId } = state;
+          // if (currentUserId) {
+          //   const filteredSessions = Object.values(sessions).filter((session) => session.userId === currentUserId);
+          //   state.setSessions(filteredSessions);
+          // }
         }
       },
     }
