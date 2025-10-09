@@ -4,31 +4,27 @@ import Link from "next/link";
 import { APP_CONFIG } from "@/config/app";
 import initTranslations from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: `Privacy Policy - ${APP_CONFIG.name}`,
-  description: `Learn how ${APP_CONFIG.name} protects your privacy and handles your data with our comprehensive privacy policy. Zero-knowledge encryption ensures your conversations remain private.`,
-  keywords: [
-    `${APP_CONFIG.name} privacy policy`,
-    "data protection",
-    "privacy rights",
-    "zero-knowledge encryption",
-    "emotional AI privacy",
-    "user data security",
-    "GDPR compliance",
-  ],
-  alternates: {
-    canonical: `${APP_CONFIG.domains.primary}/en/privacy`,
-    languages: {
-      en: `${APP_CONFIG.domains.primary}/en/privacy`,
-      fr: `${APP_CONFIG.domains.primary}/fr/privacy`,
-      ar: `${APP_CONFIG.domains.primary}/ar/privacy`,
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale = "en" } = await params;
+  const { t } = await initTranslations(locale, ["seo"]);
+
+  return {
+    title: t("seo:privacy.title"),
+    description: t("seo:privacy.description"),
+    alternates: {
+      canonical: `${APP_CONFIG.domains.primary}/en/privacy`,
+      languages: {
+        en: `${APP_CONFIG.domains.primary}/en/privacy`,
+        fr: `${APP_CONFIG.domains.primary}/fr/privacy`,
+        ar: `${APP_CONFIG.domains.primary}/ar/privacy`,
+      },
     },
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default async function PrivacyPolicyRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;

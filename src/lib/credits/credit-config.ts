@@ -2,119 +2,37 @@
 /**
  * Centralized Credit System Configuration
  *
- * Change only the values here to adjust the entire credit economy.
- * All credit calculations, UI displays, and billing will automatically adjust.
+ * Adjusting tokensPerCredit upward makes each credit feel more valuable.
+ * Profit margin is controlled by pack pricing, not hardcoded multipliers.
+ *
+ * Example: 1 credit = 1000 tokens (premium currency feel)
  */
 
 export const CREDIT_CONFIG = {
   /**
    * Base rate: How many tokens equal 1 credit point
    *
-   * Examples:
-   * - tokensPerCredit: 40    → 1 credit = 40 tokens (current system)
-   * - tokensPerCredit: 1000  → 1 credit = 1000 tokens (~25x more valuable)
-   * - tokensPerCredit: 2000  → 1 credit = 2000 tokens (~50x more valuable)
+   * - tokensPerCredit: 40    → 1 credit = 40 tokens (low-value currency feel)
+   * - tokensPerCredit: 1000  → 1 credit = 1000 tokens (premium currency feel)
    */
   tokensPerCredit: 1000,
 
   /**
    * Display precision for credit amounts
-   *
-   * Examples:
-   * - 0: Show whole numbers only (1, 2, 3 credits)
-   * - 1: Show 1 decimal place (1.0, 1.5, 2.0 credits)
-   * - 2: Show 2 decimal places (1.00, 1.25, 1.50 credits)
+   * Keep whole numbers to reinforce "weight" of each credit.
    */
   displayPrecision: 0,
 
   /**
-   * How to handle fractional credits when charging users
-   *
-   * - 'up': Always round up (0.1 credits → charge 1 credit)
-   * - 'nearest': Round to nearest (0.4 → 0, 0.6 → 1)
-   * - 'down': Always round down (0.9 credits → charge 0 credits)
+   * Rounding strategy for billing
+   * Always round up to avoid micro-credits slipping through.
    */
   roundingMode: "up" as "up" | "nearest" | "down",
 
   /**
-   * Minimum credit charge (prevents micro-transactions)
-   * Set to 0 to allow any amount, or 1 to always charge at least 1 credit
+   * Minimum credit charge (ensures every call has weight)
    */
   minimumCharge: 1,
-
-  /**
-   * Business cost configuration
-   * Allows adding profit margin and infrastructure overhead to API costs
-   */
-  pricing: {
-    /**
-     * Markup multiplier applied to raw API costs
-     * Examples:
-     * - 1.0: No markup (charge exactly API cost)
-     * - 2.0: 2x markup (50% profit margin)
-     * - 3.0: 3x markup (66% profit margin)
-     */
-    markupMultiplier: 3.0,
-
-    /**
-     * Fixed infrastructure overhead per AI request (in USD)
-     * Covers: hosting, database, CDN, monitoring, etc.
-     */
-    infraOverheadUSD: 0.015,
-
-    /**
-     * Credit unit value in USD
-     * 1 credit = $0.005 (half a cent)
-     */
-    creditUnitUSD: 0.005,
-  },
-
-  /**
-   * Diagnostic feature cost estimates
-   * Actual costs calculated dynamically from token usage
-   */
-  diagnostics: {
-    /**
-     * Basic diagnostic (free tier)
-     * - Shows: whats_happening section only
-     * - Estimated tokens: ~500-800
-     * - Estimated cost: ~1 credit (calculated from actual usage)
-     */
-    basic: {
-      estimatedTokens: 650,
-      sections: 1,
-      displayName: "Basic Pattern Insights",
-    },
-
-    /**
-     * Standard diagnostic (regular tier)
-     * - Shows: 7 sections (actionable insights for self-work)
-     * - Estimated tokens: ~2848
-     * - Estimated cost: ~3 credits (calculated from actual usage)
-     * - Perceived value: Structured insights ChatGPT cannot provide
-     */
-    standard: {
-      estimatedTokens: 2848,
-      sections: 7,
-      displayName: "Full Actionable Diagnostic",
-      perceivedValue: "Personalized CBT workbook insights",
-    },
-
-    /**
-     * Advanced diagnostic (premium tier)
-     * - Shows: 9 sections (clinical-grade for therapist collaboration)
-     * - Estimated tokens: ~3311
-     * - Estimated cost: ~3 credits (calculated from actual usage)
-     * - Perceived value: $500-1500 professional psychological assessment
-     */
-    advanced: {
-      estimatedTokens: 3311,
-      sections: 9,
-      displayName: "Clinical-Grade Diagnostic",
-      perceivedValue: "$500-1500 professional psychological assessment",
-      professionalEquivalent: "Comprehensive psychological evaluation",
-    },
-  },
 } as const;
 
 /**
@@ -224,47 +142,6 @@ export const CreditUtils = {
 
   calculateBillableCredits: (tokens: number): number => {
     const rawCredits = CreditUtils.tokensToCredits(tokens);
-    return CreditUtils.applyBillingRules(rawCredits);
-  },
-
-  /**
-   * Calculate credits from AI API usage with markup and infrastructure overhead
-   * This is the main function that should be used for all AI credit calculations
-   *
-   * Formula:
-   * 1. Calculate raw API cost: (inputTokens * inputPrice + outputTokens * outputPrice) / 1000
-   * 2. Apply markup: rawCost * markupMultiplier
-   * 3. Add infrastructure overhead: markedUpCost + infraOverheadUSD
-   * 4. Convert to credits: totalCost / creditUnitUSD
-   * 5. Apply billing rules: rounding + minimum charge
-   *
-   * @param inputTokens - Number of input/prompt tokens
-   * @param outputTokens - Number of output/completion tokens
-   * @param inputPricePer1K - Price per 1000 input tokens in USD
-   * @param outputPricePer1K - Price per 1000 output tokens in USD
-   * @returns Total credits to charge user
-   */
-  calculateCreditsFromAIUsage: (
-    inputTokens: number,
-    outputTokens: number,
-    inputPricePer1K: number,
-    outputPricePer1K: number
-  ): number => {
-    // Step 1: Calculate raw API cost
-    const inputCost = (inputTokens / 1000) * inputPricePer1K;
-    const outputCost = (outputTokens / 1000) * outputPricePer1K;
-    const rawAPICost = inputCost + outputCost;
-
-    // Step 2: Apply markup multiplier
-    const markedUpCost = rawAPICost * CREDIT_CONFIG.pricing.markupMultiplier;
-
-    // Step 3: Add infrastructure overhead
-    const totalCost = markedUpCost + CREDIT_CONFIG.pricing.infraOverheadUSD;
-
-    // Step 4: Convert to credits
-    const rawCredits = totalCost / CREDIT_CONFIG.pricing.creditUnitUSD;
-
-    // Step 5: Apply billing rules (rounding + minimum charge)
     return CreditUtils.applyBillingRules(rawCredits);
   },
 };

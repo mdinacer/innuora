@@ -1,14 +1,13 @@
 import { Metadata } from "next";
 
 import ContentLibraryLayout from "@/components/content/content-library-layout";
-import { initializeContentRegistry } from "@/lib/content/content-loader";
+import { initializeContentRegistry, loadLocalizedMetadata } from "@/lib/content/content-loader";
 import { contentRegistry } from "@/lib/content/content-registry";
 
 // =========================
 // Page Props
 // =========================
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface ContentLibraryPageProps {
   params: Promise<{
     locale: string;
@@ -19,17 +18,20 @@ interface ContentLibraryPageProps {
 // Metadata Generation
 // =========================
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: ContentLibraryPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const { default: initTranslations } = await import("@/lib/i18n");
+  const { t } = await initTranslations(locale, ["seo"]);
+
   return {
-    title: "Content Library | Innuora",
-    description:
-      "Browse our comprehensive library of mental health articles, guides, and resources covering CBT, anxiety management, depression support, and more.",
+    title: t("seo:content.title"),
+    description: t("seo:content.description"),
     openGraph: {
-      title: "Content Library | Innuora",
-      description:
-        "Browse our comprehensive library of mental health articles, guides, and resources covering CBT, anxiety management, depression support, and more.",
+      title: t("seo:content.title"),
+      description: t("seo:content.description"),
       type: "website",
       siteName: "Innuora",
+      locale: locale === "ar" ? "ar_AR" : locale === "fr" ? "fr_FR" : "en_US",
     },
     alternates: {
       canonical: "/content",
@@ -46,7 +48,9 @@ export async function generateMetadata(): Promise<Metadata> {
 // Page Component
 // =========================
 
-export default async function ContentLibraryPage() {
+export default async function ContentLibraryPage({ params }: ContentLibraryPageProps) {
+  const { locale } = await params;
+
   // Initialize content registry
   await initializeContentRegistry();
 
@@ -54,8 +58,39 @@ export default async function ContentLibraryPage() {
   const allContent = contentRegistry.getAll();
   const featuredContent = contentRegistry.getFeatured();
 
-  // Group content by category
-  const contentByCategory = allContent.reduce(
+  // Load localized metadata for all articles
+  const localizedContent = allContent.map((item) => {
+    const localizedMeta = loadLocalizedMetadata(item.metadata.category, item.metadata.slug, locale);
+    if (localizedMeta) {
+      return {
+        ...item,
+        metadata: {
+          ...item.metadata,
+          title: localizedMeta.title,
+          description: localizedMeta.description,
+        },
+      };
+    }
+    return item;
+  });
+
+  const localizedFeatured = featuredContent.map((item) => {
+    const localizedMeta = loadLocalizedMetadata(item.metadata.category, item.metadata.slug, locale);
+    if (localizedMeta) {
+      return {
+        ...item,
+        metadata: {
+          ...item.metadata,
+          title: localizedMeta.title,
+          description: localizedMeta.description,
+        },
+      };
+    }
+    return item;
+  });
+
+  // Group localized content by category
+  const contentByCategory = localizedContent.reduce(
     (acc, item) => {
       const category = item.metadata.category;
       if (!acc[category]) {
@@ -64,14 +99,14 @@ export default async function ContentLibraryPage() {
       acc[category].push(item);
       return acc;
     },
-    {} as Record<string, typeof allContent>
+    {} as Record<string, typeof localizedContent>
   );
 
   return (
     <ContentLibraryLayout
       contentByCategory={contentByCategory}
-      featuredContent={featuredContent}
-      totalArticles={allContent.length}
+      featuredContent={localizedFeatured}
+      totalArticles={localizedContent.length}
     />
   );
 }

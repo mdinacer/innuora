@@ -157,6 +157,10 @@ model Session {
   autoUpdateTitle Boolean   @default(false)
   persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
   metadata        Json // additional metadata { messageCount: int, tokenCount: int, creditsUsed: int }
+
+  // Server-only analytics (never sent to client - used for billing verification and debugging)
+  serverAnalytics Json?     @map("server_analytics") // { tokenUsageBreakdown: [...], operationMetrics: {...} }
+
   // Encrypted session bundle
   encryptedData   Json?     @map("encrypted_data")
   createdAt       DateTime  @default(now()) @map("created_at")

@@ -195,6 +195,7 @@ export const useSessionStore = create<SessionsStoreState>()(
               costUSD: 0,
             },
             encryptedData: null,
+            serverAnalytics: null,
             createdAt: current.createdAt,
             updatedAt: new Date(),
           };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -24,7 +24,6 @@ const stripePromise = loadStripe(getStripePublishableKey());
 // =========================
 
 interface PaymentFormProps {
-  userId: string;
   userEmail?: string;
   userName?: string;
   productKey: BillingProductKey;
@@ -33,48 +32,101 @@ interface PaymentFormProps {
   onCancel: () => void;
 }
 
-function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onError, onCancel }: PaymentFormProps) {
+function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCancel }: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isCreatingIntent, setIsCreatingIntent] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "succeeded" | "failed">("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const product = BILLING_PRODUCTS[productKey];
   const timeFrame = CreditUXUtils.creditsToEstimatedWeeks(product.credits);
-
-  // Create payment intent on mount
-  useEffect(() => {
-    async function createIntent() {
-      try {
-        const result = await createCreditPurchaseIntent(productKey, userEmail, userName);
-
-        if (result.error) {
-          onError(result.error.message || "Failed to initialize payment");
-          return;
-        }
-
-        if (result.data.success && result.data.clientSecret) {
-          setClientSecret(result.data.clientSecret);
-        } else {
-          onError("Failed to initialize payment");
-        }
-      } catch {
-        onError("Failed to initialize payment");
-      }
-    }
-
-    createIntent();
-  }, [userId, productKey, userEmail, userName, onError]);
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent) => {
       event.preventDefault();
 
-      if (!stripe || !elements || !clientSecret) {
+      if (!stripe || !elements) {
         return;
       }
 
+      // Prevent duplicate submissions
+      if (isSubmitting || isCreatingIntent || isProcessing) {
+        return;
+      }
+
+      // Create payment intent only when user submits (not on mount)
+      if (!clientSecret) {
+        setIsSubmitting(true);
+        setIsCreatingIntent(true);
+        try {
+          const result = await createCreditPurchaseIntent(productKey, userEmail, userName);
+
+          if (result.error) {
+            onError(result.error.message || "Failed to initialize payment");
+            setIsCreatingIntent(false);
+            setIsSubmitting(false);
+            return;
+          }
+
+          if (!result.data.success || !result.data.clientSecret) {
+            onError("Failed to initialize payment");
+            setIsCreatingIntent(false);
+            setIsSubmitting(false);
+            return;
+          }
+
+          setClientSecret(result.data.clientSecret);
+          setIsCreatingIntent(false);
+
+          // Continue with payment confirmation after intent is created
+          const cardElement = elements.getElement(CardElement);
+          if (!cardElement) {
+            onError("Payment form not loaded properly");
+            setIsSubmitting(false);
+            return;
+          }
+
+          setIsProcessing(true);
+          setPaymentStatus("processing");
+
+          const { error, paymentIntent } = await stripe.confirmCardPayment(result.data.clientSecret, {
+            payment_method: {
+              card: cardElement,
+              billing_details: {
+                email: userEmail,
+                name: userName,
+              },
+            },
+          });
+
+          if (error) {
+            onError(error.message || "Payment failed");
+            setPaymentStatus("failed");
+            setIsSubmitting(false);
+          } else if (paymentIntent.status === "succeeded") {
+            setPaymentStatus("succeeded");
+            onSuccess({
+              creditsAdded: product.credits,
+              newBalance: 0,
+            });
+            // Keep isSubmitting true to prevent any further submissions
+          }
+          setIsProcessing(false);
+        } catch {
+          onError("An unexpected error occurred");
+          setPaymentStatus("failed");
+          setIsCreatingIntent(false);
+          setIsProcessing(false);
+          setIsSubmitting(false);
+        }
+        return;
+      }
+
+      // If clientSecret already exists, just confirm payment
+      setIsSubmitting(true);
       setIsProcessing(true);
       setPaymentStatus("processing");
 
@@ -83,6 +135,7 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
         onError("Payment form not loaded properly");
         setIsProcessing(false);
         setPaymentStatus("failed");
+        setIsSubmitting(false);
         return;
       }
 
@@ -100,30 +153,38 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
         if (error) {
           onError(error.message || "Payment failed");
           setPaymentStatus("failed");
+          setIsSubmitting(false);
         } else if (paymentIntent.status === "succeeded") {
           setPaymentStatus("succeeded");
           onSuccess({
             creditsAdded: product.credits,
-            newBalance: 0, // This will be updated from the server
+            newBalance: 0,
           });
+          // Keep isSubmitting true to prevent any further submissions
         }
       } catch {
         onError("An unexpected error occurred");
         setPaymentStatus("failed");
+        setIsSubmitting(false);
       } finally {
         setIsProcessing(false);
       }
     },
-    [clientSecret, elements, onError, onSuccess, product.credits, stripe, userEmail, userName]
+    [
+      clientSecret,
+      elements,
+      onError,
+      onSuccess,
+      product.credits,
+      stripe,
+      userEmail,
+      userName,
+      productKey,
+      isSubmitting,
+      isCreatingIntent,
+      isProcessing,
+    ]
   );
-  if (!clientSecret) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin" />
-        <span className="ml-2">Initializing payment...</span>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-6">
@@ -197,13 +258,13 @@ function PaymentForm({ userId, userEmail, userName, productKey, onSuccess, onErr
         </button>
         <button
           type="submit"
-          disabled={!stripe || isProcessing || paymentStatus === "succeeded"}
-          className="flex-1 rounded-2xl bg-inn-bg-accent px-6 py-3 text-nowrap text-base font-semibold text-white hover:translate-y-[-1px] transition shadow-lg"
+          disabled={!stripe || isSubmitting || isProcessing || isCreatingIntent || paymentStatus === "succeeded"}
+          className="flex-1 rounded-2xl bg-inn-bg-accent px-6 py-3 text-nowrap text-base font-semibold text-white hover:translate-y-[-1px] transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isProcessing ? (
+          {isCreatingIntent || isProcessing ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              Processing...
+              <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
+              {isCreatingIntent ? "Initializing..." : "Processing..."}
             </>
           ) : (
             `Secure ${timeFrame} weeks of support`
@@ -342,7 +403,6 @@ export function PaymentModal({
 
         <Elements stripe={stripePromise}>
           <PaymentForm
-            userId={userId}
             userEmail={userEmail}
             userName={userName}
             productKey={productKey}

@@ -223,10 +223,15 @@ export class CloudSyncService {
    * Prepare Prisma session data from encrypted session
    */
   private preparePrismaSessionData(encryptedSession: any): Prisma.SessionCreateWithoutUserInput {
+    // Clear tokenUsage from metadata for privacy (before sending to database)
+    const cleanedMetadata = encryptedSession.metadata
+      ? { ...SessionMetadataSchema.parse(encryptedSession.metadata), tokenUsage: [] }
+      : { tokenUsage: [] };
+
     let prismaSession: Prisma.SessionCreateWithoutUserInput = {
       title: encryptedSession.title,
       subtitle: encryptedSession.subtitle || null,
-      metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : {},
+      metadata: cleanedMetadata,
       updatedAt: new Date(),
     };
 
@@ -235,6 +240,14 @@ export class CloudSyncService {
       prismaSession = {
         ...prismaSession,
         encryptedData: encryptedSession.encryptedData,
+      };
+    }
+
+    // Add server analytics if it exists (server-side only tracking)
+    if (encryptedSession.serverAnalytics) {
+      prismaSession = {
+        ...prismaSession,
+        serverAnalytics: encryptedSession.serverAnalytics,
       };
     }
 
