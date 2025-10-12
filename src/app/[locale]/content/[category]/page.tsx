@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import CategoryLayout from "@/components/content/category-layout";
-import { initializeContentRegistry } from "@/lib/content/content-loader";
+import { initializeContentRegistry, loadLocalizedMetadata } from "@/lib/content/content-loader";
 import { contentRegistry } from "@/lib/content/content-registry";
 import { ContentCategory } from "@/types/content.types";
 
@@ -102,7 +102,7 @@ export async function generateStaticParams() {
 // =========================
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { category } = await params;
+  const { locale, category } = await params;
 
   // Validate category
   if (!categoryInfo[category]) {
@@ -114,13 +114,30 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   // Get content for this category
   const categoryContent = contentRegistry.getByCategory(category as ContentCategory);
-  const featuredContent = categoryContent.filter((item) => item.metadata.featured);
+
+  // Load localized metadata
+  const localizedContent = categoryContent.map((item) => {
+    const localizedMeta = loadLocalizedMetadata(item.metadata.category, item.metadata.slug, locale);
+    if (localizedMeta) {
+      return {
+        ...item,
+        metadata: {
+          ...item.metadata,
+          title: localizedMeta.title,
+          description: localizedMeta.description,
+        },
+      };
+    }
+    return item;
+  });
+
+  const featuredContent = localizedContent.filter((item) => item.metadata.featured);
 
   return (
     <CategoryLayout
       category={category as ContentCategory}
       categoryInfo={categoryInfo[category]}
-      content={categoryContent}
+      content={localizedContent}
       featuredContent={featuredContent}
     />
   );

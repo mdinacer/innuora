@@ -33,13 +33,17 @@ export function BillingManagement({ className = "" }: BillingManagementProps = {
   // Get user info from store
   const user = useAppUserStore((state) => state.user);
   const authUser = useAppUserStore((state) => state.authUser);
+  const addCredits = useAppUserStore((state) => state.addCredits);
 
   const userId = user?.id || "";
   const userEmail = authUser?.email || "";
   const userName = user?.profile?.displayName || "";
 
   const handlePurchaseSuccess = (result: { creditsAdded: number; newBalance: number }) => {
-    // Optionally show a success notification
+    // Update credits in the store (add the purchased credits to current balance)
+    addCredits(result.creditsAdded);
+
+    // Log success
     logger.logSuccess("Credit package purchase completed successfully", {
       operation: "billing_purchase_success",
       userId,

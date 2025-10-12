@@ -1,0 +1,26 @@
+{
+  "content": {
+    "title": "Bibliothèque de Contenu | Innuora",
+    "description": "Parcourez notre bibliothèque complète d'articles sur la santé mentale, de guides et de ressources couvrant la TCC, la gestion de l'anxiété, le soutien à la dépression et plus encore."
+  },
+  "eula": {
+    "title": "Accord de Licence Utilisateur Final | Innuora",
+    "description": "Accord de licence pour l'utilisation de l'application Innuora."
+  },
+  "home": {
+    "title": "Compagnon Émotionnel IA pour Femmes Performantes | Innuora - Soutien Burnout & Clarté",
+    "description": "Compagnon émotionnel numérique pour les femmes performantes confrontées au burnout, à l'épuisement et au perfectionnisme. Obtenez une clarté émotionnelle à travers des conversations réflexives qui découvrent les règles silencieuses, révèlent les schémas et défient les distorsions cognitives."
+  },
+  "join": {
+    "title": "Commencez Votre Parcours | Innuora",
+    "description": "Commencez votre parcours thérapeutique personnalisé avec le soutien émotionnel alimenté par l'IA d'Innuora. Démarrez une conversation aujourd'hui."
+  },
+  "privacy": {
+    "title": "Politique de Confidentialité | Innuora",
+    "description": "Découvrez comment Innuora protège votre vie privée avec un cryptage à connaissance nulle et des conversations thérapeutiques sécurisées."
+  },
+  "terms": {
+    "title": "Conditions d'Utilisation | Innuora",
+    "description": "Conditions générales d'utilisation de la plateforme thérapeutique alimentée par l'IA d'Innuora."
+  }
+}

@@ -150,15 +150,10 @@ export async function processAiPrompts(
       // At this point, rawContent is guaranteed to be a non-empty string (logErrorAndThrow throws)
       const message = rawContent!;
       console.log({ usage: data.usage, prompts, response: message });
-      // Calculate credits using centralized system (includes markup + infrastructure overhead)
-      const consumedCredits = data.usage
-        ? CreditUtils.calculateCreditsFromAIUsage(
-            data.usage.prompt_tokens,
-            data.usage.completion_tokens,
-            AI_MODEL_INPUT_PRICE_PER_1K,
-            AI_MODEL_OUTPUT_PRICE_PER_1K
-          )
-        : 0;
+      // Calculate credits using simple token-based system
+      // Profit margin is controlled by pack pricing, not by code multipliers
+      const totalTokens = data.usage?.total_tokens || 0;
+      const consumedCredits = data.usage ? CreditUtils.calculateBillableCredits(totalTokens) : 0;
 
       return {
         message,

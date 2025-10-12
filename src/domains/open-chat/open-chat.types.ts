@@ -48,6 +48,9 @@ export interface Session {
   persistOnCloud?: boolean;
   autoUpdateTitle: boolean;
   metadata: SessionMeta;
+
+  // Server-only analytics (never sent to client - used for billing verification and debugging)
+  serverAnalytics?: import("@/types/server-analytics.types").ServerAnalytics | null;
 }
 
 export interface SessionSummary {

@@ -5,6 +5,7 @@ import { decryptObjectWithKey, encryptObjectWithKey, getStoredContentKey } from 
 import { EncryptedBlob, EncryptedBlobSchema } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
+import { ServerAnalyticsSchema } from "@/types/server-analytics.types";
 
 /** Ensure content key is available or raise a managed error */
 async function requireContentKey(operation: string, sessionId?: string): Promise<CryptoKey> {
@@ -23,7 +24,18 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
     async () => {
       const contentKey = await requireContentKey("crypto_encrypt_session", session.id);
 
-      const { messages = [], memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots, ...rest } = session;
+      const {
+        messages = [],
+        memoryStore,
+        continuitySummary,
+        aggregatedAnalysis,
+        analysisSnapshots,
+        serverAnalytics,
+        ...rest
+      } = session;
+
+      // Validate and parse serverAnalytics if present
+      const validatedServerAnalytics = serverAnalytics ? ServerAnalyticsSchema.parse(serverAnalytics) : null;
 
       const sessionData: Partial<PrismaSession> = {
         ...rest,
@@ -32,6 +44,7 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
           tokenUsage: [],
           lastActiveAt: (rest.metadata?.lastActiveAt || new Date()).toISOString(),
         },
+        serverAnalytics: validatedServerAnalytics,
       };
 
       if (messages.length > 0) {
@@ -79,6 +92,11 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
     async () => {
       const contentKey = await requireContentKey("crypto_decrypt_session", encryptedSession.id);
 
+      // Parse serverAnalytics if present
+      const parsedServerAnalytics = encryptedSession.serverAnalytics
+        ? ServerAnalyticsSchema.safeParse(encryptedSession.serverAnalytics)
+        : null;
+
       // Base session with sane defaults
       let session: Session = {
         id: encryptedSession.id,
@@ -112,6 +130,7 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
               tokenUsage: [],
             },
         persistOnCloud: encryptedSession.persistOnCloud ?? false,
+        serverAnalytics: parsedServerAnalytics?.success ? parsedServerAnalytics.data : null,
       };
 
       // Decrypt sensitive data if available

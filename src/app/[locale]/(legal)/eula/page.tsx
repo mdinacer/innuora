@@ -3,30 +3,27 @@ import { Metadata } from "next";
 import { APP_CONFIG } from "@/config/app";
 import initTranslations from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: `End User License Agreement (EULA) - ${APP_CONFIG.name}`,
-  description: `Read ${APP_CONFIG.name}'s End User License Agreement (EULA) to understand the licensing terms for using our emotional AI companion application.`,
-  keywords: [
-    `${APP_CONFIG.name} EULA`,
-    "end user license agreement",
-    "software license",
-    "app licensing",
-    "user license terms",
-    "emotional AI license",
-  ],
-  alternates: {
-    canonical: `${APP_CONFIG.domains.primary}/en/eula`,
-    languages: {
-      en: `${APP_CONFIG.domains.primary}/en/eula`,
-      fr: `${APP_CONFIG.domains.primary}/fr/eula`,
-      ar: `${APP_CONFIG.domains.primary}/ar/eula`,
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale = "en" } = await params;
+  const { t } = await initTranslations(locale, ["seo"]);
+
+  return {
+    title: t("seo:eula.title"),
+    description: t("seo:eula.description"),
+    alternates: {
+      canonical: `${APP_CONFIG.domains.primary}/en/eula`,
+      languages: {
+        en: `${APP_CONFIG.domains.primary}/en/eula`,
+        fr: `${APP_CONFIG.domains.primary}/fr/eula`,
+        ar: `${APP_CONFIG.domains.primary}/ar/eula`,
+      },
     },
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export const dynamic = "force-static";
 export default async function EULARoute({ params }: { params: Promise<{ locale: string }> }) {
@@ -101,6 +98,7 @@ export default async function EULARoute({ params }: { params: Promise<{ locale: 
       acknowledgment: t("eula.summary.acknowledgment", { app_name: APP_CONFIG.name }),
     },
   };
+
   return (
     <main className="relative  font-sans rtl:font-arabic-body rtl:text-base min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
       {/* <!-- Hero Section --> */}

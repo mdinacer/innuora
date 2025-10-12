@@ -324,13 +324,9 @@ async function processWebhookEvent(event: PaymentIntentEvent | InvoiceEvent | Su
       break;
 
     default:
-      await logger.logWarning(`Unhandled event type in processor: ${(event as any).type}`, {
-        operation: "stripe_webhook_processor",
-        metadata: {
-          eventType: (event as any).type,
-          eventId: (event as any).id,
-        },
-      });
+      // This should never happen since we filter events before processing
+      // But if it does, silently ignore
+      break;
   }
 }
 
@@ -382,13 +378,8 @@ export async function POST(request: NextRequest) {
 
     // Check if we handle this event type
     if (!WEBHOOK_CONFIG.handledEvents.includes(event.type as any)) {
-      await logger.logWarning(`Unhandled webhook event type: ${event.type}`, {
-        operation: "stripe_webhook_handler",
-        metadata: {
-          eventType: event.type,
-          eventId: event.id,
-        },
-      });
+      // Silently ignore unhandled event types (expected behavior)
+      // Common unhandled events: payment_intent.created, charge.succeeded, charge.updated
       return NextResponse.json({ received: true, handled: false });
     }
 

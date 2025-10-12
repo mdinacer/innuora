@@ -179,6 +179,49 @@ export function getAvailableLocales(category: string, slug: string): SupportedCo
 }
 
 /**
+ * Load localized metadata (title, description) from markdown frontmatter
+ */
+export function loadLocalizedMetadata(
+  category: string,
+  slug: string,
+  locale: string = "en"
+): { title: string; description: string } | null {
+  try {
+    const normalizedLocale = normalizeLocale(locale);
+    const localizedPath = path.join(
+      process.cwd(),
+      "src",
+      "content",
+      "articles",
+      normalizedLocale,
+      category,
+      `${slug}.md`
+    );
+
+    if (fs.existsSync(localizedPath)) {
+      const fileContent = fs.readFileSync(localizedPath, "utf-8");
+      const { data } = matter(fileContent);
+      return { title: data.title || "", description: data.description || "" };
+    }
+
+    // Fallback to English
+    if (normalizedLocale !== "en") {
+      const englishPath = path.join(process.cwd(), "src", "content", "articles", "en", category, `${slug}.md`);
+      if (fs.existsSync(englishPath)) {
+        const fileContent = fs.readFileSync(englishPath, "utf-8");
+        const { data } = matter(fileContent);
+        return { title: data.title || "", description: data.description || "" };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`Failed to load metadata for ${category}/${slug}:`, error);
+    return null;
+  }
+}
+
+/**
  * Normalize locale to supported locale (fallback to English)
  */
 function normalizeLocale(locale: string): SupportedContentLocale {

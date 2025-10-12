@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     ];
   },
   /* config options here */
-  reactStrictMode: true,
+  reactStrictMode: false,
 
   // SEO and Performance optimizations
   compress: true,

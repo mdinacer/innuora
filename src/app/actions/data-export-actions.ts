@@ -122,7 +122,12 @@ export async function exportUserData(): Promise<
 
             cloudBackupEnabled: session.persistOnCloud,
             autoUpdateTitle: session.autoUpdateTitle,
-            metadata: session.metadata,
+            // GDPR-compliant metadata only - stripped of implementation details
+            metadata: {
+              messageCount: (session.metadata as any)?.messageCount || 0,
+              // Exclude: tokenCount, inputTokens, outputTokens, tokenUsage, costUSD, creditsUsed
+              // These are internal implementation details, not required by GDPR
+            },
             createdAt: session.createdAt,
             lastUpdated: session.updatedAt,
             note: "Encrypted conversation data is accessible via your decryption key in the app",

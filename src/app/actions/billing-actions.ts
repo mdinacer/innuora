@@ -141,25 +141,8 @@ export async function createCreditPurchaseIntent(
           },
         });
 
-        // Store payment intent in database for tracking
-        await prisma.$transaction(async (tx) => {
-          // Create a pending transaction record
-          await tx.creditTransaction.create({
-            data: {
-              userId: user.id,
-              type: "CREDIT",
-              amount: product.credits,
-              reason: TRANSACTION_CONFIG.reasons.PURCHASE,
-              metadata: {
-                paymentIntentId: paymentIntent.id,
-                stripeCustomerId: customer.id,
-                productKey,
-                amountUSD: product.price,
-                status: "pending",
-              },
-            },
-          });
-        });
+        // Note: Transaction record will be created when webhook confirms payment
+        // This avoids duplicate transaction records
 
         return {
           success: true,
@@ -232,7 +215,7 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
           };
         }
 
-        // Check if payment was already processed
+        // Check if payment was already processed (idempotency check)
         // Note: Simplified approach - check all purchase transactions and filter in memory
         // This is less efficient but more reliable than JSON queries
         const purchaseTransactions = await prisma.creditTransaction.findMany({
@@ -244,59 +227,43 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         const existingTransaction = purchaseTransactions.find(
           (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntentId
         );
-        if (existingTransaction && (existingTransaction.metadata as any)?.status === "completed") {
+        if (existingTransaction) {
+          // Payment already processed, return existing result
           return {
-            success: false,
-            error: "Payment has already been processed",
-            errorCode: BILLING_ERROR_CODES.PAYMENT_FAILED,
+            success: true,
+            creditsAdded: existingTransaction.amount,
+            newBalance: 0, // We don't have access to balance here, webhook response doesn't need it
+            transactionId: existingTransaction.id,
           };
         }
 
-        // Process the payment in a transaction
-        const result = await prisma.$transaction(async (tx) => {
-          // Add credits to user account (userId here is already authId from payment metadata)
-          const creditResultWrapper = await addCreditsToUser(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
-            paymentIntentId,
-            productKey,
-            stripeCustomerId: paymentIntent.customer as string,
-            amountUSD: BillingUtils.centsToDollars(paymentIntent.amount),
-            status: "completed",
-          });
-
-          if (creditResultWrapper.error || !creditResultWrapper.data) {
-            logger.logErrorAndThrow(
-              ERROR_CODES.BILLING_OPERATION_FAILED,
-              new Error(creditResultWrapper.error?.message || "Failed to add credits"),
-              {
-                operation: "process_successful_payment_add_credits",
-                metadata: {
-                  paymentIntentId,
-                  userId,
-                  credits,
-                  errorCode: creditResultWrapper.error?.code,
-                },
-              }
-            );
-          }
-
-          const creditResult = creditResultWrapper.data;
-
-          // Update the pending transaction to completed
-          if (existingTransaction) {
-            await tx.creditTransaction.update({
-              where: { id: existingTransaction.id },
-              data: {
-                metadata: {
-                  ...(existingTransaction.metadata as any),
-                  status: "completed",
-                  processedAt: new Date().toISOString(),
-                },
-              },
-            });
-          }
-
-          return creditResult;
+        // Process the payment - add credits to user account
+        // Note: This will create the transaction record with status "completed"
+        const creditResultWrapper = await addCreditsToUser(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
+          paymentIntentId,
+          productKey,
+          stripeCustomerId: paymentIntent.customer as string,
+          amountUSD: BillingUtils.centsToDollars(paymentIntent.amount),
+          status: "completed",
         });
+
+        if (creditResultWrapper.error || !creditResultWrapper.data) {
+          logger.logErrorAndThrow(
+            ERROR_CODES.BILLING_OPERATION_FAILED,
+            new Error(creditResultWrapper.error?.message || "Failed to add credits"),
+            {
+              operation: "process_successful_payment_add_credits",
+              metadata: {
+                paymentIntentId,
+                userId,
+                credits,
+                errorCode: creditResultWrapper.error?.code,
+              },
+            }
+          );
+        }
+
+        const result = creditResultWrapper.data;
 
         // Revalidate user data
         revalidatePath("/[locale]/sessions", "layout");

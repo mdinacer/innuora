@@ -4,30 +4,27 @@ import Link from "next/link";
 import { APP_CONFIG } from "@/config/app";
 import initTranslations from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: `Terms of Use - ${APP_CONFIG.name}`,
-  description: `Read ${APP_CONFIG.name}'s Terms of Use to understand your rights and responsibilities when using our emotional AI companion platform.`,
-  keywords: [
-    `${APP_CONFIG.name} terms of use`,
-    "terms and conditions",
-    "user agreement",
-    "legal terms",
-    "emotional AI terms",
-    "app terms",
-  ],
-  alternates: {
-    canonical: `${APP_CONFIG.domains.primary}/en/terms`,
-    languages: {
-      en: `${APP_CONFIG.domains.primary}/en/terms`,
-      fr: `${APP_CONFIG.domains.primary}/fr/terms`,
-      ar: `${APP_CONFIG.domains.primary}/ar/terms`,
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale = "en" } = await params;
+  const { t } = await initTranslations(locale, ["seo"]);
+
+  return {
+    title: t("seo:terms.title"),
+    description: t("seo:terms.description"),
+    alternates: {
+      canonical: `${APP_CONFIG.domains.primary}/en/terms`,
+      languages: {
+        en: `${APP_CONFIG.domains.primary}/en/terms`,
+        fr: `${APP_CONFIG.domains.primary}/fr/terms`,
+        ar: `${APP_CONFIG.domains.primary}/ar/terms`,
+      },
     },
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default async function TermsOfUseRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;
@@ -213,6 +210,7 @@ export default async function TermsOfUseRoute({ params }: { params: Promise<{ lo
       message: t("terms.entireAgreement.message", { app_name: APP_CONFIG.name }),
     },
   };
+
   return (
     <main className="relative font-sans rtl:font-arabic-body rtl:text-lg min-h-screen pt-20 w-screen standalone:w-full overflow-hidden bg-inn-bg-primary transition-all duration-300 ease-in text-inn-text-primary">
       {/* <!-- Hero Section --> */}
