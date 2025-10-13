@@ -90,9 +90,7 @@ export async function processAiPrompts(
   return await logger.wrapOperation(
     async () => {
       // Import model configuration (simple constants from env)
-      const { AI_MODEL, AI_MODEL_VENDOR, AI_MODEL_INPUT_PRICE_PER_1K, AI_MODEL_OUTPUT_PRICE_PER_1K } = await import(
-        "@/domains/ai-conversation/ai-models"
-      );
+      const { AI_MODEL, AI_MODEL_VENDOR } = await import("@/domains/ai-conversation/ai-models");
 
       // Import centralized credit calculation
       const { CreditUtils } = await import("@/lib/credits/credit-config");
