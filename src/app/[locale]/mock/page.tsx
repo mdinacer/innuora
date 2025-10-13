@@ -5,16 +5,10 @@ import { useCallback, useState } from "react";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { Button } from "@/components/ui/button";
-import { combineToSessionAnalysis } from "@/domains/session-analysis/session-analysis.utils";
-import { SESSION_SUMMARY_PROMPT } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import {
   combineSessionAnalyses,
   getCriticalMessageIds,
 } from "@/domains/session-diagnostics/session-diagnostics.service";
-import {
-  CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS,
-  SESSION_MEMORY_REFERENCE_INSTRUCTIONS,
-} from "@/domains/session-memory/session-memory.prompt";
 import { formatUserMessagesForMemory } from "@/domains/session-memory/session-memory.utils";
 import {
   TherapeuticAnalysis,
@@ -119,7 +113,7 @@ export default function Page() {
     }
   }, []);
 
-  console.log(randomBytes(32).toString("base64"));
+  //console.log(randomBytes(32).toString("base64"));
 
   const generateDiagnostics = useCallback(async () => {
     const messages = sampleSession.messages as OpenChatMessage[];
