@@ -9,6 +9,12 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 import { processSuccessfulPayment } from "@/app/actions/billing-actions";
+import {
+  allocateSubscriptionCredits,
+  cancelSubscription,
+  createSubscription,
+  updateSubscriptionStatus,
+} from "@/app/actions/subscription-actions";
 import { STRIPE_CONFIG, WEBHOOK_CONFIG } from "@/lib/billing/billing-config";
 import { getStripeServer } from "@/lib/billing/stripe-client";
 import {
@@ -17,8 +23,15 @@ import {
   SubscriptionEvent,
   // StripeWebhookEvent, // TODO: Add support for additional webhook event types
 } from "@/lib/billing/stripe-webhook-types";
+import { findPurchaseTransactionsByPaymentIntents } from "@/lib/billing/transaction-queries";
 import { logger } from "@/lib/logging/unified-logger";
+import {
+  notifyPaymentFailure,
+  notifyPaymentSuccess,
+  notifySubscriptionCreated,
+} from "@/lib/notifications/email-service";
 import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
+import { PaymentCreditMetadataSchema, validateMetadataWithDefault } from "@/lib/zod/metadata.schema";
 
 // =========================
 // Payment Event Handlers
@@ -62,6 +75,20 @@ async function handlePaymentSucceeded(event: PaymentIntentEvent): Promise<void> 
         newBalance: data.newBalance,
       },
     });
+
+    // Send success notification email
+    const customerEmail = (paymentIntent.customer as any)?.email || paymentIntent.metadata?.userEmail;
+    if (customerEmail) {
+      const userName = (paymentIntent.customer as any)?.name || "Valued Customer";
+
+      await notifyPaymentSuccess(
+        customerEmail,
+        userName,
+        data.creditsAdded || 0,
+        paymentIntent.amount,
+        paymentIntent.metadata?.userId
+      );
+    }
   } catch (error) {
     await logger.logWarning("Error handling payment succeeded webhook", {
       operation: "handle_payment_succeeded",
@@ -88,36 +115,48 @@ async function handlePaymentFailed(event: PaymentIntentEvent): Promise<void> {
       },
     });
 
-    // Update transaction status to failed
+    // Update transaction status to failed using optimized query
     const { prisma } = await import("@/lib/prisma");
 
-    // Find and update the relevant transaction
-    const transactionsToUpdate = await prisma.creditTransaction.findMany({
-      where: {
-        reason: "credit_purchase",
-      },
-    });
-
-    const relevantTransactions = transactionsToUpdate.filter(
-      (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntent.id
-    );
+    // Find relevant transactions using optimized query
+    const relevantTransactions = await findPurchaseTransactionsByPaymentIntents([paymentIntent.id]);
 
     for (const transaction of relevantTransactions) {
+      // Validate existing metadata or use default
+      const existingMetadata = validateMetadataWithDefault(PaymentCreditMetadataSchema, transaction.metadata, {
+        paymentIntentId: paymentIntent.id,
+        status: "pending",
+      });
+
+      // Create updated metadata with validation
+      const updatedMetadata = validateMetadataWithDefault(
+        PaymentCreditMetadataSchema,
+        {
+          ...existingMetadata,
+          status: "failed" as const,
+          refundReason: paymentIntent.last_payment_error?.message || "Unknown error",
+          refundedAt: new Date().toISOString(),
+        },
+        {
+          paymentIntentId: paymentIntent.id,
+          status: "failed",
+        }
+      );
+
       await prisma.creditTransaction.update({
         where: { id: transaction.id },
-        data: {
-          metadata: {
-            ...(transaction.metadata as any),
-            status: "failed",
-            failureReason: paymentIntent.last_payment_error?.message || "Unknown error",
-            failedAt: new Date().toISOString(),
-          },
-        },
+        data: { metadata: updatedMetadata as any },
       });
     }
 
-    // TODO: Send notification to user about failed payment
-    // TODO: Optionally retry payment or suggest alternative payment method
+    // Send failure notification email
+    const customerEmail = (paymentIntent.customer as any)?.email || paymentIntent.metadata?.userEmail;
+    if (customerEmail) {
+      const userName = (paymentIntent.customer as any)?.name || "Valued Customer";
+      const failureReason = paymentIntent.last_payment_error?.message || "Payment could not be processed";
+
+      await notifyPaymentFailure(customerEmail, userName, failureReason, paymentIntent.metadata?.userId);
+    }
   } catch (error) {
     await logger.logWarning("Error handling payment failed webhook", {
       operation: "handle_payment_failed",
@@ -147,8 +186,23 @@ async function handleInvoicePaymentSucceeded(event: InvoiceEvent): Promise<void>
       },
     });
 
-    // Handle subscription renewals here
-    // TODO: Implement subscription credit allocation
+    // Handle subscription renewals - allocate credits
+    if (invoice.subscription) {
+      const { prisma } = await import("@/lib/prisma");
+      const subscription = await prisma.subscription.findUnique({
+        where: { stripeId: invoice.subscription as string },
+      });
+
+      if (subscription) {
+        await allocateSubscriptionCredits(
+          subscription.id,
+          subscription.userId,
+          subscription.creditsPerPeriod,
+          invoice.id,
+          invoice.payment_intent as string
+        );
+      }
+    }
   } catch (error) {
     await logger.logWarning("Error handling invoice payment succeeded webhook", {
       operation: "handle_invoice_payment_succeeded",
@@ -174,8 +228,10 @@ async function handleInvoicePaymentFailed(event: InvoiceEvent): Promise<void> {
       },
     });
 
-    // Handle subscription payment failures
-    // TODO: Implement subscription suspension logic
+    // Handle subscription payment failures - suspend subscription
+    if (invoice.subscription) {
+      await updateSubscriptionStatus(invoice.subscription as string, "past_due");
+    }
   } catch (error) {
     await logger.logWarning("Error handling invoice payment failed webhook", {
       operation: "handle_invoice_payment_failed",
@@ -205,10 +261,38 @@ async function handleSubscriptionCreated(event: SubscriptionEvent): Promise<void
       },
     });
 
-    // TODO: Implement subscription management
-    // - Create subscription record in database
-    // - Set up recurring credit allocation
-    // - Send welcome email
+    // Create subscription record in database
+    const metadata = subscription.metadata || {};
+    const userId = metadata.userId;
+
+    if (userId && subscription.items.data[0]) {
+      const priceItem = subscription.items.data[0];
+      const creditsPerPeriod = parseInt(metadata.creditsPerPeriod || "0");
+
+      await createSubscription(
+        subscription.id,
+        subscription.customer as string,
+        userId,
+        priceItem.price.id,
+        creditsPerPeriod,
+        priceItem.price.unit_amount || 0,
+        new Date(subscription.current_period_start * 1000),
+        new Date(subscription.current_period_end * 1000)
+      );
+
+      // Send welcome email
+      const userEmail = (subscription.customer as any)?.email || metadata.userEmail;
+      const userName = (subscription.customer as any)?.name || "Valued Customer";
+      if (userEmail) {
+        await notifySubscriptionCreated(
+          userEmail,
+          userName,
+          priceItem.price.nickname || "Subscription",
+          creditsPerPeriod,
+          userId
+        );
+      }
+    }
   } catch (error) {
     await logger.logWarning("Error handling subscription created webhook", {
       operation: "handle_subscription_created",
@@ -234,10 +318,13 @@ async function handleSubscriptionUpdated(event: SubscriptionEvent): Promise<void
       },
     });
 
-    // TODO: Handle subscription changes
-    // - Update subscription record
-    // - Adjust credit allocation
-    // - Handle plan upgrades/downgrades
+    // Update subscription status and period
+    await updateSubscriptionStatus(
+      subscription.id,
+      subscription.status as any,
+      new Date(subscription.current_period_start * 1000),
+      new Date(subscription.current_period_end * 1000)
+    );
   } catch (error) {
     await logger.logWarning("Error handling subscription updated webhook", {
       operation: "handle_subscription_updated",
@@ -262,10 +349,8 @@ async function handleSubscriptionDeleted(event: SubscriptionEvent): Promise<void
       },
     });
 
-    // TODO: Handle subscription cancellation
-    // - Update subscription record
-    // - Stop recurring credit allocation
-    // - Send cancellation confirmation
+    // Handle subscription cancellation
+    await cancelSubscription(subscription.id, true);
   } catch (error) {
     await logger.logWarning("Error handling subscription deleted webhook", {
       operation: "handle_subscription_deleted",

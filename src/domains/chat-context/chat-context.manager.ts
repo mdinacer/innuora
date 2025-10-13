@@ -24,9 +24,32 @@ export class ChatContextManager {
 - Integrate prior user and AI turns naturally to make the conversation feel connected.
 - Avoid summarizing or restating the history.
 - Use this context only to inform your style, tone, and continuity, not for new advice.
+
+Response Variation Directive:
+- Before writing, scan the last 2–3 assistant messages.
+- Do NOT begin with the same syntactic pattern (e.g., “That [emotion]...”, “It’s like...”, “You’re...”) used in those responses.
+- Vary sentence openings deliberately: start with a verb, sensory cue, question, or direct observation instead.
+- If a metaphor was used in the last message, use a different mode this time (literal, reflective, sensory, or existential).
+- Reuse emotional truth, not structure or metaphor.
+- Maintain coherence and empathy, but avoid rhythmic repetition.
+- Priority: linguistic freshness > stylistic consistency when both cannot coexist.
+- If uncertain, err on the side of unexpected phrasing or silence before repeating a known pattern.
+
 ${formattedMessages}
   `.trim(),
     };
+    //     return {
+    //       role: "system",
+    //       content: `
+    // ## Conversation History (for context only)
+    // - This is background memory; do not quote directly.
+    // - Maintain continuity, emotional flow, and awareness of prior patterns.
+    // - Integrate prior user and AI turns naturally to make the conversation feel connected.
+    // - Avoid summarizing or restating the history.
+    // - Use this context only to inform your style, tone, and continuity, not for new advice.
+    // ${formattedMessages}
+    //   `.trim(),
+    //     };
   }
 
   private getLastRounds(messages: OpenChatMessage[], rounds = 3, messagesPerRound = 2): OpenChatMessage[] {

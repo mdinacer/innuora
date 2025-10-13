@@ -34,11 +34,9 @@ export function resetSessionData(session: Session): Session {
       lastActiveAt: new Date(),
     },
     messages: [],
-    memoryStore: null,
-    continuitySummary: null,
-    aggregatedAnalysis: null,
-    analysisSnapshots: [],
     sessionDiagnostics: null,
     updatedAt: new Date(), // Update timestamp when resetting
+    // NOTE: memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots
+    // are now stored server-side only and reset via server actions
   };
 }

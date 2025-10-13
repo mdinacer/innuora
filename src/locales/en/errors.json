@@ -174,12 +174,6 @@
   "subscription": {
     "required": "This feature requires a subscription"
   },
-  "tester": {
-    "not_found": "Tester account not found",
-    "create_failed": "Failed to create tester account",
-    "update_failed": "Failed to update tester account",
-    "delete_failed": "Failed to delete tester account"
-  },
   "user": {
     "not_found": "User not found",
     "create_failed": "Failed to create user account",

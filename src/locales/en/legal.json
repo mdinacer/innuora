@@ -1,7 +1,7 @@
 {
   "eula": {
     "title": "End User License Agreement",
-    "lastUpdated": "Last Updated September 2, 2025",
+    "lastUpdated": "Last Updated January 2025",
     "hero": {
       "headline": "End User License Agreement",
       "description": "This agreement governs your use of the {{app_name}} application and defines the terms under which you may access and use our software."
@@ -72,7 +72,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: September 2025",
+    "lastUpdated": "Last updated: January 2025",
     "intro": {
       "title": "Your Privacy, Our Commitment",
       "message": "{{app_name}} is designed as a private, reflective space. We collect only what is strictly necessary to operate the service, and we never sell your data.",
@@ -97,16 +97,24 @@
             "Enable sign-in and set your language preferences",
             "Kept until you delete your account"
           ],
-          ["Session Data (temporary AI responses)", "Provide AI reflections", "Ephemeral - not stored"],
+          [
+            "Session Data (encrypted messages and context)",
+            "Provide reflective conversations and continuity",
+            "Kept until you delete the session"
+          ],
           ["Reflection Notes (if you save them)", "Allow you to revisit past insights", "Kept until you delete them"],
-          ["Technical Logs (IP, device info)", "Security and performance monitoring", "Short-term, auto-deleted"]
+          [
+            "Technical Logs (IP, device info)",
+            "Security and performance monitoring",
+            "Retained for 90 days, then automatically deleted"
+          ]
         ]
       }
     },
     "howWeUse": {
       "title": "How We Use Your Data",
       "paragraphs": [
-        "{{app_name}} processes your inputs in real time through GPT models. Responses are generated without retaining conversation history unless you explicitly save reflections.",
+        "{{app_name}} processes your inputs through AI models and stores encrypted session context (memory, analysis) to provide continuity across conversations. You control whether sessions are synced to the cloud via your settings.",
         "We use hosting, storage, and analytics providers solely to run the service. These providers act only as processors and cannot use your data for their own purposes."
       ]
     },
@@ -128,7 +136,7 @@
   },
   "terms": {
     "title": "Terms of Use",
-    "effectiveDate": "Effective September 2, 2025",
+    "effectiveDate": "Effective January 2025",
     "version": "Version 1.0",
     "intro": {
       "headline": "Important Agreement",
@@ -209,9 +217,9 @@
       "title": "Fees and Payments",
       "points": [
         "Certain features may require a subscription or payment. Fees, billing cycles, and cancellation terms will be disclosed at purchase.",
-        "Payments are processed through third-party providers. We do not store payment card details."
+        "Payments are processed securely through Stripe. We never see or store your payment card details."
       ],
-      "refundPolicy": "Refund Policy: Unless required by law, payments are non-refundable."
+      "refundPolicy": "Refund Policy: All sales are final. Credits are non-refundable once purchased, as they provide immediate access to AI services. In exceptional circumstances (technical issues preventing service use), contact support within 48 hours of purchase."
     },
     "termination": {
       "title": "Account Termination",

@@ -1,28 +1,29 @@
 "use client";
 
+import { randomBytes } from "crypto";
 import { useCallback, useState } from "react";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import AdvancedDiagnosticPage from "@/components/diagnostics/advanced/advanced-diagnostic-page";
-import BasicDiagnosticPage from "@/components/diagnostics/basic/basic-diagnostic-page";
-import { Button } from "@/components/mir-ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { combineToSessionAnalysis } from "@/domains/session-analysis/session-analysis.utils";
+import { SESSION_SUMMARY_PROMPT } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import {
   combineSessionAnalyses,
   getCriticalMessageIds,
 } from "@/domains/session-diagnostics/session-diagnostics.service";
-// import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
-import { formatUserMessagesForMemory } from "@/domains/session-memory/session-memory.utils";
-import { parseJsonObject } from "@/lib/utils/parse-json";
-import { OpenChatMessage } from "@/types/open-chat-message.types";
 import {
-  mockAdvancedDiagnosis,
-  mockBasicDiagnosis,
-  mockSession,
-  mockSessionAnalysis,
-  mockSessionMemory,
-  mockSessionSummary,
-} from "./data";
+  CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS,
+  SESSION_MEMORY_REFERENCE_INSTRUCTIONS,
+} from "@/domains/session-memory/session-memory.prompt";
+import { formatUserMessagesForMemory } from "@/domains/session-memory/session-memory.utils";
+import {
+  TherapeuticAnalysis,
+  TherapeuticAnalysisWithMessageId,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { parseJsonObject } from "@/lib/utils/parse-json";
+// import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
+import { OpenChatMessage } from "@/types/open-chat-message.types";
+import { sampleSession, sampleSessionAnalysis, sampleSessionMemory, sampleSessionSummary } from "./data";
 
 function formatMessages(messages: OpenChatMessage[], maxLength = 800): string {
   return messages
@@ -42,44 +43,52 @@ function formatMessages(messages: OpenChatMessage[], maxLength = 800): string {
 export default function Page() {
   const [loading, setLoading] = useState(false);
 
-  const generateSessionMemory = async () => {
-    const messages = mockSession.messages;
-    const formattedMessages = formatUserMessagesForMemory(messages);
-    const sessionAnalysis = combineSessionAnalyses(mockSession.analysisSnapshots);
-    console.log("👋🏻 sessionAnalysis:", sessionAnalysis);
+  // const generateSessionMemory = async () => {
+  //   const messages = mockSession.messages;
+  //   const formattedMessages = formatUserMessagesForMemory(messages);
+  //   const sessionAnalysis = combineSessionAnalyses(mockSession.analysisSnapshots);
+  //   console.log("👋🏻 sessionAnalysis:", sessionAnalysis);
 
-    // const userPrompt = {
-    //   role: "system" as const,
-    //   content: CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS.replace("{{user_messages}}", formattedMessages).trim(),
-    // };
-    // const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
-    // if (userResult.error) {
-    //   console.error("❌ AI call failed:", userResult.error.message);
-    //   return;
-    // }
-    // const data = userResult.data;
-    // const summary = data.message;
-    // console.log("👋🏻 summary:", summary);
-  };
+  //   // const userPrompt = {
+  //   //   role: "system" as const,
+  //   //   content: CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS.replace("{{user_messages}}", formattedMessages).trim(),
+  //   // };
+  //   // const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
+  //   // if (userResult.error) {
+  //   //   console.error("❌ AI call failed:", userResult.error.message);
+  //   //   return;
+  //   // }
+  //   // const data = userResult.data;
+  //   // const summary = data.message;
+  //   // console.log("👋🏻 summary:", summary);
+  // };
 
   const testPrompt = useCallback(async () => {
     setLoading(true);
-    const messages = mockSession.messages;
+    const messages = sampleSession.messages as OpenChatMessage[];
+    const analysis = sampleSession.analysisSnapshots as TherapeuticAnalysis[];
     try {
-      const criticalMessagesIds = getCriticalMessageIds(mockSession.analysisSnapshots);
-      const criticalMessages = messages.filter((msg) => criticalMessagesIds.includes(msg.id));
+      // const criticalMessagesIds = getCriticalMessageIds(mockSession.analysisSnapshots);
+      // const criticalMessages = messages.filter((msg) => criticalMessagesIds.includes(msg.id));
 
-      console.log("👋🏻 criticalMessagesIds:", criticalMessagesIds);
-      const formattedMessages = formatUserMessagesForMemory(criticalMessages);
-      const userPrompt = {
-        role: "system" as const,
-        content: DiagnosticPrompts.basic
-          .replace("{{session_summary}}", mockSessionSummary)
-          .replace("{{session_memory}}", mockSessionMemory.join(","))
-          .replace("{{session_analysis}}", mockSessionAnalysis)
-          .replace("{{session_messages}}", formattedMessages)
-          .trim(),
-      };
+      //console.log("👋🏻 criticalMessagesIds:", criticalMessagesIds);
+      const formattedMessages = formatUserMessagesForMemory(messages);
+      const combinedAnalysis = combineSessionAnalyses(analysis);
+      console.log(combinedAnalysis);
+
+      // const userPrompt = {
+      //   role: "system" as const,
+      //   content: CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS.replace("{{user_messages}}", formattedMessages).trim(),
+      // };
+      // const userPrompt = {
+      //   role: "system" as const,
+      //   content: DiagnosticPrompts.basic
+      //     .replace("{{session_summary}}", mockSessionSummary)
+      //     .replace("{{session_memory}}", mockSessionMemory.join(","))
+      //     .replace("{{session_analysis}}", mockSessionAnalysis)
+      //     .replace("{{session_messages}}", formattedMessages)
+      //     .trim(),
+      // };
       // const userPrompt = {
       //   role: "system" as const,
       //   content: ADVANCED_THERAPIST_DIAGNOSTIC_PROMPT.replace("{{session_summary}}", mockSessionSummary)
@@ -88,18 +97,19 @@ export default function Page() {
       //     .trim(),
       // };
 
-      const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
+      //const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
 
-      if (userResult.error) {
-        console.error("❌ AI call failed:", userResult.error.message);
-        return;
-      }
+      // if (userResult.error) {
+      //   console.error("❌ AI call failed:", userResult.error.message);
+      //   return;
+      // }
 
-      const data = userResult.data;
-      console.log("✅ USER DIAGNOSTICS RESULT:");
-      console.log("📊 Tokens used:", data.modelTokenUsage);
-      console.log("📄 Content:", parseJsonObject(data.message));
-      console.log("\n" + "=".repeat(80) + "\n");
+      // const data = userResult.data;
+      // console.log("✅ USER DIAGNOSTICS RESULT:");
+      // console.log("📊 Tokens used:", data.modelTokenUsage);
+      // //console.log("📄 Content:", parseJsonObject(data.message));
+      // console.log("📄 Content:", data.message);
+      // console.log("\n" + "=".repeat(80) + "\n");
 
       // Test Advanced Therapist Diagnostics
     } catch (error) {
@@ -109,9 +119,41 @@ export default function Page() {
     }
   }, []);
 
+  console.log(randomBytes(32).toString("base64"));
+
+  const generateDiagnostics = useCallback(async () => {
+    const messages = sampleSession.messages as OpenChatMessage[];
+    const analysis = sampleSession.analysisSnapshots as TherapeuticAnalysisWithMessageId[];
+    const criticalMessagesIds = getCriticalMessageIds(analysis);
+    const criticalMessages = messages.filter((msg) => criticalMessagesIds.includes(msg.id));
+
+    const userPrompt = {
+      role: "system" as const,
+      content: DiagnosticPrompts.advanced
+        .replace("{{session_summary}}", sampleSessionSummary)
+        .replace("{{session_memory}}", sampleSessionMemory.join(","))
+        .replace("{{session_analysis}}", sampleSessionAnalysis)
+        .replace("{{session_messages}}", criticalMessages.join(","))
+        .trim(),
+    };
+
+    const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
+
+    if (userResult.error) {
+      console.error("❌ AI call failed:", userResult.error.message);
+      return;
+    }
+
+    const data = userResult.data;
+    console.log("✅ USER DIAGNOSTICS RESULT:");
+    console.log("📊 Tokens used:", data.modelTokenUsage);
+    console.log("📄 Content:", parseJsonObject(data.message));
+    console.log("\n" + "=".repeat(80) + "\n");
+  }, []);
+
   return (
     <div className="h-screen  w-full  items-center bg-inn-bg-primary py-30 justify-center">
-      <Button onClick={testPrompt} disabled={loading}>
+      <Button onClick={generateDiagnostics} disabled={loading}>
         {loading ? "Testing Diagnostics..." : "Test Enhanced Diagnostic Prompts"}
       </Button>
       {/* <CodeView data={mockSession.analysisSnapshots} className="absolute top-0 left-0 z-10" />
@@ -121,7 +163,7 @@ export default function Page() {
       <Button onClick={generateSessionMemory} disabled={loading}>
         {loading ? "Summarizing Session..." : "Summarize Session"}
       </Button> */}
-      <Tabs defaultValue="advanced">
+      {/* <Tabs defaultValue="advanced">
         <TabsList className="max-w-5xl mx-auto ">
           <TabsTrigger value="basic">Basic</TabsTrigger>
           <TabsTrigger value="advanced">Advanced</TabsTrigger>
@@ -132,7 +174,7 @@ export default function Page() {
         <TabsContent value="advanced">
           <AdvancedDiagnosticPage session={mockSession} diagnostic={mockAdvancedDiagnosis} />
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
       {/* <CodeView data={mockMessages} className="absolute top-0 left-0 z-10" /> */}
       {/* <p>{mockMessages.filter((m) => m.role === "user").length}</p>
       <div className="relative h-full w-full max-w-5xl mx-auto flex flex-col">

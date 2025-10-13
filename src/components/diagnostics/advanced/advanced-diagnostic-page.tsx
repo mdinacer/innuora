@@ -78,7 +78,7 @@ interface Props {
 
 const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, session }) => {
   const getDistortionMessages = (distortion: string) => {
-    const messagesIds = getMessagesIdByDistortion(distortion, session.analysisSnapshots);
+    const messagesIds = getMessagesIdByDistortion(distortion, []);
     if (messagesIds.length === 0) return [];
     return session.messages.filter((message) => messagesIds.includes(message.id)).map((message) => message.content);
   };

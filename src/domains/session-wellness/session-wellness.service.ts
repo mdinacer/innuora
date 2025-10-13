@@ -11,16 +11,23 @@ export class SessionWellnessService {
    * Evaluates session wellness after a message is processed
    * Runs in background, does not block UI
    * Returns token usage and credits consumed for tracking
+   *
+   * NOTE: analysisSnapshots are stored server-side only for security.
+   * This wellness check runs with limited analysis data (no therapeutic insights).
+   * For full wellness checks with analysis, this should be refactored to a server action.
    */
   async evaluateAfterMessage(
     session: Session | null,
-    analysisSnapshots: TherapeuticAnalysis[],
     latestMessage: string,
     sessionId: string,
     locale: string,
     authId?: string
   ): Promise<{ tokenUsage: any; creditsUsed: number } | null> {
     if (!session) return null;
+
+    // analysisSnapshots are now server-side only - wellness runs without them temporarily
+    // TODO: Refactor wellness check to server action to access full therapeutic analysis
+    const analysisSnapshots: TherapeuticAnalysis[] = [];
 
     // Dynamic import to avoid circular dependencies
     const { wellnessFrequencyManager } = await import("@/domains/session-wellness/session-wellness.frequency-manager");

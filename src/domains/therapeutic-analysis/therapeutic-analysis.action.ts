@@ -14,7 +14,8 @@ export async function analyzeUserInput(
   prevData: TherapeuticAnalysis[] = [],
   userId?: string,
   sessionId?: string,
-  sessionMetadata?: { messageCount: number; activeDurationMs: number }
+  sessionMetadata?: { messageCount: number; activeDurationMs: number },
+  recentMessages?: { role: "user" | "assistant"; content: string }[]
 ): Promise<ActionResult<AnalysisResult>> {
   return await logger.wrapOperation<AnalysisResult>(
     async () => {
@@ -30,7 +31,8 @@ export async function analyzeUserInput(
       const analysisContextPrompt = therapeuticAnalysisEngine.getAnalysisContextPrompt(
         userInput,
         prevData,
-        sessionMetadata
+        sessionMetadata,
+        recentMessages
       );
 
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];

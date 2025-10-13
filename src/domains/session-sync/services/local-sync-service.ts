@@ -52,10 +52,10 @@ export class LocalSyncService {
     }
 
     // Check if session data has actually changed
+    // NOTE: analysisSnapshots are now server-side only - only track client-visible data
     const currentData = {
       updatedAt: session.updatedAt,
       messageCount: session.messages.length,
-      analysisCount: session.analysisSnapshots.length,
     };
 
     if (!this.stateManager.hasDataChanged(sessionId, currentData)) {
@@ -144,7 +144,6 @@ export class LocalSyncService {
       this.stateManager.setLastSyncedData(sessionId, {
         updatedAt: session.updatedAt,
         messageCount: session.messages.length,
-        analysisCount: session.analysisSnapshots.length,
       });
 
       logger.logInfo("Completed local sync for session", {
@@ -172,7 +171,6 @@ export class LocalSyncService {
       sessionId,
       metadata: {
         messageCount: session.messages.length,
-        analysisCount: session.analysisSnapshots.length,
         lastUpdated: session.updatedAt,
       },
     });

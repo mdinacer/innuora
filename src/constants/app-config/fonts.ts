@@ -3,7 +3,7 @@ import { Tajawal as ArabicBodyFont, Cairo as ArabicTitleFont, Geist, Geist_Mono 
 
 export const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 export const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-export const zain = ArabicTitleFont({
+export const cairo = ArabicTitleFont({
   variable: "--font-arabic-title",
   subsets: ["arabic"],
   weight: ["400", "700", "800"],

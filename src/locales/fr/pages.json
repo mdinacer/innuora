@@ -1,50 +1,4 @@
 {
-  "advancedTester": {
-    "hero": {
-      "badge": "Tests avancés",
-      "title": "Contribuez à l’avenir de {{app_name}}",
-      "description": "Rejoignez notre programme de test avancé et partagez vos retours pendant que nous affinons les conversations réflexives de l’IA de {{app_name}}. Vos observations auront un impact direct sur la manière dont nous développons cet outil de soutien émotionnel."
-    },
-    "form": {
-      "email": {
-        "label": "Adresse e-mail",
-        "placeholder": "vous@example.com",
-        "required": "L’adresse e-mail est requise"
-      },
-      "occupation": {
-        "label": "Profession / Rôle",
-        "placeholder": "ex. : Ingénieur logiciel, Enseignant, Étudiant, etc.",
-        "helpText": "Nous aide à comprendre différents profils d’utilisateurs et leurs besoins."
-      },
-      "struggles": {
-        "label": "Difficultés générales / Défis émotionnels",
-        "placeholder": "Quelles situations ou difficultés émotionnelles souhaitez-vous explorer ? (ex. : stress professionnel, préoccupations relationnelles, prises de décision, etc.)",
-        "helpText": "Partagez les sujets sur lesquels vous aimeriez réfléchir ou obtenir un accompagnement. Cela nous aide à mieux cerner vos besoins."
-      },
-      "coping": {
-        "label": "Mécanismes d’adaptation / Gestion du stress",
-        "placeholder": "Comment gérez-vous actuellement le stress ou les émotions difficiles ? (ex. : écriture, sport, échanges avec des proches, méditation, etc.)",
-        "helpText": "Comprendre vos stratégies actuelles nous aide à concevoir des outils complémentaires plus adaptés."
-      },
-      "source": {
-        "label": "Comment avez-vous découvert {{app_name}} ?",
-        "placeholder": "ex. : Twitter, recommandation d’un ami, article de blog, etc.",
-        "helpText": "Nous aide à identifier les canaux de communication les plus efficaces."
-      },
-      "notes": {
-        "label": "Commentaires ou remarques supplémentaires",
-        "placeholder": "Souhaitez-vous ajouter quelque chose concernant votre intérêt pour {{app_name}} ou vos attentes vis-à-vis des outils d’IA émotionnelle ?",
-        "helpText": "Partagez toute autre idée, question ou domaine que vous aimeriez explorer durant la phase de test."
-      },
-      "submitButton": "Envoyer la candidature",
-      "thankYouNote": "Merci pour votre intérêt à contribuer à {{app_name}}. Nous examinerons les candidatures et contacterons les participants sélectionnés au fur et à mesure du déploiement du programme. Rappel : {{app_name}} n’est ni une thérapie ni un service d’urgence."
-    },
-    "messages": {
-      "success": "Candidature envoyée",
-      "pending": "Envoi en cours...",
-      "error": "Échec de l’envoi"
-    }
-  },
   "auth": {
     "sign-in": {
       "title": "Bon retour",
@@ -206,6 +160,70 @@
           "*Chaque réflexion est privée et sous votre contrôle.*"
         ],
         "buttonText": "Commencer la session"
+      }
+    }
+  },
+  "content": {
+    "categories": {
+      "cognitive-behavioral-therapy": "Ressources en thérapie cognitivo-comportementale (TCC)",
+      "anxiety-management": "Techniques de gestion de l’anxiété",
+      "depression-support": "Soutien et ressources contre la dépression",
+      "stress-management": "Stratégies de gestion du stress",
+      "relationship-patterns": "Dynamiques relationnelles saines",
+      "self-compassion": "Compassion envers soi et bienveillance",
+      "mindfulness-techniques": "Pleine conscience et méditation",
+      "mood-tracking": "Suivi de l’humeur et conscience émotionnelle"
+    },
+    "categoryDescriptions": {
+      "cognitive-behavioral-therapy": "Découvrez des techniques TCC fondées sur les preuves pour soutenir votre santé mentale.",
+      "anxiety-management": "Stratégies pratiques et exercices pour gérer l’anxiété, les inquiétudes et les paniques.",
+      "depression-support": "Comprendre et mieux vivre avec la dépression grâce à des approches thérapeutiques éprouvées.",
+      "stress-management": "Techniques efficaces pour réduire le stress et prévenir l’épuisement au quotidien.",
+      "relationship-patterns": "Comprendre les dynamiques relationnelles et construire des liens plus sains.",
+      "self-compassion": "Développer une relation plus chaleureuse avec soi grâce à la compassion envers soi.",
+      "mindfulness-techniques": "Pratiques de pleine conscience et de méditation pour clarifier l’esprit.",
+      "mood-tracking": "Comprendre et suivre vos variations émotionnelles pour mieux prendre soin de votre santé mentale."
+    },
+    "article": {
+      "backLink": "Retour à {{category}}",
+      "readingTime": "{{minutes}} min de lecture",
+      "relatedArticles": "Articles associés",
+      "keywordsLabel": "Thèmes liés",
+      "categoryLabel": "{{category}}",
+      "intentLabels": {
+        "informational": "informatif",
+        "actionable": "pratique",
+        "supportive": "soutenant",
+        "therapeutic": "thérapeutique",
+        "emergency": "urgence",
+        "instructional": "instructif",
+        "analytical": "analytique",
+        "motivational": "motivant"
+      },
+      "priorityLabels": {
+        "high": "priorité élevée",
+        "medium": "priorité moyenne",
+        "low": "priorité faible"
+      },
+      "loadingTitle": "Chargement du contenu...",
+      "loadingDescription": "Impossible de charger le contenu de l’article. Vérifiez si le fichier existe."
+    },
+    "categoryPage": {
+      "breadcrumb": "Bibliothèque de contenu",
+      "stats": {
+        "articles": "{{count}} articles",
+        "featured": "{{count}} mis en avant"
+      },
+      "headings": {
+        "featured": "Articles mis en avant",
+        "all": "Tous les articles"
+      },
+      "empty": {
+        "title": "Contenu à venir",
+        "description": "Nous préparons actuellement du contenu détaillé pour cette catégorie. Revenez bientôt pour découvrir de nouveaux articles et guides."
+      },
+      "badges": {
+        "featured": "Mis en avant"
       }
     }
   },

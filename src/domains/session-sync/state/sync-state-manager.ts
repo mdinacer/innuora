@@ -6,10 +6,10 @@
 import { logger } from "@/lib/logging/unified-logger";
 import { SyncStatus, SyncStatusDetailed, SyncTimestamps } from "../session-sync.types";
 
+// NOTE: analysisSnapshots are now server-side only - only track client-visible data
 interface SessionSyncData {
   updatedAt: Date;
   messageCount: number;
-  analysisCount: number;
 }
 
 interface SyncStateData {
@@ -175,10 +175,10 @@ export class SyncStateManager {
     const lastSynced = this.lastSyncedData.get(sessionId);
     if (!lastSynced) return true;
 
+    // NOTE: analysisSnapshots are now server-side only - only compare client-visible data
     return (
       lastSynced.updatedAt.getTime() !== currentData.updatedAt.getTime() ||
-      lastSynced.messageCount !== currentData.messageCount ||
-      lastSynced.analysisCount !== currentData.analysisCount
+      lastSynced.messageCount !== currentData.messageCount
     );
   }
 

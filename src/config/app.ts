@@ -41,7 +41,7 @@ export const APP_CONFIG = {
   // Domains & URLs
   domains: {
     primary: "https://www.innuora.com",
-    canonical: "https://innuora.com",
+    canonical: "https://www.innuora.com",
     api: "https://api.innuora.com",
   },
 

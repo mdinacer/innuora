@@ -6,14 +6,14 @@
 
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
-import { logger } from "@/lib/logging/unified-logger";
 // Services
-import { SyncConfigManager } from "./config/sync-config";
-import { CloudSyncService } from "./services/cloud-sync-service";
-import { LocalSyncService } from "./services/local-sync-service";
-import { SyncConfig, SyncStatus, SyncStatusDetailed, SyncTimestamps } from "./session-sync.types";
-import { SyncStateManager } from "./state/sync-state-manager";
-import { RetryService } from "./utils/retry-service";
+import { SyncConfigManager } from "@/domains/session-sync/config/sync-config";
+import { CloudSyncService } from "@/domains/session-sync/services/cloud-sync-service";
+import { LocalSyncService } from "@/domains/session-sync/services/local-sync-service";
+import { SyncConfig, SyncStatus, SyncStatusDetailed, SyncTimestamps } from "@/domains/session-sync/session-sync.types";
+import { SyncStateManager } from "@/domains/session-sync/state/sync-state-manager";
+import { RetryService } from "@/domains/session-sync/utils/retry-service";
+import { logger } from "@/lib/logging/unified-logger";
 
 /**
  * Orchestrates all session synchronization operations

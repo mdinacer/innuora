@@ -54,18 +54,15 @@ export const ERROR_CODES = {
   SESSION_ENCRYPTION_FAILED: "errors:session.encryption_failed",
   SESSION_DECRYPTION_FAILED: "errors:session.decryption_failed",
   SESSION_SAVE_FAILED: "errors:session.save_failed",
+  SESSION_CONTEXT_FETCH_FAILED: "errors:session.context_fetch_failed",
+  SESSION_CONTEXT_UPDATE_FAILED: "errors:session.context_update_failed",
+  SESSION_INITIALIZATION_FAILED: "errors:session.initialization_failed",
 
   // User errors
   USER_NOT_FOUND: "errors:user.not_found",
   USER_CREATE_FAILED: "errors:user.create_failed",
   USER_UPDATE_FAILED: "errors:user.update_failed",
   USER_DELETE_FAILED: "errors:user.delete_failed",
-
-  // Tester errors
-  TESTER_NOT_FOUND: "errors:tester.not_found",
-  TESTER_CREATE_FAILED: "errors:tester.create_failed",
-  TESTER_UPDATE_FAILED: "errors:tester.update_failed",
-  TESTER_DELETE_FAILED: "errors:tester.delete_failed",
 
   // AI errors
   AI_REQUEST_FAILED: "errors:ai.request_failed",
@@ -77,6 +74,7 @@ export const ERROR_CODES = {
   AI_INVALID_PROMPTS: "errors:ai.invalid_prompts",
   AI_RETRY_EXHAUSTED: "errors:ai.retry_exhausted",
   AI_UNSUPPORTED_VENDOR: "errors:ai.unsupported_vendor",
+  AI_OPERATION_LOG_FAILED: "errors:ai.operation_log_failed",
 
   // Chat errors
   CHAT_ANALYSIS_FAILED: "errors:chat.analysis_failed",
@@ -204,6 +202,13 @@ export const ERROR_CODES = {
   PERMISSION_INSUFFICIENT: "errors:permission.insufficient",
   SUBSCRIPTION_REQUIRED: "errors:subscription.required",
   CREDITS_INSUFFICIENT: "errors:credits.insufficient",
+
+  // Subscription errors
+  SUBSCRIPTION_CREATE_FAILED: "errors:subscription.create_failed",
+  SUBSCRIPTION_UPDATE_FAILED: "errors:subscription.update_failed",
+  SUBSCRIPTION_CANCEL_FAILED: "errors:subscription.cancel_failed",
+  SUBSCRIPTION_FETCH_FAILED: "errors:subscription.fetch_failed",
+  SUBSCRIPTION_CREDIT_ALLOCATION_FAILED: "errors:subscription.credit_allocation_failed",
 } as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

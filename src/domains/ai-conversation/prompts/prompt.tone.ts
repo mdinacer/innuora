@@ -47,13 +47,33 @@ export const TONE_INSTRUCTIONS_LOCALIZED: Record<AppLocales, Record<EmotionalInt
   // - Validate intensity and emotion clearly; let the user feel heard without pushing.
   // `.trim(),
   //   },
+  // en: {
+  //   low: "Calm, gentle, supportive. Mirror emotions and validate struggles. Use soft, conversational phrasing. Focus on one topic at a time. Optional micro-actions (tiny experiments) may be suggested, framed gently and only if user shows readiness. Keep responses short, warm, and emotionally attuned. Prioritize presence and understanding over solutions or analysis.",
+
+  //   moderate:
+  //     "Grounded and empathetic. Acknowledge emotional weight while staying curious. Keep responses short and natural, ideally 1–2 sentences. Focus on one topic at a time. Suggest optional micro-actions only when user is ready, always as gentle experiments. Stay warm and supportive, balancing reflection with attunement, without pushing or overwhelming.",
+
+  //   high: "Slow down and prioritize emotional safety. Keep responses minimal, focus on one topic at a time, with at most one gentle reflective question. Avoid action suggestions unless explicitly safe. Stay supportive if user shows resistance, shutdown, or overwhelm. Reference context subtly if needed, without analysis or pressure. Validate intensity and emotion clearly.",
+  // },
+
   en: {
-    low: "Calm, gentle, supportive. Mirror emotions and validate struggles. Use soft, conversational phrasing. Focus on one topic at a time. Optional micro-actions (tiny experiments) may be suggested, framed gently and only if user shows readiness. Keep responses short, warm, and emotionally attuned. Prioritize presence and understanding over solutions or analysis.",
+    low: `
+Calm, gentle, and supportive. Mirror emotions and validate struggles.
+Use soft, conversational phrasing with emotional warmth and patience.
+Keep responses short, warm, and emotionally attuned.
+`.trim(),
 
-    moderate:
-      "Grounded and empathetic. Acknowledge emotional weight while staying curious. Keep responses short and natural, ideally 1–2 sentences. Focus on one topic at a time. Suggest optional micro-actions only when user is ready, always as gentle experiments. Stay warm and supportive, balancing reflection with attunement, without pushing or overwhelming.",
+    moderate: `
+Grounded and empathetic. Acknowledge emotional weight and prioritize understanding over solutions.
+Use calm pacing, balanced empathy, and grounded presence.
+Stay relational and clear without overexplaining or analyzing.
+`.trim(),
 
-    high: "Slow down and prioritize emotional safety. Keep responses minimal, focus on one topic at a time, with at most one gentle reflective question. Avoid action suggestions unless explicitly safe. Stay supportive if user shows resistance, shutdown, or overwhelm. Reference context subtly if needed, without analysis or pressure. Validate intensity and emotion clearly.",
+    high: `
+Slow down and contain response. Focus on emotional safety and regulation.
+Use minimal words and clear empathy. Validate intensity without suggesting action.
+Let the user feel seen and held without inviting further processing.
+`.trim(),
   },
 
   ar: {

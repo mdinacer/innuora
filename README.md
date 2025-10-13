@@ -58,7 +58,7 @@ src/
 └── locales/      # Translations (EN/AR/FR)
 ```
 
-**Detailed structure**: See [PROJECT_MODULES_ANALYSIS.md](./PROJECT_MODULES_ANALYSIS.md)
+**Detailed structure**: See [PROJECT_MODULES_ANALYSIS.md](./docs/PROJECT_MODULES_ANALYSIS.md)
 
 ## 🛠️ Development Commands
 
