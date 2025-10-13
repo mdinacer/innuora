@@ -4,29 +4,34 @@ import Link from "next/link";
 import PasswordResetForm from "@/components/auth/password-reset-form";
 import { APP_CONFIG } from "@/config/app";
 
-export const metadata: Metadata = {
-  title: `Reset Password - ${APP_CONFIG.name}`,
-  description: `Reset your ${APP_CONFIG.name} account password to regain access to your emotional clarity journey.`,
-  keywords: [
-    `${APP_CONFIG.name} password reset`,
-    "forgot password",
-    "account recovery",
-    "reset login",
-    "emotional AI access",
-  ],
-  alternates: {
-    canonical: `${APP_CONFIG.domains.primary}/en/auth/password-reset`,
-    languages: {
-      en: `${APP_CONFIG.domains.primary}/en/auth/password-reset`,
-      fr: `${APP_CONFIG.domains.primary}/fr/auth/password-reset`,
-      ar: `${APP_CONFIG.domains.primary}/ar/auth/password-reset`,
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale = "en" } = await params;
+
+  return {
+    title: `Reset Password - ${APP_CONFIG.name}`,
+    description: `Reset your ${APP_CONFIG.name} account password to regain access to your emotional clarity journey.`,
+    keywords: [
+      `${APP_CONFIG.name} password reset`,
+      "forgot password",
+      "account recovery",
+      "reset login",
+      "emotional AI access",
+    ],
+    alternates: {
+      canonical: `/${locale}/auth/password-reset`,
+      languages: {
+        en: "/en/auth/password-reset",
+        fr: "/fr/auth/password-reset",
+        ar: "/ar/auth/password-reset",
+        "x-default": "/en/auth/password-reset",
+      },
     },
-  },
-  robots: {
-    index: false,
-    follow: true,
-  },
-};
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
+}
 
 export default function ResetPasswordRoute() {
   return (

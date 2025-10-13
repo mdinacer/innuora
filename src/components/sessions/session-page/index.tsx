@@ -11,10 +11,10 @@ import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
 import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
 import LoadingComponent from "@/components/loading-component";
-import { SyncStatusIndicator } from "@/components/session-sync/sync-status-indicator";
 import { APP_CONFIG } from "@/config/app";
 import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
 import { AppLocales } from "@/lib/i18n";
+import { exportSessionAsJSON, exportSessionAsMarkdown, prepareSessionExport } from "@/lib/session/session-export";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
@@ -91,11 +91,22 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
           }
           break;
         case "export":
-          // TODO: Implement session export functionality
+          if (session && messages) {
+            const exportData = prepareSessionExport(
+              session.id,
+              session.title,
+              session.subtitle ?? undefined,
+              messages,
+              session.createdAt.toISOString()
+            );
+            // Export as both JSON and Markdown
+            exportSessionAsJSON(exportData);
+            exportSessionAsMarkdown(exportData);
+          }
           break;
       }
     },
-    [resetSession, router, messages, session?.userId]
+    [resetSession, router, messages, session]
   );
 
   const handleProcessMessage = useCallback(
@@ -160,7 +171,6 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
         }}
         className="absolute top-6 left-6"
       />
-      <SyncStatusIndicator sessionId={sessionId} className="absolute top-6 right-6" />
 
       {/* Credits Balance Display */}
       {session?.userId && (

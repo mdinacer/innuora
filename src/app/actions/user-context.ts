@@ -1,6 +1,7 @@
 "use server";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
+import { UserTier } from "@/lib/billing/tier-config";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
@@ -12,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 export interface AuthenticatedUserContext {
   authId: string; // Supabase auth ID
   id: string; // Database user ID
-  tier: "STARTER" | "REGULAR" | "PREMIUM";
+  tier: UserTier;
   creditsBalance: number;
   role: string | null;
 }
@@ -32,10 +33,9 @@ export async function getAuthenticatedUserContext(): Promise<AuthenticatedUserCo
     where: { authId: authUser.id },
     select: {
       id: true,
+      tier: true,
       creditsBalance: true,
       role: true,
-      // Tier will be added in migration
-      // tier: true,
     },
   });
 
@@ -50,7 +50,7 @@ export async function getAuthenticatedUserContext(): Promise<AuthenticatedUserCo
   return {
     authId: authUser.id,
     id: user.id,
-    tier: "STARTER", // TODO: Replace with user.tier after migration
+    tier: (user.tier ?? "FREE") as UserTier,
     creditsBalance: user.creditsBalance,
     role: user.role,
   };
@@ -65,9 +65,9 @@ export async function _getUserByAuthIdInternal(authId: string): Promise<Authenti
     where: { authId },
     select: {
       id: true,
+      tier: true,
       creditsBalance: true,
       role: true,
-      // tier: true, // TODO: Uncomment after migration
     },
   });
 
@@ -78,7 +78,7 @@ export async function _getUserByAuthIdInternal(authId: string): Promise<Authenti
   return {
     authId,
     id: user.id,
-    tier: "STARTER", // TODO: Replace with user.tier
+    tier: (user.tier ?? "FREE") as UserTier,
     creditsBalance: user.creditsBalance,
     role: user.role,
   };

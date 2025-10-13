@@ -46,3 +46,5 @@ next-env.d.ts
 project-structure.txt
 /mirael-agents
 .github
+/src/app/[locale]/mock
+/src/app/[locale]/(public)/test

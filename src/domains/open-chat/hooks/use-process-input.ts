@@ -9,8 +9,6 @@ import { useAppUserStore } from "@/stores/app-user.store";
 //import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
-const RECENT_ANALYSIS_COUNT = 3;
-
 interface Props {
   sessionId: string;
   locale?: AppLocales;
@@ -18,7 +16,7 @@ interface Props {
 }
 
 export default function useSessionInput({ sessionId, locale = "en", onRoundComplete }: Props) {
-  const { session, appendMessage, addAnalysis, addTokenUsage } = useSessionState({ sessionId });
+  const { session, appendMessage, addTokenUsage } = useSessionState({ sessionId });
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingError, setProcessingError] = useState<string | null>(null);
 
@@ -35,7 +33,6 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
       setIsProcessing(true);
 
       const userProfile = useAppUserStore.getState().user?.profile as Profile;
-      const appUser = useAppUserStore.getState().user;
       const deductCredits = useAppUserStore.getState().deductCredits;
 
       try {
@@ -51,21 +48,17 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           return { error };
         }
 
-        const recentAnalysis = session.analysisSnapshots?.slice(-RECENT_ANALYSIS_COUNT) ?? [];
         const history: OpenChatMessage[] = session.messages ?? [];
 
-        // Use appUser.authId directly for credit operations (more reliable than profile.userId)
-        const authId = appUser?.authId;
-
+        // NOTE: Server action now fetches therapeutic context (analysis, memory) AND user identity
+        // from encrypted server-side storage. No longer passing user IDs from client (security best practice).
         const result = await handleUserInput(
           userInput,
-          recentAnalysis,
           history,
           userProfile,
-          session.memoryStore,
           locale,
-          authId, // Pass authId directly - this is Supabase auth user ID
-          sessionId // sessionId
+          sessionId, // sessionId
+          messageId // messageId for linking analysis to message
         );
 
         if (!result) {
@@ -92,7 +85,9 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           return { error };
         }
 
-        if (newAnalysis) addAnalysis(newAnalysis, messageId);
+        // NOTE: Analysis is now saved server-side automatically - no client-side storage
+        // addAnalysis(newAnalysis, messageId); // REMOVED - server-side only now
+
         if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
         if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
 
@@ -137,7 +132,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         setIsProcessing(false);
       }
     },
-    [addAnalysis, addTokenUsage, locale, onRoundComplete, session, sessionId]
+    [addTokenUsage, locale, onRoundComplete, session, sessionId]
   );
 
   return {

@@ -1,26 +1,11 @@
 {
-  "content": {
-    "title": "Content Library | Innuora",
-    "description": "Browse our comprehensive library of mental health articles, guides, and resources covering CBT, anxiety management, depression support, and more."
-  },
-  "eula": {
-    "title": "End User License Agreement | Innuora",
-    "description": "License agreement for Innuora application usage."
+  "faq": {
+    "title": "FAQ - Frequently Asked Questions | Innuora",
+    "description": "Everything you need to know about Innuora - how it listens, protects, and stays human in its intelligence. Answers about privacy, security, billing, and more.",
+    "ogImageAlt": "Innuora FAQ - Your questions answered"
   },
   "home": {
-    "title": "AI Emotional Companion for High-Functioning Women | Innuora - Burnout & Clarity Support",
-    "description": "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Gain emotional clarity through reflective conversations that uncover silent rules, reveal patterns, and challenge cognitive distortions."
-  },
-  "join": {
-    "title": "Start Your Journey | Innuora",
-    "description": "Begin your personalized therapy journey with Innuora's AI-powered emotional support. Start a conversation today."
-  },
-  "privacy": {
-    "title": "Privacy Policy | Innuora",
-    "description": "Learn how Innuora protects your privacy with zero-knowledge encryption and secure therapeutic conversations."
-  },
-  "terms": {
-    "title": "Terms of Service | Innuora",
-    "description": "Terms and conditions for using Innuora's AI-powered therapeutic platform."
+    "title": "Innuora - AI Emotional Companion for High-Functioning Women",
+    "description": "Digital emotional companion for high-functioning women facing burnout, overwhelm, and perfectionism. Get clarity through emotionally attuned conversations that reflect patterns and help you understand what's beneath the surface."
   }
 }

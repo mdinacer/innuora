@@ -22,6 +22,7 @@ model User {
 
   // Business fields
   role           UserRole?          @default(user)
+  tier           UserTier?          @default(FREE)
   creditsBalance Int                @default(0) @map("credits_balance")
   status         UserAccountStatus? @default(active)
   isOnboarded    Boolean            @default(false)
@@ -38,6 +39,7 @@ model User {
   config               UserConfig?
   profile              Profile?
   sessions             Session[]
+  aiOperations         AiOperationLog[]
   creditTransactions   CreditTransaction[]
   subscriptions        Subscription[]
   subscriptionRenewals SubscriptionRenewal[]
@@ -83,8 +85,8 @@ model UserConfig {
   locale   String?    @default("en")
 
   // Appearance settings
-  fontSize        String?  @default("medium") @map("font_size") // "small" | "medium" | "large"
-  enableAnimation Boolean  @default(false) @map("enable_animation")
+  fontSize        String? @default("medium") @map("font_size") // "small" | "medium" | "large"
+  enableAnimation Boolean @default(false) @map("enable_animation")
 
   // Future features (not implemented yet, but ready for when needed)
   analyticsOptIn    Boolean @default(false) @map("analytics_opt_in")
@@ -137,39 +139,100 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-enum LogLevel {
-  INFO
-  WARN
-  ERROR
-  AUDIT
-}
-
 model Session {
   // Identifiers
   id String @id @default(uuid())
 
   // Foreign keys
-  userId          String    @map("user_id")
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // Core session info (non-encrypted)
   title           String // title of session
   subtitle        String? // subtitle of session
-  autoUpdateTitle Boolean   @default(false)
-  persistOnCloud  Boolean   @default(true) @map("persist_on_cloud") // user consent for cloud backup
-  metadata        Json // additional metadata { messageCount: int, tokenCount: int, creditsUsed: int }
+  autoUpdateTitle Boolean @default(false)
+  persistOnCloud  Boolean @default(true) @map("persist_on_cloud") // user consent for cloud backup
 
-  // Server-only analytics (never sent to client - used for billing verification and debugging)
-  serverAnalytics Json?     @map("server_analytics") // { tokenUsageBreakdown: [...], operationMetrics: {...} }
+  // Client-visible metadata (minimal, no sensitive data)
+  metadata Json // { messageCount: int, creditsUsed: int } - NO token details, NO costs
 
-  // Encrypted session bundle
-  encryptedData   Json?     @map("encrypted_data")
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+  // User messages (encrypted with user password - E2EE)
+  encryptedData Json? @map("encrypted_data") // { messages: [...] }
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  aiOperations  AiOperationLog[]
+  serverContext SessionContext? // One-to-one: therapeutic data stored separately
 
   // Performance indexes
   @@index([userId, createdAt])
   @@index([userId, updatedAt])
   @@map("sessions")
+}
+
+// Separate table for server-only therapeutic data
+// Stored separately for performance (don't load heavy data on session lists)
+model SessionContext {
+  // Identifiers (one-to-one with Session)
+  sessionId String  @id @map("session_id")
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  // Server-only therapeutic data (encrypted with APP_ENCRYPTION_KEY)
+  // Contains: { analysisSnapshots, aggregatedAnalysis, memoryStore, continuitySummary }
+  // NEVER sent to client - only used server-side for continuity
+  encryptedData Json @map("encrypted_data") // EncryptedBlob
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Performance indexes
+  @@index([sessionId])
+  @@map("session_contexts")
+}
+
+// =========================
+// AI Operations & Analytics
+// =========================
+
+model AiOperationLog {
+  // Identifiers
+  id String @id @default(cuid())
+
+  // Foreign keys
+  userId    String  @map("user_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String  @map("session_id")
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  // Operation details
+  operation AiOperationType // Type of AI operation
+  model     String // AI model used (e.g., "gpt-4o-mini")
+  messageId String?         @map("message_id") // Associated message ID (if applicable)
+
+  // Token usage (for billing reconciliation)
+  inputTokens  Int @map("input_tokens")
+  outputTokens Int @map("output_tokens")
+  totalTokens  Int @map("total_tokens")
+
+  // Billing details
+  creditsCharged Int   @map("credits_charged") // Credits charged to user
+  rawCostUSD     Float @map("raw_cost_usd") // Actual API cost
+
+  // Operational metadata
+  metadata Json? // { isRetry, analysisValue, isLightweight, etc. }
+
+  // Timestamp
+  timestamp DateTime @default(now())
+
+  // Performance indexes
+  @@index([userId, timestamp]) // For user billing reports
+  @@index([sessionId, timestamp]) // For session cost breakdown
+  @@index([operation, timestamp]) // For operation type analytics
+  @@index([timestamp]) // For time-based queries
+  @@map("ai_operation_logs")
 }
 
 model CreditTransaction {
@@ -198,27 +261,6 @@ model CreditTransaction {
   @@index([reason, createdAt])
   @@index([type])
   @@map("credit_transactions")
-}
-
-model Tester {
-  // Identifiers
-  id String @id @default(cuid())
-
-  // Tester info
-  email      String  @unique
-  accepted   Boolean @default(false) // has this tester been approved to join
-  source     String? @map("source") // homepage, invite link, etc.
-  occupation String? // optional: what she does in life
-  struggles  String? // optional: general struggles / pain points
-  coping     String? // optional: what she does to cope
-  notes      String? // internal admin notes
-
-  // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@index([email])
-  @@map("testers")
 }
 
 // =========================
@@ -304,6 +346,24 @@ model SubscriptionRenewal {
 // =========================
 // Enums
 // =========================
+
+enum AiOperationType {
+  ANALYSIS // User input analysis
+  RESPONSE // AI response generation
+  MEMORY_UPDATE // Session memory consolidation
+  MEMORY_RECALL // Memory retrieval
+  SESSION_WELLNESS // Session wellness check
+  SESSION_SUMMARY // Session summary generation
+  TITLE_UPDATE // Auto title update
+  DIAGNOSTIC // Diagnostic report generation
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
+  AUDIT
+}
 
 enum CreditTransactionType {
   CREDIT // User receives credits (purchase, bonus, refund)
@@ -398,4 +458,11 @@ enum RenewalStatus {
   processed
   failed
   skipped
+}
+
+enum UserTier {
+  FREE
+  STARTER
+  REGULAR
+  PREMIUM
 }

@@ -3,87 +3,24 @@ import { Metadata } from "next";
 import { APP_CONFIG, APP_NAMES } from "@/config/app";
 
 export const METADATA: Metadata = {
-  title: APP_NAMES.taglined,
-  description: APP_CONFIG.description,
-  keywords: [
-    // Primary keywords - core problems Innuora solves
-    "emotional burnout support",
-    "women burnout recovery",
-    "high-functioning women support",
-    "emotional overwhelm relief",
-    "perfectionist burnout help",
-    "emotional exhaustion support",
-    "cognitive distortions help",
-    "emotional clarity app",
-    "women emotional wellness",
-    "overachiever stress relief",
-
-    // Secondary keywords - specific features & benefits
-    "safe space for women online",
-    "emotional mirror app",
-    "emotional reflection tool",
-    "support for overwhelmed women",
-    "silent rules therapy",
-    "emotional patterns recognition",
-    "self-criticism help",
-    "internal pressure relief",
-    "emotional validation app",
-    "working women emotional support",
-
-    // Branding keywords - what Innuora is
-    "AI emotional companion",
-    "digital emotional support",
-    "emotional companion for women",
-    "compassionate AI support",
-    "emotional awareness tool",
-    "emotional insight companion",
-    "gentle emotional guidance",
-    "emotional safe space app",
-    "emotional wellness companion",
-
-    // Long-tail problem-focused keywords
-    "app for emotionally exhausted women",
-    "support for high-functioning anxiety",
-    "emotional burnout recovery for women",
-    "help with perfectionist tendencies",
-    "emotional overwhelm support app",
-    "cognitive distortion awareness tool",
-    "safe space for emotional reflection",
-    "support for women carrying expectations",
-    "emotional clarity for working women",
-    "help with silent emotional rules",
-
-    // Core identity
-    APP_CONFIG.name,
-    "emotional companion",
-    "women emotional clarity",
-  ],
+  title: APP_CONFIG.name,
+  description: "Your private space for emotional reflection",
 
   applicationName: APP_CONFIG.name,
   authors: [{ name: APP_CONFIG.company.founder }],
   creator: APP_CONFIG.company.founder,
   category: "health",
   metadataBase: new URL(APP_CONFIG.domains.primary),
-  alternates: {
-    canonical: "/en",
-    languages: {
-      en: "/en",
-      ar: "/ar",
-      fr: "/fr",
-    },
-  },
 
+  // Block all search engine indexing - this is a private authenticated app
   robots: {
-    index: true,
-    follow: true,
-    nocache: false,
+    index: false,
+    follow: false,
+    nocache: true,
     googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      index: false,
+      follow: false,
+      noimageindex: true,
     },
   },
 
@@ -231,31 +168,6 @@ export const METADATA: Metadata = {
         url: "/assets/icons/ios/1024.png",
       },
     ],
-  },
-
-  openGraph: {
-    title: `${APP_CONFIG.name} - AI Emotional Companion for High-Functioning Women`,
-    description: `${APP_CONFIG.name} helps high-functioning women overcome emotional exhaustion, burnout, overwhelm, and perfectionism by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
-    url: APP_CONFIG.domains.primary,
-    siteName: APP_CONFIG.name,
-    images: [
-      {
-        url: "/og/innuora-cover.png",
-        width: 1200,
-        height: 630,
-        alt: `${APP_CONFIG.name} App Open Graph Cover`,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: `${APP_CONFIG.name} - AI Emotional Companion for High-Functioning Women`,
-    description: `${APP_CONFIG.name} helps high-functioning women overcome emotional exhaustion, burnout, overwhelm, and perfectionism by reflecting emotions, uncovering silent rules, and providing actionable self-insight.`,
-    creator: APP_CONFIG.social.twitter.creator,
-    images: ["/og/innuora-cover.png"],
   },
 
   other: {

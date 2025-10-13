@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/**
+ * Encrypted Session Store with LRU Memory Management
+ * Maximum 20 sessions in memory to prevent unbounded growth
+ * Least recently accessed sessions evicted when limit reached
+ */
+
 import { Session as PrismaSession } from "@prisma/client";
 import localforage from "localforage";
 import { create } from "zustand";
@@ -7,11 +13,15 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { getUniqueId } from "@/domains/encrypted-session/encrypted-session.utils";
 import { PersistedStoreBaseProps } from "@/stores/persisted-store-base";
 
+// LRU cache configuration
+const MAX_SESSIONS_IN_MEMORY = 20;
+
 export interface SessionsStoreState extends PersistedStoreBaseProps {
   sessions: Record<string, PrismaSession>;
   publicIdMap: Record<string, string>; // publicId -> sessionId
   sessionIdMap: Record<string, string>; // sessionId -> publicId
   currentUserId: string | null; // Database user ID for filtering sessions
+  sessionAccessOrder: string[]; // LRU tracking: most recent at end
 
   // Getters
   getSessionPublicId: (sessionId: string) => string | undefined;
@@ -34,14 +44,60 @@ export interface SessionsStoreState extends PersistedStoreBaseProps {
 
 const initialState: Pick<
   SessionsStoreState,
-  "sessions" | "hasHydrated" | "publicIdMap" | "sessionIdMap" | "currentUserId"
+  "sessions" | "hasHydrated" | "publicIdMap" | "sessionIdMap" | "currentUserId" | "sessionAccessOrder"
 > = {
   sessions: {},
   hasHydrated: false,
   publicIdMap: {},
   sessionIdMap: {},
   currentUserId: null,
+  sessionAccessOrder: [],
 };
+
+/**
+ * Helper: Update LRU access order (move session to end = most recently used)
+ */
+function updateAccessOrder(sessionId: string, accessOrder: string[]): string[] {
+  const filtered = accessOrder.filter((id) => id !== sessionId);
+  return [...filtered, sessionId];
+}
+
+/**
+ * Helper: Evict least recently used session if limit exceeded
+ */
+function evictLRU(
+  sessions: Record<string, PrismaSession>,
+  publicIdMap: Record<string, string>,
+  sessionIdMap: Record<string, string>,
+  accessOrder: string[]
+): {
+  sessions: Record<string, PrismaSession>;
+  publicIdMap: Record<string, string>;
+  sessionIdMap: Record<string, string>;
+  sessionAccessOrder: string[];
+} {
+  if (Object.keys(sessions).length <= MAX_SESSIONS_IN_MEMORY) {
+    return { sessions, publicIdMap, sessionIdMap, sessionAccessOrder: accessOrder };
+  }
+
+  // Remove least recently used (first in array)
+  const lruSessionId = accessOrder[0];
+  if (!lruSessionId) return { sessions, publicIdMap, sessionIdMap, sessionAccessOrder: accessOrder };
+
+  const lruPublicId = sessionIdMap[lruSessionId];
+
+  const { [lruSessionId]: _, ...restSessions } = sessions;
+  const { [lruPublicId]: __, ...restPublicIdMap } = publicIdMap;
+  const { [lruSessionId]: ___, ...restSessionIdMap } = sessionIdMap;
+  const newAccessOrder = accessOrder.slice(1); // Remove first element
+
+  return {
+    sessions: restSessions,
+    publicIdMap: restPublicIdMap,
+    sessionIdMap: restSessionIdMap,
+    sessionAccessOrder: newAccessOrder,
+  };
+}
 
 export const useSessionStore = create<SessionsStoreState>()(
   persist(
@@ -55,12 +111,15 @@ export const useSessionStore = create<SessionsStoreState>()(
       getSessionPublicId: (sessionId) => get().sessionIdMap[sessionId],
 
       getSession: (sessionId) => {
-        const session = get().sessions[sessionId];
-        const currentUserId = get().currentUserId;
+        const { sessions, currentUserId, sessionAccessOrder } = get();
+        const session = sessions[sessionId];
 
         // Return session only if it belongs to current user
         if (!session || !currentUserId) return undefined;
         if (session.userId !== currentUserId) return undefined;
+
+        // Update LRU access order (mark as most recently used)
+        set({ sessionAccessOrder: updateAccessOrder(sessionId, sessionAccessOrder) });
 
         return session;
       },
@@ -82,20 +141,27 @@ export const useSessionStore = create<SessionsStoreState>()(
         }
 
         const publicId = getUniqueId(get().publicIdMap);
-        set((state) => ({
-          sessions: {
+        set((state) => {
+          // Add new session
+          const newSessions = {
             ...state.sessions,
             [session.id]: session,
-          },
-          publicIdMap: {
+          };
+          const newPublicIdMap = {
             ...state.publicIdMap,
             [publicId]: session.id,
-          },
-          sessionIdMap: {
+          };
+          const newSessionIdMap = {
             ...state.sessionIdMap,
             [session.id]: publicId,
-          },
-        }));
+          };
+          const newAccessOrder = updateAccessOrder(session.id, state.sessionAccessOrder);
+
+          // Evict LRU if necessary
+          const evicted = evictLRU(newSessions, newPublicIdMap, newSessionIdMap, newAccessOrder);
+
+          return evicted;
+        });
       },
 
       setSession: (publicId, session) => {
@@ -107,13 +173,14 @@ export const useSessionStore = create<SessionsStoreState>()(
 
           const newSessionId = session.id;
 
-          // If the session ID hasn’t changed → just update the session
+          // If the session ID hasn't changed → just update the session
           if (oldSessionId === newSessionId) {
             return {
               sessions: {
                 ...state.sessions,
                 [oldSessionId]: session,
               },
+              sessionAccessOrder: updateAccessOrder(newSessionId, state.sessionAccessOrder),
             };
           }
 
@@ -121,6 +188,10 @@ export const useSessionStore = create<SessionsStoreState>()(
           const { [oldSessionId]: _, ...restSessions } = state.sessions;
           const { [publicId]: __, ...restPublicIdMap } = state.publicIdMap;
           const { [oldSessionId]: ___, ...restSessionIdMap } = state.sessionIdMap;
+
+          // Remove old session from access order, add new one
+          const filteredOrder = state.sessionAccessOrder.filter((id) => id !== oldSessionId);
+          const newAccessOrder = updateAccessOrder(newSessionId, filteredOrder);
 
           return {
             sessions: {
@@ -135,15 +206,13 @@ export const useSessionStore = create<SessionsStoreState>()(
               ...restSessionIdMap,
               [newSessionId]: publicId,
             },
+            sessionAccessOrder: newAccessOrder,
           };
         });
       },
 
       updateSession: (sessionId, patch) => {
         set((state) => {
-          // const sessionId = state.publicIdMap[publicId];
-          // if (!sessionId) return state;
-
           const current = state.sessions[sessionId];
           if (!current) return state;
 
@@ -154,6 +223,7 @@ export const useSessionStore = create<SessionsStoreState>()(
               ...state.sessions,
               [sessionId]: updated,
             },
+            sessionAccessOrder: updateAccessOrder(sessionId, state.sessionAccessOrder),
           };
         });
       },
@@ -171,6 +241,7 @@ export const useSessionStore = create<SessionsStoreState>()(
             sessions: restSessions,
             publicIdMap: restPublicIdMap,
             sessionIdMap: restSessionIdMap,
+            sessionAccessOrder: state.sessionAccessOrder.filter((id) => id !== sessionId),
           };
         });
       },
@@ -181,6 +252,7 @@ export const useSessionStore = create<SessionsStoreState>()(
           if (!current) return state;
 
           // Replace with a fresh PrismaSession shape
+          // NOTE: serverData moved to separate SessionContext table
           const reset: PrismaSession = {
             id: current.id,
             userId: current.userId,
@@ -195,7 +267,6 @@ export const useSessionStore = create<SessionsStoreState>()(
               costUSD: 0,
             },
             encryptedData: null,
-            serverAnalytics: null,
             createdAt: current.createdAt,
             updatedAt: new Date(),
           };
@@ -205,6 +276,7 @@ export const useSessionStore = create<SessionsStoreState>()(
               ...state.sessions,
               [sessionId]: reset,
             },
+            sessionAccessOrder: updateAccessOrder(sessionId, state.sessionAccessOrder),
           };
         });
       },
@@ -214,6 +286,7 @@ export const useSessionStore = create<SessionsStoreState>()(
         const newSessions: Record<string, PrismaSession> = {};
         const newPublicIdMap: Record<string, string> = {};
         const newSessionIdMap: Record<string, string> = {};
+        const newAccessOrder: string[] = [];
 
         sessions.forEach((s) => {
           // Only add sessions belonging to current user
@@ -225,13 +298,37 @@ export const useSessionStore = create<SessionsStoreState>()(
           newSessions[s.id] = s;
           newPublicIdMap[publicId] = s.id;
           newSessionIdMap[s.id] = publicId;
+          newAccessOrder.push(s.id); // Add to access order
         });
 
-        set({
-          sessions: newSessions,
-          publicIdMap: newPublicIdMap,
-          sessionIdMap: newSessionIdMap,
-        });
+        // If we exceed MAX_SESSIONS_IN_MEMORY, keep only the most recent
+        if (newAccessOrder.length > MAX_SESSIONS_IN_MEMORY) {
+          // Keep only the last MAX_SESSIONS_IN_MEMORY sessions
+          const sessionsToKeep = newAccessOrder.slice(-MAX_SESSIONS_IN_MEMORY);
+          const sessionsToRemove = newAccessOrder.slice(0, -MAX_SESSIONS_IN_MEMORY);
+
+          // Remove old sessions
+          sessionsToRemove.forEach((sessionId) => {
+            const publicId = newSessionIdMap[sessionId];
+            delete newSessions[sessionId];
+            delete newPublicIdMap[publicId];
+            delete newSessionIdMap[sessionId];
+          });
+
+          set({
+            sessions: newSessions,
+            publicIdMap: newPublicIdMap,
+            sessionIdMap: newSessionIdMap,
+            sessionAccessOrder: sessionsToKeep,
+          });
+        } else {
+          set({
+            sessions: newSessions,
+            publicIdMap: newPublicIdMap,
+            sessionIdMap: newSessionIdMap,
+            sessionAccessOrder: newAccessOrder,
+          });
+        }
       },
 
       sessionExists: (sessionId) => {
@@ -250,17 +347,18 @@ export const useSessionStore = create<SessionsStoreState>()(
         sessionIdMap: state.sessionIdMap,
         sessions: state.sessions,
         currentUserId: state.currentUserId,
+        sessionAccessOrder: state.sessionAccessOrder,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.setHasHydrated(true);
 
-          // Filter out sessions that don't belong to current user on hydration
-          // const { sessions, currentUserId } = state;
-          // if (currentUserId) {
-          //   const filteredSessions = Object.values(sessions).filter((session) => session.userId === currentUserId);
-          //   state.setSessions(filteredSessions);
-          // }
+          // Enforce LRU limit on hydration (in case user had > MAX_SESSIONS_IN_MEMORY from older version)
+          const { sessions, publicIdMap, sessionIdMap, sessionAccessOrder } = state;
+          if (Object.keys(sessions).length > MAX_SESSIONS_IN_MEMORY) {
+            const evicted = evictLRU(sessions, publicIdMap, sessionIdMap, sessionAccessOrder);
+            state.setSessions(Object.values(evicted.sessions));
+          }
         }
       },
     }

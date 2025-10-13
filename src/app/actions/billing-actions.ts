@@ -13,9 +13,11 @@ import {
   isStripeError,
   refundPayment,
 } from "@/lib/billing/stripe-client";
+import { findPurchaseTransactionByPaymentIntent } from "@/lib/billing/transaction-queries";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import { PurchaseMetadataSchema, RefundMetadataSchema, validateMetadata } from "@/lib/zod/metadata.schema";
 import type { ActionResult } from "@/types/action-result";
 
 // =========================
@@ -216,17 +218,9 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
         }
 
         // Check if payment was already processed (idempotency check)
-        // Note: Simplified approach - check all purchase transactions and filter in memory
-        // This is less efficient but more reliable than JSON queries
-        const purchaseTransactions = await prisma.creditTransaction.findMany({
-          where: {
-            reason: TRANSACTION_CONFIG.reasons.PURCHASE,
-          },
-        });
+        // Uses optimized query with PostgreSQL JSON operators
+        const existingTransaction = await findPurchaseTransactionByPaymentIntent(paymentIntentId);
 
-        const existingTransaction = purchaseTransactions.find(
-          (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntentId
-        );
         if (existingTransaction) {
           // Payment already processed, return existing result
           return {
@@ -239,13 +233,31 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
 
         // Process the payment - add credits to user account
         // Note: This will create the transaction record with status "completed"
-        const creditResultWrapper = await addCreditsToUser(userId, credits, TRANSACTION_CONFIG.reasons.PURCHASE, {
+
+        // Validate and construct purchase metadata
+        const purchaseMetadata = validateMetadata(PurchaseMetadataSchema, {
           paymentIntentId,
-          productKey,
-          stripeCustomerId: paymentIntent.customer as string,
-          amountUSD: BillingUtils.centsToDollars(paymentIntent.amount),
-          status: "completed",
+          customerId: paymentIntent.customer as string,
+          packageType: productKey,
+          creditsAmount: credits,
+          priceUSD: BillingUtils.centsToDollars(paymentIntent.amount),
+          currency: "usd",
+          timestamp: new Date().toISOString(),
         });
+
+        if (!purchaseMetadata) {
+          logger.logErrorAndThrow(ERROR_CODES.VALIDATION_FAILED, new Error("Invalid purchase metadata"), {
+            operation: "process_successful_payment_validate_metadata",
+            metadata: { paymentIntentId, productKey, credits },
+          });
+        }
+
+        const creditResultWrapper = await addCreditsToUser(
+          userId,
+          credits,
+          TRANSACTION_CONFIG.reasons.PURCHASE,
+          purchaseMetadata!
+        );
 
         if (creditResultWrapper.error || !creditResultWrapper.data) {
           logger.logErrorAndThrow(
@@ -320,17 +332,8 @@ export async function processRefund(
   return await logger.wrapOperation(
     async () => {
       try {
-        // Find the original transaction
-        const purchaseTransactions = await prisma.creditTransaction.findMany({
-          where: {
-            reason: TRANSACTION_CONFIG.reasons.PURCHASE,
-            type: "CREDIT",
-          },
-        });
-
-        const originalTransaction = purchaseTransactions.find(
-          (tx) => (tx.metadata as any)?.paymentIntentId === paymentIntentId
-        );
+        // Find the original transaction using optimized query
+        const originalTransaction = await findPurchaseTransactionByPaymentIntent(paymentIntentId);
 
         if (!originalTransaction) {
           return {
@@ -373,17 +376,28 @@ export async function processRefund(
           );
         }
 
+        // Validate and construct refund metadata
+        const refundMetadata = validateMetadata(RefundMetadataSchema, {
+          paymentIntentId,
+          refundId: refund.id,
+          reason,
+          refundedAt: new Date().toISOString(),
+          originalTransactionId: originalTransaction.id,
+        });
+
+        if (!refundMetadata) {
+          logger.logErrorAndThrow(ERROR_CODES.VALIDATION_FAILED, new Error("Invalid refund metadata"), {
+            operation: "process_refund_validate_metadata",
+            metadata: { paymentIntentId, refundId: refund.id },
+          });
+        }
+
         const deductResult = await deductCreditsFromUser(
           user!.authId,
           originalTransaction.amount,
           TRANSACTION_CONFIG.reasons.REFUND,
           undefined,
-          {
-            refundId: refund.id,
-            paymentIntentId,
-            originalTransactionId: originalTransaction.id,
-            reason,
-          }
+          refundMetadata!
         );
 
         if (deductResult.error || !deductResult.data) {

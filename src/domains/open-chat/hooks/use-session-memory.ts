@@ -29,8 +29,9 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        // Call generateSessionMemory with authId and sessionId for credit tracking
-        const result = await generateSessionMemory(userMessage, session.memoryStore, appUser?.authId, sessionId);
+        // NOTE: Server action now fetches existing memory from encrypted storage
+        // and saves new memory server-side. Client no longer manages memory.
+        const result = await generateSessionMemory(userMessage, appUser?.authId, sessionId);
 
         // Unwrap ActionResult
         if (result.error) {
@@ -80,25 +81,22 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        updateSession((prev) => {
-          // Replace memory with AI-optimized version instead of appending
-          const optimizedMemory = memoryArray.join("\n");
+        // NOTE: Memory is now stored server-side only - no client-side update needed
+        // updateSession() call REMOVED - server handles storage automatically
 
-          // Validate memory size (warn if over 400 words)
-          const wordCount = optimizedMemory.split(/\s+/).length;
-          if (wordCount > 400) {
-            logger.logInfo("Large memory size detected - consider optimization", {
-              operation: "session_memory_size_warning",
-              sessionId,
-              metadata: {
-                wordCount,
-                optimizationSuggested: true,
-              },
-            });
-          }
-
-          return { ...prev, memoryStore: optimizedMemory };
-        });
+        // Validate memory size (warn if over 400 words)
+        const optimizedMemory = memoryArray.join("\n");
+        const wordCount = optimizedMemory.split(/\s+/).length;
+        if (wordCount > 400) {
+          logger.logInfo("Large memory size detected - consider optimization", {
+            operation: "session_memory_size_warning",
+            sessionId,
+            metadata: {
+              wordCount,
+              optimizationSuggested: true,
+            },
+          });
+        }
 
         return { success: true };
       } catch (error) {

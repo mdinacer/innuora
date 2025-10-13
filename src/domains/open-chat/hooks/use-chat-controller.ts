@@ -43,14 +43,24 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
       metadata: { locale },
     });
     // Import sessionSynchronizer and get fresh session state
-    import("@/domains/session-sync").then(({ sessionSynchronizer }) => {
+
+    import("@/domains/simple-session-sync").then(({ localSyncService }) => {
       import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
         const currentSession = useActiveSessionStore.getState().session;
         if (currentSession) {
-          sessionSynchronizer.queueLocalSync(sessionId, "update", currentSession);
+          localSyncService.syncSession(currentSession);
         }
       });
     });
+    // import("@/domains/session-sync").then(({ sessionSynchronizer }) => {
+    //   import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
+    //     const currentSession = useActiveSessionStore.getState().session;
+    //     if (currentSession) {
+    //       sessionSynchronizer.queueLocalSync(sessionId, "update", currentSession);
+    //     }
+    //   });
+    // });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
 
@@ -125,11 +135,12 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
 
         // Evaluate session wellness using AI (optimized frequency to reduce token waste)
         // Track token usage and credits from wellness checks
+        // NOTE: Wellness service now fetches analysisSnapshots from server-side storage
         setTimeout(() => {
           import("@/domains/session-wellness/session-wellness.service").then(({ sessionWellnessService }) => {
             const appUser = useAppUserStore.getState().user;
             sessionWellnessService
-              .evaluateAfterMessage(session, session.analysisSnapshots, message, sessionId, locale, appUser?.authId)
+              .evaluateAfterMessage(session, message, sessionId, locale, appUser?.authId)
               .then((result) => {
                 if (result) {
                   if (result.tokenUsage) addTokenUsage({ ...result.tokenUsage, type: "other" });

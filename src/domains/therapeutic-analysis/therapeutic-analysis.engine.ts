@@ -25,7 +25,8 @@ export class TherapeuticAnalysisEngine {
   getAnalysisContextPrompt(
     userInput: string,
     prevData: TherapeuticAnalysis[],
-    sessionMetadata?: { messageCount: number; activeDurationMs: number }
+    sessionMetadata?: { messageCount: number; activeDurationMs: number },
+    recentMessages?: { role: "user" | "assistant"; content: string }[]
   ): ChatCompletionMessageParam {
     const sessionContext = sessionMetadata
       ? {
@@ -34,11 +35,19 @@ export class TherapeuticAnalysisEngine {
         }
       : null;
 
+    // Include only recent user messages for lightweight context (not full conversation)
+    // This helps understand follow-up references ("it", "that", "this") without bloating token usage
+    const conversationContext =
+      recentMessages && recentMessages.length > 0
+        ? recentMessages.filter((msg) => msg.role === "user").slice(-2) // Last 2 user messages only
+        : undefined;
+
     return prevData.length === 0
       ? {
           role: "user",
           content: JSON.stringify({
             current_message: userInput.trim(),
+            ...(conversationContext && { recent_conversation: conversationContext }),
             ...(sessionContext && { session_context: sessionContext }),
           }),
         }
@@ -46,17 +55,20 @@ export class TherapeuticAnalysisEngine {
           role: "user",
           content: JSON.stringify({
             current_message: userInput.trim(),
+            ...(conversationContext && { recent_conversation: conversationContext }),
             previous_analyses: this.getAnalysisContext(prevData),
             ...(sessionContext && { session_context: sessionContext }),
             instructions: `
-      You are provided with context from the user’s previous messages.
+      You are provided with context from the user's previous messages.
       When analyzing the current message:
-      - Use prior primary and secondary modules as context for trends and emotional patterns.
-      - Note recurring themes across previous analyses.
-      - Adjust intensity based on continuity or escalation of emotional load.
-      - Avoid overriding a module unless the emotional context clearly changes.
-      - Include cognitive distortions if detected, even if they were not present before.
-      - Aim for a nuanced, emotionally attuned analysis that respects the user’s ongoing state.
+      - Use recent_conversation (previous user messages) to understand references like "it", "that", "this"
+      - Consider if current_message is elaborating on or continuing a previous topic
+      - Avoid marking follow-up elaborations as "low" value if they add therapeutic context
+      - Use prior analyses for broader emotional patterns and recurring themes
+      - Adjust intensity based on continuity or escalation of emotional load
+      - Avoid overriding a module unless the emotional context clearly changes
+      - Include cognitive distortions if detected, even if they were not present before
+      - Aim for a nuanced, emotionally attuned analysis that respects the user's ongoing state
     `,
           }),
         } as ChatCompletionMessageParam);

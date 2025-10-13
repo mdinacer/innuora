@@ -4,7 +4,9 @@ import { useActiveSessionStore } from "@/domains/active-session/active-session.s
 import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
-import { sessionSynchronizer } from "@/domains/session-sync";
+import { cloudSyncService } from "@/domains/simple-session-sync/cloud-sync-service";
+//import { sessionSynchronizer } from "@/domains/session-sync";
+import { localSyncService } from "@/domains/simple-session-sync/local-sync-service";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
@@ -31,7 +33,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     const latestSession = useActiveSessionStore.getState().session;
     if (latestSession && sessionId) {
       // Only trigger local sync here - cloud sync is handled separately by synchronizer
-      sessionSynchronizer.queueLocalSync(sessionId, "update", latestSession);
+      //sessionSynchronizer.queueLocalSync(sessionId, "update", latestSession);
+      localSyncService.syncSession(latestSession);
       // Cloud sync is debounced and triggered automatically by the synchronizer
     }
   }, [sessionId]);
@@ -169,28 +172,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     // Session management
     loadSession: handleLoadSession,
 
-    // Sync status (updated for two-tier architecture)
-    getSyncStatus: () => {
-      return currentSession
-        ? sessionSynchronizer.getSyncStatus(currentSession.id)
-        : { local: "synced", cloud: "synced" };
-    },
-    getLocalSyncStatus: () => {
-      return currentSession ? sessionSynchronizer.getLocalSyncStatus(currentSession.id) : "synced";
-    },
-    getCloudSyncStatus: () => {
-      return currentSession ? sessionSynchronizer.getCloudSyncStatus(currentSession.id) : "synced";
-    },
-    getLastSyncTimes: () => {
-      return currentSession ? sessionSynchronizer.getLastSyncTimes(currentSession.id) : { local: null, cloud: null };
-    },
-    getLastSyncTime: () => {
-      return currentSession ? sessionSynchronizer.getLastSyncTime(currentSession.id) : null;
-    },
     manualSync: triggerSync,
-    manualLocalSync: () =>
-      currentSession ? sessionSynchronizer.syncSessionLocal(currentSession.id) : Promise.resolve(false),
-    manualCloudSync: () =>
-      currentSession ? sessionSynchronizer.syncSessionCloud(currentSession.id) : Promise.resolve(false),
+    manualLocalSync: () => (currentSession ? localSyncService.syncSession(currentSession) : Promise.resolve(false)),
+    manualCloudSync: () => (currentSession ? cloudSyncService.syncToCloud(currentSession.id) : Promise.resolve(false)),
   };
 }

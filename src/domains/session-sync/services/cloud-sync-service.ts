@@ -243,13 +243,9 @@ export class CloudSyncService {
       };
     }
 
-    // Add server analytics if it exists (server-side only tracking)
-    if (encryptedSession.serverAnalytics) {
-      prismaSession = {
-        ...prismaSession,
-        serverAnalytics: encryptedSession.serverAnalytics,
-      };
-    }
+    // NOTE: serverData moved to separate SessionContext table
+    // It's managed independently by session-context-service.ts
+    // Cloud sync only syncs user-visible session metadata and encrypted messages
 
     return prismaSession;
   }

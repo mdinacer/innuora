@@ -3,6 +3,7 @@
 import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+import { DataExportMetadataSchema, SessionMetadataSchema, validateMetadata } from "@/lib/zod/metadata.schema";
 import type { ActionResult } from "@/types/action-result";
 import { requireCurrentUser } from "./auth-actions";
 
@@ -67,6 +68,26 @@ export async function exportUserData(): Promise<
         take: 1000,
       });
 
+      // Validate export metadata
+      const exportMetadata = validateMetadata(DataExportMetadataSchema, {
+        format: "json",
+        includeMessages: true,
+        includeSessions: true,
+        includeProfile: true,
+        includeTransactions: true,
+        requestedAt: new Date().toISOString(),
+        requestedBy: authUser.id,
+        ipAddress: undefined, // Server-side export doesn't have client IP
+        userAgent: undefined, // Server-side export doesn't have user agent
+      });
+
+      if (!exportMetadata) {
+        logger.logErrorAndThrow(ERROR_CODES.VALIDATION_FAILED, new Error("Invalid export metadata"), {
+          operation: "export_user_data_validate_metadata",
+          userId: authUser.id,
+        });
+      }
+
       // Create GDPR-compliant export package
       const exportData = {
         exportMetadata: {
@@ -78,6 +99,7 @@ export async function exportUserData(): Promise<
             contact: "privacy@innuora.com",
           },
           legalBasis: "GDPR Article 20 - Right to Data Portability",
+          requestMetadata: exportMetadata,
         },
 
         personalInformation: {
@@ -115,23 +137,27 @@ export async function exportUserData(): Promise<
 
         sessions: {
           totalCount: user.sessions.length,
-          sessions: user.sessions.map((session) => ({
-            id: session.id,
-            title: session.title,
-            subtitle: session.subtitle,
+          sessions: user.sessions.map((session) => {
+            // Validate session metadata before using
+            const validatedMetadata = validateMetadata(SessionMetadataSchema, session.metadata);
 
-            cloudBackupEnabled: session.persistOnCloud,
-            autoUpdateTitle: session.autoUpdateTitle,
-            // GDPR-compliant metadata only - stripped of implementation details
-            metadata: {
-              messageCount: (session.metadata as any)?.messageCount || 0,
-              // Exclude: tokenCount, inputTokens, outputTokens, tokenUsage, costUSD, creditsUsed
-              // These are internal implementation details, not required by GDPR
-            },
-            createdAt: session.createdAt,
-            lastUpdated: session.updatedAt,
-            note: "Encrypted conversation data is accessible via your decryption key in the app",
-          })),
+            return {
+              id: session.id,
+              title: session.title,
+              subtitle: session.subtitle,
+              cloudBackupEnabled: session.persistOnCloud,
+              autoUpdateTitle: session.autoUpdateTitle,
+              // GDPR-compliant metadata only - stripped of implementation details
+              metadata: {
+                messageCount: validatedMetadata?.messageCount || 0,
+                // Exclude: tokenCount, inputTokens, outputTokens, tokenUsage, costUSD, creditsUsed
+                // These are internal implementation details, not required by GDPR
+              },
+              createdAt: session.createdAt,
+              lastUpdated: session.updatedAt,
+              note: "Encrypted conversation data is accessible via your decryption key in the app",
+            };
+          }),
         },
 
         financialData: {
