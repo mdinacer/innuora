@@ -37,20 +37,20 @@ export interface Session {
   createdAt: Date;
   updatedAt: Date;
 
-  // Sensitive data
+  // Client-visible data (encrypted with user password)
   messages: OpenChatMessage[];
-  memoryStore: string | null; // a user memory store
-  continuitySummary: SessionSummary | null; // a session summary for continuity
-  aggregatedAnalysis: SessionAnalysis | null; // a combined analysis
-  analysisSnapshots: Array<TherapeuticAnalysisWithMessageId>; // an array of StateAnalysis
   sessionDiagnostics: SessionDiagnosticsWithMetadata | null;
 
   persistOnCloud?: boolean;
   autoUpdateTitle: boolean;
   metadata: SessionMeta;
 
-  // Server-only analytics (never sent to client - used for billing verification and debugging)
-  serverAnalytics?: import("@/types/server-analytics.types").ServerAnalytics | null;
+  // REMOVED - These fields are now SERVER-SIDE ONLY (stored in encrypted serverData field):
+  // - memoryStore: Now in serverData (session context)
+  // - continuitySummary: Now in serverData (session context)
+  // - aggregatedAnalysis: Now in serverData (session context)
+  // - analysisSnapshots: Now in serverData (session context)
+  // - serverAnalytics: Replaced by AiOperationLog table
 }
 
 export interface SessionSummary {

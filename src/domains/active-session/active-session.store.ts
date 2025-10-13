@@ -4,11 +4,9 @@ import { resetSessionData } from "@/domains/active-session/active-session.utils"
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { generateMessageId } from "@/domains/session-flow/utils/generate-id";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { CreditUtils } from "@/lib/credits/credit-config";
 import { logger } from "@/lib/logging/unified-logger";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { ServerAnalyticsUtils, TokenUsageRecord } from "@/types/server-analytics.types";
 
 interface ActiveSessionStoreState {
   session: Session | null;
@@ -121,18 +119,11 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
     return messageId;
   },
 
-  addAnalysis: (analysis, messageId) => {
-    const current = get().session;
-    if (!current) return;
-
-    set({
-      session: {
-        ...current,
-        analysisSnapshots: [...current.analysisSnapshots, { ...analysis, messageId }],
-        updatedAt: new Date(),
-      },
-      isDirty: true,
-    });
+  // NOTE: addAnalysis is now a no-op - analysis is stored server-side only
+  // Analysis is automatically saved in handleUserInput via updateSessionContext()
+  addAnalysis: (_analysis, _messageId) => {
+    // No-op: Analysis is stored server-side only for security
+    // Server action automatically saves via updateSessionContext()
   },
 
   addTokenUsage: (tokenUsage) => {
@@ -143,36 +134,8 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
     const outputTokensDelta = tokenUsage.usage?.completion_tokens || 0;
     const totalTokensDelta = tokenUsage.usage?.total_tokens || 0;
 
-    // Calculate credits charged for this operation
-    const creditsCharged = CreditUtils.calculateBillableCredits(totalTokensDelta);
-
-    // Map operation type from ModelTokenUsage to ServerAnalytics operation type
-    const operationTypeMap: Record<string, TokenUsageRecord["operation"]> = {
-      analysis: "analysis",
-      completion: "response",
-      memory: "memory_update",
-      summary: "session_summary",
-      other: "response", // Default fallback
-    };
-
-    // Create server analytics record
-    const serverRecord: TokenUsageRecord = {
-      operation: operationTypeMap[tokenUsage.type] || "response",
-      model: tokenUsage.model,
-      inputTokens: inputTokensDelta,
-      outputTokens: outputTokensDelta,
-      totalTokens: totalTokensDelta,
-      creditsCharged,
-      rawCostUSD: tokenUsage.costUSD,
-      timestamp: tokenUsage.timestamp,
-      metadata: {
-        mode: tokenUsage.mode,
-        version: tokenUsage.version,
-      },
-    };
-
-    // Update server analytics (server-side only tracking)
-    const updatedServerAnalytics = ServerAnalyticsUtils.addTokenUsage(current.serverAnalytics || null, serverRecord);
+    // NOTE: Server analytics are now tracked in AiOperationLog table (server-side only)
+    // Client-side only tracks basic token usage metadata for UI display
 
     set({
       session: {
@@ -185,7 +148,6 @@ export const useActiveSessionStore = create<ActiveSessionStoreState>((set, get) 
           outputTokens: current.metadata.outputTokens + outputTokensDelta,
           costUSD: current.metadata.costUSD + tokenUsage.costUSD,
         },
-        serverAnalytics: updatedServerAnalytics,
         updatedAt: new Date(),
       },
       isDirty: true,

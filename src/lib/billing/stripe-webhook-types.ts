@@ -9,11 +9,13 @@ export interface StripePaymentIntent {
   amount: number;
   currency: string;
   status: string;
+  customer?: string | { email?: string; name?: string };
   metadata?: Record<string, string>;
   last_payment_error?: {
     message: string;
     type: string;
   };
+  payment_intent?: string;
 }
 
 export interface StripeInvoice {
@@ -23,20 +25,23 @@ export interface StripeInvoice {
   amount_due: number;
   status: string;
   subscription?: string;
+  payment_intent?: string;
 }
 
 export interface StripeSubscription {
   id: string;
-  customer: string;
+  customer: string | { email?: string; name?: string };
   status: string;
   current_period_start: number;
   current_period_end: number;
+  metadata?: Record<string, string>;
   items: {
     data: Array<{
       price: {
         id: string;
         unit_amount: number;
         currency: string;
+        nickname?: string;
       };
     }>;
   };

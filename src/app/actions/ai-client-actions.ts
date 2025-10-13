@@ -147,7 +147,20 @@ export async function processAiPrompts(
 
       // At this point, rawContent is guaranteed to be a non-empty string (logErrorAndThrow throws)
       const message = rawContent!;
-      console.log({ usage: data.usage, prompts, response: message });
+
+      // Log AI response details for monitoring
+      await logger.logInfo("AI completion successful", {
+        operation: "ai_send_prompts",
+        metadata: {
+          model: AI_MODEL,
+          vendor: AI_MODEL_VENDOR,
+          promptTokens: data.usage?.prompt_tokens || 0,
+          completionTokens: data.usage?.completion_tokens || 0,
+          totalTokens: data.usage?.total_tokens || 0,
+          responseLength: message.length,
+        },
+      });
+
       // Calculate credits using simple token-based system
       // Profit margin is controlled by pack pricing, not by code multipliers
       const totalTokens = data.usage?.total_tokens || 0;

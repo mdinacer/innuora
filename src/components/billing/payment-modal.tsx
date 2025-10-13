@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useReducer } from "react";
 import { DialogClose, DialogDescription } from "@radix-ui/react-dialog";
 import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -16,13 +16,57 @@ import { CreditUXUtils } from "@/lib/credits/credit-config";
 // =========================
 // Stripe Promise Initialization
 // =========================
-
 const stripePromise = loadStripe(getStripePublishableKey());
 
 // =========================
-// Payment Form Component
+// Payment Reducer
 // =========================
+type PaymentStatus = "idle" | "creating_intent" | "processing_payment" | "succeeded" | "failed";
 
+interface PaymentState {
+  status: PaymentStatus;
+  clientSecret: string | null;
+  error: string | null;
+  successResult?: { creditsAdded: number; newBalance: number } | null;
+}
+
+type PaymentAction =
+  | { type: "START_CREATE_INTENT" }
+  | { type: "INTENT_CREATED"; clientSecret: string }
+  | { type: "START_PAYMENT" }
+  | { type: "PAYMENT_SUCCEEDED"; result: { creditsAdded: number; newBalance: number } }
+  | { type: "PAYMENT_FAILED"; error: string }
+  | { type: "RESET" };
+
+const initialState: PaymentState = {
+  status: "idle",
+  clientSecret: null,
+  error: null,
+  successResult: null,
+};
+
+function paymentReducer(state: PaymentState, action: PaymentAction): PaymentState {
+  switch (action.type) {
+    case "START_CREATE_INTENT":
+      return { ...state, status: "creating_intent", error: null };
+    case "INTENT_CREATED":
+      return { ...state, status: "idle", clientSecret: action.clientSecret };
+    case "START_PAYMENT":
+      return { ...state, status: "processing_payment", error: null };
+    case "PAYMENT_SUCCEEDED":
+      return { ...state, status: "succeeded", successResult: action.result, error: null };
+    case "PAYMENT_FAILED":
+      return { ...state, status: "failed", error: action.error };
+    case "RESET":
+      return { ...initialState };
+    default:
+      return state;
+  }
+}
+
+// =========================
+// Payment Form
+// =========================
 interface PaymentFormProps {
   userEmail?: string;
   userName?: string;
@@ -35,155 +79,67 @@ interface PaymentFormProps {
 function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCancel }: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isCreatingIntent, setIsCreatingIntent] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "succeeded" | "failed">("idle");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [state, dispatch] = useReducer(paymentReducer, initialState);
 
   const product = BILLING_PRODUCTS[productKey];
   const timeFrame = CreditUXUtils.creditsToEstimatedWeeks(product.credits);
+  const { status, clientSecret, error } = state;
 
   const handleSubmit = useCallback(
-    async (event: React.FormEvent) => {
-      event.preventDefault();
-
-      if (!stripe || !elements) {
-        return;
-      }
-
-      // Prevent duplicate submissions
-      if (isSubmitting || isCreatingIntent || isProcessing) {
-        return;
-      }
-
-      // Create payment intent only when user submits (not on mount)
-      if (!clientSecret) {
-        setIsSubmitting(true);
-        setIsCreatingIntent(true);
-        try {
-          const result = await createCreditPurchaseIntent(productKey, userEmail, userName);
-
-          if (result.error) {
-            onError(result.error.message || "Failed to initialize payment");
-            setIsCreatingIntent(false);
-            setIsSubmitting(false);
-            return;
-          }
-
-          if (!result.data.success || !result.data.clientSecret) {
-            onError("Failed to initialize payment");
-            setIsCreatingIntent(false);
-            setIsSubmitting(false);
-            return;
-          }
-
-          setClientSecret(result.data.clientSecret);
-          setIsCreatingIntent(false);
-
-          // Continue with payment confirmation after intent is created
-          const cardElement = elements.getElement(CardElement);
-          if (!cardElement) {
-            onError("Payment form not loaded properly");
-            setIsSubmitting(false);
-            return;
-          }
-
-          setIsProcessing(true);
-          setPaymentStatus("processing");
-
-          const { error, paymentIntent } = await stripe.confirmCardPayment(result.data.clientSecret, {
-            payment_method: {
-              card: cardElement,
-              billing_details: {
-                email: userEmail,
-                name: userName,
-              },
-            },
-          });
-
-          if (error) {
-            onError(error.message || "Payment failed");
-            setPaymentStatus("failed");
-            setIsSubmitting(false);
-          } else if (paymentIntent.status === "succeeded") {
-            setPaymentStatus("succeeded");
-            onSuccess({
-              creditsAdded: product.credits,
-              newBalance: 0,
-            });
-            // Keep isSubmitting true to prevent any further submissions
-          }
-          setIsProcessing(false);
-        } catch {
-          onError("An unexpected error occurred");
-          setPaymentStatus("failed");
-          setIsCreatingIntent(false);
-          setIsProcessing(false);
-          setIsSubmitting(false);
-        }
-        return;
-      }
-
-      // If clientSecret already exists, just confirm payment
-      setIsSubmitting(true);
-      setIsProcessing(true);
-      setPaymentStatus("processing");
-
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) {
-        onError("Payment form not loaded properly");
-        setIsProcessing(false);
-        setPaymentStatus("failed");
-        setIsSubmitting(false);
-        return;
-      }
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!stripe || !elements) return;
+      if (status === "creating_intent" || status === "processing_payment" || status === "succeeded") return;
 
       try {
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        if (!clientSecret) {
+          // Create payment intent
+          dispatch({ type: "START_CREATE_INTENT" });
+          const result = await createCreditPurchaseIntent(productKey, userEmail, userName);
+
+          if (result.error || !result.data.success || !result.data.clientSecret) {
+            dispatch({ type: "PAYMENT_FAILED", error: result.error?.message || "Failed to initialize payment" });
+            onError(result.error?.message || "Failed to initialize payment");
+            return;
+          }
+
+          dispatch({ type: "INTENT_CREATED", clientSecret: result.data.clientSecret });
+        }
+
+        // Confirm payment
+        const finalClientSecret = clientSecret || state.clientSecret;
+        if (!finalClientSecret) throw new Error("Missing client secret");
+
+        dispatch({ type: "START_PAYMENT" });
+
+        const cardElement = elements.getElement(CardElement);
+        if (!cardElement) throw new Error("Payment form not loaded properly");
+
+        const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(finalClientSecret, {
           payment_method: {
             card: cardElement,
-            billing_details: {
-              email: userEmail,
-              name: userName,
-            },
+            billing_details: { email: userEmail, name: userName },
           },
         });
 
-        if (error) {
-          onError(error.message || "Payment failed");
-          setPaymentStatus("failed");
-          setIsSubmitting(false);
-        } else if (paymentIntent.status === "succeeded") {
-          setPaymentStatus("succeeded");
-          onSuccess({
-            creditsAdded: product.credits,
-            newBalance: 0,
-          });
-          // Keep isSubmitting true to prevent any further submissions
+        if (stripeError) {
+          dispatch({ type: "PAYMENT_FAILED", error: stripeError.message || "Payment failed" });
+          onError(stripeError.message || "Payment failed");
+          return;
         }
-      } catch {
-        onError("An unexpected error occurred");
-        setPaymentStatus("failed");
-        setIsSubmitting(false);
-      } finally {
-        setIsProcessing(false);
+
+        if (paymentIntent.status === "succeeded") {
+          const result = { creditsAdded: product.credits, newBalance: 0 };
+          dispatch({ type: "PAYMENT_SUCCEEDED", result });
+          onSuccess(result);
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unexpected error";
+        dispatch({ type: "PAYMENT_FAILED", error: msg });
+        onError(msg);
       }
     },
-    [
-      clientSecret,
-      elements,
-      onError,
-      onSuccess,
-      product.credits,
-      stripe,
-      userEmail,
-      userName,
-      productKey,
-      isSubmitting,
-      isCreatingIntent,
-      isProcessing,
-    ]
+    [stripe, elements, clientSecret, productKey, product.credits, userEmail, userName, onSuccess, onError, status]
   );
 
   return (
@@ -193,7 +149,7 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
         <h3 className="font-semibold text-lg">
           {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} Pack - {timeFrame} weeks of support
         </h3>
-        <p className="text-sm text-gray-600 mt-1">~{product.credits.toLocaleString()} credits, automatically applied</p>
+        <p className="text-sm text-gray-600 mt-1">~{product.credits.toLocaleString()} credits</p>
       </div>
 
       {/* Card Input */}
@@ -207,16 +163,8 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
             id="card-element"
             options={{
               style: {
-                base: {
-                  fontSize: "16px",
-                  color: "#424770",
-                  "::placeholder": {
-                    color: "#aab7c4",
-                  },
-                },
-                invalid: {
-                  color: "#9e2146",
-                },
+                base: { fontSize: "16px", color: "#424770", "::placeholder": { color: "#aab7c4" } },
+                invalid: { color: "#9e2146" },
               },
               hidePostalCode: false,
             }}
@@ -225,46 +173,44 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
       </div>
 
       {/* Status Messages */}
-      {paymentStatus === "processing" && (
+      {status === "processing_payment" && (
         <div className="flex items-center text-blue-600">
           <Loader2 className="h-4 w-4 animate-spin mr-2" />
           Processing payment...
         </div>
       )}
-
-      {paymentStatus === "succeeded" && (
+      {status === "succeeded" && (
         <div className="flex items-center text-green-600">
           <CheckCircle className="h-4 w-4 mr-2" />
-          Payment successful! Credits are being added to your account.
+          Payment successful! Credits added.
         </div>
       )}
-
-      {paymentStatus === "failed" && (
+      {status === "failed" && (
         <div className="flex items-center text-red-600">
           <XCircle className="h-4 w-4 mr-2" />
-          Payment failed. Please try again.
+          {error || "Payment failed. Please try again."}
         </div>
       )}
 
-      {/* Action Buttons */}
+      {/* Buttons */}
       <div className="flex gap-3 pt-4">
         <button
           type="button"
           onClick={onCancel}
-          disabled={isProcessing}
+          disabled={status === "processing_payment"}
           className="flex-1 rounded-2xl border border-inn-border-light px-6 py-3 text-base font-semibold hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
         >
           Cancel
         </button>
         <button
           type="submit"
-          disabled={!stripe || isSubmitting || isProcessing || isCreatingIntent || paymentStatus === "succeeded"}
-          className="flex-1 rounded-2xl bg-inn-bg-accent px-6 py-3 text-nowrap text-base font-semibold text-white hover:translate-y-[-1px] transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={status === "processing_payment" || status === "creating_intent" || status === "succeeded"}
+          className="flex-1 rounded-2xl bg-inn-bg-accent px-6 py-3 text-base font-semibold text-white shadow-lg disabled:opacity-50"
         >
-          {isCreatingIntent || isProcessing ? (
+          {status === "creating_intent" || status === "processing_payment" ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
-              {isCreatingIntent ? "Initializing..." : "Processing..."}
+              {status === "creating_intent" ? "Initializing..." : "Processing..."}
             </>
           ) : (
             `Secure ${timeFrame} weeks of support`
@@ -272,18 +218,16 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
         </button>
       </div>
 
-      {/* Security Notice */}
       <div className="text-xs text-gray-500 text-center">
-        <p>Your payment is secured by Stripe. We never store your card information.</p>
+        <p>Your payment is secured by Stripe. We never store your card data.</p>
       </div>
     </form>
   );
 }
 
 // =========================
-// Payment Modal Component
+// Payment Modal
 // =========================
-
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -294,84 +238,49 @@ interface PaymentModalProps {
   onSuccess?: (result: { creditsAdded: number; newBalance: number }) => void;
 }
 
-export function PaymentModal({
-  isOpen,
-  onClose,
-  userId,
-  userEmail,
-  userName,
-  productKey,
-  onSuccess,
-}: PaymentModalProps) {
-  const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successResult, setSuccessResult] = useState<{ creditsAdded: number; newBalance: number } | null>(null);
-
-  const resetModal = () => {
-    setPaymentStatus("idle");
-    setErrorMessage("");
-    setSuccessResult(null);
-  };
+export function PaymentModal({ isOpen, onClose, userEmail, userName, productKey, onSuccess }: PaymentModalProps) {
+  const [state, dispatch] = useReducer(paymentReducer, initialState);
+  const { status, error, successResult } = state;
 
   const handleSuccess = (result: { creditsAdded: number; newBalance: number }) => {
-    setPaymentStatus("success");
-    setSuccessResult(result);
+    dispatch({ type: "PAYMENT_SUCCEEDED", result });
     onSuccess?.(result);
-
-    // Auto-close after 3 seconds
     setTimeout(() => {
       onClose();
-      resetModal();
+      dispatch({ type: "RESET" });
     }, 3000);
   };
 
-  const handleError = (error: string) => {
-    setPaymentStatus("error");
-    setErrorMessage(error);
-  };
-
+  const handleError = (error: string) => dispatch({ type: "PAYMENT_FAILED", error });
   const handleClose = () => {
     onClose();
-    // Reset after modal animation completes
-    setTimeout(resetModal, 300);
+    setTimeout(() => dispatch({ type: "RESET" }), 300);
   };
 
-  if (paymentStatus === "success" && successResult) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleClose}>
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      {status === "succeeded" && successResult ? (
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center text-green-600">
-              <CheckCircle className="h-5 w-5 mr-2" />
-              Payment Successful!
+              <CheckCircle className="h-5 w-5 mr-2" /> Payment Successful!
             </DialogTitle>
           </DialogHeader>
-
           <div className="text-center py-6">
-            <p className="text-lg font-semibold mb-2">
-              {successResult.creditsAdded.toLocaleString()} credits added to your account
-            </p>
-            <p className="text-gray-600">Your support is now secured and ready to use.</p>
+            <p className="text-lg font-semibold mb-2">{successResult.creditsAdded.toLocaleString()} credits added.</p>
+            <p className="text-gray-600">Your support is now secured.</p>
           </div>
         </DialogContent>
-      </Dialog>
-    );
-  }
-
-  if (paymentStatus === "error") {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleClose}>
+      ) : status === "failed" ? (
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center text-red-600">
-              <XCircle className="h-5 w-5 mr-2" />
-              Payment Failed
+              <XCircle className="h-5 w-5 mr-2" /> Payment Failed
             </DialogTitle>
           </DialogHeader>
-
           <div className="text-center py-6">
-            <p className="text-gray-600 mb-4">{errorMessage}</p>
-            <Button onClick={() => setPaymentStatus("idle")} className="mr-2">
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={() => dispatch({ type: "RESET" })} className="mr-2">
               Try Again
             </Button>
             <Button variant="outline" onClick={handleClose}>
@@ -379,39 +288,34 @@ export function PaymentModal({
             </Button>
           </div>
         </DialogContent>
-      </Dialog>
-    );
-  }
-
-  return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent
-        showCloseButton={false}
-        className="sm:max-w-lg p-0 bg-inn-bg-card rounded-3xl border border-inn-border-light shadow-[0_20px_60px] shadow-black/30 max-w-[500px] max-h-[90vh]"
-      >
-        <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-inn-border-light">
-          <div>
-            <DialogTitle className="text-xl font-bold">Secure Your Support</DialogTitle>
-            <DialogDescription className="hidden" />
-          </div>
-          <DialogClose asChild>
-            <button className="w-8 h-8 rounded-full hover:bg-inn-bg-secondary flex items-center justify-center transition">
-              <XIcon className="size-5 shrink-0" />
-            </button>
-          </DialogClose>
-        </DialogHeader>
-
-        <Elements stripe={stripePromise}>
-          <PaymentForm
-            userEmail={userEmail}
-            userName={userName}
-            productKey={productKey}
-            onSuccess={handleSuccess}
-            onError={handleError}
-            onCancel={handleClose}
-          />
-        </Elements>
-      </DialogContent>
+      ) : (
+        <DialogContent
+          showCloseButton={false}
+          className="sm:max-w-lg p-0 bg-inn-bg-card rounded-3xl border border-inn-border-light shadow-[0_20px_60px] shadow-black/30 max-w-[500px] max-h-[90vh]"
+        >
+          <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-inn-border-light">
+            <div>
+              <DialogTitle className="text-xl font-bold">Secure Your Support</DialogTitle>
+              <DialogDescription className="hidden" />
+            </div>
+            <DialogClose asChild>
+              <button className="w-8 h-8 rounded-full hover:bg-inn-bg-secondary flex items-center justify-center transition">
+                <XIcon className="size-5 shrink-0" />
+              </button>
+            </DialogClose>
+          </DialogHeader>
+          <Elements stripe={stripePromise}>
+            <PaymentForm
+              userEmail={userEmail}
+              userName={userName}
+              productKey={productKey}
+              onSuccess={handleSuccess}
+              onError={handleError}
+              onCancel={handleClose}
+            />
+          </Elements>
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

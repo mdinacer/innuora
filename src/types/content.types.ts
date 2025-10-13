@@ -21,7 +21,16 @@ export const ContentTypeSchema = z.enum(["article", "guide", "insight"]);
 
 export type ContentType = z.infer<typeof ContentTypeSchema>;
 
-export const ContentIntentSchema = z.enum(["informational", "actionable", "supportive", "therapeutic", "emergency"]);
+export const ContentIntentSchema = z.enum([
+  "informational",
+  "actionable",
+  "supportive",
+  "instructional",
+  "analytical",
+  "motivational",
+  "therapeutic",
+  "emergency",
+]);
 
 export type ContentIntent = z.infer<typeof ContentIntentSchema>;
 
@@ -52,6 +61,7 @@ export const ContentMetadataSchema = z.object({
 
   // Publishing
   publishedAt: z.date().optional(),
+  updatedAt: z.date().optional(),
   draft: z.boolean().default(true),
 });
 

@@ -34,22 +34,25 @@ ${instructions}`;
 
     // 2. HIGH INTENSITY PRIORITY: OVERWHELM & RESISTANCE (from analysis.process_module)
     // Check if the analyzer has already determined that a containment process module is the highest priority.
+    // No curiosity module
     if (
       intensity === "high" &&
       (process_module === SESSION_MODULES.OVERWHELM || process_module === SESSION_MODULES.RESISTANCE_OVERWHELM)
     ) {
       const analysisContext = this.buildAnalysisContext(analysis, this.locale);
-      const curiosityInstructions = await this.getModuleInstructions(SESSION_MODULES.CURIOSITY);
+      // const curiosityInstructions = await this.getModuleInstructions(SESSION_MODULES.CURIOSITY);
       const instructions = await this.getModuleInstructions(process_module);
       const localizedInstructions = MODULES_INSTRUCTIONS_LOCALIZED[this.locale];
 
+      // This part is under  ${analysisContext}
+      // ${localizedInstructions.curiosity_foundation} ${curiosityInstructions}
       const content = `${localizedInstructions.high_intensity_containment}
 
 ${localizedInstructions.analysis_context}
 ${analysisContext}
 
 ${localizedInstructions.active_modules}
-${localizedInstructions.curiosity_foundation} ${curiosityInstructions}
+
 
 ${capitalize(process_module)} ${localizedInstructions.processing} ${instructions}`;
       return { role: "system", content } as ChatCompletionMessageParam;
@@ -62,9 +65,18 @@ ${capitalize(process_module)} ${localizedInstructions.processing} ${instructions
     // Build unified module instructions instead of separate sections
     const activeModules: string[] = [];
 
-    // ALWAYS include curiosity as the foundation
-    const curiosityInstructions = await this.getModuleInstructions(SESSION_MODULES.CURIOSITY);
-    activeModules.push(`${localizedInstructions.curiosity_foundation} ${curiosityInstructions}`);
+    const should_use_curiosity =
+      (analysis.intensity === "low" || analysis.intensity === "moderate") &&
+      ["ready", "engaged"].includes(analysis.therapeutic_readiness) &&
+      (!analysis.process_module ||
+        !["validate", "overwhelm", "resistance_overwhelm", "reflective_catalyst"].includes(analysis.process_module)) &&
+      analysis.analysis_value !== "low";
+
+    if (should_use_curiosity) {
+      // ALWAYS include curiosity as the foundation
+      const curiosityInstructions = await this.getModuleInstructions(SESSION_MODULES.CURIOSITY);
+      activeModules.push(`${localizedInstructions.curiosity_foundation} ${curiosityInstructions}`);
+    }
 
     // Add therapeutic modules as integrated guidance
     if (core_module) {

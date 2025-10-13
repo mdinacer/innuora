@@ -154,10 +154,15 @@ export function CookieConsentBanner() {
                 <Link href="/settings" className="text-inn-bg-accent hover:underline">
                   Privacy Settings
                 </Link>
-                . By continuing to use Innuora, you agree to our{" "}
-                <Link href="/privacy" className="text-inn-bg-accent hover:underline">
+                . Learn more in our{" "}
+                <a
+                  href="https://www.innuora.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-inn-bg-accent hover:underline"
+                >
                   Privacy Policy
-                </Link>
+                </a>
                 .
               </p>
             </div>

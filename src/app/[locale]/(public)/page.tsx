@@ -21,54 +21,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t("seo:home.title"),
     description: t("seo:home.description"),
-    keywords: [
-      // Primary - Core problems this solves
-      "emotional burnout support",
-      "women burnout recovery",
-      "high-functioning women support",
-      "emotional overwhelm relief",
-      "perfectionist burnout help",
-      "emotional exhaustion support",
-      "cognitive distortions help",
-      "emotional clarity app",
-      "overachiever stress relief",
-
-      // Secondary - Specific features & benefits
-      "safe space for women online",
-      "emotional mirror app",
-      "emotional reflection tool",
-      "support for overwhelmed women",
-      "silent rules therapy",
-      "emotional patterns recognition",
-      "self-criticism help",
-      "internal pressure relief",
-      "emotional validation app",
-
-      // What this app uniquely provides
-      "AI emotional companion",
-      "digital emotional support",
-      "emotional companion for women",
-      "compassionate AI support",
-      "emotional awareness tool",
-      "gentle emotional guidance",
-      "emotional safe space app",
-      "emotional wellness companion",
-
-      // Problem-focused long-tail
-      "app for emotionally exhausted women",
-      "support for high-functioning anxiety",
-      "help with perfectionist tendencies",
-      "emotional overwhelm support app",
-      "safe space for emotional reflection",
-      "support for women carrying expectations",
-      "emotional clarity for working women",
-      "help with silent emotional rules",
-      "working women emotional support",
-    ],
+    keywords: [...APP_CONFIG.seo.primaryKeywords],
     openGraph: {
       title: t("seo:home.title"),
       description: t("seo:home.description"),
-      url: APP_CONFIG.domains.primary,
+      url: `/${locale}`,
       siteName: APP_CONFIG.name,
       images: [{ url: "/og/innuora-cover.png", width: 1200, height: 630, alt: `${APP_CONFIG.name} Open Graph Cover` }],
       locale: locale === "ar" ? "ar_AR" : locale === "fr" ? "fr_FR" : "en_US",
@@ -82,7 +39,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       creator: APP_CONFIG.social.twitter.creator,
     },
     alternates: {
-      canonical: APP_CONFIG.domains.canonical,
+      canonical: `/${locale}`,
+      languages: {
+        en: "/en",
+        fr: "/fr",
+        ar: "/ar",
+        "x-default": "/en",
+      },
     },
   };
 }

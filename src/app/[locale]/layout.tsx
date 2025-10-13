@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-import { geistMono, geistSans, METADATA, tajawal, VIEWPORT, zain } from "@/constants/app-config";
+import { cairo, geistMono, geistSans, METADATA, tajawal, VIEWPORT } from "@/constants/app-config";
 
 import "../globals.css";
 
@@ -43,7 +43,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
       <body
-        className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${zain.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-inn-bg-primary`}
+        className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-inn-bg-primary`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>

@@ -5,6 +5,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCreditsFromUser } from "@/app/actions/credit-actions";
+import { getAuthenticatedUserContext } from "@/app/actions/user-context";
 import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { buildUserProfileContext } from "@/domains/ai-conversation/prompts/prompt.user-context";
@@ -13,14 +14,18 @@ import { ChatContextManager } from "@/domains/chat-context/chat-context.manager"
 import { handleLightweightUserInput } from "@/domains/open-chat/open-chat-lightweight.action";
 import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
-import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import {
+  TherapeuticAnalysis,
+  TherapeuticAnalysisWithMessageId,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
-import { prisma } from "@/lib/prisma";
+import { getSessionContext, updateSessionContext } from "@/lib/session/session-context-service";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 import { TONE_INSTRUCTIONS_LOCALIZED } from "../ai-conversation/prompts/prompt.tone";
+import { reflective_catalyst_tone } from "../cbt-modules/modules.process";
 
 interface HandleUserInputResult {
   analysis: TherapeuticAnalysis | null;
@@ -69,7 +74,10 @@ async function buildConversationPrompts(
     });
   }
 
-  const toneInstruction = TONE_INSTRUCTIONS_LOCALIZED[locale][analysis.intensity];
+  const toneInstruction =
+    analysis.process_module === "reflective_catalyst"
+      ? reflective_catalyst_tone
+      : TONE_INSTRUCTIONS_LOCALIZED[locale][analysis.intensity];
   if (!toneInstruction) {
     logger.logErrorAndThrow(
       ERROR_CODES.CHAT_UNSUPPORTED_INTENSITY,
@@ -113,36 +121,7 @@ async function buildConversationPrompts(
   ];
 }
 
-/**
- * Resolves database user ID to Supabase auth ID for credit operations
- */
-async function resolveAuthId(userId?: string, sessionId?: string): Promise<string | undefined> {
-  if (!userId) {
-    logger.logWarning("Credit deduction skipped - No userId provided", {
-      operation: "open_chat_auth_id_resolution",
-      sessionId,
-      metadata: { userIdProvided: false },
-    });
-    return undefined;
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { authId: true },
-  });
-
-  logger.logInfo("AuthId resolution completed", {
-    operation: "open_chat_auth_id_resolution",
-    sessionId,
-    metadata: {
-      providedUserId: userId,
-      foundAuthId: user?.authId,
-      userFound: !!user,
-    },
-  });
-
-  return user?.authId;
-}
+// REMOVED: No longer needed - we get authenticated user from session
 
 /**
  * Processes therapeutic analysis for user input
@@ -159,7 +138,25 @@ async function processTherapeuticAnalysis(
     activeDurationMs: 0, // Will be properly calculated in store
   };
 
-  const analysisResult = await analyzeUserInput(userInput, prevAnalysis, userId, sessionId, sessionMetadata);
+  // Extract recent USER messages only (not assistant responses) for lightweight context
+  // Cost: ~50-100 tokens instead of ~200-400 for full conversation
+  // Sufficient to understand follow-up references ("it", "that", etc.) without bloating analysis cost
+  const recentMessages = messages
+    .filter((msg) => msg.role === "user")
+    .slice(-2) // Last 2 user messages
+    .map((msg) => ({
+      role: msg.role as "user" | "assistant",
+      content: msg.content,
+    }));
+
+  const analysisResult = await analyzeUserInput(
+    userInput,
+    prevAnalysis,
+    userId,
+    sessionId,
+    sessionMetadata,
+    recentMessages
+  );
 
   if (analysisResult.error) {
     logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, new Error(analysisResult.error.message), {
@@ -256,6 +253,18 @@ async function generateFullResponse(
     throw new Error("AI response is null");
   }
 
+  console.log(
+    JSON.stringify(
+      {
+        prompts: conversationPrompts,
+        analysis,
+        response: aiResponse,
+      },
+      null,
+      2
+    )
+  );
+
   return aiResponse;
 }
 
@@ -333,38 +342,54 @@ async function processCreditsDeduction(
 /**
  * Handles complete user input processing including analysis and response generation
  * Orchestrates the entire chat flow: validation → analysis → response → credits
+ *
+ * NOTE: This function now fetches therapeutic context (analysis, memory) from SERVER-SIDE
+ * encrypted storage. Client no longer passes this sensitive data.
  */
 export async function handleUserInput(
   userInput: string,
-  prevAnalysis: TherapeuticAnalysis[] = [],
   messages: OpenChatMessage[] = [],
   profile: Profile | null,
-  prevMemory: string | null,
   locale: AppLocales = "en",
-  userId?: string,
-  sessionId?: string
+  sessionId?: string,
+  messageId?: string
 ): Promise<HandleUserInputResult> {
+  // Step 1: Get authenticated user from session (server-side, secure)
+  // Moved outside try block so it's accessible in catch handler
+  const authenticatedUser = await getAuthenticatedUserContext();
+
   try {
-    // Step 1: Validate input
+    // Step 2: Validate input
     if (!userInput?.trim()) {
       logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
         operation: "open_chat_handle_user_input",
-        userId,
+        userId: authenticatedUser.authId,
         sessionId,
       });
     }
 
-    // Step 2: Resolve authId for credit operations
-    const authId = await resolveAuthId(userId, sessionId);
+    if (!sessionId) {
+      logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("Session ID is required"), {
+        operation: "open_chat_handle_user_input",
+        userId: authenticatedUser.authId,
+      });
+    }
 
-    // Step 3: Analyze user input
+    // Step 3: Fetch server-side session context (therapeutic data - NEVER sent to client)
+    // TypeScript: sessionId is guaranteed to be string after validation above (logErrorAndThrow terminates execution)
+    const sessionContext = await getSessionContext(sessionId as string, true);
+    // analysisSnapshots is already TherapeuticAnalysisWithMessageId[], which extends TherapeuticAnalysis
+    const prevAnalysis = sessionContext.analysisSnapshots.slice(-3); // Last 3 analyses
+    const prevMemory = sessionContext.memoryStore;
+
+    // Step 4: Analyze user input
     const {
       analysis,
       modelTokenUsage: analysisUsage,
       consumedCredits: analysisCredits,
-    } = await processTherapeuticAnalysis(userInput, prevAnalysis, messages, userId, sessionId);
+    } = await processTherapeuticAnalysis(userInput, prevAnalysis, messages, authenticatedUser.authId, sessionId);
 
-    // Step 4: Smart routing - lightweight vs full response
+    // Step 5: Smart routing - lightweight vs full response
     if (analysis.analysis_value === "low") {
       return await handleLowValueInput(
         userInput,
@@ -375,12 +400,12 @@ export async function handleUserInput(
         profile,
         prevMemory,
         locale,
-        userId,
+        authenticatedUser.authId,
         sessionId
       );
     }
 
-    // Step 5: Generate full AI response
+    // Step 6: Generate full AI response
     const aiResponse = await generateFullResponse(
       userInput,
       analysis,
@@ -388,14 +413,14 @@ export async function handleUserInput(
       profile,
       prevMemory,
       locale,
-      userId,
+      authenticatedUser.authId,
       sessionId
     );
 
-    // Step 6: Process credit deduction
+    // Step 7: Process credit deduction
     const creditsUsed = await processCreditsDeduction(
-      authId,
-      userId,
+      authenticatedUser.authId,
+      authenticatedUser.authId,
       analysisCredits || 0,
       aiResponse.consumedCredits || 0,
       userInput,
@@ -403,7 +428,33 @@ export async function handleUserInput(
       sessionId
     );
 
-    // Step 7: Return consolidated result
+    // Step 7: Save new analysis to server-side context (background operation)
+    if (messageId) {
+      // TherapeuticAnalysisWithMessageId = TherapeuticAnalysis & { messageId }
+      // Spread all analysis fields and add messageId
+      const newAnalysisSnapshot: TherapeuticAnalysisWithMessageId = {
+        ...analysis,
+        messageId,
+      };
+
+      // Update server-side context with new analysis (non-blocking)
+      // TypeScript: sessionId is guaranteed to be string after validation check at line 360
+      updateSessionContext(sessionId as string, {
+        analysisSnapshots: [...sessionContext.analysisSnapshots, newAnalysisSnapshot],
+      }).catch((error) => {
+        // Log error but don't fail the request - analysis is still returned to client
+        logger.logWarning("Failed to update server-side analysis context", {
+          operation: "open_chat_update_context_failed",
+          sessionId,
+          userId: authenticatedUser.authId,
+          metadata: {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+    }
+
+    // Step 8: Return consolidated result
     return {
       analysis,
       response: aiResponse.message,
@@ -417,7 +468,7 @@ export async function handleUserInput(
   } catch (error) {
     logger.logWarning("Open chat conversation processing failed", {
       operation: "open_chat_handle_user_input",
-      userId,
+      userId: authenticatedUser.authId,
       sessionId,
       metadata: {
         error: error instanceof Error ? error.message : String(error),
