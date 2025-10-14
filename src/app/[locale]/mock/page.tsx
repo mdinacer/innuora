@@ -17,7 +17,7 @@ import {
 import { parseJsonObject } from "@/lib/utils/parse-json";
 // import { INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS } from "@/domains/session-diagnostics/session-diagnostics.prompts";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { sampleSession, sampleSessionAnalysis, sampleSessionMemory, sampleSessionSummary } from "../mock/data";
+import { sampleSession, sampleSessionAnalysis, sampleSessionMemory, sampleSessionSummary } from "./data";
 
 function formatMessages(messages: OpenChatMessage[], maxLength = 800): string {
   return messages
