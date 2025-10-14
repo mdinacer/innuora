@@ -69,6 +69,17 @@ export async function getSessionsUpdateInfo(): Promise<{ id: string; updatedAt: 
     },
   });
 }
+export async function getSessionsUpdateInfoWithTitle(): Promise<{ id: string; title: string; updatedAt: Date }[]> {
+  const authUser = await requireCurrentUser();
+  return await prisma.session.findMany({
+    where: { user: { authId: authUser.id } },
+    select: {
+      id: true,
+      updatedAt: true,
+      title: true,
+    },
+  });
+}
 
 export async function getSessionById(sessionId: string) {
   const authUser = await requireCurrentUser();

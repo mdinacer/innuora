@@ -360,5 +360,51 @@
         "description": "Review data usage, manage storage limits, and configure retention settings."
       }
     }
+  },
+  "cloud_updates": {
+    "title": {
+      "loading": {
+        "title": "Checking your cloud backup...",
+        "subtitle": "Please wait while we fetch your latest session data"
+      },
+      "synced": {
+        "title": "All sessions synced",
+        "subtitle": "Your cloud backup is up to date"
+      },
+      "unsynced": {
+        "title": "Cloud Updates Available",
+        "subtitle": "New sessions and updates found in your cloud backup"
+      }
+    },
+    "buttons": {
+      "load": "Load {{count}} Sessions",
+      "loading": "Loading sessions...",
+      "loadAll": "Load All Sessions",
+      "check": "Check Again",
+      "checking": "Checking...",
+      "skip": "Skip for Now",
+      "download": "Download Now",
+      "downloading": "Downloading...",
+      "update": "Update Now",
+      "updating": "Updating..."
+    },
+    "synced": {},
+    "card": {
+      "badge": {
+        "new": "New",
+        "updated": "Update",
+        "completed": "Completed"
+      },
+      "actions": {
+        "download": "Download",
+        "downloading": "Downloading",
+        "update": "Update",
+        "updating": "Updating"
+      },
+      "meta": {
+        "messages": "{{count}} messages",
+        "credits": "{{count}} credits"
+      }
+    }
   }
 }

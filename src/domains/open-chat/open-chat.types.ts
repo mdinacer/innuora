@@ -1,11 +1,6 @@
 import z from "zod";
 
-import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { SessionDiagnosticsWithMetadata } from "@/domains/session-diagnostics/session-diagnostics.types";
-import {
-  TherapeuticAnalysis,
-  TherapeuticAnalysisWithMessageId,
-} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
@@ -40,7 +35,6 @@ export interface Session {
   // Client-visible data (encrypted with user password)
   messages: OpenChatMessage[];
   sessionDiagnostics: SessionDiagnosticsWithMetadata | null;
-
   persistOnCloud?: boolean;
   autoUpdateTitle: boolean;
   metadata: SessionMeta;
