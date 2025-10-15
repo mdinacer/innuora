@@ -17,6 +17,26 @@ import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 
+const AI_MODEL_NAME = process.env.AI_MODEL_NAME as string;
+
+function calculateAiCostUSD(usage: ModelTokenUsage): number {
+  // Parse environment variables safely
+  const inputRate = parseFloat(process.env.AI_MODEL_PRICE_INPUT_PER_1K || "0.0003");
+  const outputRate = parseFloat(process.env.AI_MODEL_PRICE_OUTPUT_PER_1K || "0.0006");
+
+  if (isNaN(inputRate) || isNaN(outputRate)) {
+    throw new Error("Invalid AI model pricing environment variables.");
+  }
+
+  // Compute USD cost
+  const inputCost = (usage.promptTokens / 1000) * inputRate;
+  const outputCost = (usage.completionTokens / 1000) * outputRate;
+  const totalCost = inputCost + outputCost;
+
+  // Round to 6 decimal places for precision
+  return Number(totalCost.toFixed(6));
+}
+
 /**
  * Context for logging an AI operation
  */
@@ -25,10 +45,8 @@ export interface AiOperationContext {
   sessionId: string;
   messageId?: string;
   operation: AiOperationType;
-  model: string;
   tokenUsage: ModelTokenUsage;
   creditsCharged: number;
-  rawCostUSD?: number;
   metadata?: Record<string, any>;
 }
 
@@ -57,12 +75,12 @@ export async function logAiOperation(context: AiOperationContext): Promise<void>
           sessionId: context.sessionId,
           messageId: context.messageId,
           operation: context.operation,
-          model: context.model,
-          inputTokens: context.tokenUsage.usage?.prompt_tokens || 0,
-          outputTokens: context.tokenUsage.usage?.completion_tokens || 0,
-          totalTokens: context.tokenUsage.usage?.total_tokens || 0,
+          model: AI_MODEL_NAME,
+          inputTokens: context.tokenUsage.promptTokens || 0,
+          outputTokens: context.tokenUsage.completionTokens || 0,
+          totalTokens: context.tokenUsage.totalTokens || 0,
           creditsCharged: context.creditsCharged,
-          rawCostUSD: context.rawCostUSD || 0,
+          rawCostUSD: calculateAiCostUSD(context.tokenUsage),
           metadata: context.metadata || {},
           timestamp: new Date(),
         },
@@ -75,8 +93,8 @@ export async function logAiOperation(context: AiOperationContext): Promise<void>
       sessionId: context.sessionId,
       metadata: {
         operationType: context.operation,
-        model: context.model,
-        totalTokens: context.tokenUsage.usage?.total_tokens,
+        model: AI_MODEL_NAME,
+        totalTokens: context.tokenUsage.totalTokens,
         creditsCharged: context.creditsCharged,
       },
     },

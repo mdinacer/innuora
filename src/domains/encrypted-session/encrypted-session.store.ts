@@ -261,10 +261,8 @@ export const useSessionStore = create<SessionsStoreState>()(
             autoUpdateTitle: current.autoUpdateTitle,
             persistOnCloud: current.persistOnCloud,
             metadata: {
-              tokenUsage: [],
+              ...(current.metadata as any),
               messageCount: 0,
-              tokenCount: 0,
-              costUSD: 0,
             },
             encryptedData: null,
             createdAt: current.createdAt,

@@ -1,5 +1,6 @@
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { logger } from "@/lib/logging/unified-logger";
 
 /**
@@ -103,11 +104,21 @@ export class SessionWellnessService {
             loopAssessment: wellness.loop_assessment,
             confidence: wellness.confidence,
             creditsUsed,
-            tokensUsed: tokenUsage?.usage?.total_tokens || 0,
+            tokensUsed: tokenUsage?.totalTokens || 0,
             locale,
           },
         });
         // TODO: Implement gentle conclusion guidance based on wellness.reasons and loop_assessment
+      }
+
+      if (tokenUsage) {
+        logAiOperation({
+          operation: "SESSION_WELLNESS",
+          sessionId,
+          userId: session.userId,
+          tokenUsage: tokenUsage,
+          creditsCharged: creditsUsed,
+        });
       }
 
       return { tokenUsage, creditsUsed };

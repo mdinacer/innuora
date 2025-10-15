@@ -96,8 +96,8 @@ export class CloudSyncService {
   private preparePrismaSessionData(encryptedSession: Session): Prisma.SessionCreateWithoutUserInput {
     // Clear tokenUsage from metadata for privacy (before sending to database)
     const cleanedMetadata = encryptedSession.metadata
-      ? { ...SessionMetadataSchema.parse(encryptedSession.metadata), tokenUsage: [] }
-      : { tokenUsage: [] };
+      ? { ...SessionMetadataSchema.parse(encryptedSession.metadata) }
+      : {};
 
     let prismaSession: Prisma.SessionCreateWithoutUserInput = {
       title: encryptedSession.title,

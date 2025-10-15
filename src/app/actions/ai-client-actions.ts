@@ -152,8 +152,6 @@ export async function processAiPrompts(
       await logger.logInfo("AI completion successful", {
         operation: "ai_send_prompts",
         metadata: {
-          model: AI_MODEL,
-          vendor: AI_MODEL_VENDOR,
           promptTokens: data.usage?.prompt_tokens || 0,
           completionTokens: data.usage?.completion_tokens || 0,
           totalTokens: data.usage?.total_tokens || 0,
@@ -170,13 +168,11 @@ export async function processAiPrompts(
         message,
         modelTokenUsage: data.usage
           ? {
-              type: "completion" as const,
-              model: data.model,
-              mode: "paid" as const,
-              usage: data.usage,
+              completionTokens: data.usage.completion_tokens,
+              promptTokens: data.usage.prompt_tokens,
+              totalTokens: data.usage.total_tokens,
               timestamp: new Date().toISOString(),
-              version: "",
-              costUSD: 0, // Legacy field
+              responseLength: message.length,
             }
           : null,
         consumedCredits,

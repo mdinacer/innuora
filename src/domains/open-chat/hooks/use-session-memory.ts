@@ -6,7 +6,7 @@ import { logger } from "@/lib/logging/unified-logger";
 import { useAppUserStore } from "@/stores/app-user.store";
 
 export default function useSessionMemory({ sessionId }: { sessionId: string }) {
-  const { session, addTokenUsage, updateSession, addCreditsUsed } = useSessionState({ sessionId });
+  const { session, updateSession, addCreditsUsed } = useSessionState({ sessionId });
   const appUser = useAppUserStore((state) => state.user);
   const [isUpdating, setIsUpdating] = useState(false);
   const [memoryError, setMemoryError] = useState<string | null>(null);
@@ -55,9 +55,9 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
         }
 
         // Track token usage in session metadata (credits already deducted in action)
-        if (tokenUsage) {
-          addTokenUsage({ ...tokenUsage, type: "memory" });
-        }
+        // if (tokenUsage) {
+        //   addTokenUsage({ ...tokenUsage, type: "memory" });
+        // }
 
         // Track credits used in session metadata
         if (creditsUsed > 0) {
@@ -116,7 +116,7 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [addTokenUsage, addCreditsUsed, session, updateSession, appUser?.authId]
+    [addCreditsUsed, session, updateSession, appUser?.authId]
   );
 
   return {

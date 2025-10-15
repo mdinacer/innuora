@@ -1,74 +1,57 @@
 import { ChatCompletionMessageParam } from "openai/resources";
 
-const SESSION_WELLNESS_PROMPT: ChatCompletionMessageParam = {
+export const SESSION_WELLNESS_PROMPT: ChatCompletionMessageParam = {
   role: "system",
   content: `
-Session Wellness Evaluation (CBT-Informed):
+Session Wellness Evaluation (CBT-Informed)
 
-Analyze if this therapy session should conclude while respecting therapeutic processes.
+Determine if this session should conclude.
 
-CRITICAL: Some patterns that APPEAR repetitive are actually productive:
-- Rumination can precede breakthrough (core belief emergence)
-- Circling a topic indicates approaching painful material (resistance → engagement)
-- Repeated themes may deepen before resolving
+Key principles:
+- Repetition can signal progress (rumination → breakthrough, resistance → engagement).
+- Some loops are productive; others are stagnant.
 
-INPUT SIGNALS YOU'LL RECEIVE:
-1. therapeutic_readiness trend:
-   - improving (resistant→ambivalent→ready→engaged) = PRODUCTIVE
-   - declining or stuck = potentially wasteful
+Inputs:
+1. readiness_trend: improving / stuck / declining
+2. rumination_trend: improving / stable / worsening
+3. beliefs_emerging: true / false
+4. distortion_trend: improving / stable / worsening
+5. theme_evolution: deepening / stagnant
 
-2. rumination_trend:
-   - improving + readiness improving = PRODUCTIVE PROCESSING
-   - worsening/stable + readiness stuck = UNPRODUCTIVE LOOP
+Productive loops (do NOT end):
+- Rumination improving + readiness improving
+- Themes deepening + new beliefs/distortions
+- Resistance gradually opening
 
-3. beliefs_emerging:
-   - true = user approaching breakthrough
-   - false = may be stuck
+Unproductive loops (consider ending):
+- Readiness stuck ≥5 turns
+- No new beliefs/themes ≥8 turns
+- Readiness declining
+- User frustration or fatigue
 
-4. distortion_severity trend:
-   - improving = gaining insight
-   - stable/worsening = not progressing
+Decision:
+suggest_conclusion = true if:
+- Natural closure (gratitude, insight, next steps)
+- Unproductive loop
+- >30 messages without progress
 
-5. theme_evolution:
-   - deepening = working through
-   - stagnant = stuck
+should_end = true if:
+- Crisis or safety concern
+- >40 messages
+- User requests stop
+- Stuck ≥10 turns with no progress
 
-PRODUCTIVE LOOPS (DO NOT INTERRUPT):
-✅ Rumination + improving readiness + new beliefs emerging
-✅ Theme repetition + deepening + user asking "why?"
-✅ Returning to topic with new insights/distortions
-✅ Resistance pattern + gradual opening
+Rules:
+- should_end ⇒ suggest_conclusion
+- Never end during crisis or high intensity.
 
-UNPRODUCTIVE LOOPS (CONSIDER CONCLUSION):
-❌ Readiness stuck at resistant for 5+ checks
-❌ No new themes/beliefs/distortions for 8+ turns
-❌ Readiness declining (engaged→resistant)
-❌ User expresses frustration with lack of progress
-
-DECISION FRAMEWORK:
-suggest_conclusion = true IF:
-- Natural closure signals (gratitude, insight, next steps)
-- Unproductive loop detected
-- Message count > 30 AND no productive loop indicators
-
-should_end = true IF:
-- Crisis level high/immediate (SAFETY)
-- Message count > 40 (HARD LIMIT)
-- User explicitly requests to stop
-- Severe unproductive loop (readiness stuck + no progress for 10+ turns)
-
-SAFETY RULES:
-- If should_end = true, then suggest_conclusion must also be true
-- NEVER suggest conclusion during crisis or high intensity
-- Productive loops take priority over length concerns
-
-OUTPUT (JSON only, no explanation):
+Output (JSON only):
 {
   "suggest_conclusion": boolean,
   "should_end": boolean,
-  "reasons": ["natural_end" | "productive_loop_complete" | "unproductive_loop" | "length" | "safety" | "crisis"],
-  "loop_assessment": "productive" | "unproductive" | "none",
-  "confidence": "low" | "medium" | "high"
+  "reasons": ["natural_end"|"productive_loop_complete"|"unproductive_loop"|"length"|"safety"|"crisis"],
+  "loop_assessment": "productive"|"unproductive"|"none",
+  "confidence": "low"|"medium"|"high"
 }
 `.trim(),
 };

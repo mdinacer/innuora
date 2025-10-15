@@ -1,5 +1,3 @@
-import { CompletionUsage } from "openai/resources";
-
 export type ModelMode = "free" | "paid";
 export type Vendor = "openai" | "tngtech" | "mistralai" | "qwen" | "moonshotai" | "rekaai" | "deepseek";
 export type ModelType = "gpt-4o" | "gpt-3.5-turbo" | "mistral" | "openchat" | string;
@@ -32,13 +30,11 @@ export interface AiModel {
 }
 
 export type ModelTokenUsage = {
-  type: "analysis" | "memory" | "completion" | "summary" | "other";
-  model: ModelType;
-  mode: ModelMode;
-  version: string; // e.g., "2025-07-01"
-  usage?: CompletionUsage;
+  completionTokens: number;
+  promptTokens: number;
+  totalTokens: number;
   timestamp: string;
-  costUSD: number;
+  responseLength: number;
 };
 
 export type AiMessageResponse = {

@@ -58,7 +58,7 @@ const CACHE_CONFIG = {
  * const previousAnalyses = context.analysisSnapshots;
  */
 export async function getSessionContext(sessionId: string, forceFresh = false): Promise<SessionContext> {
-  if (forceFresh) revalidateTag(`session-context-${sessionId}`);
+  //if (forceFresh) revalidateTag(`session-context-${sessionId}`);
   // Use Next.js unstable_cache for automatic caching
   const getCachedContext = unstable_cache(
     async (id: string) => {

@@ -31,7 +31,6 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
         ...rest,
         metadata: {
           ...rest.metadata,
-          tokenUsage: [],
           lastActiveAt: (rest.metadata?.lastActiveAt || new Date()).toISOString(),
         },
       };
@@ -87,23 +86,17 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
         createdAt: encryptedSession.createdAt,
         updatedAt: encryptedSession.updatedAt,
         messages: [],
-        sessionDiagnostics: null,
+        //sessionDiagnostics: null,
         metadata: encryptedSession.metadata
           ? {
               ...SessionMetadataSchema.parse(encryptedSession.metadata),
               lastActiveAt: new Date(),
-              tokenUsage: [],
             }
           : {
               messageCount: 0,
-              tokenCount: 0,
-              inputTokens: 0,
-              outputTokens: 0,
-              costUSD: 0,
               creditsUsed: 0,
               activeDurationMs: 0,
               lastActiveAt: new Date(),
-              tokenUsage: [],
             },
         persistOnCloud: encryptedSession.persistOnCloud ?? false,
       };

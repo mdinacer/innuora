@@ -94,6 +94,94 @@ import { APP_CONFIG } from "@/config/app";
 const THERAPEUTIC_ANALYSIS_PROMPT: ChatCompletionMessageParam = {
   role: "system",
   content: `
+CBT & ${APP_CONFIG.name} Therapeutic Analysis for Module Selection
+
+DISTORTIONS (Burns): all-or-nothing, overgeneralization, mental_filter, discounting_positives, jumping_conclusions, magnification_minimization, emotional_reasoning, should_statements, labeling, personalization, blame
+
+HIERARCHY & PRIORITY:
+1. CRISIS (highest) → suicidal/self-harm/life-threatening → core_module=crisis
+2. OVERWHELM → emotional flooding, fragmentation → process_module=overwhelm
+3. RESISTANCE → withdrawal, shutdown, dismissing reflection, demanding quick fixes → process_module=resistance_*
+4. STRONG DISTORTIONS / CORE BELIEFS → clear distortions or identity statements → core_module=cognitive/core_beliefs/shoulds/reframing/behavioral_activation
+5. EMOTIONAL EXPRESSION (no distortions) → process_module=validate
+6. CONCRETE REQUESTS → “what should I do?” → utility_module=guidance/pattern
+
+CORE MODULE TRIGGERS:
+- cognitive: ≥2 distortions + reflective tone
+- core_beliefs: identity-level self-judgment (“I’m unlovable,” “I always fail”)
+- shoulds: explicit “should/must/never”; if rumination + should severity ≥ moderate → include mindfulness + shoulds
+- reframing: rigid framing but calm tone (cognitive subtype)
+- behavioral_activation: explicit request for action OR (avoidance + high readiness + motivation to change)
+- mindfulness: repetitive rumination or mental loops
+- values_clarification: disconnection from meaning/purpose
+
+PROCESS MODULE TRIGGERS:
+- overwhelm: “can’t cope”, multiple stressors, disorganized emotion (intensity=high)
+- validate: clear emotional disclosure, no distortion, intensity ≤ moderate
+- resistance_overwhelm: “nothing helps”, withdrawal, low affect + hopeless tone
+- resistance_pushback: “this won’t work”, argumentative tone, mild irritation
+- reflective_catalyst: insight + flat or analytical tone, no crisis/overwhelm, readiness≥ready, ≤2 mild/moderate distortions → reintroduce emotional resonance through warmth, subtle metaphor, or gentle challenge  
+  Clarify vs resistance: if tone = irritated → resistance_pushback; if tone = flat → reflective_catalyst.
+
+UTILITY MODULE TRIGGERS:
+- guidance: direct request for concrete steps
+- pattern_why (high priority): “why does this keep happening?” + high readiness + recurring themes/beliefs
+- pattern (lower): “this always happens” without deeper questioning
+- psychoeducation: confusion about emotional/psychological processes
+- first_time: new session indicators or establishing context
+
+PSYCHOLOGICAL ASSESSMENT:
+- intensity: low|moderate|high
+- crisis: none|mild|moderate|high|immediate
+- distortions: [{"type": "", "severity": "mild|moderate|severe"}]
+- core_beliefs: [{"belief": ""}]
+- silent_rules: [{"rule": "", "rigidity": "flexible|moderate|rigid"}]
+- themes: [{"theme": "", "frequency": "occasional|frequent|pervasive"}]
+- behavioral_patterns: [{"type": "avoidance|safety_behaviors|perfectionism|procrastination|isolation|rumination", "severity": "mild|moderate|severe"}]
+- therapeutic_readiness: resistant|ambivalent|ready|engaged
+- state: first_time|returning|established
+
+MEMORY:
+- update_memory: true if new autobiographical or relational info (people, events, transitions)
+- recall_memory: true if referencing prior sessions
+
+ANALYSIS VALUE (for processing optimization):
+- low: brief acknowledgment, no therapeutic content → set all modules=null
+- medium: surface-level emotional elaboration or continuation of prior topic
+- high: detailed narrative, insight, crisis, or new disclosures
+
+SAFETY / DISAMBIGUATION RULES:
+- If intensity=high → prioritize overwhelm/validate over cognitive
+- If crisis≠none → set core_module=crisis, skip all others
+- If analysis_value=low → all modules=null
+- If both pattern and pattern_why triggers appear → use pattern_why only
+- If readiness declining or resistant → prefer validate/resistance_*
+- No mixed modules (only one core/process/utility active)
+
+OUTPUT (valid JSON only, no explanation):
+{
+  "core_module": null,
+  "process_module": null,
+  "utility_module": null,
+  "intensity": "low|moderate|high",
+  "crisis": "none|mild|moderate|high|immediate",
+  "distortions": [{"type": "", "severity": "mild|moderate|severe"}],
+  "themes": [{"theme": "", "frequency": "occasional|frequent|pervasive"}],
+  "core_beliefs": [{"belief": ""}],
+  "silent_rules": [{"rule": "", "rigidity": "flexible|moderate|rigid"}],
+  "behavioral_patterns": [{"type": "avoidance|safety_behaviors|perfectionism|procrastination|isolation|rumination", "severity": "mild|moderate|severe"}],
+  "state": "first_time|returning|established",
+  "therapeutic_readiness": "resistant|ambivalent|ready|engaged",
+  "update_memory": false,
+  "recall_memory": false,
+  "analysis_value": "low|medium|high"
+}
+`.trim(),
+};
+
+const THERAPEUTIC_ANALYSIS_PROMPT_BACKUP: ChatCompletionMessageParam = {
+  role: "system",
+  content: `
 CBT & ${APP_CONFIG.name} Analysis for Module Selection:
 
 DISTORTIONS (Burns): all-or-nothing, overgeneralization, mental_filter, discounting_positives, jumping_conclusions, magnification_minimization, emotional_reasoning, should_statements, labeling, personalization, blame
@@ -112,7 +200,7 @@ CORE MODULE TRIGGERS:
 - shoulds: explicit “should/must/never” rules
   → If rumination present and should severity ≥ moderate, include both mindfulness + shoulds
 - reframing: rigid framing detected
-- behavioral_activation: avoidance, fatigue, low energy, or low engagement with values-based suggestions
+behavioral_activation: **explicit requests for behavioral strategies** OR (avoidance + high readiness + explicit change motivation)
 - mindfulness: rumination, repetitive thoughts
 - values_clarification: disconnection from meaning/purpose
 
@@ -147,7 +235,7 @@ PSYCHOLOGICAL ASSESSMENT:
 - State: first_time, returning, established
 
 MEMORY:
-- update_memory: new factual content (people, events, decisions)
+- "update_memory": true if the message introduces new autobiographical or relational information (people, events, time periods, changes in identity, or life transitions), even if emotionally neutral.
 - recall_memory: references to previous discussions
 
 ANALYSIS VALUE (for processing optimization):

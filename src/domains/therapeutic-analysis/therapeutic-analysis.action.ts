@@ -4,6 +4,7 @@ import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { TherapeuticAnalysisEngine } from "@/domains/therapeutic-analysis/therapeutic-analysis.engine";
 import THERAPEUTIC_ANALYSIS_PROMPT from "@/domains/therapeutic-analysis/therapeutic-analysis.prompt";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import type { ActionResult } from "@/types/action-result";
@@ -37,7 +38,11 @@ export async function analyzeUserInput(
 
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];
 
-      const result = await processAiPromptsWithRetry(prompts);
+      console.log(prompts);
+
+      const result = await processAiPromptsWithRetry(prompts, {
+        max_tokens: 2000,
+      });
 
       // Unwrap ActionResult
       if (result.error) {
@@ -66,6 +71,24 @@ export async function analyzeUserInput(
             sessionId,
           }
         );
+      }
+
+      if (response.modelTokenUsage) {
+        console.log("Therapeutical Analysis Token Usage", response.modelTokenUsage);
+
+        logAiOperation({
+          userId: userId || "",
+          sessionId: sessionId || "",
+          operation: "ANALYSIS",
+          tokenUsage: response.modelTokenUsage,
+          creditsCharged: response.consumedCredits || 0,
+        }).catch((error) => {
+          logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, error, {
+            operation: "therapeutic_analysis_analyze_user_input",
+            userId,
+            sessionId,
+          });
+        });
       }
 
       return { analysis: analysis!, modelTokenUsage, consumedCredits };

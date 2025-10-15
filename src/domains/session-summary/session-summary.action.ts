@@ -56,7 +56,7 @@ export async function getSessionSummary(
   if (authId && aiResponse.consumedCredits > 0) {
     const deductResult = await deductCreditsFromUser(authId, aiResponse.consumedCredits, "ai_summary", sessionId, {
       operation: "session_summary_generation",
-      tokensUsed: aiResponse.modelTokenUsage?.usage?.total_tokens || 0,
+      tokensUsed: aiResponse.modelTokenUsage?.totalTokens || 0,
       locale,
     });
 

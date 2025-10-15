@@ -68,8 +68,8 @@ export class LocalSyncService {
       },
     });
     const encryptedStore = useSessionStore.getState();
-    const encryptedData = await encryptSession(session);
-    encryptedStore.updateSession(session.id, encryptedData);
+    const encryptedSession = await encryptSession(session);
+    encryptedStore.updateSession(session.id, encryptedSession);
 
     logger.logInfo("Successfully updated encrypted store for session", {
       operation: "local_sync_service_encrypted_updated",

@@ -134,7 +134,7 @@ export class AISessionWellnessEngine {
           session.id,
           {
             operation: "session_wellness_evaluation",
-            tokensUsed: response.modelTokenUsage?.usage?.total_tokens || 0,
+            tokensUsed: response.modelTokenUsage?.totalTokens || 0,
             messageCount,
             durationMinutes,
           }

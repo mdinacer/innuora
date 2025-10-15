@@ -13,6 +13,7 @@ import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits
 import LoadingComponent from "@/components/loading-component";
 import { APP_CONFIG } from "@/config/app";
 import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
+import { cloudSyncService } from "@/domains/simple-session-sync";
 import { AppLocales } from "@/lib/i18n";
 import { exportSessionAsJSON, exportSessionAsMarkdown, prepareSessionExport } from "@/lib/session/session-export";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const SessionPage: React.FC<Props> = ({ sessionId }) => {
+  cloudSyncService.startPeriodicSync();
   const router = useRouter();
   const [creditsError, setCreditsError] = useState<{ error: string; cost: number } | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
@@ -165,13 +167,7 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   return (
     <>
-      <CodeView
-        data={{
-          session,
-        }}
-        className="absolute top-6 left-6"
-      />
-
+      <CodeView data={session} className="absolute top-6 left-6 hover:z-50" />
       {/* Credits Balance Display */}
       {session?.userId && (
         <div className="fixed top-20 right-6 z-40">

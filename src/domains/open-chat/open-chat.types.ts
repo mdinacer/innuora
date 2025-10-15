@@ -1,7 +1,5 @@
 import z from "zod";
 
-import { SessionDiagnosticsWithMetadata } from "@/domains/session-diagnostics/session-diagnostics.types";
-import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 export type SessionOverview = {
@@ -11,14 +9,7 @@ export type SessionOverview = {
   subtitle: string | null;
   autoUpdateTitle: boolean;
   persistOnCloud: boolean;
-  metadata: {
-    messageCount: number;
-    tokenCount: number; // Total tokens (for backward compatibility)
-    inputTokens: number; // Input/prompt tokens
-    outputTokens: number; // Output/completion tokens
-    costUSD: number;
-    creditsUsed: number;
-  };
+  metadata: SessionMeta;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -34,11 +25,11 @@ export interface Session {
 
   // Client-visible data (encrypted with user password)
   messages: OpenChatMessage[];
-  sessionDiagnostics: SessionDiagnosticsWithMetadata | null;
   persistOnCloud?: boolean;
   autoUpdateTitle: boolean;
   metadata: SessionMeta;
 
+  //sessionDiagnostics: SessionDiagnosticsWithMetadata | null;
   // REMOVED - These fields are now SERVER-SIDE ONLY (stored in encrypted serverData field):
   // - memoryStore: Now in serverData (session context)
   // - continuitySummary: Now in serverData (session context)
@@ -54,24 +45,15 @@ export interface SessionSummary {
 }
 
 export interface SessionMeta {
-  tokenUsage: ModelTokenUsage[];
   messageCount: number;
-  tokenCount: number; // Total tokens (for backward compatibility)
-  inputTokens: number; // Input/prompt tokens (cheaper)
-  outputTokens: number; // Output/completion tokens (more expensive)
-  costUSD: number;
   creditsUsed: number;
   activeDurationMs: number; // Actual conversation time (excludes idle gaps)
-  lastActiveAt: Date; // Last user interaction timestamp
+  lastActiveAt?: Date; // Last user interaction timestamp
   [key: string]: unknown;
 }
 
 export const SessionMetadataSchema = z.object({
   messageCount: z.number().optional().default(0),
-  tokenCount: z.number().optional().default(0),
-  inputTokens: z.number().optional().default(0),
-  outputTokens: z.number().optional().default(0),
-  costUSD: z.number().optional().default(0),
   creditsUsed: z.number().optional().default(0),
   activeDurationMs: z.number().optional().default(0),
   lastActiveAt: z.coerce.date().optional(),

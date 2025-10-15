@@ -94,7 +94,7 @@ L'utilisateur a donné un bref accusé de réception ou une réponse simple. Ré
     const lightweightPrompts: ChatCompletionMessageParam[] = [SecurityProtocolPrompt, personaPrompt];
 
     // Add last conversation round only (1 round = 1 user + 1 assistant message) for continuity
-    const chatContextManager = new ChatContextManager();
+    const chatContextManager = new ChatContextManager(locale);
     const lastRoundPrompt = chatContextManager.buildChatHistoryPrompt(messages, 1, 2); // 1 round, 2 messages per round
     if (lastRoundPrompt) {
       lightweightPrompts.push(lastRoundPrompt);

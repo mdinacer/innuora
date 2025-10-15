@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function useSessionInput({ sessionId, locale = "en", onRoundComplete }: Props) {
-  const { session, appendMessage, addTokenUsage } = useSessionState({ sessionId });
+  const { session, appendMessage } = useSessionState({ sessionId });
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingError, setProcessingError] = useState<string | null>(null);
 
@@ -69,9 +69,9 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
 
         const {
           response: assistantMessage,
-          analysis: newAnalysis,
-          tokenUsage: { analysisUsage, responseUsage },
           creditsUsed,
+          // analysis: newAnalysis,
+          // tokenUsage: { analysisUsage, responseUsage },
         } = result;
 
         // Update client-side balance to reflect server-side deduction
@@ -88,8 +88,8 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         // NOTE: Analysis is now saved server-side automatically - no client-side storage
         // addAnalysis(newAnalysis, messageId); // REMOVED - server-side only now
 
-        if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
-        if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
+        // if (analysisUsage) addTokenUsage({ ...analysisUsage, type: "analysis" });
+        // if (responseUsage) addTokenUsage({ ...responseUsage, type: "completion" });
 
         // Trigger sync in background - don't block user interaction
         setTimeout(() => {
@@ -101,19 +101,19 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           sessionId,
           userId: userProfile?.userId,
           metadata: {
-            hasAnalysis: !!newAnalysis,
             hasResponse: !!assistantMessage,
-            analysisTokens: (analysisUsage?.usage?.prompt_tokens ?? 0) + (analysisUsage?.usage?.completion_tokens ?? 0),
-            responseTokens: (responseUsage?.usage?.prompt_tokens ?? 0) + (responseUsage?.usage?.completion_tokens ?? 0),
             locale,
+            //hasAnalysis: !!newAnalysis,
+            //analysisTokens: (analysisUsage?.usage?.prompt_tokens ?? 0) + (analysisUsage?.usage?.completion_tokens ?? 0),
+            //responseTokens: (responseUsage?.usage?.prompt_tokens ?? 0) + (responseUsage?.usage?.completion_tokens ?? 0),
           },
         });
 
         return {
           assistantMessage,
-          shouldUpdateMemory: newAnalysis?.update_memory ?? false,
-          tokenUsage: { analysisUsage, responseUsage },
           creditsUsed,
+          //shouldUpdateMemory: newAnalysis?.update_memory ?? false,
+          //tokenUsage: { analysisUsage, responseUsage },
         };
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error occurred";
@@ -132,7 +132,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         setIsProcessing(false);
       }
     },
-    [addTokenUsage, locale, onRoundComplete, session, sessionId]
+    [locale, onRoundComplete, session, sessionId]
   );
 
   return {

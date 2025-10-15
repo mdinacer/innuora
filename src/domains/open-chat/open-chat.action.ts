@@ -8,33 +8,28 @@ import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { getAuthenticatedUserContext } from "@/app/actions/user-context";
 import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
+import { REFLECTIVE_CATALYST_TONE, TONE_INSTRUCTIONS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.tone";
 import { buildUserProfileContext } from "@/domains/ai-conversation/prompts/prompt.user-context";
 import { ModulesPromptBuilder } from "@/domains/cbt-modules/modules-prompt-builder";
 import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
 import { handleLightweightUserInput } from "@/domains/open-chat/open-chat-lightweight.action";
+import { generateSessionMemoryFromCurrentSession } from "@/domains/session-memory/session-memory.action";
 import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { analyzeUserInput } from "@/domains/therapeutic-analysis/therapeutic-analysis.action";
 import {
   TherapeuticAnalysis,
   TherapeuticAnalysisWithMessageId,
 } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import { getSessionContext, updateSessionContext } from "@/lib/session/session-context-service";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
-import { TONE_INSTRUCTIONS_LOCALIZED } from "../ai-conversation/prompts/prompt.tone";
-import { reflective_catalyst_tone } from "../cbt-modules/modules.process";
 
 interface HandleUserInputResult {
-  analysis: TherapeuticAnalysis | null;
   response: string;
-  tokenUsage: {
-    analysisUsage: ModelTokenUsage | null;
-    responseUsage: ModelTokenUsage | null;
-  };
-  cost: number; // USD cost (for backward compatibility)
   creditsUsed: number; // Credits deducted
 }
 
@@ -48,13 +43,13 @@ async function buildConversationPrompts(
   profile: Profile | null,
   prevMemory: string | null,
   locale: AppLocales,
-  userId?: string,
+  userId: string,
   sessionId?: string
 ): Promise<ChatCompletionMessageParam[]> {
   // Initialize services - can be done in parallel
   const [modulesPromptBuilder, messagesManager] = await Promise.all([
     Promise.resolve(new ModulesPromptBuilder(locale)),
-    Promise.resolve(new ChatContextManager()),
+    Promise.resolve(new ChatContextManager(locale)),
   ]);
 
   // Build prompts - some can be done in parallel
@@ -76,7 +71,7 @@ async function buildConversationPrompts(
 
   const toneInstruction =
     analysis.process_module === "reflective_catalyst"
-      ? reflective_catalyst_tone
+      ? REFLECTIVE_CATALYST_TONE[locale]
       : TONE_INSTRUCTIONS_LOCALIZED[locale][analysis.intensity];
   if (!toneInstruction) {
     logger.logErrorAndThrow(
@@ -188,7 +183,7 @@ async function handleLowValueInput(
   locale: AppLocales,
   userId?: string,
   sessionId?: string
-): Promise<HandleUserInputResult> {
+): Promise<HandleUserInputResult & { tokenUsage: ModelTokenUsage | null }> {
   const lightweightResult = await handleLightweightUserInput(
     userInput,
     analysis,
@@ -203,14 +198,11 @@ async function handleLowValueInput(
   const totalCreditsUsed = (analysisCredits || 0) + lightweightResult.creditsUsed;
 
   return {
-    analysis,
     response: lightweightResult.response,
-    tokenUsage: {
-      analysisUsage,
-      responseUsage: lightweightResult.tokenUsage,
-    },
-    cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
     creditsUsed: totalCreditsUsed,
+    tokenUsage: lightweightResult.tokenUsage,
+    //analysis,
+    // cost: (analysisUsage?.costUSD || 0) + (lightweightResult.tokenUsage?.costUSD || 0),
   };
 }
 
@@ -224,7 +216,7 @@ async function generateFullResponse(
   profile: Profile | null,
   prevMemory: string | null,
   locale: AppLocales,
-  userId?: string,
+  userId: string,
   sessionId?: string
 ) {
   const conversationPrompts = await buildConversationPrompts(
@@ -363,7 +355,7 @@ export async function handleUserInput(
     if (!userInput?.trim()) {
       logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("User input cannot be empty"), {
         operation: "open_chat_handle_user_input",
-        userId: authenticatedUser.authId,
+        userId: authenticatedUser.id,
         sessionId,
       });
     }
@@ -371,13 +363,14 @@ export async function handleUserInput(
     if (!sessionId) {
       logger.logErrorAndThrow(ERROR_CODES.CHAT_INVALID_INPUT, new Error("Session ID is required"), {
         operation: "open_chat_handle_user_input",
-        userId: authenticatedUser.authId,
+        userId: authenticatedUser.id,
       });
     }
 
     // Step 3: Fetch server-side session context (therapeutic data - NEVER sent to client)
     // TypeScript: sessionId is guaranteed to be string after validation above (logErrorAndThrow terminates execution)
     const sessionContext = await getSessionContext(sessionId as string, true);
+
     // analysisSnapshots is already TherapeuticAnalysisWithMessageId[], which extends TherapeuticAnalysis
     const prevAnalysis = sessionContext.analysisSnapshots.slice(-3); // Last 3 analyses
     const prevMemory = sessionContext.memoryStore;
@@ -387,11 +380,11 @@ export async function handleUserInput(
       analysis,
       modelTokenUsage: analysisUsage,
       consumedCredits: analysisCredits,
-    } = await processTherapeuticAnalysis(userInput, prevAnalysis, messages, authenticatedUser.authId, sessionId);
+    } = await processTherapeuticAnalysis(userInput, prevAnalysis, messages, authenticatedUser.id, sessionId);
 
     // Step 5: Smart routing - lightweight vs full response
     if (analysis.analysis_value === "low") {
-      return await handleLowValueInput(
+      const lowValueResult = await handleLowValueInput(
         userInput,
         analysis,
         analysisUsage,
@@ -400,9 +393,18 @@ export async function handleUserInput(
         profile,
         prevMemory,
         locale,
-        authenticatedUser.authId,
+        authenticatedUser.id,
         sessionId
       );
+
+      logAiOperation({
+        userId: sessionContext.userId,
+        sessionId: sessionContext.sessionId,
+        operation: "RESPONSE",
+        tokenUsage: lowValueResult.tokenUsage!,
+        creditsCharged: lowValueResult.creditsUsed,
+      }).then();
+      return lowValueResult;
     }
 
     // Step 6: Generate full AI response
@@ -413,14 +415,14 @@ export async function handleUserInput(
       profile,
       prevMemory,
       locale,
-      authenticatedUser.authId,
+      authenticatedUser.id,
       sessionId
     );
 
     // Step 7: Process credit deduction
     const creditsUsed = await processCreditsDeduction(
       authenticatedUser.authId,
-      authenticatedUser.authId,
+      authenticatedUser.id,
       analysisCredits || 0,
       aiResponse.consumedCredits || 0,
       userInput,
@@ -454,21 +456,47 @@ export async function handleUserInput(
       });
     }
 
+    if (aiResponse.modelTokenUsage) {
+      logAiOperation({
+        userId: sessionContext.userId,
+        sessionId: sessionContext.sessionId,
+        operation: "RESPONSE",
+        tokenUsage: aiResponse.modelTokenUsage,
+        creditsCharged: aiResponse.consumedCredits,
+      }).then();
+    }
+
+    if (analysis.update_memory) {
+      generateSessionMemoryFromCurrentSession(sessionContext, userInput, authenticatedUser.authId).then((result) => {
+        if (result.error) {
+          logger.logWarning("Failed to update server-side memory context", {
+            operation: "open_chat_update_memory_failed",
+            sessionId,
+            userId: authenticatedUser.id,
+            metadata: {
+              error: result.error.message,
+            },
+          });
+        }
+      });
+    }
+
     // Step 8: Return consolidated result
+
     return {
-      analysis,
       response: aiResponse.message,
-      tokenUsage: {
-        analysisUsage,
-        responseUsage: aiResponse.modelTokenUsage,
-      },
-      cost: (analysisUsage?.costUSD || 0) + (aiResponse.modelTokenUsage?.costUSD || 0),
       creditsUsed,
+      //analysis,
+      // tokenUsage: {
+      //   analysisUsage,
+      //   responseUsage: aiResponse.modelTokenUsage,
+      // },
+      // cost: (analysisUsage?.costUSD || 0) + (aiResponse.modelTokenUsage?.costUSD || 0),
     };
   } catch (error) {
     logger.logWarning("Open chat conversation processing failed", {
       operation: "open_chat_handle_user_input",
-      userId: authenticatedUser.authId,
+      userId: authenticatedUser.id,
       sessionId,
       metadata: {
         error: error instanceof Error ? error.message : String(error),

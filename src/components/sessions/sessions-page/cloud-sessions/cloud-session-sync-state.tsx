@@ -5,13 +5,16 @@ import { Session } from "@prisma/client";
 import { DownloadIcon, Loader2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getSessionsUpdateInfoWithTitle } from "@/app/actions/session-actions";
+import { getSessionsInfo } from "@/app/actions/session-actions";
 import { cn } from "@/lib/utils";
 import CloudSessionStateCard from "./cloud-session-state-card";
 
 export type SessionState = {
   id: string;
   title: string;
+  // metadata: {
+  //   messageCount?: number;
+  // };
   timestamp: Date;
   state: "new" | "updated";
 };
@@ -86,7 +89,9 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
     setFetching(true);
     try {
       const data: SessionState[] = [];
-      const remoteSessions = await getSessionsUpdateInfoWithTitle();
+      const remoteSessions = await getSessionsInfo();
+      console.log(remoteSessions);
+
       //   const remoteSessions = [
       //     {
       //       id: "7cf01177-fc00-47c8-a084-8cd477bf7630",

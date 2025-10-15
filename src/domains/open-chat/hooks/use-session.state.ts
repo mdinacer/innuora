@@ -7,8 +7,6 @@ import { Session } from "@/domains/open-chat/open-chat.types";
 import { cloudSyncService } from "@/domains/simple-session-sync/cloud-sync-service";
 //import { sessionSynchronizer } from "@/domains/session-sync";
 import { localSyncService } from "@/domains/simple-session-sync/local-sync-service";
-import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
-import { ModelTokenUsage } from "@/types/ai-model.types";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
@@ -106,23 +104,23 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     []
   );
 
-  const addAnalysis = useCallback((analysis: TherapeuticAnalysis, messageId: string) => {
-    try {
-      useActiveSessionStore.getState().addAnalysis(analysis, messageId);
-      // No immediate sync - will sync at round completion
-    } catch {
-      // Error handled silently
-    }
-  }, []);
+  // const addAnalysis = useCallback((analysis: TherapeuticAnalysis, messageId: string) => {
+  //   try {
+  //     useActiveSessionStore.getState().addAnalysis(analysis, messageId);
+  //     // No immediate sync - will sync at round completion
+  //   } catch {
+  //     // Error handled silently
+  //   }
+  // }, []);
 
-  const addTokenUsage = useCallback((tokenUsage: ModelTokenUsage) => {
-    try {
-      useActiveSessionStore.getState().addTokenUsage(tokenUsage);
-      // No immediate sync - will sync at round completion
-    } catch {
-      // Error handled silently
-    }
-  }, []);
+  // const addTokenUsage = useCallback((tokenUsage: ModelTokenUsage) => {
+  //   try {
+  //     useActiveSessionStore.getState().addTokenUsage(tokenUsage);
+  //     // No immediate sync - will sync at round completion
+  //   } catch {
+  //     // Error handled silently
+  //   }
+  // }, []);
 
   const updateSession = useCallback(
     (update: Partial<Session> | ((session: Session) => Session)) => {
@@ -162,8 +160,8 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     // Auto-sync actions
     addMessage,
     appendMessage,
-    addAnalysis,
-    addTokenUsage,
+    // addAnalysis,
+    // addTokenUsage,
     addCreditsUsed: useActiveSessionStore.getState().addCreditsUsed,
     updateSession,
     resetSession,

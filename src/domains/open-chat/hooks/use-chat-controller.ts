@@ -2,12 +2,10 @@ import { useCallback, useMemo, useState } from "react";
 
 import useSessionInput from "@/domains/open-chat/hooks/use-process-input";
 import useSessionAnalysis from "@/domains/open-chat/hooks/use-session-analysis";
-import useSessionMemory from "@/domains/open-chat/hooks/use-session-memory";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { analytics } from "@/lib/analytics/analytics";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
-import { useAppUserStore } from "@/stores/app-user.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
@@ -20,8 +18,8 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
     isReady: hasHydrated,
     session,
     addMessage,
-    addAnalysis,
-    addTokenUsage,
+    // addAnalysis,
+    // addTokenUsage,
     addCreditsUsed,
     updateSession,
     resetSession,
@@ -32,7 +30,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
 
   const [isProcessing, setProcessing] = useState(false);
   const messages: OpenChatMessage[] = useMemo(() => session?.messages || [], [session?.messages]);
-  const { updateSessionMemory } = useSessionMemory({ sessionId });
+  //const { updateSessionMemory } = useSessionMemory({ sessionId });
   const { summarizeSession } = useSessionAnalysis({ sessionId, locale });
 
   // Round completion sync - the main sync point after all data is updated
@@ -52,14 +50,6 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         }
       });
     });
-    // import("@/domains/session-sync").then(({ sessionSynchronizer }) => {
-    //   import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
-    //     const currentSession = useActiveSessionStore.getState().session;
-    //     if (currentSession) {
-    //       sessionSynchronizer.queueLocalSync(sessionId, "update", currentSession);
-    //     }
-    //   });
-    // });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
@@ -82,7 +72,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
         const result = await processInput(message, messageId);
         if (!result) return;
 
-        const { assistantMessage, shouldUpdateMemory, tokenUsage, creditsUsed } = result;
+        const { assistantMessage, creditsUsed } = result;
 
         if (!assistantMessage) {
           logger.logWarning("No assistant message found in chat response", {
@@ -93,18 +83,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
           return { error: "No assistant message found" };
         }
 
-        // Collect all token usages from the conversation round
-        const allTokenUsages = [];
-        if (tokenUsage?.analysisUsage) allTokenUsages.push(tokenUsage.analysisUsage);
-        if (tokenUsage?.responseUsage) allTokenUsages.push(tokenUsage.responseUsage);
-
-        // Check if this is an extended session (more than 10 messages)
-
         appendAssistantMessage(assistantMessage, creditsUsed);
-
-        // Add token usage to session for tracking
-        if (tokenUsage?.analysisUsage) addTokenUsage(tokenUsage.analysisUsage);
-        if (tokenUsage?.responseUsage) addTokenUsage(tokenUsage.responseUsage);
 
         // Track credits used in session metadata
         if (creditsUsed > 0) addCreditsUsed(creditsUsed);
@@ -114,50 +93,61 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
           sessionId,
           userId: session.userId,
           creditsUsed,
-          modelUsed: tokenUsage?.responseUsage?.model || "unknown",
+          //modelUsed: tokenUsage?.responseUsage?.model || "unknown",
           messageCount: messages.length + 1, // +1 for the new message being processed
         });
-
-        // Move memory update to background to avoid blocking UI
-        if (shouldUpdateMemory) {
-          // Non-blocking memory update
-          updateSessionMemory(message).catch((error) => {
-            logger.logWarning("Memory enhancement failed during chat processing", {
-              operation: "chat_controller_memory_enhancement",
-              sessionId,
-              metadata: {
-                error: error instanceof Error ? error.message : String(error),
-                locale,
-              },
-            });
-          });
-        }
 
         // Evaluate session wellness using AI (optimized frequency to reduce token waste)
         // Track token usage and credits from wellness checks
         // NOTE: Wellness service now fetches analysisSnapshots from server-side storage
-        setTimeout(() => {
-          import("@/domains/session-wellness/session-wellness.service").then(({ sessionWellnessService }) => {
-            const appUser = useAppUserStore.getState().user;
-            sessionWellnessService
-              .evaluateAfterMessage(session, message, sessionId, locale, appUser?.authId)
-              .then((result) => {
-                if (result) {
-                  if (result.tokenUsage) addTokenUsage({ ...result.tokenUsage, type: "other" });
-                  if (result.creditsUsed > 0) addCreditsUsed(result.creditsUsed);
-                }
-              })
-              .catch((error) => {
-                logger.logWarning("Wellness check tracking failed", {
-                  operation: "wellness_check_tracking_failed",
-                  sessionId,
-                  metadata: {
-                    error: error instanceof Error ? error.message : String(error),
-                  },
+        if ((session.messages.filter((m) => m.role === "user").length + 1) % 10 === 0) {
+          setTimeout(() => {
+            import("@/domains/session-wellness/session-wellness-simple-service").then(({ runSessionWellnessCheck }) => {
+              runSessionWellnessCheck(session, message)
+                .then((res) => {
+                  if (res?.creditsUsed && res.creditsUsed > 0) addCreditsUsed(res.creditsUsed);
+                })
+                .catch((err) => {
+                  logger.logWarning("Periodic wellness check failed", {
+                    operation: "session_wellness_check_error",
+                    sessionId,
+                    metadata: { error: String(err) },
+                  });
                 });
+            });
+
+            import("@/domains/simple-session-sync").then(({ cloudSyncService }) => {
+              import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
+                const currentSession = useActiveSessionStore.getState().session;
+                if (currentSession) {
+                  cloudSyncService.syncToCloud(currentSession.id);
+                }
               });
-          });
-        }, 0);
+            });
+          }, 0);
+        }
+        // setTimeout(() => {
+        //   import("@/domains/session-wellness/session-wellness.service").then(({ sessionWellnessService }) => {
+        //     const appUser = useAppUserStore.getState().user;
+        //     sessionWellnessService
+        //       .evaluateAfterMessage(session, message, sessionId, locale, appUser?.authId)
+        //       .then((result) => {
+        //         if (result) {
+        //           //if (result.tokenUsage) addTokenUsage({ ...result.tokenUsage, type: "other" });
+        //           if (result.creditsUsed > 0) addCreditsUsed(result.creditsUsed);
+        //         }
+        //       })
+        //       .catch((error) => {
+        //         logger.logWarning("Wellness check tracking failed", {
+        //           operation: "wellness_check_tracking_failed",
+        //           sessionId,
+        //           metadata: {
+        //             error: error instanceof Error ? error.message : String(error),
+        //           },
+        //         });
+        //       });
+        //   });
+        // }, 0);
 
         return {
           success: true,
@@ -184,8 +174,7 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
       appendUserMessage,
       processInput,
       session,
-      updateSessionMemory,
-      addTokenUsage,
+      //updateSessionMemory,
       addCreditsUsed,
       handleRoundComplete,
     ]
@@ -207,8 +196,6 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
     actions: {
       processMessage,
       addMessage,
-      addAnalysis,
-      addTokenUsage,
       resetSession: handleSessionReset,
       updateSession,
       summarizeSession,

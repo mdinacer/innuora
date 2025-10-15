@@ -19,14 +19,6 @@ export function getActiveSessionDuration(session: Session): {
 export function resetSessionData(session: Session): Session {
   return {
     ...session,
-    // id: session.id,
-    // userId: session.userId,
-    // title: session.title,
-    // subtitle: session.subtitle,
-    // autoUpdateTitle: session.autoUpdateTitle,
-    // persistOnCloud: session.persistOnCloud,
-    // metadata: session.metadata,
-    // createdAt: session.createdAt,
     metadata: {
       ...session.metadata,
       messageCount: 0,
@@ -34,8 +26,8 @@ export function resetSessionData(session: Session): Session {
       lastActiveAt: new Date(),
     },
     messages: [],
-    sessionDiagnostics: null,
     updatedAt: new Date(), // Update timestamp when resetting
+    //sessionDiagnostics: null,
     // NOTE: memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots
     // are now stored server-side only and reset via server actions
   };

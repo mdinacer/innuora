@@ -4,7 +4,7 @@ import { Prisma, Session } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
-import { SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
+import { SessionMeta, SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
 import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
@@ -16,7 +16,7 @@ function mapSessionMetadata<T extends Partial<Session>>(session: T) {
     ...session,
     metadata: session.metadata
       ? SessionMetadataSchema.parse(session.metadata)
-      : { messageCount: 0, tokenCount: 0, costUSD: 0, tokenUsage: [] },
+      : { messageCount: 0, creditsUsed: 0, activeDurationMs: 0, lastActiveAt: new Date() },
   } as Session;
 }
 export async function getUserSessionOverviews(): Promise<SessionOverview[]> {
@@ -44,7 +44,7 @@ export async function getUserSessionOverviews(): Promise<SessionOverview[]> {
       subtitle: mappedSession.subtitle,
       autoUpdateTitle: mappedSession.autoUpdateTitle,
       persistOnCloud: mappedSession.persistOnCloud,
-      metadata: mappedSession.metadata,
+      metadata: mappedSession.metadata as SessionMeta,
       createdAt: mappedSession.createdAt,
       updatedAt: mappedSession.updatedAt,
     } as SessionOverview;
@@ -77,11 +77,8 @@ export async function createSession(sessionCreateInput: SessionCreate) {
           persistOnCloud: sessionCreateInput.persistOnCloud || false,
           metadata: {
             messageCount: 0,
-            tokenCount: 0,
-            costUSD: 0,
             creditsUsed: 0,
             activeDurationMs: 0,
-            lastActiveAt: new Date(),
           },
           user: {
             connect: { authId: authUser.id },
