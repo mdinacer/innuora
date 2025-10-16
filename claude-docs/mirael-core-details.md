@@ -33,4 +33,4 @@
 - Mirael is an **“emotional clarity assistant”**.
 - It is **self-help oriented**, not a clinical platform.
 - All suggestions are **informational and reflective**, not prescriptive treatment.
-- Users retain **full agency**—they are guided to insights, not interventions.
+- Users retain **full agency**-they are guided to insights, not interventions.

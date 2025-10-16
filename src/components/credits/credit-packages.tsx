@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAnalytics } from "@/lib/analytics/use-analytics";
 import { BILLING_PRODUCTS, BillingProductKey } from "@/lib/billing/billing-config";
-import { CreditUXUtils } from "@/lib/credits/credit-config";
 import { formatCredits } from "@/lib/credits/credits-utils";
 import PaymentModal from "../billing/payment-modal";
 
@@ -40,19 +39,6 @@ export function CreditPackages({
       ][],
     []
   );
-
-  const getPackageTimeFrame = useCallback((credits: number): string => {
-    const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
-    const days = CreditUXUtils.creditsToEstimatedDays(credits);
-
-    if (weeks >= 4) {
-      return `${weeks} weeks of support`;
-    } else if (weeks >= 1) {
-      return `${weeks} week${weeks > 1 ? "s" : ""} of support`;
-    } else {
-      return `${days} days of support`;
-    }
-  }, []);
 
   // TODO: Use this function for dynamic package titles
   // const getPackageTitle = useCallback(
@@ -141,7 +127,7 @@ export function CreditPackages({
 
           <CardContent className="text-center space-y-4">
             <div>
-              <div className="text-lg font-semibold">~{formatCredits(pkg.credits)} credits</div>
+              <div className="text-lg font-semibold">{formatCredits(pkg.credits)} credits</div>
               <div className="text-sm text-gray-600">automatically applied</div>
             </div>
 
@@ -155,15 +141,14 @@ export function CreditPackages({
               className={`w-full ${pkg.popular ? "bg-inn-bg-accent hover:bg-inn-bg-accent/90" : ""}`}
               variant={pkg.popular ? "default" : "outline"}
             >
-              Secure {getPackageTimeFrame(pkg.credits)}
+              Purchase {pkg.label}
             </Button>
           </CardContent>
         </Card>
       ))}
 
       <div className="md:col-span-3 text-center text-xs text-gray-500 mt-4">
-        *Support duration estimated based on typical usage patterns. Actual usage may vary based on conversation
-        frequency and depth.
+        *Credit usage varies based on conversation length and depth. Credits never expire.
       </div>
 
       {/* Payment Modal */}

@@ -1,17 +1,18 @@
 /**
  * Session Context Service
  *
- * Manages server-side session context with Next.js caching.
+ * Manages server-side session context WITHOUT caching.
  * Handles encrypted therapeutic data that is NEVER sent to client.
  *
  * Features:
- * - Next.js unstable_cache for performance
- * - Tag-based cache invalidation
+ * - NO CACHING: Context changes on every user message, caching would cause stale data
  * - Automatic encryption/decryption
  * - Type-safe context management
+ *
+ * Performance Note:
+ * Session context is fetched infrequently (only during AI operations),
+ * so caching provides minimal benefit while risking stale data.
  */
-
-import { revalidateTag, unstable_cache } from "next/cache";
 
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { TherapeuticAnalysisWithMessageId } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
@@ -39,107 +40,111 @@ export interface SessionContext {
 }
 
 /**
- * Cache configuration
- */
-const CACHE_CONFIG = {
-  revalidate: 300, // 5 minutes
-  tags: (sessionId: string) => [`session-context-${sessionId}`],
-};
-
-/**
  * Fetches and decrypts session context
- * Uses Next.js caching for performance
+ * NO CACHING - Session context changes on every user message
+ *
+ * SECURITY: Validates session ownership when requiredUserId is provided
  *
  * @param sessionId - Session ID to fetch context for
+ * @param requiredUserId - Optional user ID to validate session ownership (RECOMMENDED)
  * @returns Decrypted session context
  *
  * @example
+ * // With ownership validation (RECOMMENDED)
+ * const user = await requireCurrentUser();
+ * const dbUser = await prisma.user.findUnique({ where: { authId: user.id } });
+ * const context = await getSessionContext(sessionId, dbUser.id);
+ *
+ * @example
+ * // Without validation (USE ONLY if ownership already validated)
  * const context = await getSessionContext(sessionId);
- * const previousAnalyses = context.analysisSnapshots;
  */
-export async function getSessionContext(sessionId: string, forceFresh = false): Promise<SessionContext> {
-  //if (forceFresh) revalidateTag(`session-context-${sessionId}`);
-  // Use Next.js unstable_cache for automatic caching
-  const getCachedContext = unstable_cache(
-    async (id: string) => {
-      const result = await logger.wrapOperation(
-        async () => {
-          // Fetch session with separate context table
-          const session = await prisma.session.findUnique({
-            where: { id },
+export async function getSessionContext(sessionId: string, requiredUserId?: string): Promise<SessionContext> {
+  const result = await logger.wrapOperation(
+    async () => {
+      // Fetch session with separate context table
+      const session = await prisma.session.findUnique({
+        where: { id: sessionId },
+        select: {
+          id: true,
+          userId: true,
+          serverContext: {
             select: {
-              id: true,
-              userId: true,
-              serverContext: {
-                select: {
-                  encryptedData: true,
-                },
-              },
+              encryptedData: true,
             },
-          });
-
-          if (!session) {
-            logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error(`Session not found: ${id}`), {
-              operation: "session_context_get",
-              sessionId: id,
-            });
-            // TypeScript doesn't know logErrorAndThrow never returns
-            throw new Error("Unreachable");
-          }
-
-          // If no server context exists yet, return empty context
-          if (!session.serverContext) {
-            return {
-              sessionId: session.id,
-              userId: session.userId,
-              analysisSnapshots: [],
-              aggregatedAnalysis: null,
-              memoryStore: null,
-              continuitySummary: null,
-            };
-          }
-
-          // Decrypt server data from SessionContext table
-          const decryptedData = await decryptServerData<ServerDataContent>(
-            session.serverContext.encryptedData as EncryptedBlob
-          );
-
-          return {
-            sessionId: session.id,
-            userId: session.userId,
-            analysisSnapshots: decryptedData.analysisSnapshots || [],
-            aggregatedAnalysis: decryptedData.aggregatedAnalysis || null,
-            memoryStore: decryptedData.memoryStore || null,
-            continuitySummary: decryptedData.continuitySummary || null,
-          };
+          },
         },
-        ERROR_CODES.SESSION_CONTEXT_FETCH_FAILED,
-        {
+      });
+
+      if (!session) {
+        logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error(`Session not found: ${sessionId}`), {
           operation: "session_context_get",
           sessionId,
-        },
-        "Session context fetched successfully"
-      );
-
-      if (result.error) {
-        throw new Error(result.error.message);
+        });
+        // TypeScript doesn't know logErrorAndThrow never returns
+        throw new Error("Unreachable");
       }
 
-      return result.data;
+      // SECURITY: Validate session ownership if requiredUserId provided
+      if (requiredUserId && session.userId !== requiredUserId) {
+        logger.logErrorAndThrow(
+          ERROR_CODES.AUTH_UNAUTHORIZED,
+          new Error(`User ${requiredUserId} does not own session ${sessionId}`),
+          {
+            operation: "session_context_get_ownership_check",
+            sessionId,
+            metadata: {
+              requiredUserId,
+              actualUserId: session.userId,
+            },
+          }
+        );
+      }
+
+      // If no server context exists yet, return empty context
+      if (!session.serverContext) {
+        return {
+          sessionId: session.id,
+          userId: session.userId,
+          analysisSnapshots: [],
+          aggregatedAnalysis: null,
+          memoryStore: null,
+          continuitySummary: null,
+        };
+      }
+
+      // Decrypt server data from SessionContext table
+      const decryptedData = await decryptServerData<ServerDataContent>(
+        session.serverContext.encryptedData as EncryptedBlob
+      );
+
+      return {
+        sessionId: session.id,
+        userId: session.userId,
+        analysisSnapshots: decryptedData.analysisSnapshots || [],
+        aggregatedAnalysis: decryptedData.aggregatedAnalysis || null,
+        memoryStore: decryptedData.memoryStore || null,
+        continuitySummary: decryptedData.continuitySummary || null,
+      };
     },
-    [`session-context`],
+    ERROR_CODES.SESSION_CONTEXT_FETCH_FAILED,
     {
-      revalidate: CACHE_CONFIG.revalidate,
-      tags: CACHE_CONFIG.tags(sessionId),
-    }
+      operation: "session_context_get",
+      sessionId,
+    },
+    "Session context fetched successfully"
   );
 
-  return await getCachedContext(sessionId);
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }
 
 /**
  * Updates session context after AI operations
- * Encrypts and saves to database, then invalidates cache
+ * Encrypts and saves to database
  *
  * @param sessionId - Session ID to update
  * @param updates - Partial updates to apply
@@ -156,8 +161,8 @@ export async function updateSessionContext(
 ): Promise<void> {
   const result = await logger.wrapOperation(
     async () => {
-      // Fetch current context
-      const currentContext = await getSessionContext(sessionId, true);
+      // Fetch current context (always fresh, no cache)
+      const currentContext = await getSessionContext(sessionId);
 
       // Merge updates with current data
       const updatedData: ServerDataContent = {
@@ -190,10 +195,6 @@ export async function updateSessionContext(
           updatedAt: new Date(),
         },
       });
-
-      // NOTE: Cache invalidation removed to prevent Next.js 15 render-time revalidateTag errors
-      // Cache will expire naturally after 5 minutes (CACHE_CONFIG.revalidate)
-      // For immediate updates, client should refetch or use optimistic UI updates
     },
     ERROR_CODES.SESSION_CONTEXT_UPDATE_FAILED,
     {
@@ -251,33 +252,6 @@ export async function initializeSessionContext(sessionId: string): Promise<void>
 
   if (result.error) {
     throw new Error(result.error.message);
-  }
-}
-
-/**
- * Manually invalidates session context cache
- * Useful for forced refreshes or after external updates
- *
- * WARNING: Can only be called from server actions/route handlers, NOT during render
- * See: https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic#dynamic-rendering
- *
- * @param sessionId - Session ID to invalidate cache for
- */
-export function invalidateSessionCache(sessionId: string): void {
-  try {
-    revalidateTag(`session-context-${sessionId}`);
-
-    logger.logInfo("Session cache invalidated", {
-      operation: "session_context_invalidate_cache",
-      sessionId,
-    });
-  } catch (error) {
-    // Next.js 15: revalidateTag cannot be called during render
-    logger.logWarning("Cache invalidation skipped (called during render)", {
-      operation: "session_context_invalidate_cache_skipped",
-      sessionId,
-      metadata: { error: error instanceof Error ? error.message : String(error) },
-    });
   }
 }
 

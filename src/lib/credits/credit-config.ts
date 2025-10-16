@@ -1,111 +1,74 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /**
  * Centralized Credit System Configuration
  *
- * Adjusting tokensPerCredit upward makes each credit feel more valuable.
- * Profit margin is controlled by pack pricing, not hardcoded multipliers.
- *
- * Example: 1 credit = 1000 tokens (premium currency feel)
+ * VALUE-BASED PRICING MODEL:
+ * - Credits represent consumption tracking units
+ * - Pricing anchored to clinical value delivered (not API costs)
+ * - 1 Innuora session = 5 therapy sessions worth of insights ($1000 value)
+ * - Positioned at 97% discount = $30/session
+ * - Cost per credit: $0.004, Price per credit: $0.37 (98.9% margin)
  */
 
 export const CREDIT_CONFIG = {
   /**
    * Base rate: How many tokens equal 1 credit point
    *
-   * - tokensPerCredit: 40    → 1 credit = 40 tokens (low-value currency feel)
-   * - tokensPerCredit: 1000  → 1 credit = 1000 tokens (premium currency feel)
+   * Value-based calculation:
+   * - Typical session: 20,500 tokens delivers $1000 of therapeutic value
+   * - Priced at $30 (97% discount for accessibility)
+   * - tokensPerCredit: 250 → granular tracking, proportional charging
+   * - Average message (600 tokens) = 2.4 credits → rounds to 3 credits
    */
-  tokensPerCredit: 1000,
+  tokensPerCredit: 250,
 
   /**
    * Display precision for credit amounts
-   * Keep whole numbers to reinforce "weight" of each credit.
+   * Keep whole numbers to maintain clear, simple UX.
    */
   displayPrecision: 0,
 
   /**
    * Rounding strategy for billing
-   * Always round up to avoid micro-credits slipping through.
+   * Always round up to ensure proper revenue capture.
    */
   roundingMode: "up" as "up" | "nearest" | "down",
 
   /**
-   * Minimum credit charge (ensures every call has weight)
+   * Minimum credit charge (prevents zero-credit operations)
    */
   minimumCharge: 1,
 } as const;
 
 /**
- * Credit UX helper functions for user-friendly messaging
+ * Credit UX helper functions
+ *
+ * Note: Token consumption is variable (short messages vs deep reflections),
+ * so we avoid misleading "days remaining" estimations.
+ * Just show credits - users understand their usage patterns.
  */
 export const CreditUXUtils = {
-  creditsToEstimatedDays: (credits: number): number => {
-    const creditsPerConversation = 2; // ~2 credits per round
-    const conversationsPerDay = 1.5;
-    return Math.floor(credits / (creditsPerConversation * conversationsPerDay));
-  },
-
-  creditsToEstimatedWeeks: (credits: number): number => {
-    const days = CreditUXUtils.creditsToEstimatedDays(credits);
-    return Math.floor(days / 7);
-  },
-
-  getApproximationDisplayText: (credits: number): string => {
-    const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
-    const days = CreditUXUtils.creditsToEstimatedDays(credits);
-
-    if (weeks >= 4) {
-      return `Approx. ${weeks} weeks of steady reflection`;
-    } else if (days >= 7) {
-      return `Approx. ${Math.floor(days / 7)} weeks of support`;
-    } else if (days >= 3) {
-      return `Approx. ${days} days of conversations`;
-    } else if (days >= 1) {
-      return `Approx. ${days} day${days > 1 ? "s" : ""} remaining`;
-    } else {
-      return `Time to renew for uninterrupted support`;
-    }
-  },
-  getBalanceDisplayText: (credits: number): string => {
-    const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
-    const days = CreditUXUtils.creditsToEstimatedDays(credits);
-
-    if (weeks >= 4) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${weeks} weeks of steady reflection`;
-    } else if (days >= 7) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${Math.floor(days / 7)} weeks of support`;
-    } else if (days >= 3) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${days} days of conversations`;
-    } else if (days >= 1) {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Approx. ${days} day${days > 1 ? "s" : ""} remaining`;
-    } else {
-      return `${CreditUtils.formatCreditsForDisplay(credits)} credits available • Time to renew for uninterrupted support`;
-    }
-  },
-
-  getConsumptionFeedback: (creditsUsed: number, remainingBalance: number): string => {
-    const usdCost = (creditsUsed * 0.05).toFixed(2); // assuming 1 credit ≈ $0.05 perceived value
-    return `Today's reflection: ${CreditUtils.formatCreditsForDisplay(creditsUsed)} credits (≈ $${usdCost}) - balance: ${CreditUtils.formatCreditsForDisplay(remainingBalance)} credits`;
-  },
-
-  getLowBalanceWarning: (credits: number): string => {
-    const days = CreditUXUtils.creditsToEstimatedDays(credits);
-
-    if (days <= 1) {
-      return "Your balance is getting low.\nYou have less than a day of conversations left. Top up now to stay uninterrupted.";
-    } else if (days <= 3) {
-      return `Your balance is getting low.\nYou have about ${days} days of daily conversations left. Top up now to stay uninterrupted.`;
-    } else {
-      return `Your balance is getting low.\nYou have about ${days} days of support remaining. Consider topping up soon.`;
-    }
-  },
-
+  /**
+   * Simple balance check thresholds
+   */
   isBalanceLow: (credits: number): boolean => {
-    return CreditUXUtils.creditsToEstimatedDays(credits) <= 5;
+    return credits < 50; // Less than ~17 typical messages
   },
 
   isBalanceCritical: (credits: number): boolean => {
-    return CreditUXUtils.creditsToEstimatedDays(credits) <= 2;
+    return credits < 20; // Less than ~7 typical messages
+  },
+
+  /**
+   * Get simple low balance warning (no predictions, just threshold)
+   */
+  getLowBalanceWarning: (credits: number): string => {
+    if (credits < 20) {
+      return "Your balance is low. Top up now to continue your sessions.";
+    } else if (credits < 50) {
+      return "Your balance is getting low. Consider topping up soon.";
+    } else {
+      return "";
+    }
   },
 };
 

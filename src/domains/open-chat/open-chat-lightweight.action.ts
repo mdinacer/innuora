@@ -9,6 +9,7 @@ import { SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { ChatContextManager } from "@/domains/chat-context/chat-context.manager";
 import { SESSION_MEMORY_REFERENCE_INSTRUCTIONS } from "@/domains/session-memory/session-memory.prompt";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
@@ -137,6 +138,23 @@ L'utilisateur a donné un bref accusé de réception ou une réponse simple. Ré
         processingType: "lightweight",
       });
       creditsUsed = aiResponse.consumedCredits;
+    }
+
+    // Log AI operation (fire-and-forget)
+    if (aiResponse.modelTokenUsage && userId && sessionId) {
+      logAiOperation({
+        userId,
+        sessionId,
+        operation: "RESPONSE",
+        tokenUsage: aiResponse.modelTokenUsage,
+        creditsCharged: creditsUsed,
+      }).catch((error) => {
+        logger.logWarning("Failed to log AI operation", {
+          operation: "open_chat_lightweight_log_ai_operation_failed",
+          sessionId,
+          metadata: { error: error instanceof Error ? error.message : String(error) },
+        });
+      });
     }
 
     return {

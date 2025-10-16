@@ -218,9 +218,10 @@ export async function cancelSubscription(
 }
 
 /**
- * Get active subscription for user
+ * Internal: Get active subscription for user
+ * Used internally only - NOT exported to prevent client access
  */
-export async function getUserActiveSubscription(userId: string): Promise<ActionResult<any>> {
+async function getUserActiveSubscription(userId: string): Promise<ActionResult<any>> {
   return logger.wrapOperation(
     async () => {
       const subscription = await prisma.subscription.findFirst({

@@ -22,7 +22,7 @@ draft: false
 
 What works for someone with social anxiety won't work for someone with depression. What resonates with an analytical thinker won't land with an emotional processor.
 
-**Innuora understands this**—and adapts accordingly.
+**Innuora understands this**-and adapts accordingly.
 
 ## The Personalization Engine
 
@@ -218,9 +218,9 @@ Recommended articles:
 
 - "I prefer shorter sessions today"
 - "Can you give me more concrete examples?"
-- "I don't find this exercise helpful—can we try something else?"
+- "I don't find this exercise helpful-can we try something else?"
 - "I need more encouragement right now"
-- "Push me harder—I'm ready for more challenging work"
+- "Push me harder-I'm ready for more challenging work"
 
 **The AI adapts immediately to your feedback.**
 
@@ -315,6 +315,6 @@ Recommended articles:
 
 ---
 
-**Remember**: Personalization isn't a feature—it's the foundation of Innuora. Every session makes the AI better at supporting YOUR unique journey.
+**Remember**: Personalization isn't a feature-it's the foundation of Innuora. Every session makes the AI better at supporting YOUR unique journey.
 
 **Experience personalized therapy** → Start your next Innuora session

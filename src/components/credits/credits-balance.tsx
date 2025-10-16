@@ -23,8 +23,8 @@ export function CreditsBalance({ className = "", showUSDValue = false, content }
   const { usdValue, mainText, subText } = useMemo(() => {
     const currentBalance = balance;
     const usdValue = creditsToUSD(currentBalance);
-    const balanceText = CreditUXUtils.getBalanceDisplayText(currentBalance);
-    const [mainText, subText] = balanceText.split("\n");
+    const mainText = `${currentBalance} credits available`;
+    const subText = CreditUXUtils.getLowBalanceWarning(currentBalance);
 
     return { usdValue, mainText, subText };
   }, [balance]);
@@ -42,7 +42,7 @@ export function CreditsBalance({ className = "", showUSDValue = false, content }
   if (content) {
     return content({
       currentBalance: balance,
-      subText: CreditUXUtils.getApproximationDisplayText(balance),
+      subText: CreditUXUtils.getLowBalanceWarning(balance),
       usdValue: formatUSD(usdValue),
     });
   }

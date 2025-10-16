@@ -229,7 +229,7 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
                 <div className={`w-2 h-2 rounded-full ${statusStyles.dot}`} aria-hidden="true"></div>
                 <span className="text-sm font-medium">{statusStyles.label}</span>
               </div>
-              <span className="text-xs">{cloudInfo ? cloudInfo.updatedAt.toLocaleTimeString() : "—"}</span>
+              <span className="text-xs">{cloudInfo ? cloudInfo.updatedAt.toLocaleTimeString() : "-"}</span>
             </div>
 
             {status === "cloudNewer" && (

@@ -30,7 +30,7 @@ Just like learning an instrument or a language, getting value from therapy impro
 **Instead of**: "Why am I so broken?"
 **Try**: "What can I learn about how my mind works?"
 
-Therapy works best when you're exploring, not judging. Your thoughts and feelings make sense given your experiences—therapy helps you understand the why and develop new patterns.
+Therapy works best when you're exploring, not judging. Your thoughts and feelings make sense given your experiences-therapy helps you understand the why and develop new patterns.
 
 ### Embrace the Process
 
@@ -86,7 +86,7 @@ This brief preparation focuses your session and prevents aimless wandering.
 
 ### 1. Practice Radical Honesty
 
-The AI can't read your mind—it only knows what you share.
+The AI can't read your mind-it only knows what you share.
 
 **Be honest about**:
 
@@ -102,7 +102,7 @@ The AI can't read your mind—it only knows what you share.
 **Never pretend to understand.** If something is unclear:
 
 - "Can you explain that differently?"
-- "I'm not sure I follow—can you give an example?"
+- "I'm not sure I follow-can you give an example?"
 - "What do you mean by [term]?"
 - "How does this apply to my situation?"
 
@@ -129,7 +129,7 @@ The AI adapts based on your feedback. Your pushback helps personalize the experi
 
 Writing engages a different part of your brain and aids retention.
 
-### 5. Try the Exercises—Even When Uncomfortable
+### 5. Try the Exercises-Even When Uncomfortable
 
 **Resistance is normal**, but growth happens outside comfort zones.
 
@@ -226,7 +226,7 @@ Report results in your next session.
 
 ### 5. Engage Deeply with Insights
 
-After each session, Innuora generates insights. **Don't just read them—engage**:
+After each session, Innuora generates insights. **Don't just read them-engage**:
 
 **Ask yourself**:
 
@@ -265,7 +265,7 @@ After each session, Innuora generates insights. **Don't just read them—engage*
 
 ### ❌ Not Applying Techniques
 
-**Don't just learn concepts—practice them.**
+**Don't just learn concepts-practice them.**
 
 **Fix**: Try at least one technique between every session.
 
@@ -300,7 +300,7 @@ After each session, Innuora generates insights. **Don't just read them—engage*
 - Are relationships improving?
 - Is daily functioning easier?
 
-**Success looks like**: "I didn't even think about it—I just did it"
+**Success looks like**: "I didn't even think about it-I just did it"
 
 ### Use Standardized Measures
 
@@ -371,4 +371,4 @@ Your challenge:
 
 ---
 
-**Remember**: Therapy isn't something done TO you—it's something you actively DO. Engage fully, practice consistently, and trust the process. You've got this.
+**Remember**: Therapy isn't something done TO you-it's something you actively DO. Engage fully, practice consistently, and trust the process. You've got this.

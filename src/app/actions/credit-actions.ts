@@ -170,10 +170,10 @@ export async function getUserCreditsBalance(): Promise<ActionResult<number>> {
 }
 
 /**
- * Internal export for webhooks/admin: Get user credits balance by authId
- * Use this ONLY from other server actions, NOT from client code
+ * Internal: Get user credits balance by authId
+ * Used internally by this file only - NOT exported to prevent client access
  */
-export async function getUserCreditsBalanceByAuthId(authId: string): Promise<ActionResult<number>> {
+async function getUserCreditsBalanceByAuthId(authId: string): Promise<ActionResult<number>> {
   return await logger.wrapOperation(
     async () => {
       return await _getUserCreditsBalanceInternal(authId);
@@ -278,10 +278,10 @@ export async function getUserCreditHistory(
 }
 
 /**
- * Internal export for admin: Get user credit history by authId
- * Use this ONLY from admin operations, NOT from client code
+ * Internal: Get user credit history by authId
+ * Used internally for admin operations - NOT exported to prevent client access
  */
-export async function getUserCreditHistoryByAuthId(
+async function getUserCreditHistoryByAuthId(
   authId: string,
   limit: number = 50,
   offset: number = 0
@@ -449,10 +449,10 @@ export async function checkSufficientCredits(requiredCredits: number): Promise<b
 }
 
 /**
- * Internal export for server operations: Check if user has sufficient credits by authId
- * Use this ONLY from server-side operations, NOT from client code
+ * Internal: Check if user has sufficient credits by authId
+ * Used internally by this file only - NOT exported to prevent client access
  */
-export async function checkSufficientCreditsForUser(authId: string, requiredCredits: number): Promise<boolean> {
+async function checkSufficientCreditsForUser(authId: string, requiredCredits: number): Promise<boolean> {
   const result = await getUserCreditsBalanceByAuthId(authId);
   if (result.error) {
     return false;

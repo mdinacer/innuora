@@ -40,13 +40,12 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
       sessionId,
       metadata: { locale },
     });
-    // Import sessionSynchronizer and get fresh session state
 
-    import("@/domains/simple-session-sync").then(({ localSyncService }) => {
+    import("@/domains/session-sync").then(({ sessionSynchronizer }) => {
       import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
         const currentSession = useActiveSessionStore.getState().session;
         if (currentSession) {
-          localSyncService.syncSession(currentSession);
+          sessionSynchronizer.queueSync(sessionId, "update", currentSession);
         }
       });
     });
@@ -116,14 +115,14 @@ export function useChatController({ sessionId, locale = "en" }: OpenChatProps) {
                 });
             });
 
-            import("@/domains/simple-session-sync").then(({ cloudSyncService }) => {
-              import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
-                const currentSession = useActiveSessionStore.getState().session;
-                if (currentSession) {
-                  cloudSyncService.syncToCloud(currentSession.id);
-                }
-              });
-            });
+            // import("@/domains/simple-session-sync").then(({ cloudSyncService }) => {
+            //   import("@/domains/active-session/active-session.store").then(({ useActiveSessionStore }) => {
+            //     const currentSession = useActiveSessionStore.getState().session;
+            //     if (currentSession) {
+            //       cloudSyncService.syncToCloud(currentSession.id);
+            //     }
+            //   });
+            // });
           }, 0);
         }
         // setTimeout(() => {

@@ -295,7 +295,7 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
             <h2 className="text-2xl md:text-3xl font-bold mb-3">Start Your Journey to Self-Understanding</h2>
             <p className="text-base opacity-90 max-w-2xl mx-auto mb-6">
               Join Innuora and discover insights about your emotional patterns, cognitive habits, and personal growth
-              opportunities—all from natural conversations.
+              opportunities-all from natural conversations.
             </p>
             <Link
               href="#"

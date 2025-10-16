@@ -111,13 +111,20 @@ export class SessionWellnessService {
         // TODO: Implement gentle conclusion guidance based on wellness.reasons and loop_assessment
       }
 
-      if (tokenUsage) {
+      // Log AI operation (fire-and-forget)
+      if (tokenUsage && session.userId) {
         logAiOperation({
-          operation: "SESSION_WELLNESS",
-          sessionId,
           userId: session.userId,
+          sessionId,
+          operation: "SESSION_WELLNESS",
           tokenUsage: tokenUsage,
-          creditsCharged: creditsUsed,
+          creditsCharged: creditsUsed || 0,
+        }).catch((error) => {
+          logger.logWarning("Failed to log AI operation", {
+            operation: "session_wellness_log_ai_operation_failed",
+            sessionId,
+            metadata: { error: error instanceof Error ? error.message : String(error) },
+          });
         });
       }
 

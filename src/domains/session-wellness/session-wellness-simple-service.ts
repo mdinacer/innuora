@@ -25,8 +25,8 @@ export async function runSessionWellnessCheck(
 ): Promise<SessionWellnessResult | null> {
   const authenticatedUser = await getAuthenticatedUserContext();
 
-  // TypeScript: sessionId is guaranteed to be string after validation above (logErrorAndThrow terminates execution)
-  const sessionContext = await getSessionContext(session.id, true);
+  // Fetch session context WITH ownership validation
+  const sessionContext = await getSessionContext(session.id, authenticatedUser.id);
   const prevAnalysis = sessionContext.analysisSnapshots.slice(-3); // Last 3 analyses
 
   // analysisSnapshots is already TherapeuticAnalysisWithMessageId[], which extends TherapeuticAnalysis
@@ -75,14 +75,20 @@ export async function runSessionWellnessCheck(
       ).catch(() => {});
     }
 
-    if (result.data.modelTokenUsage) {
-      // Log AI usage
+    // Log AI operation (fire-and-forget)
+    if (result.data.modelTokenUsage && authenticatedUser.id) {
       logAiOperation({
-        operation: "SESSION_WELLNESS",
-        sessionId: session.id,
         userId: authenticatedUser.id,
+        sessionId: session.id,
+        operation: "SESSION_WELLNESS",
         tokenUsage: result.data.modelTokenUsage,
-        creditsCharged: result.data.consumedCredits,
+        creditsCharged: result.data.consumedCredits || 0,
+      }).catch((error) => {
+        logger.logWarning("Failed to log AI operation", {
+          operation: "session_wellness_log_ai_operation_failed",
+          sessionId: session.id,
+          metadata: { error: error instanceof Error ? error.message : String(error) },
+        });
       });
     }
 

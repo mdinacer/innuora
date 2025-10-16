@@ -91,11 +91,11 @@ const CloudSessionStateCard: React.FC<Props> = ({ className, sessionData, loadin
             </div>
             <div className="flex items-center gap-1">
               <MessageSquareIcon className="size-3 shrink-0" />
-              <span>{meta.messages(9)}</span>
+              <span>{meta.messages(sessionData.metadata.messageCount)}</span>
             </div>
             <div className="flex items-center gap-1">
               <CoinsIcon className="size-3 shrink-0" />
-              <span>{meta.credits(9)}</span>
+              <span>{meta.credits(sessionData.metadata.creditsUsed)}</span>
             </div>
           </div>
         </div>

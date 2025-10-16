@@ -16,6 +16,8 @@ export default async function SessionDetailsRoute({
       <Suspense fallback={<LoadingComponent />}>
         <SessionDecrypt publicId={sessionId} content={SessionDetailsPage} />
       </Suspense>
+
+      <Suspense fallback={<LoadingComponent />}></Suspense>
     </main>
   );
 }

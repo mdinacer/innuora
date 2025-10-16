@@ -575,7 +575,7 @@ Innuora's pricing reflects the **clinical value delivered**, not just API costs.
 4. **Competitive positioning**: Premium quality, accessible pricing (1/4 therapy cost)
 5. **Sustainable margins**: 90%+ gross margin enables reinvestment in product
 
-**The pricing strategy validates product-market fit, funds growth, and positions Innuora as a serious clinical tool—not another chat app.**
+**The pricing strategy validates product-market fit, funds growth, and positions Innuora as a serious clinical tool-not another chat app.**
 
 ---
 

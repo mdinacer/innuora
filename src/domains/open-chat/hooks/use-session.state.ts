@@ -4,9 +4,7 @@ import { useActiveSessionStore } from "@/domains/active-session/active-session.s
 import { decryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
-import { cloudSyncService } from "@/domains/simple-session-sync/cloud-sync-service";
-//import { sessionSynchronizer } from "@/domains/session-sync";
-import { localSyncService } from "@/domains/simple-session-sync/local-sync-service";
+import { sessionSynchronizer } from "@/domains/session-sync";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface OpenChatProps {
@@ -30,10 +28,7 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     // Get the current session from store to avoid stale closures
     const latestSession = useActiveSessionStore.getState().session;
     if (latestSession && sessionId) {
-      // Only trigger local sync here - cloud sync is handled separately by synchronizer
-      //sessionSynchronizer.queueLocalSync(sessionId, "update", latestSession);
-      localSyncService.syncSession(latestSession);
-      // Cloud sync is debounced and triggered automatically by the synchronizer
+      sessionSynchronizer.queueSync(sessionId, "update", latestSession);
     }
   }, [sessionId]);
 
@@ -171,7 +166,9 @@ export function useSessionState({ sessionId }: OpenChatProps) {
     loadSession: handleLoadSession,
 
     manualSync: triggerSync,
-    manualLocalSync: () => (currentSession ? localSyncService.syncSession(currentSession) : Promise.resolve(false)),
-    manualCloudSync: () => (currentSession ? cloudSyncService.syncToCloud(currentSession.id) : Promise.resolve(false)),
+    manualLocalSync: () =>
+      currentSession && sessionId ? sessionSynchronizer.syncSessionLocal(sessionId) : Promise.resolve(false),
+    manualCloudSync: () =>
+      currentSession && sessionId ? sessionSynchronizer.syncSessionCloud(sessionId) : Promise.resolve(false),
   };
 }

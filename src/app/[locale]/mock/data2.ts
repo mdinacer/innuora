@@ -112,7 +112,7 @@ export const sampleSeesion2 = {
         id: "msg_lGEo6471PN",
         role: "user",
         content:
-          "My chest tightens, like I can’t get a full breath. Sometimes my jaw hurts too, because I don’t realize I’ve been clenching it all day. And my thoughts start racing — it’s like there’s a pressure to fix everything right now, even the things that aren’t really mine to fix.",
+          "My chest tightens, like I can’t get a full breath. Sometimes my jaw hurts too, because I don’t realize I’ve been clenching it all day. And my thoughts start racing - it’s like there’s a pressure to fix everything right now, even the things that aren’t really mine to fix.",
         timestamp: 1760297813416,
       },
       {
@@ -127,7 +127,7 @@ export const sampleSeesion2 = {
         id: "msg_HoyUENHbwd",
         role: "user",
         content:
-          "Maybe calmer? Or at least less panicked. But it’s hard to catch it early because I’m always in motion. By the time I realize I’m tense, it’s already too late — I’m halfway through another day running on autopilot.",
+          "Maybe calmer? Or at least less panicked. But it’s hard to catch it early because I’m always in motion. By the time I realize I’m tense, it’s already too late - I’m halfway through another day running on autopilot.",
         timestamp: 1760297842281,
       },
       {
@@ -157,7 +157,7 @@ export const sampleSeesion2 = {
         id: "msg_GVSs8wzdiw",
         role: "user",
         content:
-          "I guess that would feel… relieving. But also weirdly uncomfortable. Like part of me doesn’t trust calm anymore — as if something bad will follow if I stop moving for too long.",
+          "I guess that would feel… relieving. But also weirdly uncomfortable. Like part of me doesn’t trust calm anymore - as if something bad will follow if I stop moving for too long.",
         timestamp: 1760297908131,
       },
       {
@@ -172,7 +172,7 @@ export const sampleSeesion2 = {
         id: "msg_RkZkV1BcCY",
         role: "user",
         content:
-          "It’s like a jolt — my stomach tightens, my shoulders tense up, and I instantly look for something to do. Check my phone, open my laptop, anything. I can’t just be. It feels wrong, almost irresponsible.",
+          "It’s like a jolt - my stomach tightens, my shoulders tense up, and I instantly look for something to do. Check my phone, open my laptop, anything. I can’t just be. It feels wrong, almost irresponsible.",
         timestamp: 1760297938804,
       },
       {
@@ -187,14 +187,14 @@ export const sampleSeesion2 = {
         id: "msg_GARBBNeP24",
         role: "user",
         content:
-          "Probably uncomfortable at first. Like sitting with an itch you’re not supposed to scratch. But maybe if I stayed with it long enough, it would fade a little. I’ve just never tried — I always give in and distract myself.",
+          "Probably uncomfortable at first. Like sitting with an itch you’re not supposed to scratch. But maybe if I stayed with it long enough, it would fade a little. I’ve just never tried - I always give in and distract myself.",
         timestamp: 1760298034072,
       },
       {
         id: "msg_pwqMEit0QH",
         role: "assistant",
         content:
-          "That image of an itch you’re not supposed to scratch feels so **telling**—a mix of wanting relief and holding back. Staying with that discomfort even a moment longer is a brave act of curiosity toward yourself. What small, safe way might you try just noticing it next time?",
+          "That image of an itch you’re not supposed to scratch feels so **telling**-a mix of wanting relief and holding back. Staying with that discomfort even a moment longer is a brave act of curiosity toward yourself. What small, safe way might you try just noticing it next time?",
         timestamp: 1760298046287,
         creditsUsed: 4,
       },
@@ -209,7 +209,7 @@ export const sampleSeesion2 = {
         id: "msg_5jVD8U3vG5",
         role: "assistant",
         content:
-          "That pause, just one breath before the usual rush, holds a lot of **strength**. It’s okay that it feels big—small shifts often carry deep meaning. How do you imagine that moment might feel when you actually try it?",
+          "That pause, just one breath before the usual rush, holds a lot of **strength**. It’s okay that it feels big-small shifts often carry deep meaning. How do you imagine that moment might feel when you actually try it?",
         timestamp: 1760298068960,
         creditsUsed: 4,
       },
@@ -232,7 +232,7 @@ export const sampleSeesion2 = {
         id: "msg_4xGnUxQvSL",
         role: "user",
         content:
-          "Probably the fear that if I slow down, everything I’ve built will start slipping. Like I’ll fall behind or lose people’s respect. It’s not even logical, but it feels real — that my value disappears the moment I stop producing.",
+          "Probably the fear that if I slow down, everything I’ve built will start slipping. Like I’ll fall behind or lose people’s respect. It’s not even logical, but it feels real - that my value disappears the moment I stop producing.",
         timestamp: 1760298130971,
       },
       {
@@ -292,7 +292,7 @@ export const sampleSeesion2 = {
         id: "msg_yyGsuif86n",
         role: "user",
         content:
-          "Yeah… I think I’ve been needing that kind of release. Not the breakdown kind, but the quiet kind — like finally exhaling after holding my breath for years.",
+          "Yeah… I think I’ve been needing that kind of release. Not the breakdown kind, but the quiet kind - like finally exhaling after holding my breath for years.",
         timestamp: 1760298276497,
       },
       {
@@ -307,7 +307,7 @@ export const sampleSeesion2 = {
         id: "msg_Nj1GS1XsVN",
         role: "user",
         content:
-          "Maybe freeing. Like I don’t have to hold everything together for a minute. Maybe I’d even feel human again — not just a machine keeping things running.",
+          "Maybe freeing. Like I don’t have to hold everything together for a minute. Maybe I’d even feel human again - not just a machine keeping things running.",
         timestamp: 1760298302464,
       },
       {
@@ -337,7 +337,7 @@ export const sampleSeesion2 = {
         id: "msg_nJpPt1KXYs",
         role: "user",
         content:
-          "It feels fragile, like holding something delicate that could slip away if I grip it too tightly. But also… hopeful. Like maybe there’s a version of me who isn’t always chasing, just existing — and maybe she’s still in there somewhere.",
+          "It feels fragile, like holding something delicate that could slip away if I grip it too tightly. But also… hopeful. Like maybe there’s a version of me who isn’t always chasing, just existing - and maybe she’s still in there somewhere.",
         timestamp: 1760298359908,
       },
       {
@@ -367,7 +367,7 @@ export const sampleSeesion2 = {
         id: "msg_Ni4embJb2z",
         role: "user",
         content:
-          "Maybe noticing moments that don’t feel forced — like when I laugh at something unexpectedly, or when I’m just sitting quietly and it doesn’t feel wrong. Those tiny flashes make me think maybe calm isn’t gone, just buried.",
+          "Maybe noticing moments that don’t feel forced - like when I laugh at something unexpectedly, or when I’m just sitting quietly and it doesn’t feel wrong. Those tiny flashes make me think maybe calm isn’t gone, just buried.",
         timestamp: 1760298427399,
       },
       {
@@ -382,7 +382,7 @@ export const sampleSeesion2 = {
         id: "msg_6sVpEm8chW",
         role: "user",
         content:
-          "Honestly… comforting. Like proof I’m not completely gone. It’s small, but it’s something to hold on to — a reminder that maybe I don’t have to rebuild everything at once.",
+          "Honestly… comforting. Like proof I’m not completely gone. It’s small, but it’s something to hold on to - a reminder that maybe I don’t have to rebuild everything at once.",
         timestamp: 1760298469030,
       },
       {
@@ -412,7 +412,7 @@ export const sampleSeesion2 = {
         id: "msg_rKwLEXRy4N",
         role: "user",
         content:
-          "Maybe warmth. Like my shoulders dropping or my breath deepening. Maybe even a sense of quiet I haven’t felt in a long time — not silence, but calm that actually feels safe.",
+          "Maybe warmth. Like my shoulders dropping or my breath deepening. Maybe even a sense of quiet I haven’t felt in a long time - not silence, but calm that actually feels safe.",
         timestamp: 1760301681941,
       },
       {
@@ -427,7 +427,7 @@ export const sampleSeesion2 = {
         id: "msg_WBYw6ovIs1",
         role: "user",
         content:
-          "It feels… peaceful, but also emotional. Like I could cry, but in a good way. I think I’ve been chasing this feeling without realizing it — not success, not control, just a sense of being okay inside my own skin.",
+          "It feels… peaceful, but also emotional. Like I could cry, but in a good way. I think I’ve been chasing this feeling without realizing it - not success, not control, just a sense of being okay inside my own skin.",
         timestamp: 1760301713048,
       },
       {
@@ -442,14 +442,14 @@ export const sampleSeesion2 = {
         id: "msg_Qc30ZGBMmw",
         role: "user",
         content:
-          "Maybe that I’ve been holding myself like a project, not a person. Always fixing, optimizing, managing — never just being. This feeling makes me realize I’ve been craving gentleness more than achievement.",
+          "Maybe that I’ve been holding myself like a project, not a person. Always fixing, optimizing, managing - never just being. This feeling makes me realize I’ve been craving gentleness more than achievement.",
         timestamp: 1760301778746,
       },
       {
         id: "msg_JoIzg7zJMg",
         role: "assistant",
         content:
-          "Holding yourself like a project, always managing and fixing, can feel exhausting underneath. Realizing you crave **gentleness** over achievement is a soft, important truth—one that invites you to slow down and simply be with yourself. How might it feel to treat yourself like a person, not a task, even for a moment?",
+          "Holding yourself like a project, always managing and fixing, can feel exhausting underneath. Realizing you crave **gentleness** over achievement is a soft, important truth-one that invites you to slow down and simply be with yourself. How might it feel to treat yourself like a person, not a task, even for a moment?",
         timestamp: 1760301791970,
         creditsUsed: 4,
       },
@@ -472,7 +472,7 @@ export const sampleSeesion2 = {
         id: "msg_XvBslYLePf",
         role: "user",
         content:
-          "Maybe letting myself stop when I’m tired instead of pushing through. Closing the laptop without finishing the list, and not apologizing for it. Just reminding myself that rest isn’t a failure — it’s part of being alive.",
+          "Maybe letting myself stop when I’m tired instead of pushing through. Closing the laptop without finishing the list, and not apologizing for it. Just reminding myself that rest isn’t a failure - it’s part of being alive.",
         timestamp: 1760302131956,
       },
       {
@@ -487,7 +487,7 @@ export const sampleSeesion2 = {
         id: "msg_Wvf8bQApH1",
         role: "user",
         content:
-          "It feels softer. Like giving myself permission to exist without earning it. I think that’s what I’ve been missing — kindness that doesn’t come with conditions.",
+          "It feels softer. Like giving myself permission to exist without earning it. I think that’s what I’ve been missing - kindness that doesn’t come with conditions.",
         timestamp: 1760302516473,
       },
       {
@@ -524,7 +524,7 @@ export const sampleSeesion2 = {
         id: "msg_Dj3E9x7RfT",
         role: "assistant",
         content:
-          "That calmer, softer voice that simply stays with you feels deeply **nurturing**—like a safe presence rather than a fixer. It’s beautiful that you can recognize the voice you’ve needed; that awareness itself holds gentle healing. What does it feel like in your body when you hear that voice?",
+          "That calmer, softer voice that simply stays with you feels deeply **nurturing**-like a safe presence rather than a fixer. It’s beautiful that you can recognize the voice you’ve needed; that awareness itself holds gentle healing. What does it feel like in your body when you hear that voice?",
         timestamp: 1760302671304,
         creditsUsed: 4,
       },
@@ -554,7 +554,7 @@ export const sampleSeesion2 = {
         id: "msg_GMCh4FJ7e4",
         role: "assistant",
         content:
-          "That stillness you describe feels like a deep, **unspoken relief**—a quiet space where you can simply be without demands or noise. It’s powerful that you recognize this as what you truly need, even if it’s been just out of reach. What keeps you from allowing yourself that arrival more often?",
+          "That stillness you describe feels like a deep, **unspoken relief**-a quiet space where you can simply be without demands or noise. It’s powerful that you recognize this as what you truly need, even if it’s been just out of reach. What keeps you from allowing yourself that arrival more often?",
         timestamp: 1760303090119,
         creditsUsed: 4,
       },
@@ -562,21 +562,21 @@ export const sampleSeesion2 = {
         id: "msg_buv5zoMNZe",
         role: "user",
         content:
-          "Probably the fear that it won’t last. That if I let myself rest, something will go wrong or I’ll fall behind. It’s like I don’t fully trust peace yet—it feels temporary, like it could vanish if I stop paying attention.",
+          "Probably the fear that it won’t last. That if I let myself rest, something will go wrong or I’ll fall behind. It’s like I don’t fully trust peace yet-it feels temporary, like it could vanish if I stop paying attention.",
         timestamp: 1760304250105,
       },
       {
         id: "msg_ozSJeH6J1g",
         role: "user",
         content:
-          "Probably the fear that it won’t last. That if I let myself rest, something will go wrong or I’ll fall behind. It’s like I don’t fully trust peace yet—it feels temporary, like it could vanish if I stop paying attention.",
+          "Probably the fear that it won’t last. That if I let myself rest, something will go wrong or I’ll fall behind. It’s like I don’t fully trust peace yet-it feels temporary, like it could vanish if I stop paying attention.",
         timestamp: 1760304257736,
       },
       {
         id: "msg_wrM5w25QLa",
         role: "assistant",
         content:
-          "That fear of peace slipping away feels like carrying a quiet tension beneath the calm, as if rest itself is fragile or risky. It’s understandable to hold tight when trust feels uncertain, yet that holding can deepen exhaustion. What might a small, safe moment of peace look like for you—one that feels less fragile?",
+          "That fear of peace slipping away feels like carrying a quiet tension beneath the calm, as if rest itself is fragile or risky. It’s understandable to hold tight when trust feels uncertain, yet that holding can deepen exhaustion. What might a small, safe moment of peace look like for you-one that feels less fragile?",
         timestamp: 1760304271633,
         creditsUsed: 4,
       },
@@ -599,7 +599,7 @@ export const sampleSeesion2 = {
         id: "msg_dMVfI0oKHm",
         role: "user",
         content:
-          "It feels lighter, like I can finally breathe all the way down. The tension in my chest eases, and there’s this quiet sense of belonging—to myself, to the moment. It’s not dramatic, just calm in the most ordinary way, which somehow makes it even more comforting.",
+          "It feels lighter, like I can finally breathe all the way down. The tension in my chest eases, and there’s this quiet sense of belonging-to myself, to the moment. It’s not dramatic, just calm in the most ordinary way, which somehow makes it even more comforting.",
         timestamp: 1760304445560,
       },
       {
@@ -614,14 +614,14 @@ export const sampleSeesion2 = {
         id: "msg_yXCfkk3lA3",
         role: "user",
         content:
-          "Because it doesn’t ask anything from me. Big moments always come with pressure — to feel, to perform, to make it meaningful. But this kind of calm just is. It’s steady, no effort required. I think that’s why it feels safe.",
+          "Because it doesn’t ask anything from me. Big moments always come with pressure - to feel, to perform, to make it meaningful. But this kind of calm just is. It’s steady, no effort required. I think that’s why it feels safe.",
         timestamp: 1760304491946,
       },
       {
         id: "msg_8uTZLNQwq1",
         role: "assistant",
         content:
-          "You’ve named something important — calm that doesn’t demand feels like a rare kind of **freedom**. That ease, without pressure or expectation, offers a space where you can simply be without needing to prove or fix anything. It’s a gentle refuge from the usual demands.",
+          "You’ve named something important - calm that doesn’t demand feels like a rare kind of **freedom**. That ease, without pressure or expectation, offers a space where you can simply be without needing to prove or fix anything. It’s a gentle refuge from the usual demands.",
         timestamp: 1760304500037,
         creditsUsed: 4,
       },
@@ -629,7 +629,7 @@ export const sampleSeesion2 = {
         id: "msg_3cRhG8RzPG",
         role: "user",
         content:
-          "Yeah… it feels like I can finally exhale without waiting for the next thing. Maybe that’s what real rest is — not escaping life, just not having to fight it for a bit.",
+          "Yeah… it feels like I can finally exhale without waiting for the next thing. Maybe that’s what real rest is - not escaping life, just not having to fight it for a bit.",
         timestamp: 1760304937515,
       },
       {
@@ -651,7 +651,7 @@ export const sampleSeesion2 = {
         id: "msg_suHNldnJUs",
         role: "assistant",
         content:
-          "That longing for space to simply **breathe** and not be “on” all the time carries a quiet ache. It’s tough when what feels most basic—just room to be—seems distant, almost like a luxury out of reach. That distance itself says a lot about how much you’ve been holding in.",
+          "That longing for space to simply **breathe** and not be “on” all the time carries a quiet ache. It’s tough when what feels most basic-just room to be-seems distant, almost like a luxury out of reach. That distance itself says a lot about how much you’ve been holding in.",
         timestamp: 1760305226239,
         creditsUsed: 4,
       },
@@ -674,7 +674,7 @@ export const sampleSeesion2 = {
         id: "msg_2hthBb2vpp",
         role: "user",
         content:
-          "Exactly. It’s like I turned rest into another task on the list — something to achieve properly. I don’t even know what true rest feels like anymore.",
+          "Exactly. It’s like I turned rest into another task on the list - something to achieve properly. I don’t even know what true rest feels like anymore.",
         timestamp: 1760305460774,
       },
       {
@@ -689,7 +689,7 @@ export const sampleSeesion2 = {
         id: "msg_iIt7fIBxKI",
         role: "user",
         content:
-          "Yeah… it’s like I don’t trust stillness unless it’s productive. Even relaxation has to have a purpose — recovery, clarity, performance. I’ve forgotten how to rest just because I need to.",
+          "Yeah… it’s like I don’t trust stillness unless it’s productive. Even relaxation has to have a purpose - recovery, clarity, performance. I’ve forgotten how to rest just because I need to.",
         timestamp: 1760305502822,
       },
       {
@@ -704,7 +704,7 @@ export const sampleSeesion2 = {
         id: "msg_LjeGQkIOXm",
         role: "user",
         content:
-          "Yeah… maybe that’s the hardest part — learning that rest doesn’t have to prove anything. Maybe it’s enough to just stop, breathe, and let that be the whole point.",
+          "Yeah… maybe that’s the hardest part - learning that rest doesn’t have to prove anything. Maybe it’s enough to just stop, breathe, and let that be the whole point.",
         timestamp: 1760305751393,
       },
       {
@@ -734,7 +734,7 @@ export const sampleSeesion2 = {
         id: "msg_MVslQteFQY",
         role: "user",
         content:
-          "Maybe just not rushing past it. Letting myself feel it for a minute instead of brushing it off. Maybe that’s enough — to notice that something inside me finally feels a little lighter.",
+          "Maybe just not rushing past it. Letting myself feel it for a minute instead of brushing it off. Maybe that’s enough - to notice that something inside me finally feels a little lighter.",
         timestamp: 1760305993908,
       },
       {
@@ -749,7 +749,7 @@ export const sampleSeesion2 = {
         id: "msg_9gWn37ImXj",
         role: "user",
         content:
-          "Yeah… it feels small, but real. Like maybe things don’t have to change all at once — they can just soften first.",
+          "Yeah… it feels small, but real. Like maybe things don’t have to change all at once - they can just soften first.",
         timestamp: 1760306837320,
       },
       {
@@ -771,7 +771,7 @@ export const sampleSeesion2 = {
         id: "msg_s52hZNwYYG",
         role: "assistant",
         content:
-          "That’s a powerful realization—seeing your tiredness as a call for care rather than weakness. It’s a shift from self-judgment to **compassion**, which can feel both vulnerable and freeing. How does it feel to hold that gentler truth about yourself?",
+          "That’s a powerful realization-seeing your tiredness as a call for care rather than weakness. It’s a shift from self-judgment to **compassion**, which can feel both vulnerable and freeing. How does it feel to hold that gentler truth about yourself?",
         timestamp: 1760307035531,
         creditsUsed: 4,
       },
@@ -794,7 +794,7 @@ export const sampleSeesion2 = {
         id: "msg_kQaJLoT2kH",
         role: "user",
         content:
-          "Maybe reassurance — that it’s okay to let go a little without everything falling apart. That slowing down doesn’t mean I’m giving up, just choosing differently for once.",
+          "Maybe reassurance - that it’s okay to let go a little without everything falling apart. That slowing down doesn’t mean I’m giving up, just choosing differently for once.",
         timestamp: 1760307619040,
       },
       {
@@ -1773,7 +1773,7 @@ export const sampleSeesion2 = {
         crisis: "none",
         distortions: [],
         themes: [{ theme: "self_reassurance_and_trust", frequency: "frequent" }],
-        core_beliefs: [{ belief: "Letting go doesn’t mean giving up — it’s choosing differently." }],
+        core_beliefs: [{ belief: "Letting go doesn’t mean giving up - it’s choosing differently." }],
         silent_rules: [],
         behavioral_patterns: [],
         state: "established",
@@ -1850,7 +1850,7 @@ export const sampleAdvancedDiagnostic2: AdvancedDiagnostic = {
       evidence: [
         "The idea of not pushing feels dangerous.",
         "Part of me doesn’t trust calm anymore.",
-        "It’s like I don’t fully trust peace yet—it feels temporary.",
+        "It’s like I don’t fully trust peace yet-it feels temporary.",
       ],
     },
     {
@@ -1862,7 +1862,7 @@ export const sampleAdvancedDiagnostic2: AdvancedDiagnostic = {
       trajectory: "increasing",
       evidence: [
         "Maybe I’ve been craving gentleness more than achievement.",
-        "Rest isn’t a failure — it’s part of being alive.",
+        "Rest isn’t a failure - it’s part of being alive.",
         "Maybe what I’ve been calling weakness is actually my body and mind asking for care.",
       ],
     },
@@ -1958,7 +1958,7 @@ export const sampleBasicDiagnostic2: BasicDiagnostic = {
       confidence: "high",
     },
     {
-      text: "A deep **disconnect between effort and meaning** has left you exhausted — as if your worth depends on staying useful, even when it drains you.",
+      text: "A deep **disconnect between effort and meaning** has left you exhausted - as if your worth depends on staying useful, even when it drains you.",
       confidence: "high",
     },
     {
@@ -2000,7 +2000,7 @@ export const sampleBasicDiagnostic2: BasicDiagnostic = {
     {
       title: "The Productivity Loop",
       description:
-        "When tension rises, you **push harder**, believing effort will quiet the unease. It works temporarily — until exhaustion returns and guilt follows. The cycle restarts, deepening the sense of emptiness.",
+        "When tension rises, you **push harder**, believing effort will quiet the unease. It works temporarily - until exhaustion returns and guilt follows. The cycle restarts, deepening the sense of emptiness.",
       confidence: "high",
     },
     {
@@ -2012,7 +2012,7 @@ export const sampleBasicDiagnostic2: BasicDiagnostic = {
     {
       title: "Disconnection from Self",
       description:
-        "You’ve spent years performing competence so well that your inner world went unheard. The more capable you appear, the less seen you feel — and that gap quietly hurts.",
+        "You’ve spent years performing competence so well that your inner world went unheard. The more capable you appear, the less seen you feel - and that gap quietly hurts.",
       confidence: "high",
     },
   ],
@@ -2020,13 +2020,13 @@ export const sampleBasicDiagnostic2: BasicDiagnostic = {
     {
       title: "Overfunctioning as Emotional Armor",
       description:
-        "Across the session, you return to **efficiency as protection** — keeping busy to avoid vulnerability. Yet each reflection shows your system slowly learning to pause, suggesting readiness for gentler balance.",
+        "Across the session, you return to **efficiency as protection** - keeping busy to avoid vulnerability. Yet each reflection shows your system slowly learning to pause, suggesting readiness for gentler balance.",
       confidence: "high",
     },
     {
       title: "Relearning Safety in Calm",
       description:
-        "What began as mistrust of stillness evolved into **curiosity about peace**. The shift from fearing quiet to craving it marks emotional rewiring — proof of genuine healing momentum.",
+        "What began as mistrust of stillness evolved into **curiosity about peace**. The shift from fearing quiet to craving it marks emotional rewiring - proof of genuine healing momentum.",
       confidence: "high",
     },
   ],
@@ -2034,7 +2034,7 @@ export const sampleBasicDiagnostic2: BasicDiagnostic = {
     {
       title: "Micro-moments of Safety",
       description:
-        "Each time you notice tension — the tight jaw, the shallow breath — is an invitation to reconnect. One breath of awareness interrupts the autopilot and rebuilds **trust in calm**.",
+        "Each time you notice tension - the tight jaw, the shallow breath - is an invitation to reconnect. One breath of awareness interrupts the autopilot and rebuilds **trust in calm**.",
       confidence: "high",
     },
     {
@@ -2060,7 +2060,7 @@ export const sampleBasicDiagnostic2: BasicDiagnostic = {
     {
       title: "Allow unfinished things to wait.",
       description:
-        "Close the laptop once — not as defiance, but as an act of *self-trust*. You’ll feel discomfort at first, but it builds the muscle of safety in stillness.",
+        "Close the laptop once - not as defiance, but as an act of *self-trust*. You’ll feel discomfort at first, but it builds the muscle of safety in stillness.",
       difficulty: "moderate",
     },
     {

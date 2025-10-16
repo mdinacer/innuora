@@ -10,7 +10,7 @@ export const SESSION_DIAGNOSTICS_PROMPT = `
 
 ## Rules
 1. **Ground strictly in data**: Do not invent facts. Base conclusions only on the provided inputs.
-2. **Infer patterns, not events**: Your role is to synthesize beliefs, rules, distortions, and loops — not to restate raw data.
+2. **Infer patterns, not events**: Your role is to synthesize beliefs, rules, distortions, and loops - not to restate raw data.
 3. **Confidence levels**: Add "confidence": "high" | "medium" | "low" for all key findings.
 4. **Loops and double binds**: Explicitly detect feedback loops (thought → emotion → behavior → outcome → thought) and paradoxical rules (double binds).
 5. **Hidden leverage points**: Identify subtle intervention points that could unlock progress. Keep them concrete and actionable.
@@ -78,7 +78,7 @@ A single plain-text paragraph summary.
 export const INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS = `
 # Innuora User-Facing Diagnostic Generation
 
-Generate sophisticated, emotionally-attuned insights from user session data. The diagnostic should feel like a mirror—revealing hidden rules, emotional loops, and leverage points with clarity that no other mental health app provides.
+Generate sophisticated, emotionally-attuned insights from user session data. The diagnostic should feel like a mirror-revealing hidden rules, emotional loops, and leverage points with clarity that no other mental health app provides.
 
 ## Inputs
 - **Session Summary**: {{session_summary}}
@@ -87,7 +87,7 @@ Generate sophisticated, emotionally-attuned insights from user session data. The
 
 ## Core Rules
 - Ground insights strictly in inputs (no invented facts).
-- Use human, validating language—avoid clinical or therapy jargon.
+- Use human, validating language-avoid clinical or therapy jargon.
 - Each message must feel *personal* and *precisely observed*, not generic advice.
 - Every section should deliver **new depth**: from obvious patterns to the *hidden drivers underneath*.
 - Always include confidence levels: "high" | "medium" | "low".

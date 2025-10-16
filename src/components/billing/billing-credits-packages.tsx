@@ -4,7 +4,6 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { useAnalytics } from "@/lib/analytics/use-analytics";
 import { BILLING_PRODUCTS, BillingProduct, BillingProductKey } from "@/lib/billing/billing-config";
-import { CreditUXUtils } from "@/lib/credits/credit-config";
 import { formatCredits } from "@/lib/credits/credits-utils";
 import { cn } from "@/lib/utils";
 import PaymentModal from "../billing/payment-modal";
@@ -14,19 +13,6 @@ interface PackageCardProps {
   product: BillingProduct;
   onPurchase?: () => void;
 }
-
-const getPackageTimeFrame = (credits: number): string => {
-  const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
-  const days = CreditUXUtils.creditsToEstimatedDays(credits);
-
-  if (weeks >= 4) {
-    return `${weeks} weeks of support`;
-  } else if (weeks >= 1) {
-    return `${weeks} week${weeks > 1 ? "s" : ""} of support`;
-  } else {
-    return `${days} days of support`;
-  }
-};
 
 const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchase }) => {
   const isPremium = product.label.toLowerCase() === "premium";
@@ -56,9 +42,8 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
         </div>
         <div className="text-sm text-inn-text-secondary mb-4 ">{product.tagline}</div>
         <div className="text-4xl font-extrabold mb-1">
-          ~{formatCredits(product.credits)} <span className="text-sm text-inn-text-secondary">credits</span>
+          {formatCredits(product.credits)} <span className="text-sm text-inn-text-secondary">credits</span>
         </div>
-        <div className="text-sm text-inn-text-secondary">{getPackageTimeFrame(product.credits)}</div>
       </div>
       <div className="text-center mb-6">
         <div className="text-3xl font-bold mb-1">${product.price.toFixed(2)}</div>
@@ -203,8 +188,7 @@ const BillingCreditsPackages: React.FC<Props> = ({ userId, userEmail, userName, 
       </div>
 
       <div className="md:col-span-3 text-center text-xs text-gray-500 mt-4">
-        *Support duration estimated based on typical usage patterns. Actual usage may vary based on conversation
-        frequency and depth.
+        *Credit usage varies based on conversation length and depth. Credits never expire.
       </div>
 
       {/* Payment Modal */}

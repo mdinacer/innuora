@@ -23,7 +23,7 @@ const BillingHelp = () => {
         <ul className="text-[var(--text-secondary)] space-y-2">
           <li className="flex items-start gap-2">
             <CheckIcon className="size-4 text-inn-bg-accent mt-1 flex-shrink-0" />
-            <span>Credits never expire — they remain available whenever you choose to continue your process</span>
+            <span>Credits never expire - they remain available whenever you choose to continue your process</span>
           </li>
           <li className="flex items-start gap-2">
             <CheckIcon className="size-4 text-inn-bg-accent mt-1 flex-shrink-0" />
@@ -35,7 +35,7 @@ const BillingHelp = () => {
           </li>
           <li className="flex items-start gap-2">
             <CheckIcon className="size-4 text-inn-bg-accent mt-1 flex-shrink-0" />
-            <span>Unused credits carry forward indefinitely — your progress remains intact</span>
+            <span>Unused credits carry forward indefinitely - your progress remains intact</span>
           </li>
         </ul>
       </div>

@@ -6,6 +6,7 @@ import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
 import { SESSION_ADVANCED_SUMMARY_INSTRUCTIONS } from "@/domains/session-summary/session-summary.prompt";
+import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import type { ActionResult } from "@/types/action-result";
@@ -28,7 +29,8 @@ export async function getSessionSummary(
   sessionMemory: string | null,
   locale: AppLocales = "en",
   authId?: string,
-  sessionId?: string
+  sessionId?: string,
+  userId?: string
 ): Promise<ActionResult<SessionSummaryResult>> {
   const language = LANGUAGES[locale];
 
@@ -71,6 +73,23 @@ export async function getSessionSummary(
         },
       });
     }
+  }
+
+  // Log AI operation (fire-and-forget)
+  if (aiResponse.modelTokenUsage && userId && sessionId) {
+    logAiOperation({
+      userId,
+      sessionId,
+      operation: "SESSION_SUMMARY",
+      tokenUsage: aiResponse.modelTokenUsage,
+      creditsCharged: aiResponse.consumedCredits || 0,
+    }).catch((error) => {
+      logger.logWarning("Failed to log AI operation", {
+        operation: "session_summary_log_ai_operation_failed",
+        sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
+    });
   }
 
   return {

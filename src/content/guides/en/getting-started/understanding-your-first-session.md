@@ -20,7 +20,7 @@ draft: false
 
 ## The First Session: Your Questions Answered
 
-Starting therapy—even AI-powered therapy—can feel daunting. This guide walks you through exactly what happens in your first Innuora session so you can approach it with confidence.
+Starting therapy-even AI-powered therapy-can feel daunting. This guide walks you through exactly what happens in your first Innuora session so you can approach it with confidence.
 
 ## Before the Session: Preparation
 
@@ -72,7 +72,7 @@ Unlike a job interview or presentation, there's no "right" way to do therapy. Ho
 **What this looks like**:
 
 ```
-Innuora: "Hello! I'm here to provide supportive,  judgment-free space for you. Everything we discuss is completely confidential and encrypted. Before we begin, I want to make sure you're in a safe place right now—are you?"
+Innuora: "Hello! I'm here to provide supportive,  judgment-free space for you. Everything we discuss is completely confidential and encrypted. Before we begin, I want to make sure you're in a safe place right now-are you?"
 ```
 
 **Your role**:

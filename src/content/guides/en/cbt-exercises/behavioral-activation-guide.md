@@ -37,7 +37,7 @@ Behavioral Activation (BA) is a core CBT technique with strong research support.
 
 **"Action comes before motivation."**
 
-You don't wait to feel better before doing things—you do things to help yourself feel better.
+You don't wait to feel better before doing things-you do things to help yourself feel better.
 
 ### The Science
 
@@ -141,7 +141,7 @@ Stretch activities (difficult but valuable):
 
 ### Step 4: Schedule Activities
 
-**Don't wait for motivation—schedule them first.**
+**Don't wait for motivation-schedule them first.**
 
 **Weekly activity plan:**
 
@@ -256,7 +256,7 @@ Don't wait until you "feel better." Pick the easiest item from your hierarchy an
 
 ### ❌ Judging yourself for low mood
 
-**Fix**: You're doing the activity despite low mood—that's strength.
+**Fix**: You're doing the activity despite low mood-that's strength.
 
 ### ❌ Giving up after one missed activity
 

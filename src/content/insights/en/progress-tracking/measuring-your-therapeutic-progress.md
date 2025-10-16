@@ -406,7 +406,7 @@ Week 10-12: Recovery + continued growth
 - Builds confidence in your ability to change
 - Provides hope during difficult moments
 
-**"I reduced my anxiety score from 18 to 9—this is real. I can do this."**
+**"I reduced my anxiety score from 18 to 9-this is real. I can do this."**
 
 ### When Lack of Progress Prompts Action
 
@@ -434,7 +434,7 @@ Week 10-12: Recovery + continued growth
 - Can I cope with stress more effectively?
 - Do I feel more like myself?
 
-**If yes, therapy is working—regardless of the numbers.**
+**If yes, therapy is working-regardless of the numbers.**
 
 ---
 

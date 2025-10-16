@@ -6,7 +6,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { getAuthenticatedUserContext } from "@/app/actions/user-context";
-import { LanguagePrompt, SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
+import { SecurityProtocolPrompt } from "@/domains/ai-conversation/prompts";
 import { PERSONA_PROMPTS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.persona";
 import { REFLECTIVE_CATALYST_TONE, TONE_INSTRUCTIONS_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.tone";
 import { buildUserProfileContext } from "@/domains/ai-conversation/prompts/prompt.user-context";
@@ -57,17 +57,6 @@ async function buildConversationPrompts(
     modulesPromptBuilder.buildModulesPrompt(analysis),
     Promise.resolve(messagesManager.buildChatHistoryPrompt(messages)),
   ]);
-
-  // Get language and tone prompts (synchronous lookups)
-  const languagePrompt = LanguagePrompt[locale];
-  if (!languagePrompt) {
-    logger.logErrorAndThrow(ERROR_CODES.CHAT_UNSUPPORTED_LOCALE, new Error(`Unsupported locale: ${locale}`), {
-      operation: "open_chat_build_conversation_prompts",
-      userId,
-      sessionId,
-      metadata: { locale },
-    });
-  }
 
   const toneInstruction =
     analysis.process_module === "reflective_catalyst"
@@ -369,7 +358,7 @@ export async function handleUserInput(
 
     // Step 3: Fetch server-side session context (therapeutic data - NEVER sent to client)
     // TypeScript: sessionId is guaranteed to be string after validation above (logErrorAndThrow terminates execution)
-    const sessionContext = await getSessionContext(sessionId as string, true);
+    const sessionContext = await getSessionContext(sessionId as string, authenticatedUser.id);
 
     // analysisSnapshots is already TherapeuticAnalysisWithMessageId[], which extends TherapeuticAnalysis
     const prevAnalysis = sessionContext.analysisSnapshots.slice(-3); // Last 3 analyses
@@ -397,13 +386,23 @@ export async function handleUserInput(
         sessionId
       );
 
-      logAiOperation({
-        userId: sessionContext.userId,
-        sessionId: sessionContext.sessionId,
-        operation: "RESPONSE",
-        tokenUsage: lowValueResult.tokenUsage!,
-        creditsCharged: lowValueResult.creditsUsed,
-      }).then();
+      // Log AI operation (fire-and-forget)
+      if (lowValueResult.tokenUsage && sessionContext.userId) {
+        logAiOperation({
+          userId: sessionContext.userId,
+          sessionId: sessionContext.sessionId,
+          messageId,
+          operation: "RESPONSE",
+          tokenUsage: lowValueResult.tokenUsage,
+          creditsCharged: lowValueResult.creditsUsed,
+        }).catch((error) => {
+          logger.logWarning("Failed to log AI operation", {
+            operation: "open_chat_log_ai_operation_failed",
+            sessionId,
+            metadata: { error: error instanceof Error ? error.message : String(error) },
+          });
+        });
+      }
       return lowValueResult;
     }
 
@@ -456,14 +455,22 @@ export async function handleUserInput(
       });
     }
 
-    if (aiResponse.modelTokenUsage) {
+    // Log AI operation (fire-and-forget)
+    if (aiResponse.modelTokenUsage && sessionContext.userId) {
       logAiOperation({
         userId: sessionContext.userId,
         sessionId: sessionContext.sessionId,
+        messageId,
         operation: "RESPONSE",
         tokenUsage: aiResponse.modelTokenUsage,
-        creditsCharged: aiResponse.consumedCredits,
-      }).then();
+        creditsCharged: aiResponse.consumedCredits || 0,
+      }).catch((error) => {
+        logger.logWarning("Failed to log AI operation", {
+          operation: "open_chat_log_ai_operation_failed",
+          sessionId,
+          metadata: { error: error instanceof Error ? error.message : String(error) },
+        });
+      });
     }
 
     if (analysis.update_memory) {

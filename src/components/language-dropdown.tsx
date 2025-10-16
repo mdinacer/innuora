@@ -44,31 +44,6 @@ const LanguageDropdown = () => {
 
   const isMobile = useIsMobile();
 
-  // const changeLanguage = (locale: AppLocales) => {
-  //   if (isSwitching) return;
-  //   setIsSwitching(true);
-  //   // Change i18next language
-  //   i18n.changeLanguage(locale);
-
-  //   // Update URL - remove current locale and add new one
-  //   const segments = pathname.split("/").filter(Boolean);
-  //   const currentLocale = segments[0];
-
-  //   let newPath = "";
-  //   if (["en", "ar", "fr"].includes(currentLocale)) {
-  //     // Replace current locale
-  //     segments[0] = locale;
-  //     newPath = `/${segments.join("/")}`;
-  //   } else {
-  //     // Add locale to path
-  //     newPath = `/${locale}${pathname}`;
-  //   }
-
-  //   router.push(newPath);
-
-  //   setIsSwitching(false);
-  // };
-
   const handleChange = useCallback(
     (newLocale: AppLocales) => {
       // set cookie for next-i18n-router

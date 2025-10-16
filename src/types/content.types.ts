@@ -5,6 +5,15 @@ import { z } from "zod";
 // =========================
 
 export const ContentCategorySchema = z.enum([
+  // Guide categories
+  "getting-started",
+  "cbt-exercises",
+  "self-help-tools",
+  // Insight categories
+  "pattern-recognition",
+  "progress-tracking",
+  "personalization",
+  // Legacy article categories
   "cognitive-behavioral-therapy",
   "anxiety-management",
   "depression-support",
@@ -16,6 +25,10 @@ export const ContentCategorySchema = z.enum([
 ]);
 
 export type ContentCategory = z.infer<typeof ContentCategorySchema>;
+
+// Specific guide and insight category types
+export type GuideCategory = "getting-started" | "cbt-exercises" | "self-help-tools";
+export type InsightCategory = "pattern-recognition" | "progress-tracking" | "personalization";
 
 export const ContentTypeSchema = z.enum(["article", "guide", "insight"]);
 
@@ -71,10 +84,25 @@ export type ContentMetadata = z.infer<typeof ContentMetadataSchema>;
 // Content Item Structure
 // =========================
 
-export interface ContentItem {
-  metadata: ContentMetadata;
-  excerpt?: string;
-  // Full content will be loaded dynamically when needed
+export interface ContentItem extends ContentMetadata {
+  body: string;
+  locale: string;
+}
+
+// Content preview (without body, keywords, searchVolume) for lists
+export type ContentPreview = Omit<ContentItem, "body" | "keywords" | "searchVolume">;
+
+// =========================
+// Content Filters
+// =========================
+
+export interface ContentFilters {
+  locale?: "en" | "ar" | "fr";
+  category?: ContentCategory;
+  contentType?: ContentType;
+  featured?: boolean;
+  relatedCbtModules?: string[];
+  targetEmotions?: string[];
 }
 
 // =========================
@@ -82,11 +110,10 @@ export interface ContentItem {
 // =========================
 
 export interface ContentRecommendation {
-  slug: string;
-  title: string;
-  category: ContentCategory;
-  relevanceScore: number;
+  content: ContentPreview;
+  relevanceScore: number; // 0-100
   reason: string;
+  matchedPatterns: string[];
 }
 
 export interface ContentRecommendationContext {

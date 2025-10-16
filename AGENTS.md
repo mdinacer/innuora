@@ -15,7 +15,7 @@ Primary application code lives in `src/`. `src/app` holds App Router routes and 
 
 ## Coding Style & Naming Conventions
 
-Use TypeScript across the app with Prettier enforcing 2-space indentation, 120-character wrap, and double quotes. Keep React component files PascalCase (e.g., `SessionPanel.tsx`) and hooks camelCase (`useSessionStore.ts`). Favor named exports except where Next.js routing requires default exports. Sort Tailwind utilities logically; Prettier’s Tailwind plugin handles order. ESLint already ignores generated code—do not disable rules in source without a comment explaining why.
+Use TypeScript across the app with Prettier enforcing 2-space indentation, 120-character wrap, and double quotes. Keep React component files PascalCase (e.g., `SessionPanel.tsx`) and hooks camelCase (`useSessionStore.ts`). Favor named exports except where Next.js routing requires default exports. Sort Tailwind utilities logically; Prettier’s Tailwind plugin handles order. ESLint already ignores generated code-do not disable rules in source without a comment explaining why.
 
 ## Testing Guidelines
 
@@ -27,4 +27,4 @@ Commits remain short and imperative (`updated content layout`); keep scopes narr
 
 ## Security & Configuration Tips
 
-Never commit secrets—populate `.env.local` from the shared vault and keep encryption keys out of git. When touching CBT or AI pipelines, audit `src/lib/ai/mirael-core/v2/` for prompt regressions and mention mitigations in the PR. Supabase schema updates must ship with migration files and a rollback note.
+Never commit secrets-populate `.env.local` from the shared vault and keep encryption keys out of git. When touching CBT or AI pipelines, audit `src/lib/ai/mirael-core/v2/` for prompt regressions and mention mitigations in the PR. Supabase schema updates must ship with migration files and a rollback note.

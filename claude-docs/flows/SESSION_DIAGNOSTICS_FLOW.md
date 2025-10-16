@@ -184,7 +184,7 @@ export const SESSION_DIAGNOSTICS_PROMPT = `
 
 ## Rules
 1. **Ground strictly in data**: Do not invent facts. Base conclusions only on the provided inputs.
-2. **Infer patterns, not events**: Your role is to synthesize beliefs, rules, distortions, and loops — not to restate raw data.
+2. **Infer patterns, not events**: Your role is to synthesize beliefs, rules, distortions, and loops - not to restate raw data.
 3. **Confidence levels**: Add "confidence": "high" | "medium" | "low" for all key findings.
 4. **Loops and double binds**: Explicitly detect feedback loops (thought → emotion → behavior → outcome → thought) and paradoxical rules (double binds).
 5. **Hidden leverage points**: Identify subtle intervention points that could unlock progress. Keep them concrete and actionable.

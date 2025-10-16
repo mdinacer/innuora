@@ -222,6 +222,52 @@
       }
     }
   },
+  "cloud_updates": {
+    "title": {
+      "loading": {
+        "title": "Checking your cloud backup...",
+        "subtitle": "Please wait while we fetch your latest session data"
+      },
+      "synced": {
+        "title": "All sessions synced",
+        "subtitle": "Your cloud backup is up to date"
+      },
+      "unsynced": {
+        "title": "Cloud Updates Available",
+        "subtitle": "New sessions and updates found in your cloud backup"
+      }
+    },
+    "buttons": {
+      "load": "Load {{count}} Sessions",
+      "loading": "Loading sessions...",
+      "loadAll": "Load All Sessions",
+      "check": "Check Again",
+      "checking": "Checking...",
+      "skip": "Skip for Now",
+      "download": "Download Now",
+      "downloading": "Downloading...",
+      "update": "Update Now",
+      "updating": "Updating..."
+    },
+    "synced": {},
+    "card": {
+      "badge": {
+        "new": "New",
+        "updated": "Update",
+        "completed": "Completed"
+      },
+      "actions": {
+        "download": "Download",
+        "downloading": "Downloading",
+        "update": "Update",
+        "updating": "Updating"
+      },
+      "meta": {
+        "messages": "{{count}} messages",
+        "credits": "{{count}} credits"
+      }
+    }
+  },
   "error": {
     "title": "Something went wrong",
     "description": "The application encountered an unexpected error. Don't worry - these things happen sometimes.",
@@ -241,6 +287,130 @@
     "subtitle": "Setting up your emotional mirror",
     "loadingMessage": "This should only take a moment...",
     "loadedMessage": "All set"
+  },
+  "session_chart": {
+    "title": "Session Flow Overview",
+    "description": "A gentle visualization of how your emotional energy, mental focus, and openness evolved throughout the conversation.",
+    "legend": {
+      "emotionalFlow": {
+        "title": "Emotional Flow",
+        "description": "How feelings rose and settled through reflection."
+      },
+      "mentalFocus": {
+        "title": "Mental Focus",
+        "description": "Moments where your attention or thinking deepened."
+      },
+      "openness": {
+        "title": "Openness",
+        "description": "How receptive you felt to new insights or perspectives."
+      },
+      "insightMoments": {
+        "title": "Insight Moments",
+        "description": "When emotional understanding connected to self-awareness."
+      }
+    },
+    "footer": {
+      "note": "These curves represent the flow of your conversation, showing how awareness and calm developed over time without measuring or scoring."
+    },
+    "values": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High"
+    },
+    "chart_labels": {
+      "emotionalIntensity": "Emotional Flow",
+      "cognitiveLoad": "Mental Focus",
+      "readiness": "Openness",
+      "integration": "Insight Moments",
+      "exchange": "Step {{index}}"
+    },
+    "narrative": {
+      "emotional_flow": {
+        "increase": "Your **emotional flow** became more **intense** and *expressive*",
+        "decrease": "Your **emotional flow** *softened* over time"
+      },
+      "mental_focus": {
+        "increase": "as your **mental focus** *deepened*, showing active reflection",
+        "decrease": "as your **mental focus** *eased*, allowing more clarity"
+      },
+      "openness": {
+        "increase": "and your **openness** *expanded* toward new perspectives",
+        "decrease": "while your **openness** *faded slightly*, perhaps from emotional fatigue"
+      },
+      "integration": {
+        "increase": "ending with moments of **insight** and *personal understanding*.",
+        "decrease": "with fewer **integration moments** as the session came to a close.",
+        "steady": "closing on a note of *balance and steadiness*."
+      }
+    },
+    "loading": {
+      "title": "Preparing your reflection",
+      "description": "Gathering the emotional and cognitive patterns from your conversation..."
+    },
+    "not_enough_data": "Not enough reflection data to visualize yet. Continue your next conversation to reveal your emotional flow."
+  },
+  "session_details": {
+    "header": {
+      "actions": {
+        "generate_title": "Generate Title & Subtitle",
+        "edit": "Edit Session"
+      },
+      "cards": {
+        "messages": {
+          "title": "Messages",
+          "description": "Total number of messages exchanged in this session."
+        },
+        "credits": {
+          "title": "Credits Used",
+          "description": "Total credits spent during this session."
+        },
+        "duration": {
+          "title": "Session Duration",
+          "description": "Total time spent in this session from start to finish."
+        },
+        "created": {
+          "title": "Created",
+          "description": "The date and time when this session was created."
+        },
+        "updated": {
+          "title": "Last updated",
+          "description": "The date and time of the most recent update."
+        }
+      }
+    }
+  },
+  "session_naming": {
+    "trigger": "Generate Title & Subtitle",
+    "title": "Generate a session title and subtitle",
+    "subtitle": "Uses {{app_name}}’s reflective AI to suggest a meaningful title and subtitle based on your recent message.",
+    "notes": {
+      "credits": "This operation usually costs around 1 credit, depending on length and context.",
+      "preview": "You’ll see the generated title and subtitle before applying any changes."
+    },
+    "fields": {
+      "language": {
+        "label": "Language",
+        "placeholder": "Select Language",
+        "description": "You can choose the language for generation."
+      }
+    },
+    "placeholders": {
+      "current": "Current",
+      "generated": "Generated",
+      "title": "[ Title will appear here once generated ]",
+      "subtitle": "[ Subtitle will appear here once generated ]"
+    },
+    "buttons": {
+      "generate": "Generate",
+      "generating": "Generating…",
+      "accept": "Accept",
+      "applying": "Applying…",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "generate": "Failed to generate title and subtitle.",
+      "submit": "Failed to apply title and subtitle."
+    }
   },
   "sessions": {
     "title": "Your Sessions",
@@ -358,52 +528,6 @@
       "data": {
         "label": "Data & Storage",
         "description": "Review data usage, manage storage limits, and configure retention settings."
-      }
-    }
-  },
-  "cloud_updates": {
-    "title": {
-      "loading": {
-        "title": "Checking your cloud backup...",
-        "subtitle": "Please wait while we fetch your latest session data"
-      },
-      "synced": {
-        "title": "All sessions synced",
-        "subtitle": "Your cloud backup is up to date"
-      },
-      "unsynced": {
-        "title": "Cloud Updates Available",
-        "subtitle": "New sessions and updates found in your cloud backup"
-      }
-    },
-    "buttons": {
-      "load": "Load {{count}} Sessions",
-      "loading": "Loading sessions...",
-      "loadAll": "Load All Sessions",
-      "check": "Check Again",
-      "checking": "Checking...",
-      "skip": "Skip for Now",
-      "download": "Download Now",
-      "downloading": "Downloading...",
-      "update": "Update Now",
-      "updating": "Updating..."
-    },
-    "synced": {},
-    "card": {
-      "badge": {
-        "new": "New",
-        "updated": "Update",
-        "completed": "Completed"
-      },
-      "actions": {
-        "download": "Download",
-        "downloading": "Downloading",
-        "update": "Update",
-        "updating": "Updating"
-      },
-      "meta": {
-        "messages": "{{count}} messages",
-        "credits": "{{count}} credits"
       }
     }
   }

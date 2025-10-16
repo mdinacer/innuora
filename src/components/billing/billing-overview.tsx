@@ -34,7 +34,7 @@ const BillingOverview: React.FC<Props> = ({}) => {
           <ul className="text-sm text-inn-text-secondary space-y-1 list-disc list-inside">
             <li>Each credit supports your ongoing space for reflection and emotional clarity</li>
             <li>Conversations typically draw 15-35 credits, depending on depth and pace</li>
-            <li>Your credits don't expire — they wait for you, whenever you're ready to continue</li>
+            <li>Your credits don't expire - they wait for you, whenever you're ready to continue</li>
             <li>Payments are protected and handled with complete confidentiality</li>
           </ul>
         </div>

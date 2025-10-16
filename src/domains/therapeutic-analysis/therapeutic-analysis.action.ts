@@ -73,20 +73,22 @@ export async function analyzeUserInput(
         );
       }
 
-      if (response.modelTokenUsage) {
+      // Log AI operation (fire-and-forget)
+      if (response.modelTokenUsage && userId && sessionId) {
         console.log("Therapeutical Analysis Token Usage", response.modelTokenUsage);
 
         logAiOperation({
-          userId: userId || "",
-          sessionId: sessionId || "",
+          userId,
+          sessionId,
           operation: "ANALYSIS",
           tokenUsage: response.modelTokenUsage,
           creditsCharged: response.consumedCredits || 0,
         }).catch((error) => {
-          logger.logErrorAndThrow(ERROR_CODES.CHAT_ANALYSIS_FAILED, error, {
-            operation: "therapeutic_analysis_analyze_user_input",
+          logger.logWarning("Failed to log AI operation", {
+            operation: "therapeutic_analysis_log_ai_operation_failed",
             userId,
             sessionId,
+            metadata: { error: error instanceof Error ? error.message : String(error) },
           });
         });
       }

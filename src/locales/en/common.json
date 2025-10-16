@@ -161,6 +161,7 @@
     }
   },
   "languages": {
+    "current": "Current Language",
     "en": "English",
     "fr": "French",
     "ar": "Arabic"

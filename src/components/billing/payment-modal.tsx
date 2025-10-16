@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BILLING_PRODUCTS, BillingProductKey, BillingUtils } from "@/lib/billing/billing-config";
 import { getStripePublishableKey } from "@/lib/billing/stripe-client";
-import { CreditUXUtils } from "@/lib/credits/credit-config";
 
 // =========================
 // Stripe Promise Initialization
@@ -82,7 +81,6 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
   const [state, dispatch] = useReducer(paymentReducer, initialState);
 
   const product = BILLING_PRODUCTS[productKey];
-  const timeFrame = CreditUXUtils.creditsToEstimatedWeeks(product.credits);
   const { status, clientSecret, error } = state;
 
   const handleSubmit = useCallback(
@@ -147,9 +145,10 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
       {/* Product Summary */}
       <div className="rounded-2xl bg-inn-bg-soft border border-inn-border-light p-4">
         <h3 className="font-semibold text-lg">
-          {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} Pack - {timeFrame} weeks of support
+          {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} - {product.label} Package
         </h3>
-        <p className="text-sm text-gray-600 mt-1">~{product.credits.toLocaleString()} credits</p>
+        <p className="text-sm text-gray-600 mt-1">{product.credits.toLocaleString()} credits</p>
+        <p className="text-xs text-gray-500 mt-1">{product.tagline}</p>
       </div>
 
       {/* Card Input */}
@@ -213,7 +212,7 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
               {status === "creating_intent" ? "Initializing..." : "Processing..."}
             </>
           ) : (
-            `Secure ${timeFrame} weeks of support`
+            `Confirm Payment - ${product.credits.toLocaleString()} Credits`
           )}
         </button>
       </div>

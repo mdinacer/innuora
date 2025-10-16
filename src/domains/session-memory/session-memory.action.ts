@@ -4,6 +4,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { deductCreditsFromUser } from "@/app/actions/credit-actions";
+import { getAuthenticatedUserContext } from "@/app/actions/user-context";
 import CHAT_MEMORY_BUILD_INSTRUCTIONS from "@/domains/session-memory/session-memory.prompt";
 import { formatUserInputForMemory } from "@/domains/session-memory/session-memory.utils";
 import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
@@ -23,12 +24,17 @@ interface SessionMemoryResult {
  *
  * NOTE: Now fetches existing memory from SERVER-SIDE encrypted storage
  * and saves new memory back to server. Client no longer manages memory.
+ *
+ * SECURITY: Validates authenticated user owns the session
  */
 export async function generateSessionMemory(
   userInput: string,
   authId?: string,
   sessionId?: string
 ): Promise<ActionResult<SessionMemoryResult>> {
+  // Get authenticated user for ownership validation
+  const authenticatedUser = await getAuthenticatedUserContext();
+
   if (!userInput) {
     return {
       data: null,
@@ -43,8 +49,8 @@ export async function generateSessionMemory(
     };
   }
 
-  // Fetch existing memory from server-side encrypted storage
-  const sessionContext = await getSessionContext(sessionId);
+  // Fetch existing memory from server-side encrypted storage WITH ownership validation
+  const sessionContext = await getSessionContext(sessionId, authenticatedUser.id);
   const existingMemory = sessionContext.memoryStore;
 
   const formattedUserMessage = formatUserInputForMemory(userInput);
@@ -66,10 +72,10 @@ export async function generateSessionMemory(
 
   const aiResponse = result.data!;
 
-  // Deduct credits for memory operation
-  if (authId && aiResponse.consumedCredits > 0) {
+  // Deduct credits for memory operation (using authenticated user's authId)
+  if (aiResponse.consumedCredits > 0) {
     const deductResult = await deductCreditsFromUser(
-      authId,
+      authenticatedUser.authId,
       aiResponse.consumedCredits,
       "ai_memory_update",
       sessionId,
@@ -84,7 +90,7 @@ export async function generateSessionMemory(
         operation: "session_memory_credit_deduction_failed",
         sessionId,
         metadata: {
-          authId,
+          authId: authenticatedUser.authId,
           creditsUsed: aiResponse.consumedCredits,
           error: deductResult.error.message,
         },
@@ -188,14 +194,21 @@ export async function generateSessionMemoryFromCurrentSession(
     });
   });
 
-  if (aiResponse.modelTokenUsage) {
+  // Log AI operation (fire-and-forget)
+  if (aiResponse.modelTokenUsage && sessionContext.userId) {
     logAiOperation({
       userId: sessionContext.userId,
       sessionId: sessionContext.sessionId,
       operation: "MEMORY_UPDATE",
       tokenUsage: aiResponse.modelTokenUsage,
-      creditsCharged: aiResponse.consumedCredits,
-    }).then();
+      creditsCharged: aiResponse.consumedCredits || 0,
+    }).catch((error) => {
+      logger.logWarning("Failed to log AI operation", {
+        operation: "session_memory_log_ai_operation_failed",
+        sessionId: sessionContext.sessionId,
+        metadata: { error: error instanceof Error ? error.message : String(error) },
+      });
+    });
   }
 
   return {

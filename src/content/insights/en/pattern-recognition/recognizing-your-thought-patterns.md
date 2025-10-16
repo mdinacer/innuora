@@ -21,7 +21,7 @@ draft: false
 
 ## What Are Thought Patterns?
 
-Thought patterns are recurring ways your mind interprets situations. They're like mental shortcuts—usually automatic and unconscious—that shape how you feel and behave.
+Thought patterns are recurring ways your mind interprets situations. They're like mental shortcuts-usually automatic and unconscious-that shape how you feel and behave.
 
 **Examples**:
 
@@ -61,7 +61,7 @@ As you engage in sessions, Innuora's AI analyzes:
 - Avoidance vs. engagement patterns
 - What strategies you naturally use
 
-**This analysis happens automatically**—you don't need to do anything except have honest conversations.
+**This analysis happens automatically**-you don't need to do anything except have honest conversations.
 
 ## Common Patterns Innuora Identifies
 
@@ -231,7 +231,7 @@ Monitor:
 
 ### After Pattern Recognition:
 
-- "Oh, I'm catastrophizing again—let me check the evidence"
+- "Oh, I'm catastrophizing again-let me check the evidence"
 - "This is a pattern I learned, and I can learn a new one"
 - "I notice this thought more quickly now"
 
@@ -261,7 +261,7 @@ Innuora helps identify both and works on multiple levels.
 ## Common Questions
 
 **"What if I don't like what the AI finds?"**
-Patterns aren't judgments—they're observations. They explain struggles, not define worth.
+Patterns aren't judgments-they're observations. They explain struggles, not define worth.
 
 **"Can patterns really change?"**
 Yes. Neuroplasticity means your brain can form new patterns. It takes practice, but change is possible.

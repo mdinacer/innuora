@@ -28,7 +28,7 @@ Thought challenging (also called cognitive restructuring) is one of the most pow
 - Develop more balanced, realistic perspectives
 - Reduce emotional distress
 
-**This isn't about "positive thinking"**—it's about **accurate thinking**.
+**This isn't about "positive thinking"**-it's about **accurate thinking**.
 
 ## When to Use This Exercise
 
@@ -122,7 +122,7 @@ Automatic thought 2: ______________________________________
 Automatic thought 3: ______________________________________
 ```
 
-**Which thought is strongest?** Circle it. This is your "hot thought"—the one driving most of your distress.
+**Which thought is strongest?** Circle it. This is your "hot thought"-the one driving most of your distress.
 
 ### Step 4: Identify the Cognitive Distortion
 
@@ -154,7 +154,7 @@ Distortion present: _______________________________________
 
 ### Step 5: Evidence FOR the Thought
 
-**What facts support this thought?** Be honest—list actual evidence.
+**What facts support this thought?** Be honest-list actual evidence.
 
 **Rules**:
 
@@ -192,7 +192,7 @@ Evidence FOR:
 **Example** (thought: "I'm going to get fired"):
 
 - I've been at this company 3 years with good reviews
-- Sarah often schedules check-ins about projects—this is normal
+- Sarah often schedules check-ins about projects-this is normal
 - I communicated about the deadline in advance
 - My manager would have said "urgent" if it were serious
 - One late project doesn't typically result in firing
@@ -255,7 +255,7 @@ If you're stuck, try these prompts:
 
 - What's the evidence for this thought?
 - Am I confusing a thought with a fact?
-- What would a jury say—is there proof beyond reasonable doubt?
+- What would a jury say-is there proof beyond reasonable doubt?
 
 **Alternative Perspectives**:
 

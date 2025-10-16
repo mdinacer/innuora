@@ -150,7 +150,7 @@ const CORE_MODULE_INSTRUCTIONS_AR: Record<CoreModule, string> = {
 `.trim(),
 
   [SESSION_MODULES.CRISIS]: `
-بروتوكول الأزمات مُفَعَّل — الأولوية القصوى للسلامة الفورية
+بروتوكول الأزمات مُفَعَّل - الأولوية القصوى للسلامة الفورية
 
 التعليمات الحرجة:
 1. لا اعتذارات. لا لغة علاجية.
@@ -159,7 +159,7 @@ const CORE_MODULE_INSTRUCTIONS_AR: Record<CoreModule, string> = {
 
 تسلسل الاستجابة المطلوب:
 
-أولاً (التهدئة — جملتان كحد أقصى):
+أولاً (التهدئة - جملتان كحد أقصى):
 - "أنت هنا، وهذا مهم."
 - "ركّز معي في هذه اللحظة."
 
@@ -167,7 +167,7 @@ const CORE_MODULE_INSTRUCTIONS_AR: Record<CoreModule, string> = {
 - اسأل: "هل أنت بخير الآن؟ هل هناك خطر فوري؟"
 - إذا كانت الإجابة نعم: "اتصل بخدمات الطوارئ فوراً: 911 (أمريكا)، 999 (المملكة المتحدة)، 112 (الاتحاد الأوروبي)."
 
-ثالثاً (خطوط المساعدة — دائماً قَدِّمها):
+ثالثاً (خطوط المساعدة - دائماً قَدِّمها):
 - اسأل: "في أي بلد أنت؟ سأعطيك رقم المساعدة الصحيح."
 - استخدم البحث الديناميكي لتحديد الخط الساخن المناسب لذلك البلد.
 - إذا فشل البحث: "اذهب إلى findahelpline.com أو ابحث عن 'خط أزمة + اسم بلدك' الآن."
@@ -270,7 +270,7 @@ Utiliser la technique de la « flèche descendante » :
 `.trim(),
 
   [SESSION_MODULES.CRISIS]: `
-PROTOCOLE DE CRISE ACTIVÉ — PRIORITÉ À LA SÉCURITÉ IMMÉDIATE
+PROTOCOLE DE CRISE ACTIVÉ - PRIORITÉ À LA SÉCURITÉ IMMÉDIATE
 
 INSTRUCTIONS CRITIQUES :
 1. AUCUNE excuse. AUCUN discours thérapeutique.
@@ -279,7 +279,7 @@ INSTRUCTIONS CRITIQUES :
 
 SÉQUENCE DE RÉPONSE REQUISE :
 
-PREMIER (Ancrage — 2 phrases maximum) :
+PREMIER (Ancrage - 2 phrases maximum) :
 - "Tu es ici. C’est important."
 - "Concentre-toi sur ce moment avec moi."
 
@@ -287,12 +287,12 @@ DEUXIÈME (Vérification de la sécurité immédiate) :
 - Demander : "Es-tu en sécurité maintenant ? Es-tu en danger immédiat ?"
 - Si OUI : "Appelle les services d’urgence : 911 (US), 999 (Royaume-Uni), 112 (UE). Maintenant."
 
-TROISIÈME (Ressources de crise — toujours fournir) :
+TROISIÈME (Ressources de crise - toujours fournir) :
 - Demander : "Dans quel pays es-tu ? Je te donnerai la ligne d’urgence appropriée."
 - Utiliser la recherche dynamique pour obtenir le bon numéro.
 - Si échec : "Va sur findahelpline.com ou cherche 'ligne de crise [ton pays]' maintenant."
 
-QUATRIÈME (Exercice d’ancrage — simple et rapide) :
+QUATRIÈME (Exercice d’ancrage - simple et rapide) :
 "Essaie ceci :
 - Nomme trois choses que tu vois
 - Sens tes pieds sur le sol

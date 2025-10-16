@@ -5,6 +5,7 @@ import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { getActiveSessionDuration } from "@/domains/active-session/active-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { logger } from "@/lib/logging/unified-logger";
 import type { ModelTokenUsage } from "@/types/ai-model.types";
 import SESSION_WELLNESS_PROMPT from "./session-wellness.prompt";
@@ -151,6 +152,23 @@ export class AISessionWellnessEngine {
             },
           });
         }
+      }
+
+      // Log AI operation (fire-and-forget)
+      if (response.modelTokenUsage && session.userId) {
+        logAiOperation({
+          userId: session.userId,
+          sessionId: session.id,
+          operation: "SESSION_WELLNESS",
+          tokenUsage: response.modelTokenUsage,
+          creditsCharged: response.consumedCredits || 0,
+        }).catch((error) => {
+          logger.logWarning("Failed to log AI operation", {
+            operation: "session_wellness_ai_log_ai_operation_failed",
+            sessionId: session.id,
+            metadata: { error: error instanceof Error ? error.message : String(error) },
+          });
+        });
       }
 
       return {

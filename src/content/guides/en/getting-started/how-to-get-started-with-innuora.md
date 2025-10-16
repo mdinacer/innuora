@@ -158,7 +158,7 @@ Innuora's AI is trained in:
 
 #### 3. Active Participation
 
-- **Try the exercises**: Don't just read suggestions—practice them
+- **Try the exercises**: Don't just read suggestions-practice them
 - **Track your progress**: Notice small improvements
 - **Apply in real life**: Use techniques between sessions
 

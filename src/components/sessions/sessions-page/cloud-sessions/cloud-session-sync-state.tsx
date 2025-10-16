@@ -6,15 +6,14 @@ import { DownloadIcon, Loader2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { getSessionsInfo } from "@/app/actions/session-actions";
+import { SessionMeta } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 import CloudSessionStateCard from "./cloud-session-state-card";
 
 export type SessionState = {
   id: string;
   title: string;
-  // metadata: {
-  //   messageCount?: number;
-  // };
+  metadata: SessionMeta;
   timestamp: Date;
   state: "new" | "updated";
 };
@@ -90,30 +89,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
     try {
       const data: SessionState[] = [];
       const remoteSessions = await getSessionsInfo();
-      console.log(remoteSessions);
 
-      //   const remoteSessions = [
-      //     {
-      //       id: "7cf01177-fc00-47c8-a084-8cd477bf7630",
-      //       updatedAt: new Date("2025-10-16T10:25:22.905Z"),
-      //       title: "Newly created session",
-      //     },
-      //     {
-      //       id: "8593240d-4934-4a0f-9c85-2a8718c1e2f6",
-      //       updatedAt: new Date("2025-10-15T10:22:01.450Z"),
-      //       title: "Test 1",
-      //     },
-      //     {
-      //       id: "186fcac8-3664-4117-a204-380f54bcdcd0",
-      //       updatedAt: new Date("2025-10-15T10:22:11.737Z"),
-      //       title: "Test 2",
-      //     },
-      //     {
-      //       id: "9ae98339-e24a-44bc-9a1c-cba2e93c5402",
-      //       updatedAt: new Date("2025-10-15T10:22:18.232Z"),
-      //       title: "Test 3",
-      //     },
-      //   ];
       if (remoteSessions.length === 0) return;
       const nextLoadingStates: Record<string, SessionLoadingState> = {};
 
@@ -124,6 +100,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
             id: remoteSession.id,
             title: remoteSession.title,
             timestamp: remoteSession.updatedAt,
+            metadata: remoteSession.metadata as SessionMeta,
             state: "new",
           });
         } else {
@@ -134,6 +111,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
               id: remoteSession.id,
               title: remoteSession.title,
               timestamp: remoteSession.updatedAt,
+              metadata: remoteSession.metadata as SessionMeta,
               state: "updated",
             });
           }

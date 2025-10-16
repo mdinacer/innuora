@@ -46,7 +46,7 @@ export const sampleSession = {
       id: "msg_Km7SdH4pQa",
       role: "assistant",
       content:
-        "That sounds so lonely—craving someone to notice while also not having words ready. Your body sounds like it's on high alert even in calm moments. How long have you been carrying that restless, hollow feeling?",
+        "That sounds so lonely-craving someone to notice while also not having words ready. Your body sounds like it's on high alert even in calm moments. How long have you been carrying that restless, hollow feeling?",
       timestamp: 1759854613000,
     },
     {
@@ -102,7 +102,7 @@ export const sampleSession = {
       id: "msg_Po2VzK7dLc",
       role: "assistant",
       content:
-        "There's such a tender mix there—wanting simple care for yourself and then feeling guilty for even considering it. That guilt sounds heavy. What does your body do when you notice it?",
+        "There's such a tender mix there-wanting simple care for yourself and then feeling guilty for even considering it. That guilt sounds heavy. What does your body do when you notice it?",
       timestamp: 1759854787000,
     },
     {
@@ -186,7 +186,7 @@ export const sampleSession = {
       id: "msg_Hd8KvS4mLp",
       role: "assistant",
       content:
-        "It isn't ridiculous at all—it shows how rest has been turned into another performance. Sitting in the car for two quiet minutes, just noticing your shoulders, could be a small experiment, not a test. How would it be to treat that pause like a gift you're allowed to receive, even if it feels unfamiliar?",
+        "It isn't ridiculous at all-it shows how rest has been turned into another performance. Sitting in the car for two quiet minutes, just noticing your shoulders, could be a small experiment, not a test. How would it be to treat that pause like a gift you're allowed to receive, even if it feels unfamiliar?",
       timestamp: 1759855022000,
     },
     {
@@ -228,7 +228,7 @@ export const sampleSession = {
       id: "msg_Tm7ZcP6yVd",
       role: "assistant",
       content:
-        "Admitting it now could also be you trusting her with the truth. Would you be open to testing it here—maybe drafting the text while we breathe—and noticing how your body responds?",
+        "Admitting it now could also be you trusting her with the truth. Would you be open to testing it here-maybe drafting the text while we breathe-and noticing how your body responds?",
       timestamp: 1759855098000,
     },
     {
@@ -249,14 +249,14 @@ export const sampleSession = {
       id: "msg_Ds7PoK4mZe",
       role: "user",
       content:
-        "I can set a little reminder that pops up before I park—I'll call it my \"two-minute defrost.\" And I'm going to text my sister to take Thursday dinner next week. Saying it is wobbly, but it feels like air getting back in.",
+        "I can set a little reminder that pops up before I park-I'll call it my \"two-minute defrost.\" And I'm going to text my sister to take Thursday dinner next week. Saying it is wobbly, but it feels like air getting back in.",
       timestamp: 1759855136000,
     },
     {
       id: "msg_Gh5WtN8qYs",
       role: "assistant",
       content:
-        "You just gave yourself permission in real time and lined up support to protect it. Notice how your chest and shoulders feel as you imagine that reminder and your sister stepping in—what do you want to hold onto from this moment?",
+        "You just gave yourself permission in real time and lined up support to protect it. Notice how your chest and shoulders feel as you imagine that reminder and your sister stepping in-what do you want to hold onto from this moment?",
       timestamp: 1759855150000,
     },
     {

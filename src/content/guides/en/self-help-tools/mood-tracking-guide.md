@@ -319,7 +319,7 @@ After 2-3 months of data:
 
 ---
 
-**Remember**: You can't manage what you don't measure. Mood tracking transforms "I feel bad" into "I notice my mood drops when I sleep less than 6 hours and skip exercise—I can do something about that."
+**Remember**: You can't manage what you don't measure. Mood tracking transforms "I feel bad" into "I notice my mood drops when I sleep less than 6 hours and skip exercise-I can do something about that."
 
 **Start tracking today** with just one number: How do you feel right now (0-10)?
 
