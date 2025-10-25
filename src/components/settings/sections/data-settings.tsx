@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AlertTriangle, Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { exportUserData } from "@/app/actions/data-export-actions";
@@ -10,6 +11,36 @@ import { Button } from "@/components/ui/button";
 
 export default function DataSettings(): React.JSX.Element {
   const [exportInProgress, setExportInProgress] = useState(false);
+  const { t } = useTranslation("pages/settings", { keyPrefix: "settings.dataSettings" });
+
+  const alerts = t("alerts", {
+    returnObjects: true,
+    defaultValue: {},
+  }) as {
+    rights: { title: string; message: string };
+    gdpr: { label: string; message: string };
+    note: { label: string; message: string };
+  };
+  const exportCopy = t("export", { returnObjects: true, defaultValue: {} }) as {
+    title: string;
+    description: string;
+    card: {
+      title: string;
+      description: string;
+      button: { default: string; loading: string };
+      progress: string;
+    };
+    toast: { success: string; error: string; unexpected: string };
+  };
+  const backup = t("backup", { returnObjects: true, defaultValue: {} }) as {
+    title: string;
+    description: string;
+    privacy: { label: string; message: string };
+  };
+  const danger = t("danger", { returnObjects: true, defaultValue: {} }) as {
+    title: string;
+    delete: { title: string; description: string; button: string };
+  };
 
   const handleExportData = async () => {
     setExportInProgress(true);
@@ -17,7 +48,7 @@ export default function DataSettings(): React.JSX.Element {
       const result = await exportUserData();
 
       if (result.error) {
-        toast.error("Failed to export data. Please try again.");
+        toast.error(exportCopy.toast.error);
         return;
       }
 
@@ -29,10 +60,10 @@ export default function DataSettings(): React.JSX.Element {
       link.click();
       document.body.removeChild(link);
 
-      toast.success(`Data exported successfully! (${(result.data.size / 1024).toFixed(2)} KB)`);
+      toast.success(t("export.toast.success", { size: (result.data.size / 1024).toFixed(2) }));
     } catch (error) {
       console.error("Export error:", error);
-      toast.error("Export failed. Please try again.");
+      toast.error(exportCopy.toast.unexpected);
     } finally {
       setExportInProgress(false);
     }
@@ -44,8 +75,7 @@ export default function DataSettings(): React.JSX.Element {
       <Alert className="rounded-2xl border-inn-bg-accent/30 bg-inn-bg-soft">
         <Download className="h-4 w-4 text-inn-bg-accent" />
         <AlertDescription className="text-inn-text-secondary">
-          <strong>Your Rights:</strong> Under GDPR and privacy laws, you have the right to access, export, and delete
-          your personal data at any time. All exports are provided in machine-readable JSON format.
+          <strong>{alerts.rights.title}</strong> {alerts.rights.message}
         </AlertDescription>
       </Alert>
 
@@ -53,39 +83,32 @@ export default function DataSettings(): React.JSX.Element {
       <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Download className="h-5 w-5 text-inn-bg-accent" />
-          <h3 className="text-xl font-semibold">Data Export</h3>
+          <h3 className="text-xl font-semibold">{exportCopy.title}</h3>
         </div>
 
-        <p className="text-sm text-inn-text-secondary mb-6">
-          Export all your personal data including profile, conversations, credit history, and activity logs. This export
-          is GDPR-compliant and includes information about third-party data processors.
-        </p>
+        <p className="text-sm text-inn-text-secondary mb-6">{exportCopy.description}</p>
 
         <div className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-4">
-          <h4 className="font-semibold mb-2">Complete Data Export</h4>
-          <p className="text-sm text-inn-text-secondary mb-4">
-            Includes: Personal information, profile, sessions metadata, financial data, activity logs, and your data
-            protection rights information
-          </p>
+          <h4 className="font-semibold mb-2">{exportCopy.card.title}</h4>
+          <p className="text-sm text-inn-text-secondary mb-4">{exportCopy.card.description}</p>
           <Button
             onClick={handleExportData}
             disabled={exportInProgress}
             className="w-full rounded-2xl bg-inn-bg-accent text-white hover:opacity-90 transition shadow-lg"
           >
-            {exportInProgress ? "Preparing Export..." : "Export All Data (JSON)"}
+            {exportInProgress ? exportCopy.card.button.loading : exportCopy.card.button.default}
           </Button>
 
           {exportInProgress && (
             <div className="rounded-xl border border-inn-bg-accent/30 bg-white/50 dark:bg-black/20 p-3 mt-4">
-              <p className="text-sm text-inn-bg-accent font-medium">⏳ Gathering your data securely...</p>
+              <p className="text-sm text-inn-bg-accent font-medium">{exportCopy.card.progress}</p>
             </div>
           )}
         </div>
 
         <div className="mt-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-4">
           <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
-            📋 Note: Encrypted session data requires your decryption key (stored locally in your browser) to access full
-            conversation content.
+            📋 <strong>{alerts.note.label}</strong> {alerts.note.message}
           </p>
         </div>
       </div>
@@ -94,17 +117,13 @@ export default function DataSettings(): React.JSX.Element {
       <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
         <div className="flex items-center gap-2 mb-4">
           <Download className="h-5 w-5 text-inn-bg-accent" />
-          <h3 className="text-xl font-semibold">Cloud Backup</h3>
+          <h3 className="text-xl font-semibold">{backup.title}</h3>
         </div>
 
         <div className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-4">
-          <p className="text-sm text-inn-text-secondary">
-            Cloud backup is configured per session when you create it. You can choose whether each session is stored on
-            the cloud or kept local-only. All cloud data is encrypted end-to-end.
-          </p>
+          <p className="text-sm text-inn-text-secondary">{backup.description}</p>
           <p className="text-xs text-inn-text-secondary mt-2">
-            <strong>Privacy Note:</strong> We use zero-knowledge encryption - we cannot read your conversations even
-            when stored on the cloud.
+            <strong>{backup.privacy.label}</strong> {backup.privacy.message}
           </p>
         </div>
       </div>
@@ -113,32 +132,28 @@ export default function DataSettings(): React.JSX.Element {
       <div className="rounded-2xl border-2 border-red-500/30 bg-red-500/5 p-6">
         <h4 className="font-semibold mb-4 flex items-center gap-2 text-red-600">
           <AlertTriangle className="h-5 w-5" />
-          Danger Zone
+          {danger.title}
         </h4>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between rounded-xl border border-red-500/30 bg-inn-bg-card p-4">
             <div>
-              <h5 className="font-semibold mb-1">Delete All Data</h5>
-              <p className="text-sm text-inn-text-secondary">
-                Permanently delete your account and all associated data including conversations, profile, and credit
-                history. This action cannot be undone.
-              </p>
+              <h5 className="font-semibold mb-1">{danger.delete.title}</h5>
+              <p className="text-sm text-inn-text-secondary">{danger.delete.description}</p>
             </div>
             <Button
               variant="destructive"
               size="sm"
               className="rounded-2xl px-6 py-2 font-semibold shadow-lg hover:opacity-90 transition"
             >
-              Delete Everything
+              {danger.delete.button}
             </Button>
           </div>
         </div>
 
         <div className="mt-4 rounded-xl border border-orange-500/30 bg-orange-500/10 p-4">
           <p className="text-sm text-orange-600 dark:text-orange-400">
-            ⚠️ <strong>GDPR Compliance:</strong> Upon deletion, all your personal data will be permanently erased from
-            our servers within 30 days, as required by data protection regulations.
+            ⚠️ <strong>{alerts.gdpr.label}</strong> {alerts.gdpr.message}
           </p>
         </div>
       </div>

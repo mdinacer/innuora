@@ -5,6 +5,7 @@
  * All tracking logic is centralized here - no hardcoded limits in components.
  */
 
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { USAGE_LIMITS_CONFIG, UsageLimitUtils } from "./usage-limits-config";
@@ -210,6 +211,7 @@ async function checkMessageLimit(userId: string, monthlyLimit: number): Promise<
 // Credit-Based Tracking
 // =========================
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function checkCreditLimit(userId: string, _monthlyAllocation: number): Promise<UsageStatus> {
   // Get user's current credit balance
   const user = await prisma.user.findUnique({

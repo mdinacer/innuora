@@ -1,0 +1,36 @@
+{
+  "session_naming": {
+    "trigger": "Generate Title & Subtitle",
+    "title": "Generate a session title and subtitle",
+    "subtitle": "Uses {{app_name}}’s reflective AI to suggest a meaningful title and subtitle based on your recent message.",
+    "notes": {
+      "credits": "This operation usually costs around 1 credit, depending on length and context.",
+      "preview": "You’ll see the generated title and subtitle before applying any changes."
+    },
+    "fields": {
+      "language": {
+        "label": "Language",
+        "placeholder": "Select Language",
+        "description": "You can choose the language for generation."
+      }
+    },
+    "placeholders": {
+      "current": "Current",
+      "generated": "Generated",
+      "title": "[ Title will appear here once generated ]",
+      "subtitle": "[ Subtitle will appear here once generated ]"
+    },
+    "buttons": {
+      "generate": "Generate",
+      "generating": "Generating…",
+      "accept": "Accept",
+      "applying": "Applying…",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "generate": "Failed to generate title and subtitle.",
+      "submit": "Failed to apply title and subtitle.",
+      "unexpected": "An unexpected error occurred while generating the session title."
+    }
+  }
+}

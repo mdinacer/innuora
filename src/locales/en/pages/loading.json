@@ -1,0 +1,8 @@
+{
+  "loading": {
+    "title": "Preparing {{app_name}}",
+    "subtitle": "Setting up your emotional mirror",
+    "loadingMessage": "This should only take a moment...",
+    "loadedMessage": "All set"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "policies_footer": {
+    "disclaimer": {
+      "label": "Important:",
+      "message": "{{app_name}} is not a mental health or crisis service. If you are in crisis, please contact your local emergency services immediately."
+    },
+    "questions": "Questions about this {{currentPage}} page?",
+    "contact_email": "Contact us at ",
+    "links": {
+      "eula": "End User License Agreement",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "contact": "Contact",
+      "help": "Help",
+      "support": "Support"
+    },
+    "copyright": "© 2025 {{app_name}}, Inc. All rights reserved."
+  }
+}

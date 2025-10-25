@@ -12,7 +12,7 @@ interface ErrorPageProps {
 
 export default function Error({ error, reset }: ErrorPageProps) {
   const router = useRouter();
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation("pages/error");
 
   const handleGoBack = () => {
     router.push("/");

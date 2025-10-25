@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Prisma, Profile } from "@prisma/client";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { updateCurrentUser } from "@/app/actions/user-actions";
@@ -35,6 +36,7 @@ const defaultValues: UserProfileInput = {
 
 const UserProfileForm: React.FC<Props> = ({ className, userProfile }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { t } = useTranslation("pages/account", { keyPrefix: "account" });
   const form = useForm<UserProfileInput>({
     resolver: zodResolver(UserProfileSchema),
     defaultValues: userProfile ? UserProfileSchema.parse(userProfile) : defaultValues,
@@ -52,16 +54,16 @@ const UserProfileForm: React.FC<Props> = ({ className, userProfile }) => {
 
       if (result.error) {
         // Show error toast
-        toast.error("Failed to update profile", {
-          description: result.error.message || "An error occurred while updating your profile. Please try again.",
+        toast.error(t("toast.error.title"), {
+          description: result.error.message || t("toast.error.description"),
         });
       } else {
         // Update local store
         useAppUserStore.getState().setUser(result.data);
 
         // Show success toast
-        toast.success("Profile updated successfully", {
-          description: "Your profile information has been saved.",
+        toast.success(t("toast.success.title"), {
+          description: t("toast.success.description"),
         });
 
         // Exit edit mode
@@ -72,8 +74,8 @@ const UserProfileForm: React.FC<Props> = ({ className, userProfile }) => {
       }
     } catch (error) {
       // Show generic error toast
-      toast.error("Unexpected error", {
-        description: "An unexpected error occurred. Please try again.",
+      toast.error(t("toast.unexpected.title"), {
+        description: t("toast.unexpected.description"),
       });
       console.error("Profile update error:", error);
     }

@@ -269,11 +269,7 @@ export function validateMetadataWithDefault<T>(schema: z.ZodSchema<T>, data: unk
  * Partial validation - validates only provided fields
  * Useful for partial updates
  */
-export function validatePartialMetadata<T extends z.ZodRawShape>(
-  schema: z.ZodObject<T>,
-  data: unknown
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any {
+export function validatePartialMetadata<T extends z.ZodRawShape>(schema: z.ZodObject<T>, data: unknown): unknown {
   const partialSchema = schema.partial();
   const result = partialSchema.safeParse(data);
   return result.success ? result.data : null;

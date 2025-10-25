@@ -1,0 +1,19 @@
+{
+  "policies_footer": {
+    "disclaimer": {
+      "label": "Important : ",
+      "message": "{{app_name}} n’est pas un service de santé mentale ou de crise. Si vous êtes en situation de crise, veuillez contacter les services d’urgence locaux."
+    },
+    "questions": "Des questions concernant cette page {{currentPage}} ?",
+    "contact_email": "Contactez-nous à ",
+    "links": {
+      "eula": "Contrat de licence utilisateur final",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d’utilisation",
+      "contact": "Contact",
+      "help": "Aide",
+      "support": "Support"
+    },
+    "copyright": "© 2025 {{app_name}}, Inc. Tous droits réservés."
+  }
+}

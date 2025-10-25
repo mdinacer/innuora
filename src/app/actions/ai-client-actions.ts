@@ -1,5 +1,6 @@
 "use server";
 
+import { JSONSchema } from "openai/lib/jsonschema.mjs";
 import { ChatCompletion, ChatCompletionMessageParam, ChatModel } from "openai/resources";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
@@ -13,14 +14,30 @@ import { AiMessageResponse } from "@/types/ai-model.types";
 
 type RequestOptions = {
   stream?: boolean;
-  max_tokens?: number;
+  max_completion_tokens?: number;
   temperature?: number;
   top_p?: number;
+  presence_penalty?: number;
+  frequency_penalty?: number;
+  response_format?:
+    | {
+        json_schema: JSONSchema;
+        type: "json_schema";
+      }
+    | {
+        type: "text";
+      }
+    | {
+        type: "json_object";
+      };
+
+  seed?: number | null;
+  model?: "default" | "mini"; // Allow model selection: default = gpt-4.1 (human-like), mini = gpt-4.1-mini (cost-effective)
 };
 
 const DEFAULT_AI_OPTIONS: RequestOptions = {
   stream: false,
-  max_tokens: 700,
+  max_completion_tokens: 700,
   temperature: 0.6,
   top_p: 0.9,
 };
@@ -42,6 +59,8 @@ async function executeChatCompletion(
         model: model,
         messages: prompts,
         ...options,
+        response_format: { type: "json_object" },
+        max_completion_tokens: 700,
       });
       return completion as ChatCompletion;
     },
@@ -90,7 +109,7 @@ export async function processAiPrompts(
   return await logger.wrapOperation(
     async () => {
       // Import model configuration (simple constants from env)
-      const { AI_MODEL, AI_MODEL_VENDOR } = await import("@/domains/ai-conversation/ai-models");
+      const { AI_MODELS } = await import("@/domains/ai-conversation/ai-models");
 
       // Import centralized credit calculation
       const { CreditUtils } = await import("@/lib/credits/credit-config");
@@ -120,16 +139,24 @@ export async function processAiPrompts(
         }
       }
 
-      const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...options };
+      // Select model based on options (default = gpt-4o, mini = gpt-4o-mini)
+      const modelType = options.model || "mini"; // Default to mini for cost optimization
+      const modelConfig = modelType === "mini" ? AI_MODELS.fallback : AI_MODELS.default;
+      const modelName = modelConfig.name as ChatModel;
 
-      // Call OpenAI API (single vendor)
-      const result = await executeChatCompletion(AI_MODEL, prompts, mergedOptions);
+      // Remove 'model' from options to avoid passing "default" or "mini" string to OpenAI
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { model: _, ...restOptions } = options;
+      const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...restOptions };
+
+      // Call OpenAI API with actual model name
+      const result = await executeChatCompletion(modelName, prompts, mergedOptions);
 
       // Handle ActionResult wrapper
       if (result.error) {
         logger.logErrorAndThrow(ERROR_CODES.AI_REQUEST_FAILED, new Error(result.error.message), {
           operation: "ai_send_prompts",
-          metadata: { model: AI_MODEL, errorCode: result.error.code },
+          metadata: { model: modelConfig.name, errorCode: result.error.code },
         });
       }
 
@@ -141,7 +168,7 @@ export async function processAiPrompts(
       if (!rawContent) {
         logger.logErrorAndThrow(ERROR_CODES.AI_EMPTY_RESPONSE, new Error("AI returned empty content"), {
           operation: "ai_send_prompts",
-          metadata: { model: AI_MODEL, vendor: AI_MODEL_VENDOR },
+          metadata: { model: modelConfig.name, vendor: modelConfig.vendor },
         });
       }
 
@@ -181,7 +208,10 @@ export async function processAiPrompts(
     ERROR_CODES.AI_REQUEST_FAILED,
     {
       operation: "ai_send_prompts",
-      metadata: { model: "gpt-4.1-mini", vendor: "openai" },
+      metadata: {
+        model: options.model || "default",
+        vendor: "openai",
+      },
     }
   );
 }

@@ -1,0 +1,223 @@
+{
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account preferences, privacy settings, and application configuration.",
+    "accessDenied": {
+      "title": "Access Denied",
+      "message": "You do not have permission to view this page."
+    },
+    "appearance": {
+      "sections": {
+        "language": {
+          "title": "Language",
+          "description": "Choose the language {{app_name}} uses throughout the app.",
+          "status": "Current"
+        },
+        "theme": {
+          "title": "Theme",
+          "description": "Choose how {{app_name}} looks and feels across all your devices.",
+          "status": "Active"
+        },
+        "fontSize": {
+          "title": "Font Size",
+          "description": "Adjust text size for better readability.",
+          "status": "Active"
+        }
+      },
+      "actions": {
+        "save": "Save Appearance Settings",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "success": "Appearance settings saved!",
+        "error": "Failed to save settings. Please try again."
+      },
+      "status": {
+        "loading": "Loading…",
+        "missingConfig": "We couldn't load your appearance settings."
+      }
+    },
+    "sections": {
+      "profile": {
+        "label": "Profile",
+        "description": "Manage your personal information and account preferences."
+      },
+      "appearance": {
+        "label": "Appearance Settings",
+        "description": "Customize the look and feel of the application, including theme and layout options."
+      },
+      "notifications": {
+        "label": "Notifications",
+        "description": "Control how and when you receive alerts, emails, and in-app updates."
+      },
+      "privacy": {
+        "label": "Privacy & Safety",
+        "description": "Adjust visibility, data sharing, and safety settings to protect your account."
+      },
+      "security": {
+        "label": "Security",
+        "description": "Update your password, enable two-factor authentication, and secure your account access."
+      },
+      "billing": {
+        "label": "Billing & Credits",
+        "description": "Manage payment methods, view invoices, and track your credits usage."
+      },
+      "data": {
+        "label": "Data & Storage",
+        "description": "Review data usage, manage storage limits, and configure retention settings.",
+        "badge": "New"
+      }
+    },
+    "dataSettings": {
+      "alerts": {
+        "rights": {
+          "title": "Your Rights:",
+          "message": "Under GDPR and privacy laws, you can access, export, and delete your personal data at any time. All exports are provided in machine-readable JSON format."
+        },
+        "gdpr": {
+          "label": "GDPR Compliance:",
+          "message": "Upon deletion, all personal data is permanently erased within 30 days as required by data protection regulations."
+        },
+        "note": {
+          "label": "Privacy Note:",
+          "message": "We use zero-knowledge encryption—we cannot read your conversations even when stored on the cloud."
+        }
+      },
+      "export": {
+        "title": "Data Export",
+        "description": "Export your personal data including profile, conversations, credit history, and activity logs.",
+        "card": {
+          "title": "Complete Data Export",
+          "description": "Includes personal information, profile, session metadata, financial records, activity logs, and your data protection rights information.",
+          "button": {
+            "default": "Export All Data (JSON)",
+            "loading": "Preparing Export..."
+          },
+          "progress": "⏳ Gathering your data securely..."
+        },
+        "toast": {
+          "success": "Data exported successfully! ({{size}} KB)",
+          "error": "Failed to export data. Please try again.",
+          "unexpected": "Export failed. Please try again."
+        }
+      },
+      "backup": {
+        "title": "Cloud Backup",
+        "description": "Cloud backup is configured per session. Choose whether each session is stored in the cloud or kept local-only. All cloud data is encrypted end-to-end.",
+        "privacy": {
+          "label": "Privacy Note:",
+          "message": "We use zero-knowledge encryption—we cannot read your conversations even when stored on the cloud."
+        }
+      },
+      "danger": {
+        "title": "Danger Zone",
+        "delete": {
+          "title": "Delete All Data",
+          "description": "Permanently delete your account and all associated data including conversations, profile, and credit history. This action cannot be undone.",
+          "button": "Delete Everything"
+        }
+      }
+    },
+    "privacySettings": {
+      "toast": {
+        "success": "Privacy settings saved!",
+        "error": "Failed to save settings. Please try again."
+      },
+      "overview": {
+        "message": "Your privacy is our priority. All therapeutic conversations are encrypted end-to-end and stored securely. You have full control over your data and can delete it at any time."
+      },
+      "encryption": {
+        "title": "Data Encryption",
+        "cards": [
+          {
+            "title": "End-to-End Encryption",
+            "description": "All your conversations are encrypted locally before being stored.",
+            "pill": "Always Enabled"
+          },
+          {
+            "title": "Zero-Knowledge Architecture",
+            "description": "We cannot read your conversations. Only you have the encryption key."
+          }
+        ]
+      },
+      "cloud": {
+        "title": "Cloud Sync & Storage",
+        "card": {
+          "title": "Cloud Backup",
+          "description": "Cloud backup is configured per session. When creating a session, you can choose whether to store it on the cloud.",
+          "note": {
+            "label": "Note:",
+            "message": "All cloud data remains encrypted. We cannot read your conversations."
+          }
+        }
+      },
+      "retention": {
+        "title": "Data Retention",
+        "card": {
+          "title": "Full Control",
+          "description": "Sessions are kept until you manually delete them. You can delete individual sessions or all data from the danger zone below."
+        }
+      },
+      "danger": {
+        "title": "Danger Zone",
+        "delete": {
+          "title": "Delete All Data",
+          "description": "Permanently delete all your conversations and account data. This cannot be undone.",
+          "button": "Delete Everything"
+        }
+      },
+      "actions": {
+        "save": "Save Privacy Settings",
+        "saving": "Saving..."
+      }
+    },
+    "securitySettings": {
+      "overview": {
+        "message": "Your account security is strong. We recommend enabling two-factor authentication for additional protection."
+      },
+      "auth": {
+        "title": "Password & Authentication",
+        "password": {
+          "title": "Password",
+          "lastChanged": "Last changed 3 months ago"
+        },
+        "changeButton": "Change Password",
+        "twoFactor": {
+          "title": "Two-Factor Authentication",
+          "description": "Add an extra layer of security to your account",
+          "recommended": "Recommended",
+          "enable": "Enable",
+          "disable": "Disable",
+          "activeNotice": "✓ Two-factor authentication is active. Your account is protected with SMS verification."
+        }
+      },
+      "session": {
+        "title": "Session Management",
+        "autoLogout": {
+          "title": "Auto-logout",
+          "description": "Automatically sign out after period of inactivity"
+        },
+        "timeoutOptions": {
+          "15": "15 minutes",
+          "30": "30 minutes",
+          "60": "1 hour",
+          "120": "2 hours",
+          "480": "8 hours",
+          "-1": "Never"
+        }
+      },
+      "export": {
+        "title": "Data Export",
+        "card": {
+          "title": "Download Your Data",
+          "description": "Get a copy of all your data stored with Innuora",
+          "button": "Request Data"
+        }
+      },
+      "actions": {
+        "save": "Save Security Settings"
+      }
+    }
+  }
+}

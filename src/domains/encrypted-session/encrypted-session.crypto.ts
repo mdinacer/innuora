@@ -23,7 +23,7 @@ export async function encryptSession(session: Partial<Session>): Promise<PrismaS
     async () => {
       const contentKey = await requireContentKey("crypto_encrypt_session", session.id);
 
-      // NOTE: memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots
+      // NOTE: memoryStore, aggregatedAnalysis, analysisSnapshots
       // are now stored server-side only in encrypted serverData field
       const { messages = [], ...rest } = session;
 
@@ -75,7 +75,7 @@ export async function decryptSession(encryptedSession: PrismaSession): Promise<S
       const contentKey = await requireContentKey("crypto_decrypt_session", encryptedSession.id);
 
       // Base session with sane defaults
-      // NOTE: memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots
+      // NOTE: memoryStore, aggregatedAnalysis, analysisSnapshots
       // are now stored server-side only in encrypted serverData field
       let session: Session = {
         id: encryptedSession.id,

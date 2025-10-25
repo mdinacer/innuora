@@ -1,0 +1,63 @@
+{
+  "session_chart": {
+    "title": "Aperçu du déroulement de la session",
+    "description": "Une visualisation douce montrant comment ton énergie émotionnelle, ta concentration mentale et ton ouverture ont évolué au fil de la conversation.",
+    "legend": {
+      "emotionalFlow": {
+        "title": "Flux émotionnel",
+        "description": "Comment les émotions ont monté puis retrouvé leur calme à travers la réflexion."
+      },
+      "mentalFocus": {
+        "title": "Concentration mentale",
+        "description": "Les moments où ton attention ou ta pensée se sont approfondies."
+      },
+      "openness": {
+        "title": "Ouverture",
+        "description": "À quel point tu étais réceptive à de nouvelles perspectives ou compréhensions."
+      },
+      "insightMoments": {
+        "title": "Moments de clarté",
+        "description": "Quand la compréhension émotionnelle s’est reliée à la conscience de soi."
+      }
+    },
+    "footer": {
+      "note": "Ces courbes illustrent le flux de ta conversation, montrant comment la conscience et la sérénité se sont développées au fil du temps sans mesure ni évaluation."
+    },
+    "values": {
+      "low": "Faible",
+      "moderate": "Modéré",
+      "high": "Élevé"
+    },
+    "chart_labels": {
+      "emotionalIntensity": "Flux émotionnel",
+      "cognitiveLoad": "Concentration mentale",
+      "readiness": "Ouverture",
+      "integration": "Moments de clarté",
+      "exchange": "Étape {{index}}"
+    },
+    "narrative": {
+      "emotional_flow": {
+        "increase": "Ton **flux émotionnel** est devenu plus **intense** et *expressif*",
+        "decrease": "Ton **flux émotionnel** s’est *adouci* au fil du temps"
+      },
+      "mental_focus": {
+        "increase": "alors que ta **concentration mentale** s’est *approfondie*, montrant une réflexion active",
+        "decrease": "alors que ta **concentration mentale** s’est *détendue*, permettant plus de clarté"
+      },
+      "openness": {
+        "increase": "et ton **ouverture** s’est *élargie* vers de nouvelles perspectives",
+        "decrease": "tandis que ton **ouverture** s’est *atténuée légèrement*, peut-être à cause d’une fatigue émotionnelle"
+      },
+      "integration": {
+        "increase": "se terminant par des moments de **clarté** et de *compréhension personnelle*.",
+        "decrease": "avec moins de **moments de clarté** à la fin de la session.",
+        "steady": "se terminant sur une note de *calme et d’équilibre*."
+      }
+    },
+    "loading": {
+      "title": "Préparation de votre réflexion",
+      "description": "Analyse des schémas émotionnels et cognitifs issus de votre conversation..."
+    },
+    "not_enough_data": "Pas encore assez de données pour visualiser le parcours. Continuez vos prochaines conversations pour révéler votre flux émotionnel."
+  }
+}

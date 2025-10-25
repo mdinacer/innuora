@@ -29,7 +29,7 @@ export default function AppearanceSettings(): React.JSX.Element {
   const {
     t,
     i18n: { language },
-  } = useTranslation("common");
+  } = useTranslation(["pages/settings", "common"]);
   const hasHydrated = useAppUserStore((state) => state.hasHydrated);
   const userConfig = useAppUserStore((state) => state.user?.config);
   const { setTheme } = useTheme();
@@ -92,21 +92,21 @@ export default function AppearanceSettings(): React.JSX.Element {
         handleChangeLocale(locale);
       }
 
-      toast.success("Appearance settings saved!");
+      toast.success(t("settings.appearance.toast.success"));
     } catch {
-      toast.error("Failed to save settings. Please try again.");
+      toast.error(t("settings.appearance.toast.error"));
     } finally {
       setIsLoading(false);
     }
   };
 
   const actions = {
-    save: t("pages:settings.appearance.actions.save"),
-    saving: t("pages:settings.appearance.actions.saving"),
-    cancel: t("pages:settings.appearance.actions.cancel"),
+    save: t("settings.appearance.actions.save"),
+    saving: t("settings.appearance.actions.saving"),
+    cancel: t("settings.appearance.actions.cancel"),
   };
 
-  const sections = (t("pages:settings.appearance.sections", {
+  const sections = (t("settings.appearance.sections", {
     returnObjects: true,
     defaultValue: "",
     app_name: APP_CONFIG.name,
@@ -137,12 +137,17 @@ export default function AppearanceSettings(): React.JSX.Element {
     }
   }, [hasHydrated, language, userConfig]);
 
+  const appearanceStatus = {
+    loading: t("settings.appearance.status.loading"),
+    missingConfig: t("settings.appearance.status.missingConfig"),
+  };
+
   if (!hasHydrated) {
-    return <div>Loading</div>;
+    return <div className="text-sm text-inn-text-secondary">{appearanceStatus.loading}</div>;
   }
 
   if (!userConfig) {
-    return <></>;
+    return <div className="text-sm text-inn-text-secondary">{appearanceStatus.missingConfig}</div>;
   }
 
   return (

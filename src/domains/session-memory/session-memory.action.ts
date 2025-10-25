@@ -64,7 +64,10 @@ export async function generateSessionMemory(
     ),
   } as ChatCompletionMessageParam;
 
-  const result = await processAiPromptsWithRetry([prompt], {});
+  // Use GPT-4.1-mini for cost optimization
+  const result = await processAiPromptsWithRetry([prompt], {
+    model: "mini", // GPT-4.1-mini for memory operations
+  });
 
   if (result.error) {
     return { data: null, error: result.error };
@@ -147,7 +150,10 @@ export async function generateSessionMemoryFromCurrentSession(
     ),
   } as ChatCompletionMessageParam;
 
-  const result = await processAiPromptsWithRetry([prompt], {});
+  // Use GPT-4.1-mini for cost optimization
+  const result = await processAiPromptsWithRetry([prompt], {
+    model: "mini", // GPT-4.1-mini for memory operations
+  });
 
   if (result.error) {
     return { data: null, error: result.error };

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default async function Settings({ params }: { params: Promise<{ locale: string }> }) {
   const { locale = "en" } = await params;
-  const { t } = await initTranslations(locale, ["pages"]);
+  const { t } = await initTranslations(locale, ["pages/settings"]);
 
   const accessDeniedContent = t("settings.accessDenied", {
     returnObjects: true,

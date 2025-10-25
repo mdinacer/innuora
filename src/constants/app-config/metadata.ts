@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { APP_CONFIG, APP_NAMES } from "@/config/app";
+import { APP_CONFIG } from "@/config/app";
 
 export const METADATA: Metadata = {
   title: APP_CONFIG.name,

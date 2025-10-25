@@ -1,0 +1,276 @@
+{
+  "onboarding": {
+    "title": "Welcome to {{app_name}}",
+    "subtitle": "A gentle space to begin",
+    "initialStepId": "welcome",
+    "steps": {
+      "welcome": {
+        "title": "You’re Here",
+        "subtitle": "That already matters",
+        "paragraphs": [
+          "In a world that asks you to *hold it all together*, just arriving here is something real. **{{app_name}} isn’t a productivity tool. It’s not here to optimize you.** This is a space where you can **drop the performance**, where you don’t have to be *'fine.'* What you share stays here: **no tracking, no data games, no hidden agenda.** You’re not a checklist. You’re someone returning to something *true inside.*"
+        ],
+        "buttonText": "Enter the quiet"
+      },
+      "what_to_expect": {
+        "title": "What to Expect",
+        "subtitle": "A gentle beginning",
+        "paragraphs": [
+          "**This isn’t a quiz or a test. Nothing to prove here.** We’ll begin by naming what feels *heavy, loud, or hidden.* Each step is an invitation inward, not to impress but simply to *notice.*"
+        ],
+        "buttonText": "Let's begin"
+      },
+      "display_name": {
+        "label": "What name feels most true for you right now?",
+        "placeholder": "Your nickname or chosen name",
+        "hint": "For privacy and comfort, we recommend using a nickname or a name that feels safe and true to you, rather than your legal name. Choose what feels most like *you* in this moment."
+      },
+      "age_group": {
+        "label": "Where are you in life right now?",
+        "hint": "These are broad ranges, not boxes. Just choose the one that feels closest.",
+        "options": [
+          {
+            "label": "18-24 · Early adulthood",
+            "value": "Age18_24"
+          },
+          {
+            "label": "25-34 · Growing years",
+            "value": "Age25_34"
+          },
+          {
+            "label": "35-44 · Deeper stride",
+            "value": "Age35_44"
+          },
+          {
+            "label": "45-54 · Seasoned phase",
+            "value": "Age45_54"
+          },
+          {
+            "label": "55+ · Evolving beautifully",
+            "value": "Age55_plus"
+          }
+        ]
+      },
+      "self_connection_intro": {
+        "title": "Losing touch isn’t being lost",
+        "subtitle": "A quiet turn inward",
+        "paragraphs": [
+          "**Most of us learn to *perform* long before we learn to *feel*.** This isn’t about having the right answer. It’s about naming what’s real. You don’t have to perform here. You get to meet yourself again."
+        ],
+        "buttonText": "Begin"
+      },
+      "identity_connection": {
+        "hint": "No right answer here. Just notice what feels closest today.",
+        "label": "How connected do you feel to yourself lately?",
+        "options": [
+          {
+            "label": "I feel like myself",
+            "value": "authentic",
+            "description": "Present and real."
+          },
+          {
+            "label": "I’m in-between",
+            "value": "conflicted",
+            "description": "Sometimes me, sometimes performing."
+          },
+          {
+            "label": "I feel distant",
+            "value": "disconnected",
+            "description": "On the surface, not in depth."
+          },
+          {
+            "label": "I feel lost",
+            "value": "lost",
+            "description": "Hard to recognize myself."
+          }
+        ]
+      },
+      "pressure_intro": {
+        "title": "The Pressure to Be Someone",
+        "subtitle": "And the silence beneath it",
+        "paragraphs": [
+          "For many women, pressure isn’t loud. It’s quiet. It hides in roles we never chose. You don’t need to explain it. You only need to name what has been shaping you, even if it’s still unclear. *This isn’t about blame. It’s about truth.*"
+        ],
+        "buttonText": "I know what it is"
+      },
+      "social_pressure": {
+        "hint": "Pressure doesn’t always shout. Sometimes it’s the quiet ways you adjust, shrink, or disappear to keep the peace.",
+        "label": "Where do you feel the strongest pressure?",
+        "options": [
+          {
+            "label": "Family",
+            "value": "family",
+            "description": "Keeping harmony, no matter the cost."
+          },
+          {
+            "label": "Friends or peers",
+            "value": "friends",
+            "description": "Acting easy to like, even when it feels false."
+          },
+          {
+            "label": "Work or studies",
+            "value": "work_or_school",
+            "description": "Always performing and delivering."
+          },
+          {
+            "label": "Romantic relationships",
+            "value": "romantic",
+            "description": "Being desirable or low-need."
+          },
+          {
+            "label": "Faith or cultural spaces",
+            "value": "cultural_or_religious",
+            "description": "Hiding parts of myself to meet expectations."
+          },
+          {
+            "label": "Myself",
+            "value": "self",
+            "description": "Demanding too much and never feeling enough."
+          }
+        ]
+      },
+      "emotional_weight_intro": {
+        "title": "What You’ve Been Carrying",
+        "subtitle": "The emotions no one sees",
+        "paragraphs": [
+          "Some emotions sit in the background, unspoken and unseen, yet heavy all the same. You don’t need to explain. Just naming what feels close is enough. _This is your space to feel without fixing._"
+        ],
+        "buttonText": "Let me name them"
+      },
+      "emotional_concerns": {
+        "hint": "These emotions may not show on the outside, but they’ve been close for a while. Just name what feels true - no need to explain.",
+        "label": "Which emotions feel closest lately?",
+        "options": [
+          {
+            "label": "Anxiety or overwhelm",
+            "value": "anxiety",
+            "description": "A constant tension or unease."
+          },
+          {
+            "label": "Low self-worth",
+            "value": "self_worth",
+            "description": "The sense of not being enough."
+          },
+          {
+            "label": "Overthinking",
+            "value": "overthinking",
+            "description": "Loops of second-guessing and doubt."
+          },
+          {
+            "label": "Loneliness",
+            "value": "loneliness",
+            "description": "Feeling unseen, even around others."
+          },
+          {
+            "label": "Burnout",
+            "value": "burnout",
+            "description": "Running on empty, still pushing through."
+          },
+          {
+            "label": "Mood swings",
+            "value": "mood_swings",
+            "description": "Emotions that rise and crash quickly."
+          },
+          {
+            "label": "Identity confusion",
+            "value": "identity_crisis",
+            "description": "Not knowing who you are beneath the roles."
+          },
+          {
+            "label": "Other / not sure",
+            "value": "other",
+            "description": "If nothing fits, that’s okay too."
+          }
+        ]
+      },
+      "coping_intro": {
+        "title": "The Ways You Cope",
+        "subtitle": "Even survival can feel exhausting",
+        "paragraphs": [
+          "Sometimes your mind and body respond before you even realize: pulling away, pushing through, or shutting down. **These patterns aren’t failures.** They were built to protect you. *Here, you can simply name what shows up when life feels heavy.*"
+        ],
+        "buttonText": "I'm ready to name it"
+      },
+      "coping_mechanism": {
+        "hint": "When things get heavy, your mind and body respond in ways that once kept you safe - even if they cost you now.",
+        "label": "When things get hard, what do you tend to do?",
+        "options": [
+          {
+            "label": "I shut down emotionally",
+            "value": "shutdown",
+            "description": "I go numb or flat to protect myself."
+          },
+          {
+            "label": "I become self-critical",
+            "value": "self_critical",
+            "description": "I turn on myself and tell myself I should be stronger."
+          },
+          {
+            "label": "I push through and perform",
+            "value": "push_through",
+            "description": "I keep going, smiling on the outside while ignoring my needs."
+          },
+          {
+            "label": "I get overwhelmed or reactive",
+            "value": "overwhelmed",
+            "description": "My emotions spiral quickly and feel hard to contain."
+          }
+        ]
+      },
+      "aspiration_intro": {
+        "title": "What Do You Long to Feel?",
+        "subtitle": "Something quiet beneath the noise",
+        "paragraphs": [
+          "Underneath exhaustion, pressure, or numbness, there’s something you quietly ache for. **This isn’t about goals.** It’s about a feeling that’s been missing for too long. *Let your heart answer, not your head.*"
+        ],
+        "buttonText": "I'll listen inward"
+      },
+      "emotional_aspirations": {
+        "hint": "What feeling has been quietly missing? This isn’t about goals. It’s about what your heart longs to feel again.",
+        "label": "What do you wish to feel more of, deep down?",
+        "options": [
+          {
+            "label": "Clarity",
+            "value": "clarity",
+            "description": "To understand what I feel and hear myself clearly."
+          },
+          {
+            "label": "Calm",
+            "value": "calm",
+            "description": "To feel less tense, less rushed, more at peace."
+          },
+          {
+            "label": "Confidence",
+            "value": "confidence",
+            "description": "To trust my choices, instincts, and voice."
+          },
+          {
+            "label": "Self-compassion",
+            "value": "self_compassion",
+            "description": "To meet myself with kindness instead of judgment."
+          },
+          {
+            "label": "Connection",
+            "value": "connection",
+            "description": "To feel seen, heard, and held - by me or others."
+          },
+          {
+            "label": "Direction or meaning",
+            "value": "direction",
+            "description": "To move toward what matters, not just get by."
+          },
+          {
+            "label": "Not sure",
+            "value": "not_sure",
+            "description": "To find out what I need, even if I don’t know yet."
+          }
+        ]
+      },
+      "end": {
+        "title": "A Step Back Toward Yourself",
+        "message": "**Thank you for letting yourself be seen here.** Take a slow breath. Even naming these pieces is already movement toward clarity.",
+        "primaryAction": "Begin with {{app_name}}"
+      }
+    }
+  }
+}

@@ -55,7 +55,7 @@ export async function runSessionWellnessCheck(
   try {
     const result = await processAiPromptsWithRetry(
       [SESSION_WELLNESS_PROMPT, { role: "user", content: JSON.stringify(context) }],
-      { temperature: 0.1, max_tokens: 200 }
+      { temperature: 0.1, max_completion_tokens: 200 }
     );
 
     if (result.error) throw new Error(result.error.message);

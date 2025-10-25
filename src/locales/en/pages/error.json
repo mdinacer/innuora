@@ -1,0 +1,16 @@
+{
+  "error": {
+    "title": "Something went wrong",
+    "description": "The application encountered an unexpected error. Don't worry - these things happen sometimes.",
+    "details": {
+      "unknown": "Unknown Error",
+      "messageFallback": "An unexpected error occurred",
+      "idLabel": "Error ID: {{digest}}"
+    },
+    "actions": {
+      "tryAgain": "Try Again",
+      "goHome": "Go Home"
+    },
+    "helpText": "If this error persists, please contact support"
+  }
+}

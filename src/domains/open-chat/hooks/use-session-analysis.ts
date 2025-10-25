@@ -11,9 +11,16 @@
  * 3. Return only the summary result to client (no sensitive data exposure)
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AppLocales } from "@/lib/i18n";
 
-export default function useSessionAnalysis({ sessionId, locale = "en" }: { sessionId: string; locale?: AppLocales }) {
+export default function useSessionAnalysis({
+  sessionId: _sessionId,
+  locale: _locale = "en",
+}: {
+  sessionId: string;
+  locale?: AppLocales;
+}) {
   const summarizeSession = async () => {
     console.warn("useSessionAnalysis is temporarily disabled - needs refactoring for server-side storage");
     return { error: "Session analysis is temporarily unavailable" };

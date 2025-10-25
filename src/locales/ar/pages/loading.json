@@ -1,0 +1,8 @@
+{
+  "loading": {
+    "title": "يتم تحضير {{app_name}}",
+    "subtitle": "جاري إعداد مرآتك العاطفية",
+    "loadingMessage": "لن يستغرق ذلك سوى لحظة...",
+    "loadedMessage": "تم الإعداد بنجاح"
+  }
+}

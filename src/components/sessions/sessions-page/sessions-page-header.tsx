@@ -4,7 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 const SessionsPageHeader = () => {
-  const { t } = useTranslation(["pages"], { keyPrefix: "sessions" });
+  const { t } = useTranslation(["pages/sessions"], { keyPrefix: "sessions" });
 
   const { title, subtitle } = {
     title: t("title"),

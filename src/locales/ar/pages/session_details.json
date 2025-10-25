@@ -1,0 +1,32 @@
+{
+  "session_details": {
+    "header": {
+      "actions": {
+        "generate_title": "Generate Title & Subtitle",
+        "edit": "Edit Session"
+      },
+      "cards": {
+        "messages": {
+          "title": "Messages",
+          "description": "Total number of messages exchanged in this session."
+        },
+        "credits": {
+          "title": "Credits Used",
+          "description": "Total credits spent during this session."
+        },
+        "duration": {
+          "title": "Session Duration",
+          "description": "Total time spent in this session from start to finish."
+        },
+        "created": {
+          "title": "Created",
+          "description": "The date and time when this session was created."
+        },
+        "updated": {
+          "title": "Last updated",
+          "description": "The date and time of the most recent update."
+        }
+      }
+    }
+  }
+}

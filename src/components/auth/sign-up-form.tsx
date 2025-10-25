@@ -23,7 +23,7 @@ interface Props {
 }
 
 const SignUpForm: React.FC<Props> = ({}) => {
-  const { t } = useTranslation("pages", { keyPrefix: "auth.sign-up" });
+  const { t } = useTranslation("pages/auth", { keyPrefix: "auth.sign-up" });
   const [formError, setFormError] = useState<string | null>(null);
   const { trackConversion, trackError, trackAction } = useAnalytics();
 

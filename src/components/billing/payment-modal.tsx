@@ -137,7 +137,19 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
         onError(msg);
       }
     },
-    [stripe, elements, clientSecret, productKey, product.credits, userEmail, userName, onSuccess, onError, status]
+    [
+      stripe,
+      elements,
+      clientSecret,
+      productKey,
+      product.credits,
+      userEmail,
+      userName,
+      onSuccess,
+      onError,
+      status,
+      state.clientSecret,
+    ]
   );
 
   return (

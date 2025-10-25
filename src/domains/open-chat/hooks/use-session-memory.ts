@@ -47,7 +47,8 @@ export default function useSessionMemory({ sessionId }: { sessionId: string }) {
           return { error };
         }
 
-        const { tokenUsage, memory, creditsUsed } = memoryResult;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { tokenUsage: _tokenUsage, memory, creditsUsed } = memoryResult;
         if (!memory?.trim()) {
           const error = "Memory generation returned empty response";
           setMemoryError(error);

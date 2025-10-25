@@ -32,11 +32,6 @@ export interface SessionContext {
   analysisSnapshots: TherapeuticAnalysisWithMessageId[];
   aggregatedAnalysis: SessionAnalysis | null;
   memoryStore: string | null;
-  continuitySummary: {
-    text: string;
-    updatedAt: Date;
-    lastMessageIndex: number;
-  } | null;
 }
 
 /**
@@ -109,7 +104,6 @@ export async function getSessionContext(sessionId: string, requiredUserId?: stri
           analysisSnapshots: [],
           aggregatedAnalysis: null,
           memoryStore: null,
-          continuitySummary: null,
         };
       }
 
@@ -124,7 +118,6 @@ export async function getSessionContext(sessionId: string, requiredUserId?: stri
         analysisSnapshots: decryptedData.analysisSnapshots || [],
         aggregatedAnalysis: decryptedData.aggregatedAnalysis || null,
         memoryStore: decryptedData.memoryStore || null,
-        continuitySummary: decryptedData.continuitySummary || null,
       };
     },
     ERROR_CODES.SESSION_CONTEXT_FETCH_FAILED,
@@ -169,7 +162,6 @@ export async function updateSessionContext(
         analysisSnapshots: updates.analysisSnapshots ?? currentContext.analysisSnapshots,
         aggregatedAnalysis: updates.aggregatedAnalysis ?? currentContext.aggregatedAnalysis,
         memoryStore: updates.memoryStore ?? currentContext.memoryStore,
-        continuitySummary: updates.continuitySummary ?? currentContext.continuitySummary,
       };
 
       // Encrypt updated data
@@ -203,7 +195,6 @@ export async function updateSessionContext(
       metadata: {
         hasAnalysisUpdate: !!updates.analysisSnapshots,
         hasMemoryUpdate: !!updates.memoryStore,
-        hasContinuityUpdate: !!updates.continuitySummary,
       },
     },
     "Session context updated successfully"
@@ -228,7 +219,6 @@ export async function initializeSessionContext(sessionId: string): Promise<void>
         analysisSnapshots: [],
         aggregatedAnalysis: null,
         memoryStore: null,
-        continuitySummary: null,
       };
 
       // Encrypt
@@ -283,26 +273,6 @@ export async function addAnalysisToContext(
 export async function updateSessionMemory(sessionId: string, memory: string): Promise<void> {
   await updateSessionContext(sessionId, {
     memoryStore: memory,
-  });
-}
-
-/**
- * Updates continuity summary
- * Helper function for summary operations
- *
- * @param sessionId - Session ID
- * @param summary - Summary object
- */
-export async function updateContinuitySummary(
-  sessionId: string,
-  summary: {
-    text: string;
-    updatedAt: Date;
-    lastMessageIndex: number;
-  }
-): Promise<void> {
-  await updateSessionContext(sessionId, {
-    continuitySummary: summary,
   });
 }
 

@@ -118,7 +118,7 @@ describe("AI Client Actions", () => {
           model: "gpt-4.1-mini",
           messages: mockPrompts,
           stream: false,
-          max_tokens: 700,
+          max_completion_tokens: 700,
           temperature: 0.6,
           top_p: 0.9,
         });
@@ -242,7 +242,7 @@ describe("AI Client Actions", () => {
 
         const customOptions = {
           temperature: 0.8,
-          max_tokens: 1000,
+          max_completion_tokens: 1000,
         };
 
         // Act
@@ -253,7 +253,7 @@ describe("AI Client Actions", () => {
           model: "gpt-4.1-mini",
           messages: mockPrompts,
           stream: false,
-          max_tokens: 1000,
+          max_completion_tokens: 1000,
           temperature: 0.8,
           top_p: 0.9,
         });

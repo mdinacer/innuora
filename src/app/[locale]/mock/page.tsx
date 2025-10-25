@@ -46,7 +46,7 @@ export default function Page() {
   //   //   role: "system" as const,
   //   //   content: CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS.replace("{{user_messages}}", formattedMessages).trim(),
   //   // };
-  //   // const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
+  //   // const userResult = await processAiPromptsWithRetry([userPrompt], { max_completion_tokens: 2500 });
   //   // if (userResult.error) {
   //   //   console.error("❌ AI call failed:", userResult.error.message);
   //   //   return;
@@ -90,7 +90,7 @@ export default function Page() {
       //     .trim(),
       // };
 
-      //const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
+      //const userResult = await processAiPromptsWithRetry([userPrompt], { max_completion_tokens: 2500 });
 
       // if (userResult.error) {
       //   console.error("❌ AI call failed:", userResult.error.message);
@@ -130,7 +130,7 @@ export default function Page() {
         .trim(),
     };
 
-    const userResult = await processAiPromptsWithRetry([userPrompt], { max_tokens: 2500 });
+    const userResult = await processAiPromptsWithRetry([userPrompt], { max_completion_tokens: 2500 });
 
     if (userResult.error) {
       console.error("❌ AI call failed:", userResult.error.message);

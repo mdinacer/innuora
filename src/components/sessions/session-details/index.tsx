@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 
-import AnalysisChart from "@/app/[locale]/mock2/components/analysis-chart";
-import { getSessionChartData } from "@/app/actions/session-actions";
 import SessionDetailsDangerZone from "@/components/sessions/session-details/session-details.danger-zone";
 import SessionDetailsHeader from "@/components/sessions/session-details/session-details.header";
 import SessionDetailsQuickActions from "@/components/sessions/session-details/session-details.quick-actions";

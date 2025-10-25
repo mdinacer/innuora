@@ -28,7 +28,7 @@ const getCardStyles = (state: "new" | "updated") => ({
 });
 
 const CloudSessionStateCard: React.FC<Props> = ({ className, sessionData, loadingState, disabled, onClick }) => {
-  const { t } = useTranslation("pages", { keyPrefix: "cloud_updates.card" });
+  const { t } = useTranslation("pages/cloud_updates", { keyPrefix: "cloud_updates.card" });
 
   const { badge, actions, meta } = useMemo(
     () => ({

@@ -1,0 +1,34 @@
+{
+  "joinSuccess": {
+    "badge": "Candidature envoyée",
+    "title": "Merci de nous avoir rejoints",
+    "message": "Nous avons bien reçu votre candidature pour le programme de test avancé de {{app_name}}. Votre intérêt compte beaucoup alors que nous continuons à créer un espace de réflexion et de clarté.",
+    "nextSteps": {
+      "title": "Quelle est la suite ?",
+      "steps": [
+        {
+          "title": "Examen de la candidature",
+          "description": "Notre équipe analysera attentivement votre candidature afin de comprendre votre parcours et ce que vous pouvez apporter au programme."
+        },
+        {
+          "title": "Processus de sélection",
+          "description": "Toutes les candidatures ne seront pas retenues. Nous sélectionnons les testeurs en fonction de la diversité des perspectives, des contextes de vie et de la capacité du programme. Cela nous aide à créer un cercle de retours véritablement enrichissant."
+        },
+        {
+          "title": "Si vous êtes sélectionné, nous vous contacterons",
+          "description": "Les testeurs retenus recevront un email avec les détails d’accès ainsi que des instructions simples pour partager leurs retours."
+        }
+      ]
+    },
+    "timeline": {
+      "title": "Calendrier prévisionnel",
+      "description": "Nous examinons généralement les candidatures sous 1 à 2 semaines. Les candidats sélectionnés seront contactés peu après. En raison du grand nombre de demandes, nous ne pourrons peut-être pas répondre individuellement à chacun."
+    },
+    "closingNote": "En attendant, vous pouvez suivre l’avancée de {{app_name}} ou nous contacter pour toute question concernant le programme de test.",
+    "actions": {
+      "follow": "Suivre les mises à jour",
+      "contact": "Nous contacter",
+      "back": "Retour à {{app_name}}"
+    }
+  }
+}

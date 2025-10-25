@@ -1,0 +1,74 @@
+{
+  "account": {
+    "title": "إدارة الحساب",
+    "subtitle": "قم بإدارة معلوماتك الشخصية وملفك العلاجي.",
+    "description": "يساعد ملفك الشخصي تطبيق {{app_name}} على تقديم دعم مخصص يناسبك. يمكنك تحديثه في أي وقت يتغير فيه وضعك.",
+    "placeholders": {
+      "noDisplayName": "المستخدم"
+    },
+    "sections": {
+      "profile": {
+        "title": "معلومات الملف الشخصي",
+        "memberSince": "عضو منذ {{date}}"
+      },
+      "email": {
+        "title": "عنوان البريد الإلكتروني",
+        "immutableNotice": "لا يمكن تعديل البريد الإلكتروني مباشرة. يرجى التواصل مع الدعم إذا لزم الأمر.",
+        "verified": "تم التحقق"
+      },
+      "account": {
+        "title": "معلومات الحساب",
+        "typeLabel": "نوع الحساب",
+        "typeDescription": "نوع حسابك الحالي",
+        "statusLabel": "حالة الحساب",
+        "statusDescription": "حسابك نشط وتم التحقق منه"
+      }
+    },
+    "fields": {
+      "displayName": {
+        "label": "الاسم المعروض"
+      },
+      "ageGroup": {
+        "title": "الفئة العمرية"
+      },
+      "identityConnection": {
+        "title": "الهوية والانتماء"
+      },
+      "socialPressure": {
+        "title": "الضغوط الاجتماعية",
+        "helperText": "يمكنك اختيار ما يصل إلى 4 عناصر"
+      },
+      "emotionalConcerns": {
+        "title": "المخاوف العاطفية",
+        "helperText": "يمكنك اختيار ما يصل إلى 4 عناصر"
+      },
+      "copingMechanism": {
+        "title": "آلية التكيف"
+      },
+      "emotionalAspirations": {
+        "title": "التطلعات العاطفية",
+        "helperText": "يمكنك اختيار ما يصل إلى 3 عناصر"
+      }
+    },
+    "actions": {
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "cancel": "إلغاء",
+      "edit": "تعديل الملف الشخصي"
+    },
+    "toast": {
+      "success": {
+        "title": "تم تحديث الملف الشخصي بنجاح",
+        "description": "تم حفظ معلومات ملفك الشخصي."
+      },
+      "error": {
+        "title": "فشل تحديث الملف الشخصي",
+        "description": "حدث خطأ أثناء تحديث ملفك الشخصي. يرجى المحاولة مرة أخرى."
+      },
+      "unexpected": {
+        "title": "خطأ غير متوقع",
+        "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."
+      }
+    }
+  }
+}

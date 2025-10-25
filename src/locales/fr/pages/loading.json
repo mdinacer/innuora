@@ -1,0 +1,8 @@
+{
+  "loading": {
+    "title": "Préparation de {{app_name}}",
+    "subtitle": "Configuration de votre miroir émotionnel",
+    "loadingMessage": "Cela ne prendra qu'un instant...",
+    "loadedMessage": "Prêt"
+  }
+}

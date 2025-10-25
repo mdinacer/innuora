@@ -1,7 +1,7 @@
 import { AppLocales } from "@/lib/i18n";
 
 // •	temperature: 0.7–0.85
-// •	max_tokens: 90–120
+// •	max_completion_tokens: 90–120
 // •	top_p: 0.9
 // •	frequency_penalty: 0.3
 // •	presence_penalty: 0.4

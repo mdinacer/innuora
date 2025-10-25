@@ -1,0 +1,66 @@
+{
+  "content": {
+    "categories": {
+      "cognitive-behavioral-therapy": "Ressources en thérapie cognitivo-comportementale (TCC)",
+      "anxiety-management": "Techniques de gestion de l’anxiété",
+      "depression-support": "Soutien et ressources contre la dépression",
+      "stress-management": "Stratégies de gestion du stress",
+      "relationship-patterns": "Dynamiques relationnelles saines",
+      "self-compassion": "Compassion envers soi et bienveillance",
+      "mindfulness-techniques": "Pleine conscience et méditation",
+      "mood-tracking": "Suivi de l’humeur et conscience émotionnelle"
+    },
+    "categoryDescriptions": {
+      "cognitive-behavioral-therapy": "Découvrez des techniques TCC fondées sur les preuves pour soutenir votre santé mentale.",
+      "anxiety-management": "Stratégies pratiques et exercices pour gérer l’anxiété, les inquiétudes et les paniques.",
+      "depression-support": "Comprendre et mieux vivre avec la dépression grâce à des approches thérapeutiques éprouvées.",
+      "stress-management": "Techniques efficaces pour réduire le stress et prévenir l’épuisement au quotidien.",
+      "relationship-patterns": "Comprendre les dynamiques relationnelles et construire des liens plus sains.",
+      "self-compassion": "Développer une relation plus chaleureuse avec soi grâce à la compassion envers soi.",
+      "mindfulness-techniques": "Pratiques de pleine conscience et de méditation pour clarifier l’esprit.",
+      "mood-tracking": "Comprendre et suivre vos variations émotionnelles pour mieux prendre soin de votre santé mentale."
+    },
+    "article": {
+      "backLink": "Retour à {{category}}",
+      "readingTime": "{{minutes}} min de lecture",
+      "relatedArticles": "Articles associés",
+      "keywordsLabel": "Thèmes liés",
+      "categoryLabel": "{{category}}",
+      "intentLabels": {
+        "informational": "informatif",
+        "actionable": "pratique",
+        "supportive": "soutenant",
+        "therapeutic": "thérapeutique",
+        "emergency": "urgence",
+        "instructional": "instructif",
+        "analytical": "analytique",
+        "motivational": "motivant"
+      },
+      "priorityLabels": {
+        "high": "priorité élevée",
+        "medium": "priorité moyenne",
+        "low": "priorité faible"
+      },
+      "loadingTitle": "Chargement du contenu...",
+      "loadingDescription": "Impossible de charger le contenu de l’article. Vérifiez si le fichier existe."
+    },
+    "categoryPage": {
+      "breadcrumb": "Bibliothèque de contenu",
+      "stats": {
+        "articles": "{{count}} articles",
+        "featured": "{{count}} mis en avant"
+      },
+      "headings": {
+        "featured": "Articles mis en avant",
+        "all": "Tous les articles"
+      },
+      "empty": {
+        "title": "Contenu à venir",
+        "description": "Nous préparons actuellement du contenu détaillé pour cette catégorie. Revenez bientôt pour découvrir de nouveaux articles et guides."
+      },
+      "badges": {
+        "featured": "Mis en avant"
+      }
+    }
+  }
+}

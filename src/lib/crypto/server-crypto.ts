@@ -191,9 +191,12 @@ export interface ServerDataContent {
   analysisSnapshots: Array<any>; // TherapeuticAnalysisWithMessageId
   aggregatedAnalysis: any | null; // SessionAnalysis
   memoryStore: string | null;
-  continuitySummary: {
-    text: string;
-    updatedAt: Date;
-    lastMessageIndex: number;
-  } | null;
+  relationalTrace?: {
+    // Holistic conversation engine - tracks conversation continuity
+    last_theme: string;
+    tone_shift: string;
+    unresolved_thread: string;
+    last_warmth_level: number;
+    psychoeducation_last_turn: boolean;
+  };
 }

@@ -25,7 +25,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
   const {
     t,
     i18n: { language },
-  } = useTranslation("pages", { keyPrefix: "sessions.card" });
+  } = useTranslation("pages/sessions", { keyPrefix: "sessions.card" });
 
   const isOnCloud = session.persistOnCloud; //useSessionStore((state) => state.onlineSessionIds.includes(session.id));
   const updatesData = undefined; //useSessionStore((state) => state.changesMap[session.id]) as SessionChangeState | undefined;

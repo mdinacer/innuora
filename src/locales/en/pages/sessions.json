@@ -1,0 +1,62 @@
+{
+  "sessions": {
+    "title": "Your Sessions",
+    "subtitle": "Reflect, explore, and revisit your emotional insights.",
+    "searchPlaceholder": "Search sessions...",
+    "actions": {
+      "viewInsights": "Your Insights"
+    },
+    "newSessionsPrompt": {
+      "title": "New sessions available",
+      "subtitle": "These updates are available on your account in the cloud.",
+      "action": "Load ({{item}})",
+      "loading": "Downloading..."
+    },
+    "card": {
+      "cloud": "Saved Online",
+      "local": "On Device",
+      "messages": "messages",
+      "hasUpdates": "has updates",
+      "continue": "Continue"
+    },
+    "form": {
+      "dialogButton": {
+        "create": "Create Session",
+        "edit": "Edit Session"
+      },
+      "title": {
+        "create": "Create New Session",
+        "edit": "Edit Session"
+      },
+      "subtitle": {
+        "create": "Optionally set a title and subtitle for your session.",
+        "edit": "Update the session title, subtitle, or storage mode."
+      },
+      "fields": {
+        "title": {
+          "label": "Session Title",
+          "placeholder": "Optional"
+        },
+        "subtitle": {
+          "label": "Session Subtitle",
+          "placeholder": "Optional"
+        },
+        "aiSuggestedTitle": {
+          "label": "Let {{app_name}} suggest a title and subtitle",
+          "description": "{{app_name}} can create a brief, reflective title and subtitle for this session. You can edit them afterward if you want."
+        },
+        "persistOnCloud": {
+          "label": "Store session on the cloud",
+          "description": "Your data remain encrypted on this device and on the cloud. Enabling this allows you to securely continue your session from another device."
+        }
+      },
+      "actions": {
+        "submit": {
+          "create": "Create Session",
+          "edit": "Save Changes"
+        },
+        "cancel": "Cancel"
+      }
+    }
+  }
+}

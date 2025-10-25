@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SessionsPageActions: React.FC<Props> = ({}) => {
-  const { t } = useTranslation(["pages"], { keyPrefix: "sessions" });
+  const { t } = useTranslation(["pages/sessions"], { keyPrefix: "sessions" });
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center mb-8">
@@ -25,7 +25,7 @@ const SessionsPageActions: React.FC<Props> = ({}) => {
           className="flex items-center gap-2 rounded-2xl border border-inn-border-light bg-inn-bg-card px-4 py-2 text-sm font-medium transition hover:shadow-[0_2px_8px] shadow-inn-bg-accent/10 hover:border-inn-bg-accent/50"
         >
           <TrendingUp className="size-4" />
-          Your Insights
+          {t("actions.viewInsights")}
         </Link>
 
         {/* <!-- Search --> */}

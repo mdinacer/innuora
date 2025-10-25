@@ -14,7 +14,7 @@ interface Props {
 }
 
 const STYLES_MAP = {
-  user: "bg-inn-bg-accent text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
+  user: "bg-inn-bg-accent-dark text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
   assistant: "bg-inn-bg-input rounded-[20px] ltr:rounded-tl-[6px] rtl:rounded-tr-[6px]",
   system: "bg-inn-bg-input rounded-[20px] rounded-tl-[6px]",
 };
@@ -32,7 +32,7 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
           className={cn(
             "size-9 rounded-lg flex items-center justify-center",
             "text-sm font-semibold rtl:font-sans shrink-0 text-white",
-            isUser ? "bg-inn-bg-secondary" : "bg-inn-bg-accent"
+            isUser ? "bg-inn-bg-secondary" : "bg-inn-bg-accent-dark"
           )}
         >
           {isUser ? "U" : "I"}
@@ -49,6 +49,7 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
             content
           ) : (
             <Markdown
+              className="prose rtl:text-lg text-inn-text-primary [&>p]:mb-3 last:[&>p]:mb-0"
               options={{
                 forceBlock: true,
                 disableParsingRawHTML: true,

@@ -6,7 +6,7 @@ import { Session } from "@/domains/open-chat/open-chat.types";
 import { ERROR_CODES } from "@/lib/errors";
 import { logger } from "@/lib/logging/unified-logger";
 
-// NOTE: memoryStore, continuitySummary, aggregatedAnalysis, analysisSnapshots
+// NOTE: memoryStore, aggregatedAnalysis, analysisSnapshots
 // are now stored server-side only in encrypted serverData field
 export const initialSessionData: Omit<Session, "id" | "createdAt" | "updatedAt"> = {
   userId: "",

@@ -29,7 +29,7 @@ interface Props {
   sessions: Session[];
 }
 const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) => {
-  const { t } = useTranslation("pages", { keyPrefix: "cloud_updates" });
+  const { t } = useTranslation("pages/cloud_updates", { keyPrefix: "cloud_updates" });
 
   const { title, buttons } = useMemo(
     () => ({

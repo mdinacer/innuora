@@ -83,28 +83,6 @@ const BillingCreditsPackages: React.FC<Props> = ({ userId, userEmail, userName, 
     []
   );
 
-  // const getPackageTimeFrame = useCallback((credits: number): string => {
-  //   const weeks = CreditUXUtils.creditsToEstimatedWeeks(credits);
-  //   const days = CreditUXUtils.creditsToEstimatedDays(credits);
-
-  //   if (weeks >= 4) {
-  //     return `${weeks} weeks of support`;
-  //   } else if (weeks >= 1) {
-  //     return `${weeks} week${weeks > 1 ? "s" : ""} of support`;
-  //   } else {
-  //     return `${days} days of support`;
-  //   }
-  // }, []);
-
-  // TODO: Use this function for dynamic package titles
-  // const getPackageTitle = useCallback(
-  //   (key: string, credits: number): string => {
-  //     const timeFrame = getPackageTimeFrame(credits);
-  //     return `${formatUSD(BILLING_PRODUCTS[key as keyof typeof BILLING_PRODUCTS].price)} Pack - ${timeFrame}`;
-  //   },
-  //   [getPackageTimeFrame]
-  // );
-
   const handlePurchaseClick = useCallback(
     (key: BillingProductKey) => {
       const packageInfo = BILLING_PRODUCTS[key];

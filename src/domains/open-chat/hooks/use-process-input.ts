@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { Profile } from "@prisma/client";
 
+import { handleHolisticUserInput } from "@/domains/conversation-engine";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
-import { handleUserInput } from "@/domains/open-chat/open-chat.action";
 import { AppLocales } from "@/lib/i18n";
 import { logger } from "@/lib/logging/unified-logger";
 import { useAppUserStore } from "@/stores/app-user.store";
@@ -50,15 +50,14 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
 
         const history: OpenChatMessage[] = session.messages ?? [];
 
-        // NOTE: Server action now fetches therapeutic context (analysis, memory) AND user identity
-        // from encrypted server-side storage. No longer passing user IDs from client (security best practice).
-        const result = await handleUserInput(
+        // NOTE: Holistic engine fetches all context (relationalTrace, profile) server-side
+        // No longer passing user profile from client (security best practice)
+        const result = await handleHolisticUserInput(
           userInput,
           history,
-          userProfile,
           locale,
           sessionId, // sessionId
-          messageId // messageId for linking analysis to message
+          messageId // messageId for AI operation logging
         );
 
         if (!result) {
@@ -70,8 +69,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         const {
           response: assistantMessage,
           creditsUsed,
-          // analysis: newAnalysis,
-          // tokenUsage: { analysisUsage, responseUsage },
+          signals, // Crisis/resistance detection from holistic engine
         } = result;
 
         // Update client-side balance to reflect server-side deduction
@@ -97,15 +95,13 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
         }, 0);
 
         logger.logInfo("User input processed successfully", {
-          operation: "process_input_success",
+          operation: "holistic_process_input_success",
           sessionId,
           userId: userProfile?.userId,
           metadata: {
             hasResponse: !!assistantMessage,
             locale,
-            //hasAnalysis: !!newAnalysis,
-            //analysisTokens: (analysisUsage?.usage?.prompt_tokens ?? 0) + (analysisUsage?.usage?.completion_tokens ?? 0),
-            //responseTokens: (responseUsage?.usage?.prompt_tokens ?? 0) + (responseUsage?.usage?.completion_tokens ?? 0),
+            signals: signals,
           },
         });
 
@@ -118,7 +114,7 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error occurred";
         logger.logWarning("Input processing failed", {
-          operation: "process_input_failed",
+          operation: "holistic_process_input_failed",
           sessionId,
           userId: userProfile?.userId,
           metadata: {

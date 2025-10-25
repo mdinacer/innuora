@@ -1,0 +1,62 @@
+{
+  "sessions": {
+    "title": "Vos sessions",
+    "subtitle": "Réfléchissez, explorez et revisitez vos insights émotionnels.",
+    "searchPlaceholder": "Rechercher dans les sessions...",
+    "actions": {
+      "viewInsights": "Vos perspectives"
+    },
+    "newSessionsPrompt": {
+      "title": "Nouvelles sessions disponibles",
+      "subtitle": "Ces mises à jour sont disponibles sur votre compte dans le cloud.",
+      "action": "Charger ({{item}})",
+      "loading": "Téléchargement en cours..."
+    },
+    "card": {
+      "cloud": "Enregistré en ligne",
+      "local": "Sur l'appareil",
+      "messages": "messages",
+      "hasUpdates": "mise à jour disponible",
+      "continue": "Continuer"
+    },
+    "form": {
+      "dialogButton": {
+        "create": "Créer la session",
+        "edit": "Modifier la session"
+      },
+      "title": {
+        "create": "Créer une nouvelle session",
+        "edit": "Modifier la session"
+      },
+      "subtitle": {
+        "create": "Définissez éventuellement un titre et un sous-titre pour votre session.",
+        "edit": "Mettez à jour le titre, le sous-titre ou le mode de stockage de la session."
+      },
+      "fields": {
+        "title": {
+          "label": "Titre de la session",
+          "placeholder": "Optionnel"
+        },
+        "subtitle": {
+          "label": "Sous-titre de la session",
+          "placeholder": "Optionnel"
+        },
+        "aiSuggestedTitle": {
+          "label": "Laissez {{app_name}} proposer un titre et un sous-titre",
+          "description": "{{app_name}} peut générer un titre et un sous-titre brefs et réfléchis pour cette session. Vous pouvez les modifier ensuite si vous le souhaitez."
+        },
+        "persistOnCloud": {
+          "label": "Stocker la session sur le cloud",
+          "description": "Vos données restent chiffrées sur cet appareil et sur le cloud. Activer cette option vous permet de reprendre votre session en toute sécurité depuis un autre appareil."
+        }
+      },
+      "actions": {
+        "submit": {
+          "create": "Créer la session",
+          "edit": "Enregistrer les modifications"
+        },
+        "cancel": "Annuler"
+      }
+    }
+  }
+}

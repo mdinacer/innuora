@@ -45,7 +45,9 @@ export async function getSessionSummary(
         content: instruction,
       } as ChatCompletionMessageParam,
     ],
-    {}
+    {
+      model: "mini", // Use GPT-4.1-mini for session summaries
+    }
   );
 
   if (result.error) {

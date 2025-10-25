@@ -29,7 +29,7 @@ const OnboardingSession = ({ className, sessionFlow }: Props) => {
   const {
     t,
     i18n: { language },
-  } = useTranslation("pages", { keyPrefix: "chat-ui.onboarding" });
+  } = useTranslation("pages/chat-ui", { keyPrefix: "chat-ui.onboarding" });
 
   const { title, subtitle } = {
     title: t("header.title", { app_name: APP_CONFIG.name, defaultValue: `Welcome to ${APP_CONFIG.name}` }),

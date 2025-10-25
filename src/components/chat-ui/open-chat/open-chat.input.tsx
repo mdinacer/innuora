@@ -13,7 +13,7 @@ interface Props {
 }
 
 const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMessage }) => {
-  const { t } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.input" });
+  const { t } = useTranslation("pages/chat-ui", { keyPrefix: "chat-ui.open-chat.input" });
 
   const [inputValue, setInputValue] = useState("");
   const inputRef = React.useRef<HTMLTextAreaElement>(null);

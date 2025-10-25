@@ -1,0 +1,48 @@
+{
+  "cloud_updates": {
+    "title": {
+      "loading": {
+        "title": "Vérification de votre sauvegarde cloud...",
+        "subtitle": "Veuillez patienter pendant la récupération de vos dernières données de session"
+      },
+      "synced": {
+        "title": "Toutes les sessions sont synchronisées",
+        "subtitle": "Votre sauvegarde cloud est à jour"
+      },
+      "unsynced": {
+        "title": "Mises à jour cloud disponibles",
+        "subtitle": "De nouvelles sessions et mises à jour ont été trouvées dans votre sauvegarde cloud"
+      }
+    },
+    "buttons": {
+      "load": "Charger {{count}} session(s)",
+      "loading": "Chargement des sessions...",
+      "loadAll": "Tout charger",
+      "check": "Vérifier à nouveau",
+      "checking": "Vérification...",
+      "skip": "Passer pour l’instant",
+      "download": "Télécharger maintenant",
+      "downloading": "Téléchargement...",
+      "update": "Mettre à jour maintenant",
+      "updating": "Mise à jour..."
+    },
+    "synced": {},
+    "card": {
+      "badge": {
+        "new": "Nouveau",
+        "updated": "Mis à jour",
+        "completed": "Terminé"
+      },
+      "actions": {
+        "download": "Télécharger",
+        "downloading": "Téléchargement",
+        "update": "Mettre à jour",
+        "updating": "Mise à jour"
+      },
+      "meta": {
+        "messages": "{{count}} message(s)",
+        "credits": "{{count}} crédit(s)"
+      }
+    }
+  }
+}

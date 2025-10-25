@@ -16,7 +16,7 @@ interface Props {
 }
 
 const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale = "en" }) => {
-  const { t } = await initTranslations(locale, ["pages"]);
+  const { t } = await initTranslations(locale, ["pages/account"]);
 
   const { title, subtitle, sections } = {
     title: t("account.title"),

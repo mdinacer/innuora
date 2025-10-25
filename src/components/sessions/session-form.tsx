@@ -41,7 +41,7 @@ interface Props {
 
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted }) => {
   const [isOpen, setOpen] = useState(false);
-  const { t } = useTranslation("pages", { keyPrefix: "sessions.form" });
+  const { t } = useTranslation("pages/sessions", { keyPrefix: "sessions.form" });
   const encryptedStore = useSessionStore();
   const user = useAppUserStore((state) => state.user);
 

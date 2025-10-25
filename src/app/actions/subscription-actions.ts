@@ -220,7 +220,9 @@ export async function cancelSubscription(
 /**
  * Internal: Get active subscription for user
  * Used internally only - NOT exported to prevent client access
+ * @unused - Reserved for future subscription management implementation
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getUserActiveSubscription(userId: string): Promise<ActionResult<any>> {
   return logger.wrapOperation(
     async () => {

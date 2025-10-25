@@ -60,13 +60,6 @@
       }
     },
     "age-group": {
-      "enum": {
-        "Age18_24": "18-24",
-        "Age25_34": "25-34",
-        "Age35_44": "35-44",
-        "Age45_54": "45-54",
-        "Age55_plus": "55+"
-      },
       "list": [
         {
           "label": "18-24",
@@ -96,12 +89,6 @@
       ]
     },
     "identity_connection": {
-      "enum": {
-        "authentic": "أشعر أنني نفسي",
-        "conflicted": "بين حالتين",
-        "disconnected": "أشعر بالابتعاد",
-        "lost": "أشعر بالضياع"
-      },
       "list": [
         {
           "label": "أشعر أنني نفسي",
@@ -126,14 +113,6 @@
       ]
     },
     "social_pressure": {
-      "enum": {
-        "family": "العائلة",
-        "friends": "الأصدقاء أو الزملاء",
-        "work_or_school": "العمل أو الدراسة",
-        "romantic": "العلاقات العاطفية",
-        "cultural_or_religious": "البيئة الدينية أو الثقافية",
-        "self": "نفسي"
-      },
       "list": [
         {
           "label": "العائلة",
@@ -168,16 +147,6 @@
       ]
     },
     "emotional_concerns": {
-      "enum": {
-        "anxiety": "القلق أو التوتر",
-        "self_worth": "تدني تقدير الذات",
-        "overthinking": "الإفراط في التفكير",
-        "loneliness": "الوحدة",
-        "burnout": "الإنهاك النفسي",
-        "mood_swings": "تقلّب المزاج",
-        "identity_crisis": "ارتباك الهوية",
-        "self_harm": "إيذاء النفس"
-      },
       "list": [
         {
           "label": "القلق أو التوتر",
@@ -222,12 +191,6 @@
       ]
     },
     "coping_mechanism": {
-      "enum": {
-        "shutdown": "أنغلق عاطفيًا",
-        "self_critical": "أنتقد نفسي",
-        "push_through": "أكمل رغم الإرهاق",
-        "overwhelmed": "أتفاعل بشكل مفرط"
-      },
       "list": [
         {
           "label": "أنغلق عاطفيًا",
@@ -252,15 +215,6 @@
       ]
     },
     "emotional_aspirations": {
-      "enum": {
-        "clarity": "الوضوح",
-        "calm": "الهدوء",
-        "confidence": "الثقة بالنفس",
-        "self_compassion": "الرحمة الذاتية",
-        "connection": "الاتصال",
-        "direction": "الاتجاه أو المعنى",
-        "other": "أخرى"
-      },
       "list": [
         {
           "label": "الوضوح",

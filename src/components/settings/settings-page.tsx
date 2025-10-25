@@ -17,11 +17,8 @@ import { UserWithRelations } from "@/types/user.types";
 
 type SettingsSection = {
   id: string;
-  label: string;
   icon: React.ReactNode;
-  component: // | React.ComponentType<SettingsPageProps>
-  React.ComponentType<Record<string, never>> | ((props: { user: UserWithRelations }) => React.ReactElement);
-  badge?: string;
+  component: React.ComponentType<Record<string, never>> | ((props: { user: UserWithRelations }) => React.ReactElement);
   requiresProps?: boolean;
 };
 
@@ -32,31 +29,26 @@ type SettingsSection = {
 const settingsSections: SettingsSection[] = [
   {
     id: "appearance",
-    label: "Appearance",
     icon: <Monitor className="h-4 w-4" />,
     component: AppearanceSettings,
     requiresProps: false,
   },
   {
     id: "privacy",
-    label: "Privacy & Safety",
     icon: <Shield className="h-4 w-4" />,
     component: PrivacySettings,
     requiresProps: false,
   },
   {
     id: "security",
-    label: "Security",
     icon: <Lock className="h-4 w-4" />,
     component: SecuritySettings,
     requiresProps: false,
   },
   {
     id: "data",
-    label: "Data & Storage",
     icon: <Database className="h-4 w-4" />,
     component: DataSettings,
-    badge: "New",
     requiresProps: false,
   },
 ];
@@ -67,7 +59,7 @@ const settingsSections: SettingsSection[] = [
 
 export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState("appearance");
-  const { i18n, t } = useTranslation("pages");
+  const { i18n, t } = useTranslation("pages/settings");
   const user = useAppUserStore((state) => state.user);
 
   return (
@@ -123,16 +115,9 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-3 w-full">
                   {section.icon}
                   <span className="font-medium rtl:text-right rtl:mt-0.5 rtl:text-base ltr:text-left flex-1 rtl:font-arabic-body sr-only sm:not-sr-only">
-                    {t(`${section.id}.label`, { ns: "pages", keyPrefix: "settings.sections" })}
+                    {t(`${section.id}.label`, { keyPrefix: "settings.sections" })}
                   </span>
-                  {/* {section.badge && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-auto hidden sm:inline text-xs bg-inn-bg-flame text-white py-0.5 px-2 rounded-xl hover:bg-inn-bg-flame-dark hover:text-white "
-                    >
-                      {section.badge}
-                    </Badge>
-                  )} */}
+                  {/* Badge rendering handled via localized metadata if provided */}
                 </div>
               </TabsTrigger>
             ))}
@@ -143,12 +128,11 @@ export default function SettingsPage() {
         <div className="flex-1 min-w-0">
           {settingsSections.map((section) => {
             const SectionComponent = section.component;
-            const { label, description } = t(section.id, {
-              ns: "pages",
+            const { label, description, badge } = t(section.id, {
               keyPrefix: "settings.sections",
               returnObjects: true,
-              defaultValue: { label: "", description: "" },
-            }) as { label: string; description: string };
+              defaultValue: { label: "", description: "", badge: "" },
+            }) as { label: string; description: string; badge?: string };
             return (
               <TabsContent dir={i18n.dir()} key={section.id} value={section.id} className="mt-0">
                 <div className="">
@@ -159,9 +143,9 @@ export default function SettingsPage() {
                         <p className="text-sm sm:text-base text-[var(--text-secondary)]">{description}</p>
                       </div>
 
-                      {section.badge && (
+                      {badge && (
                         <Badge variant="secondary" className="text-xs">
-                          {section.badge}
+                          {badge}
                         </Badge>
                       )}
                     </div>

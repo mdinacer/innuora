@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { SESSION_MODULES, SessionModule } from "@/domains/cbt-modules/constants";
+import { SESSION_MODULES, SessionModule } from "@/domains/therapeutic-analysis/therapeutic-analysis.constants";
 
 // === Maps and Types ===
 export const USER_STATE_MAP = {

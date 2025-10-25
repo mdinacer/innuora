@@ -40,8 +40,11 @@ export async function analyzeUserInput(
 
       console.log(prompts);
 
+      // Use GPT-4.1-mini for cost optimization
+      // Background analysis doesn't need full GPT-4.1 quality for human-like feel
       const result = await processAiPromptsWithRetry(prompts, {
-        max_tokens: 2000,
+        max_completion_tokens: 2000,
+        model: "mini", // GPT-4.1-mini: $0.30/M input vs $2/M for GPT-4.1
       });
 
       // Unwrap ActionResult

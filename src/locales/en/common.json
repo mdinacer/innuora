@@ -210,13 +210,6 @@
       }
     },
     "age-group": {
-      "enum": {
-        "Age18_24": "18-24",
-        "Age25_34": "25-34",
-        "Age35_44": "35-44",
-        "Age45_54": "45-54",
-        "Age55_plus": "55+"
-      },
       "list": [
         {
           "label": "18-24",
@@ -246,12 +239,6 @@
       ]
     },
     "identity_connection": {
-      "enum": {
-        "authentic": "I feel like myself",
-        "conflicted": "I’m in-between",
-        "disconnected": "I feel distant",
-        "lost": "I feel lost"
-      },
       "list": [
         {
           "label": "I feel like myself",
@@ -276,14 +263,6 @@
       ]
     },
     "social_pressure": {
-      "enum": {
-        "family": "Family",
-        "friends": "Friends or peers",
-        "work_or_school": "Work or studies",
-        "romantic": "Romantic relationships",
-        "cultural_or_religious": "Faith or cultural spaces",
-        "self": "Myself"
-      },
       "list": [
         {
           "label": "Family",
@@ -318,16 +297,6 @@
       ]
     },
     "emotional_concerns": {
-      "enum": {
-        "anxiety": "Anxiety or overwhelm",
-        "self_worth": "Low self-worth",
-        "overthinking": "Overthinking",
-        "loneliness": "Loneliness",
-        "burnout": "Burnout",
-        "mood_swings": "Mood swings",
-        "identity_crisis": "Identity confusion",
-        "self_harm": "Self-harm"
-      },
       "list": [
         {
           "label": "Anxiety or overwhelm",
@@ -372,12 +341,6 @@
       ]
     },
     "coping_mechanism": {
-      "enum": {
-        "shutdown": "I shut down emotionally",
-        "self_critical": "I become self-critical",
-        "push_through": "I push through and perform",
-        "overwhelmed": "I get overwhelmed or reactive"
-      },
       "list": [
         {
           "label": "I shut down emotionally",
@@ -402,15 +365,6 @@
       ]
     },
     "emotional_aspirations": {
-      "enum": {
-        "clarity": "Clarity",
-        "calm": "Calm",
-        "confidence": "Confidence",
-        "self_compassion": "Self-compassion",
-        "connection": "Connection",
-        "direction": "Direction or meaning",
-        "other": "Other"
-      },
       "list": [
         {
           "label": "Clarity",
@@ -458,6 +412,5 @@
   "session_one": "session",
   "session_other": "sessions",
   "session_zero": "No sessions",
-  "signout": "Sign out",
   "your_turn": "Your turn"
 }

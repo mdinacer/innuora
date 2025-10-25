@@ -1,0 +1,261 @@
+{
+  "homepage": {
+    "actions": {
+      "requestAccess": "Demander l'accès",
+      "testerSignIn": "Connexion testeur"
+    },
+    "hero": {
+      "badge": "Accès anticipé",
+      "title": "Un miroir pour votre monde intérieur",
+      "subtitle": "{{app_name}} vous aide à faire une pause, à remarquer les schémas et à trouver de la clarté lorsque la vie devient lourde. Elle fonctionne à travers des conversations réfléchies et sensibles aux émotions.",
+      "cta": {
+        "join": "Rejoindre l'accès anticipé",
+        "demo": "Voir une conversation"
+      },
+      "disclaimer": "{{app_name}} n’est pas une thérapie ni un service d’urgence. Si vous êtes en danger immédiat, contactez les services d’urgence locaux."
+    },
+    "howItHelps": {
+      "title": "Comment {{app_name}} aide",
+      "subtitle": "{{app_name}} est un miroir bienveillant qui vous aide à explorer vos émotions, reconnaître vos schémas et réfléchir dans un espace privé que vous contrôlez.",
+      "features": [
+        {
+          "title": "Conversations réfléchies",
+          "subtitle": "{{app_name}} reflète vos émotions pour vous aider à nommer et comprendre ce que vous ressentez réellement."
+        },
+        {
+          "title": "Détection des schémas",
+          "subtitle": "Au fil du temps, {{app_name}} met en lumière les thèmes récurrents dans votre pensée pour vous aider à remarquer des liens que vous auriez pu manquer."
+        },
+        {
+          "title": "Privé par défaut",
+          "subtitle": "Vos réflexions vous appartiennent entièrement. Chaque conversation est privée et sous votre contrôle."
+        }
+      ]
+    },
+    "demo": {
+      "title": "Ce qui rend {{app_name}} différente",
+      "subtitle": "Découvrez comment {{app_name}} va au-delà des conseils génériques en révélant les sources de stress profondes et en proposant des solutions pratiques et claires.",
+      "conversation": [
+        {
+          "role": "app",
+          "text": "Bonjour, je vois que c’est un moment stressant pour toi. Prenons une respiration ensemble. Peux-tu me dire ce qui te pèse le plus en ce moment ?"
+        },
+        {
+          "role": "user",
+          "text": "Je dois conclure un contrat avec un client énorme au travail, et tout dépend de moi. J’ai l’impression que si je me trompe, cela pourrait ruiner tout pour l’équipe… et pour moi."
+        },
+        {
+          "role": "generic",
+          "text": "On dirait que tu es sous beaucoup de pression. Peut-être que diviser la préparation du contrat en petites étapes pourrait aider à réduire le stress."
+        },
+        {
+          "role": "app",
+          "text": "Je comprends la **responsabilité énorme** que tu portes. Il y a une **règle silencieuse** ici : tu dois réussir parfaitement, sinon c’est la catastrophe. Cette croyance peut te serrer la poitrine et faire tourner tes pensées. Quelles sensations physiques remarques-tu en pensant à ce contrat ?"
+        },
+        {
+          "role": "user",
+          "text": "Ma poitrine est lourde, j’ai des nœuds à l’estomac et je n’arrive pas à me concentrer correctement. Je n’arrête pas d’imaginer les pires scénarios."
+        },
+        {
+          "role": "generic",
+          "text": "Imaginer le pire peut augmenter l’anxiété. Se concentrer sur des étapes concrètes ou ta préparation peut t’aider à te sentir plus en contrôle."
+        },
+        {
+          "role": "app",
+          "text": "C’est ce qu’on appelle le **catastrophisme**, imaginer les pires résultats avant qu’ils n’arrivent. Reconnaître ce schéma est la première étape. Tu te prépares, et la préparation est ce qui compte. Voyons **une chose que tu peux contrôler maintenant**."
+        },
+        {
+          "role": "user",
+          "text": "Je suppose que je pourrais revoir les données du client et la proposition une fois de plus."
+        },
+        {
+          "role": "generic",
+          "text": "Revoir les détails peut t’aider à te sentir plus préparée. C’est une étape pratique pour réduire l’incertitude."
+        },
+        {
+          "role": "app",
+          "text": "Exactement. C’est une **étape concrète**. Se concentrer sur ce que tu peux contrôler aide à calmer la tempête mentale. Remarque que se préparer n’est pas un échec, c’est de la compétence. Comment te sens-tu en accomplissant cette petite étape ?"
+        },
+        {
+          "role": "user",
+          "text": "Un peu plus calme… mais j’ai toujours l’impression que tout le poids des résultats repose uniquement sur moi."
+        },
+        {
+          "role": "generic",
+          "text": "Partager la responsabilité ou parler avec un collègue peut aider à soulager ce sentiment. Tu n’as pas à tout porter seule."
+        },
+        {
+          "role": "app",
+          "text": "Tu remarques la **pression de tout porter seule**, et c’est important. Et si ton rôle était de guider l’équipe plutôt que de tout contrôler toi-même ? Déléguer de petites tâches pourrait alléger le fardeau tout en gardant la responsabilité."
+        },
+        {
+          "role": "user",
+          "text": "Je pourrais confier la partie financière à Sam. D’habitude je le fais moi-même, mais j’ai confiance en lui."
+        },
+        {
+          "role": "generic",
+          "text": "Déléguer à un membre de l’équipe de confiance est une étape pratique. Cela peut réduire ton stress tout en maintenant la supervision."
+        },
+        {
+          "role": "app",
+          "text": "Exactement. C’est un **changement puissant** - tu fais confiance à ton équipe tout en te faisant confiance. Remarque comment le stress diminue dans ton corps quand tu partages la responsabilité. Même de petites étapes défient l’ancienne règle qui dit que tu dois tout faire parfaitement."
+        },
+        {
+          "role": "user",
+          "text": "En fait, je me sens un peu plus légère. Je ne pensais pas que lâcher un petit morceau aiderait autant."
+        },
+        {
+          "role": "generic",
+          "text": "Même de petits changements dans la charge de travail peuvent avoir un effet positif sur le stress et la performance."
+        },
+        {
+          "role": "app",
+          "text": "Maintenant, explorons la **pression interne**. Tu crains le jugement et l’échec devant ton équipe. C’est beaucoup de **pression intérieure**. Quelle histoire te racontes-tu quand tu imagines échouer ?"
+        },
+        {
+          "role": "user",
+          "text": "Je pense que je vais paraître incompétente, que les gens vont douter de moi, et peut-être que je perdrai leur respect. Je me sens humiliée rien qu’à l’imaginer."
+        },
+        {
+          "role": "generic",
+          "text": "La peur du jugement est fréquente. Il peut être utile de considérer l’échec comme une opportunité d’apprentissage plutôt qu’un reflet de ta valeur."
+        },
+        {
+          "role": "app",
+          "text": "Je comprends la **peur du jugement**. C’est une croyance centrale qui influence ton stress. Tu n’es pas tes erreurs - tu es une professionnelle compétente face à un défi. Si tu observes cette peur sans agir dessus, comment cela change-t-il ce que tu ressens dans ton corps ?"
+        },
+        {
+          "role": "user",
+          "text": "C’est toujours tendu, mais plus conscient… pas paniqué."
+        },
+        {
+          "role": "app",
+          "text": "Exactement. C’est la différence entre **surcharge réactive** et **conscience consciente**. Tu peux ressentir la peur sans la laisser contrôler tes actions. Essayons de nommer un aspect positif de ta préparation ou de tes compétences."
+        },
+        {
+          "role": "user",
+          "text": "J’ai été rigoureuse dans mes recherches et ma proposition. Je connais bien les besoins du client."
+        },
+        {
+          "role": "generic",
+          "text": "Reconnaître ta préparation aide à renforcer la confiance. Concentre-toi sur tes forces pour contrer l’anxiété."
+        },
+        {
+          "role": "app",
+          "text": "Parfait. C’est un **ancrage dans la compétence**. Chaque fois que ton esprit imagine le pire, tu peux revenir à ce fait concret : tu es préparée et compétente. Comment te sens-tu avec cela ?"
+        },
+        {
+          "role": "user",
+          "text": "Je me sens un peu plus stable et plus en contrôle."
+        },
+        {
+          "role": "app",
+          "text": "Maintenant, voyons ce que **demander du soutien** pourrait signifier. Ce n’est pas une faiblesse, c’est une force. Même demander un avis ou un retour à un membre de l’équipe peut réduire la pression. Qui pourrais-tu approcher en toute confiance ?"
+        },
+        {
+          "role": "user",
+          "text": "Peut-être que je peux demander à Sarah de revoir la proposition. Elle est minutieuse et j’ai confiance en son jugement."
+        },
+        {
+          "role": "generic",
+          "text": "Obtenir des retours de quelqu’un de confiance est une façon concrète de réduire le stress et de vérifier les éventuelles erreurs."
+        },
+        {
+          "role": "app",
+          "text": "Exactement. C’est une **collaboration stratégique**. Tu ne perds pas le contrôle - tu amplifies l’efficacité tout en réduisant la pression intérieure. Remarque comment tu te sens même en pensant à partager la tâche."
+        },
+        {
+          "role": "user",
+          "text": "Je me sens soulagée… comme si le poids sur ma poitrine avait diminué."
+        },
+        {
+          "role": "generic",
+          "text": "Partager les tâches et responsabilités peut réduire la charge émotionnelle et aider à maintenir la concentration."
+        },
+        {
+          "role": "app",
+          "text": "Avant de conclure, intégrons les apprentissages d’aujourd’hui. Tu as pratiqué **préparation, délégation, conscience émotionnelle et collaboration**. Tu as défié l’ancienne règle qui disait que tu devais tout faire seule et parfaitement. Remarque le changement : ta force ne réside pas dans la perfection, mais dans l’action consciente et délibérée."
+        },
+        {
+          "role": "user",
+          "text": "Je le ressens vraiment. Je suis plus calme et confiante, et je sais que je ne suis pas seule pour gérer cela."
+        },
+        {
+          "role": "generic",
+          "text": "Reconnaître tes progrès et les construire aidera à maintenir la confiance et à réduire le stress avec le temps."
+        },
+        {
+          "role": "app",
+          "text": "Tu as accompli quelque chose de significatif aujourd’hui. Tu as reconnu tes peurs, ressenti ton corps, défié les anciennes règles et pratiqué l’auto-compassion. C’est la véritable force. Tu peux aborder ta réunion demain avec clarté et concentration. Tu es prête."
+        }
+      ],
+      "legend": {
+        "user": "Utilisateur",
+        "generic": "IA Générique",
+        "app": "{{app_name}}"
+      },
+      "insights": {
+        "generic": {
+          "title": "Approche de l'IA Générique",
+          "points": [
+            "Donne des conseils standards sans s’adapter à votre vécu",
+            "Ne perçoit pas les émotions sous-jacentes à vos propos",
+            "Ignore quand vos pensées deviennent sévères ou irréalistes",
+            "Manque d’occasions d’offrir une compréhension plus profonde ou un soulagement"
+          ]
+        },
+        "app": {
+          "title": "Ce qui différencie {{app_name}}",
+          "points": [
+            "Remarque quand vos pensées amplifient les situations de manière excessive",
+            "Aide à identifier la pensée en noir et blanc qui empêche tout équilibre",
+            "Révèle les règles cachées que vous suivez, comme toujours devoir être disponible",
+            "Propose des moyens pratiques de transformer vos pensées pour les rendre plus légères et souples"
+          ]
+        }
+      }
+    },
+    "earlyAccess": {
+      "title": "Faites partie des premières utilisatrices de {{app_name}}",
+      "subtitle": "Nous invitons un groupe sélectionné de femmes à rejoindre le programme de test de {{app_name}}. Partagez vos expériences et besoins pour nous aider à ajuster {{app_name}} afin qu’il vous voie, vous entende et vous comprenne réellement.",
+      "cta": "Rejoignez le Cercle Privilégié"
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "items": [
+        {
+          "question": "Qu’est-ce que {{app_name}} ?",
+          "answer": "{{app_name}} est un miroir émotionnel. Elle vous aide à ralentir, réfléchir et voir votre monde intérieur avec plus de clarté à travers de courtes conversations sensibles aux émotions."
+        },
+        {
+          "question": "En quoi {{app_name}} diffère-t-elle d’une thérapie ?",
+          "answer": "{{app_name}} n’est pas une thérapie et ne remplace pas une prise en charge professionnelle. Elle est conçue pour soutenir la conscience de soi au quotidien, sans diagnostiquer ni traiter des problèmes de santé mentale."
+        },
+        {
+          "question": "Comment fonctionne {{app_name}} concrètement ?",
+          "answer": "{{app_name}} utilise des questions et des modèles de conversation conçus pour refléter vos émotions. Elle met en évidence les pressions invisibles, les pensées récurrentes et les règles implicites pour mieux vous comprendre."
+        },
+        {
+          "question": "Mes données sont-elles privées ?",
+          "answer": "Oui. Vos réflexions vous appartiennent entièrement. Les conversations sont privées par conception, et vous pouvez exporter ou supprimer vos données."
+        },
+        {
+          "question": "À qui s’adresse {{app_name}} ?",
+          "answer": "{{app_name}} s’adresse aux personnes qui portent beaucoup, semblent fortes en apparence mais se sentent épuisées intérieurement. Elle leur offre un espace sûr pour réfléchir, reconnaître les schémas et retrouver de la clarté."
+        },
+        {
+          "question": "{{app_name}} peut-elle aider en cas de crise ?",
+          "answer": "Non. {{app_name}} n’est pas un service d’urgence. Si vous êtes en danger immédiat ou faites face à une situation critique, contactez les services d’urgence locaux ou une ligne professionnelle."
+        },
+        {
+          "question": "Quel est le coût ?",
+          "answer": "Pendant l’accès anticipé, {{app_name}} est gratuite. Les tarifs seront définis ultérieurement en fonction des retours des premières utilisatrices."
+        },
+        {
+          "question": "Pourquoi rejoindre l’accès anticipé ?",
+          "answer": "L’accès anticipé vous permet de façonner {{app_name}} avec nous. Vos retours influenceront directement l’évolution de l’expérience, et vous serez parmi les premières à bénéficier des nouvelles fonctionnalités."
+        }
+      ]
+    }
+  }
+}

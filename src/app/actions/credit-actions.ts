@@ -280,7 +280,9 @@ export async function getUserCreditHistory(
 /**
  * Internal: Get user credit history by authId
  * Used internally for admin operations - NOT exported to prevent client access
+ * @unused - Reserved for future admin dashboard implementation
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getUserCreditHistoryByAuthId(
   authId: string,
   limit: number = 50,
@@ -451,7 +453,9 @@ export async function checkSufficientCredits(requiredCredits: number): Promise<b
 /**
  * Internal: Check if user has sufficient credits by authId
  * Used internally by this file only - NOT exported to prevent client access
+ * @unused - Reserved for future credit validation implementation
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function checkSufficientCreditsForUser(authId: string, requiredCredits: number): Promise<boolean> {
   const result = await getUserCreditsBalanceByAuthId(authId);
   if (result.error) {

@@ -64,11 +64,6 @@ describe("Encrypted Session Crypto", () => {
           },
         ],
         memoryStore: "User personality: friendly and curious. Conversation context: therapy session.",
-        continuitySummary: {
-          text: "User is exploring anxiety management techniques",
-          updatedAt: new Date("2024-01-01T10:00:00Z"),
-          lastMessageIndex: 1,
-        },
         aggregatedAnalysis: null,
         analysisSnapshots: [
           {
@@ -241,11 +236,6 @@ describe("Encrypted Session Crypto", () => {
           },
         ],
         memoryStore: "User personality: introverted and thoughtful. Conversation themes: self-reflection, growth.",
-        continuitySummary: {
-          text: "User exploring personal development goals",
-          updatedAt: new Date("2024-01-01T09:30:00Z"),
-          lastMessageIndex: 1,
-        },
         aggregatedAnalysis: null,
         analysisSnapshots: [
           {
@@ -303,10 +293,6 @@ describe("Encrypted Session Crypto", () => {
 
       // Verify decrypted complex data
       expect(decryptedSession.memoryStore).toEqual(originalSession.memoryStore);
-      expect(decryptedSession.continuitySummary?.text).toBe(originalSession.continuitySummary?.text);
-      expect(decryptedSession.continuitySummary?.lastMessageIndex).toBe(
-        originalSession.continuitySummary?.lastMessageIndex
-      );
       expect(decryptedSession.aggregatedAnalysis).toEqual(originalSession.aggregatedAnalysis);
 
       // Verify analysis snapshots
@@ -349,7 +335,6 @@ describe("Encrypted Session Crypto", () => {
       expect(decryptedSession.subtitle).toBe("");
       expect(decryptedSession.autoUpdateTitle).toBe(false);
       expect(decryptedSession.memoryStore).toBeNull();
-      expect(decryptedSession.continuitySummary).toBeNull();
       expect(decryptedSession.aggregatedAnalysis).toBeNull();
       expect(decryptedSession.analysisSnapshots).toEqual([]);
     });
@@ -381,7 +366,6 @@ describe("Encrypted Session Crypto", () => {
       expect(decryptedSession.id).toBe(prismaSession.id);
       expect(decryptedSession.messages).toEqual([]);
       expect(decryptedSession.memoryStore).toBeNull();
-      expect(decryptedSession.continuitySummary).toBeNull();
       expect(decryptedSession.aggregatedAnalysis).toBeNull();
       expect(decryptedSession.analysisSnapshots).toEqual([]);
 
@@ -463,11 +447,6 @@ describe("Encrypted Session Crypto", () => {
         ],
         memoryStore:
           "User personality: detail-oriented and security-conscious. Preferences: formal communication style, interested in security and technology. Sensitive data: This should be encrypted and preserved.",
-        continuitySummary: {
-          text: "Testing encryption with various data types and special characters",
-          updatedAt: new Date("2024-01-15T14:30:00Z"),
-          lastMessageIndex: 1,
-        },
         aggregatedAnalysis: null,
         analysisSnapshots: [
           {
@@ -521,10 +500,6 @@ describe("Encrypted Session Crypto", () => {
 
       // Verify complex data structures
       expect(decryptedSession.memoryStore).toEqual(originalSession.memoryStore);
-      expect(decryptedSession.continuitySummary?.text).toBe(originalSession.continuitySummary?.text);
-      expect(decryptedSession.continuitySummary?.lastMessageIndex).toBe(
-        originalSession.continuitySummary?.lastMessageIndex
-      );
       expect(decryptedSession.aggregatedAnalysis).toEqual(originalSession.aggregatedAnalysis);
 
       // Verify analysis snapshots

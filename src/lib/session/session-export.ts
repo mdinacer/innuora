@@ -5,6 +5,7 @@
  * for data portability and GDPR compliance.
  */
 
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 export interface SessionExportData {

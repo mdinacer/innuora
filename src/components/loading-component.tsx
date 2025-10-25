@@ -16,7 +16,7 @@ interface LoadingComponentProps {
 }
 
 export default function LoadingComponent({ isLoading = true, className, ...props }: LoadingComponentProps) {
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation("pages/loading");
 
   // Simple lookups - no need for useMemo
   const title = props.title || t("title", { keyPrefix: "loading", app_name: APP_CONFIG.name });

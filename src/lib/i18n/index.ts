@@ -9,20 +9,42 @@ import config from "@/lib/i18n/config";
 export type AppLocales = "en" | "ar" | "fr";
 
 export const APP_NAMESPACES = {
-  NS_COMMON: "common",
-  NS_PAGES: "pages",
-  NS_LEGAL: "legal",
-  NS_SESSIONS: "sessions",
-  NS_ERRORS: "errors",
+  COMMON: "common",
+  ERRORS: "errors",
+  LEGAL: "legal",
+  SESSIONS_ONBOARDING: "sessions/onboarding",
+  PAGES_ACCOUNT: "pages/account",
+  PAGES_AUTH: "pages/auth",
+  PAGES_CHAT_UI: "pages/chat-ui",
+  PAGES_CLOUD_UPDATES: "pages/cloud_updates",
+  PAGES_ERROR: "pages/error",
+  PAGES_LOADING: "pages/loading",
+  PAGES_SESSION_CHART: "pages/session_chart",
+  PAGES_SESSION_DETAILS: "pages/session_details",
+  PAGES_SESSION_NAMING: "pages/session_naming",
+  PAGES_SESSIONS: "pages/sessions",
+  PAGES_SETTINGS: "pages/settings",
+  PAGES_POLICIES_FOOTER: "pages/policies_footer",
 } as const;
 
 export type AppNamespace = (typeof APP_NAMESPACES)[keyof typeof APP_NAMESPACES];
 
 export const i18nNamespaces = [
-  APP_NAMESPACES.NS_COMMON,
-  APP_NAMESPACES.NS_PAGES,
-  APP_NAMESPACES.NS_SESSIONS,
-  APP_NAMESPACES.NS_ERRORS,
+  APP_NAMESPACES.COMMON,
+  APP_NAMESPACES.ERRORS,
+  APP_NAMESPACES.SESSIONS_ONBOARDING,
+  APP_NAMESPACES.PAGES_ACCOUNT,
+  APP_NAMESPACES.PAGES_AUTH,
+  APP_NAMESPACES.PAGES_CHAT_UI,
+  APP_NAMESPACES.PAGES_CLOUD_UPDATES,
+  APP_NAMESPACES.PAGES_ERROR,
+  APP_NAMESPACES.PAGES_LOADING,
+  APP_NAMESPACES.PAGES_SESSION_CHART,
+  APP_NAMESPACES.PAGES_SESSION_DETAILS,
+  APP_NAMESPACES.PAGES_SESSION_NAMING,
+  APP_NAMESPACES.PAGES_SESSIONS,
+  APP_NAMESPACES.PAGES_SETTINGS,
+  APP_NAMESPACES.PAGES_POLICIES_FOOTER,
 ];
 
 export default async function initTranslations(

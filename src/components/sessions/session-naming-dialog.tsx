@@ -33,7 +33,7 @@ const SessionNamingDialog: React.FC<Props> = ({ session, onSubmitted }) => {
   const {
     t,
     i18n: { language },
-  } = useTranslation(["pages", "common"]);
+  } = useTranslation(["pages/session_naming", "common"]);
   const [open, setOpen] = useState(true);
   const [isGenerating, setGenerating] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
@@ -49,12 +49,12 @@ const SessionNamingDialog: React.FC<Props> = ({ session, onSubmitted }) => {
       const result = await generateSessionTitle(session.id, messages, selectedLocale);
       setGeneratedData(result.response);
     } catch (error) {
-      setError("An unexpected error occurred while generating the session title.");
+      setError(t("session_naming.errors.unexpected"));
       console.error(error);
     } finally {
       setGenerating(false);
     }
-  }, [selectedLocale, session.id, session.messages]);
+  }, [selectedLocale, session.id, session.messages, t]);
 
   const handleOnSubmit = useCallback(async () => {
     setSubmitting(true);

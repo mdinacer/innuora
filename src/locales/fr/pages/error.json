@@ -1,0 +1,16 @@
+{
+  "error": {
+    "title": "Une erreur est survenue",
+    "description": "L'application a rencontré une erreur inattendue. Ne vous inquiétez pas – cela arrive parfois.",
+    "details": {
+      "unknown": "Erreur inconnue",
+      "messageFallback": "Une erreur inattendue s'est produite",
+      "idLabel": "ID de l'erreur : {{digest}}"
+    },
+    "actions": {
+      "tryAgain": "Réessayer",
+      "goHome": "Retour à l'accueil"
+    },
+    "helpText": "Si cette erreur persiste, veuillez contacter le support"
+  }
+}

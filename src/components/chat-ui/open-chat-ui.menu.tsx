@@ -44,7 +44,7 @@ interface Props {
 const OpenChatUIMenu = ({ onAction, disabled }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dialogState, setDialogState] = useState<Action | null>(null);
-  const { t, i18n } = useTranslation("pages", { keyPrefix: "chat-ui.open-chat.actions" });
+  const { t, i18n } = useTranslation("pages/chat-ui", { keyPrefix: "chat-ui.open-chat.actions" });
 
   const actions: Record<Action, ActionData> = useMemo(
     () => ({

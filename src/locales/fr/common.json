@@ -59,13 +59,6 @@
       }
     },
     "age-group": {
-      "enum": {
-        "Age18_24": "18-24",
-        "Age25_34": "25-34",
-        "Age35_44": "35-44",
-        "Age45_54": "45-54",
-        "Age55_plus": "55+"
-      },
       "list": [
         {
           "label": "18-24",
@@ -95,12 +88,6 @@
       ]
     },
     "identity_connection": {
-      "enum": {
-        "authentic": "Je me sens moi-même",
-        "conflicted": "Entre deux",
-        "disconnected": "Je me sens distante",
-        "lost": "Je me sens perdue"
-      },
       "list": [
         {
           "label": "Je me sens moi-même",
@@ -125,14 +112,6 @@
       ]
     },
     "social_pressure": {
-      "enum": {
-        "family": "Famille",
-        "friends": "Amis ou pairs",
-        "work_or_school": "Travail ou études",
-        "romantic": "Relations amoureuses",
-        "cultural_or_religious": "Contexte culturel ou religieux",
-        "self": "Moi-même"
-      },
       "list": [
         {
           "label": "Famille",
@@ -167,16 +146,6 @@
       ]
     },
     "emotional_concerns": {
-      "enum": {
-        "anxiety": "Anxiété ou surcharge",
-        "self_worth": "Faible estime de soi",
-        "overthinking": "Trop réfléchir",
-        "loneliness": "Solitude",
-        "burnout": "Épuisement",
-        "mood_swings": "Sauts d’humeur",
-        "identity_crisis": "Crise d’identité",
-        "self_harm": "Auto-agression"
-      },
       "list": [
         {
           "label": "Anxiété ou surcharge",
@@ -221,12 +190,6 @@
       ]
     },
     "coping_mechanism": {
-      "enum": {
-        "shutdown": "Je me ferme émotionnellement",
-        "self_critical": "Je deviens critique envers moi-même",
-        "push_through": "Je continue malgré tout",
-        "overwhelmed": "Je me sens submergée"
-      },
       "list": [
         {
           "label": "Je me ferme émotionnellement",
@@ -251,15 +214,6 @@
       ]
     },
     "emotional_aspirations": {
-      "enum": {
-        "clarity": "Clarté",
-        "calm": "Calme",
-        "confidence": "Confiance",
-        "self_compassion": "Bienveillance envers soi",
-        "connection": "Lien et présence",
-        "direction": "Direction ou sens",
-        "other": "Autre"
-      },
       "list": [
         {
           "label": "Clarté",

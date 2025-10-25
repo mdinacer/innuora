@@ -320,8 +320,9 @@ export async function generateSessionTitle(
       ],
       {
         temperature: 0.7,
-        max_tokens: 115,
+        max_completion_tokens: 115,
         top_p: 0.9,
+        model: "mini", // Use GPT-4.1-mini for title generation
       }
     );
 

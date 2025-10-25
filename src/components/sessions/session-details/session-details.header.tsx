@@ -23,11 +23,12 @@ const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
     title: session.title,
     subtitle: session.subtitle,
   });
-  const [isGenerating, setGenerating] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isGenerating, setGenerating] = useState(false);
   const {
     t,
     i18n: { language },
-  } = useTranslation("pages", { keyPrefix: "session_details.header" });
+  } = useTranslation("pages/session_details", { keyPrefix: "session_details.header" });
 
   const { cards, actions } = {
     actions: {

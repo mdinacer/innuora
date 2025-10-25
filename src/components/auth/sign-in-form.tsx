@@ -26,7 +26,7 @@ interface Props {
 
 const SignInForm: React.FC<Props> = ({ className }) => {
   const router = useRouter();
-  const { t } = useTranslation(["pages", "errors"]);
+  const { t } = useTranslation(["pages/auth", "errors"]);
 
   const [formError, setFormError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);

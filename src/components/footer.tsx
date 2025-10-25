@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default async function Footer({ locale = "en", showDisclaimer = true }: Props) {
-  const { t } = await initTranslations(locale, ["pages"]);
+  const { t } = await initTranslations(locale, ["pages/policies_footer"]);
 
   const { disclaimer, links, copyright } = {
     disclaimer: {
