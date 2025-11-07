@@ -6,6 +6,35 @@
 import { InnuoraAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { DEFAULT_SDM, SessionDynamicsMatrix, SessionPhase } from "./session-dynamics.types";
 
+// ========================================
+// SESSION DYNAMICS CONFIGURATION
+// ========================================
+
+/** Phase Evolution Thresholds */
+const PHASE_THRESHOLDS = {
+  middlePhase: {
+    adaptiveFactor: 0.45, // Transition to middle when adaptiveness reaches 45%
+    minimumTurns: 3, // Require at least 3 turns before entering middle phase
+  },
+  closingPhase: {
+    adaptiveFactor: 0.7, // Transition to closing when adaptiveness reaches 70%
+    minimumTurns: 5, // Require at least 5 turns before entering closing phase
+  },
+  durationScalingTurns: 10, // Number of turns to reach full duration weight
+};
+
+/** Emotional Breadth Weights - how we combine diversity and stability */
+const EMOTIONAL_BREADTH_WEIGHTS = {
+  diversity: 0.6, // Weight given to emotional variety (60%)
+  stability: 0.4, // Weight given to emotional consistency (40%)
+};
+
+/** Trend Detection Threshold - minimum change to detect rising/falling readiness */
+const READINESS_TREND_THRESHOLD = 0.5; // On a 1-5 scale
+
+/** Kalman-like Smoothing Factor - how much new data affects the aggregate */
+const MACRO_SMOOTHING_ALPHA = 0.3; // 30% new data, 70% historical (prevents wild swings)
+
 /** --- Helper: map emotion to valence/arousal space --- */
 function mapEmotion(emotion?: string | null): [number, number] {
   if (!emotion) return [0, 0];
@@ -51,7 +80,7 @@ function evolveSessionPhase(
   stability: number
 ): { phase: SessionPhase; confidence: number; durationWeight: number; diversity: number } {
   const n = history.length;
-  const durationWeight = Math.min(1, n / 10); // scales to 1 after ~10 turns
+  const durationWeight = Math.min(1, n / PHASE_THRESHOLDS.durationScalingTurns);
 
   // emotional diversity = unique emotions / total turns
   const uniqueEmotions = new Set(history.map((a) => a.emotion)).size;
@@ -59,13 +88,16 @@ function evolveSessionPhase(
 
   // adaptive thresholds
   const openness = readinessAvg / 5;
-  const emotionalBreadth = diversity * 0.6 + stability * 0.4;
+  const emotionalBreadth =
+    diversity * EMOTIONAL_BREADTH_WEIGHTS.diversity + stability * EMOTIONAL_BREADTH_WEIGHTS.stability;
   const adaptiveFactor = (openness + emotionalBreadth + durationWeight) / 3;
 
   // determine phase boundaries dynamically
   let phase: SessionPhase = "early";
-  if (adaptiveFactor > 0.45 && n >= 3) phase = "middle";
-  if (adaptiveFactor > 0.7 && n >= 5) phase = "closing";
+  if (adaptiveFactor > PHASE_THRESHOLDS.middlePhase.adaptiveFactor && n >= PHASE_THRESHOLDS.middlePhase.minimumTurns)
+    phase = "middle";
+  if (adaptiveFactor > PHASE_THRESHOLDS.closingPhase.adaptiveFactor && n >= PHASE_THRESHOLDS.closingPhase.minimumTurns)
+    phase = "closing";
 
   const confidence = Number(Math.min(1, Math.abs(adaptiveFactor - 0.5) * 2).toFixed(2));
 
@@ -94,7 +126,11 @@ export function updateSessionDynamicsMatrix(
   /** --- Determine short-term trend --- */
   const trendDelta = readinessVals.at(-1)! - readinessVals[0];
   const trend: "rising" | "falling" | "stabilizing" =
-    trendDelta > 0.5 ? "rising" : trendDelta < -0.5 ? "falling" : "stabilizing";
+    trendDelta > READINESS_TREND_THRESHOLD
+      ? "rising"
+      : trendDelta < -READINESS_TREND_THRESHOLD
+        ? "falling"
+        : "stabilizing";
 
   /** --- Compute Macro Stability (variance-based) --- */
   const valenceVar = vectors.reduce((s, v) => s + Math.pow(v[0] - avgValence, 2), 0) / vectors.length;
@@ -109,8 +145,8 @@ export function updateSessionDynamicsMatrix(
   const adaptive_focus = `${dominant_axis} in relation to ${latest.emotion}`;
 
   /** --- Blend old and new macro states (Kalman-like smoothing) --- */
-  const alpha = 0.3; // responsiveness factor
-  const blendedStability = prevSDM.macro.stability_index * (1 - alpha) + stability * alpha;
+  const blendedStability =
+    prevSDM.macro.stability_index * (1 - MACRO_SMOOTHING_ALPHA) + stability * MACRO_SMOOTHING_ALPHA;
 
   /** --- Construct New SDM --- */
   return {

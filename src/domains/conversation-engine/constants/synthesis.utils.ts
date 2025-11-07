@@ -63,14 +63,6 @@ export function buildContextDirectivePrompt(
     theme: meta?.theme,
     tone: trace?.tone,
   };
-  const capsule = {
-    phase: sdm.macro.session_phase,
-    focus: sdm.macro.adaptive_focus,
-    emotion_vector: sdm.meso.emotional_vector,
-    readiness: sdm.meso.readiness_vector,
-    trend: sdm.meso.trend,
-    stability: sdm.macro.stability_index,
-  };
 
   const prompts = [
     {
@@ -88,27 +80,4 @@ Output only the directive text.
   ];
 
   return prompts as ChatCompletionMessageParam[];
-
-  return [
-    {
-      role: "system",
-      content: `
-Write one concise, emotionally grounded directive (1–2 sentences) summarizing the current emotional state and readiness of the user.
-Use calm, warm, and clear language.
-Focus on what the next conversational stance should hold or protect.
-Output only the directive — no explanations, no preamble.
-      `.trim(),
-    },
-    {
-      role: "user",
-      content: `
-Here is the current session capsule combining micro (analysis), relational, and macro dynamics.
-Infer gently if any field is missing and write only the directive:
-      `.trim(),
-    },
-    {
-      role: "user",
-      content: JSON.stringify({ capsule, meta, trace }, null, 2),
-    },
-  ];
 }

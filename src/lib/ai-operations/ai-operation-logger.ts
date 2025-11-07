@@ -13,7 +13,6 @@
 import { AiOperationType } from "@prisma/client";
 
 import { AIModelCategory } from "@/domains/ai-conversation/ai-models";
-import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { ModelTokenUsage } from "@/types/ai-model.types";
@@ -79,27 +78,26 @@ export interface AiOperationContext {
  * });
  */
 export async function logAiOperation(context: AiOperationContext): Promise<void> {
-  const result = await logger.wrapOperation(
-    async () => {
-      await prisma.aiOperationLog.create({
-        data: {
-          userId: context.userId,
-          sessionId: context.sessionId,
-          messageId: context.messageId,
-          operation: context.operation,
-          model: OPERATION_MODEL_MAPPING[context.operation],
-          inputTokens: context.tokenUsage.promptTokens || 0,
-          outputTokens: context.tokenUsage.completionTokens || 0,
-          totalTokens: context.tokenUsage.totalTokens || 0,
-          creditsCharged: context.creditsCharged,
-          rawCostUSD: calculateAiCostUSD(context.tokenUsage),
-          metadata: context.metadata || {},
-          timestamp: new Date(),
-        },
-      });
-    },
-    ERROR_CODES.AI_OPERATION_LOG_FAILED,
-    {
+  try {
+    await prisma.aiOperationLog.create({
+      data: {
+        userId: context.userId,
+        sessionId: context.sessionId,
+        messageId: context.messageId,
+        operation: context.operation,
+        model: OPERATION_MODEL_MAPPING[context.operation],
+        inputTokens: context.tokenUsage.promptTokens || 0,
+        outputTokens: context.tokenUsage.completionTokens || 0,
+        totalTokens: context.tokenUsage.totalTokens || 0,
+        creditsCharged: context.creditsCharged,
+        rawCostUSD: calculateAiCostUSD(context.tokenUsage),
+        metadata: context.metadata || {},
+        timestamp: new Date(),
+      },
+    });
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("AI operation log failed", {
       operation: "ai_operation_log",
       userId: context.userId,
       sessionId: context.sessionId,
@@ -109,12 +107,8 @@ export async function logAiOperation(context: AiOperationContext): Promise<void>
         totalTokens: context.tokenUsage.totalTokens,
         creditsCharged: context.creditsCharged,
       },
-    },
-    "AI operation logged successfully"
-  );
-
-  if (result.error) {
-    throw new Error(result.error.message);
+    });
+    throw err;
   }
 }
 

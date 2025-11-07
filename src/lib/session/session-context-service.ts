@@ -24,6 +24,7 @@ import type {
 } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { decryptServerData, encryptServerData, ServerDataContent } from "@/lib/crypto/server-crypto";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
+import { AppError } from "@/lib/errors/app-error";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
@@ -65,92 +66,87 @@ export interface SessionContext {
  * const context = await getSessionContext(sessionId);
  */
 export async function getSessionContext(sessionId: string, requiredUserId?: string): Promise<SessionContext> {
-  const result = await logger.wrapOperation(
-    async () => {
-      // Fetch session with separate context table
-      const session = await prisma.session.findUnique({
-        where: { id: sessionId },
-        select: {
-          id: true,
-          userId: true,
-          serverContext: {
-            select: {
-              encryptedData: true,
-            },
+  try {
+    // Fetch session with separate context table
+    const session = await prisma.session.findUnique({
+      where: { id: sessionId },
+      select: {
+        id: true,
+        userId: true,
+        serverContext: {
+          select: {
+            encryptedData: true,
           },
         },
+      },
+    });
+
+    if (!session) {
+      logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error(`Session not found: ${sessionId}`), {
+        operation: "session_context_get",
+        sessionId,
       });
+      // TypeScript doesn't know logErrorAndThrow never returns
+      throw new Error("Unreachable");
+    }
 
-      if (!session) {
-        logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error(`Session not found: ${sessionId}`), {
-          operation: "session_context_get",
+    // SECURITY: Validate session ownership if requiredUserId provided
+    if (requiredUserId && session.userId !== requiredUserId) {
+      logger.logErrorAndThrow(
+        ERROR_CODES.AUTH_UNAUTHORIZED,
+        new Error(`User ${requiredUserId} does not own session ${sessionId}`),
+        {
+          operation: "session_context_get_ownership_check",
           sessionId,
-        });
-        // TypeScript doesn't know logErrorAndThrow never returns
-        throw new Error("Unreachable");
-      }
-
-      // SECURITY: Validate session ownership if requiredUserId provided
-      if (requiredUserId && session.userId !== requiredUserId) {
-        logger.logErrorAndThrow(
-          ERROR_CODES.AUTH_UNAUTHORIZED,
-          new Error(`User ${requiredUserId} does not own session ${sessionId}`),
-          {
-            operation: "session_context_get_ownership_check",
-            sessionId,
-            metadata: {
-              requiredUserId,
-              actualUserId: session.userId,
-            },
-          }
-        );
-      }
-
-      // If no server context exists yet, return empty context
-      if (!session.serverContext) {
-        return {
-          sessionId: session.id,
-          userId: session.userId,
-          analysisSnapshots: [],
-          aggregatedAnalysis: null,
-          memoryStore: null,
-          v7_relational_trace: null,
-          v7_analyses: [],
-          v7_context_lifecycle: null,
-          v7_session_dynamics: null,
-        };
-      }
-
-      // Decrypt server data from SessionContext table
-      const decryptedData = await decryptServerData<ServerDataContent>(
-        session.serverContext.encryptedData as EncryptedBlob
+          metadata: {
+            requiredUserId,
+            actualUserId: session.userId,
+          },
+        }
       );
+    }
 
+    // If no server context exists yet, return empty context
+    if (!session.serverContext) {
       return {
         sessionId: session.id,
         userId: session.userId,
-        analysisSnapshots: decryptedData.analysisSnapshots || [],
-        aggregatedAnalysis: decryptedData.aggregatedAnalysis || null,
-        memoryStore: decryptedData.memoryStore || null,
-        v7_relational_trace: (decryptedData.v7_relational_trace as RelationalTrace) ?? null,
-        v7_analyses: (decryptedData.v7_analyses as InnuoraAnalysis[]) ?? [],
-        v7_context_lifecycle: (decryptedData.v7_context_lifecycle as ContextLifecycle) ?? null,
-        v7_session_dynamics: (decryptedData.v7_session_dynamics as SessionDynamicsMatrix) ?? null,
+        analysisSnapshots: [],
+        aggregatedAnalysis: null,
+        memoryStore: null,
+        v7_relational_trace: null,
+        v7_analyses: [],
+        v7_context_lifecycle: null,
+        v7_session_dynamics: null,
       };
-    },
-    ERROR_CODES.SESSION_CONTEXT_FETCH_FAILED,
-    {
+    }
+
+    // Decrypt server data from SessionContext table
+    const decryptedData = await decryptServerData<ServerDataContent>(
+      session.serverContext.encryptedData as EncryptedBlob
+    );
+
+    return {
+      sessionId: session.id,
+      userId: session.userId,
+      analysisSnapshots: decryptedData.analysisSnapshots || [],
+      aggregatedAnalysis: decryptedData.aggregatedAnalysis || null,
+      memoryStore: decryptedData.memoryStore || null,
+      v7_relational_trace: (decryptedData.v7_relational_trace as RelationalTrace) ?? null,
+      v7_analyses: (decryptedData.v7_analyses as InnuoraAnalysis[]) ?? [],
+      v7_context_lifecycle: (decryptedData.v7_context_lifecycle as ContextLifecycle) ?? null,
+      v7_session_dynamics: (decryptedData.v7_session_dynamics as SessionDynamicsMatrix) ?? null,
+    };
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("Session context fetch failed", {
       operation: "session_context_get",
       sessionId,
-    },
-    "Session context fetched successfully"
-  );
-
-  if (result.error) {
-    throw new Error(result.error.message);
+    });
+    throw err;
   }
-
-  return result.data;
 }
 
 /**
@@ -170,60 +166,57 @@ export async function updateSessionContext(
   sessionId: string,
   updates: Partial<Omit<ServerDataContent, "sessionId" | "userId">>
 ): Promise<void> {
-  const result = await logger.wrapOperation(
-    async () => {
-      // Fetch current context (always fresh, no cache)
-      const currentContext = await getSessionContext(sessionId);
+  try {
+    // Fetch current context (always fresh, no cache)
+    const currentContext = await getSessionContext(sessionId);
 
-      // Merge updates with current data
-      const updatedData: ServerDataContent = {
-        analysisSnapshots: updates.analysisSnapshots ?? currentContext.analysisSnapshots,
-        aggregatedAnalysis: updates.aggregatedAnalysis ?? currentContext.aggregatedAnalysis,
-        memoryStore: updates.memoryStore ?? currentContext.memoryStore,
-        v7_relational_trace: updates.v7_relational_trace ?? currentContext.v7_relational_trace ?? null,
-        v7_analyses: updates.v7_analyses ?? currentContext.v7_analyses ?? [],
-        v7_context_lifecycle: updates.v7_context_lifecycle ?? currentContext.v7_context_lifecycle ?? null,
-        v7_session_dynamics: updates.v7_session_dynamics ?? currentContext.v7_session_dynamics ?? null,
-      };
+    // Merge updates with current data
+    const updatedData: ServerDataContent = {
+      analysisSnapshots: updates.analysisSnapshots ?? currentContext.analysisSnapshots,
+      aggregatedAnalysis: updates.aggregatedAnalysis ?? currentContext.aggregatedAnalysis,
+      memoryStore: updates.memoryStore ?? currentContext.memoryStore,
+      v7_relational_trace: updates.v7_relational_trace ?? currentContext.v7_relational_trace ?? null,
+      v7_analyses: updates.v7_analyses ?? currentContext.v7_analyses ?? [],
+      v7_context_lifecycle: updates.v7_context_lifecycle ?? currentContext.v7_context_lifecycle ?? null,
+      v7_session_dynamics: updates.v7_session_dynamics ?? currentContext.v7_session_dynamics ?? null,
+    };
 
-      // Encrypt updated data
-      const encryptedData = await encryptServerData(updatedData);
+    // Encrypt updated data
+    const encryptedData = await encryptServerData(updatedData);
 
-      // Upsert to SessionContext table (create if doesn't exist, update if exists)
-      await prisma.sessionContext.upsert({
-        where: { sessionId },
-        create: {
-          sessionId,
-          encryptedData: encryptedData as any,
-        },
-        update: {
-          encryptedData: encryptedData as any,
-          updatedAt: new Date(),
-        },
-      });
+    // Upsert to SessionContext table (create if doesn't exist, update if exists)
+    await prisma.sessionContext.upsert({
+      where: { sessionId },
+      create: {
+        sessionId,
+        encryptedData: encryptedData as any,
+      },
+      update: {
+        encryptedData: encryptedData as any,
+        updatedAt: new Date(),
+      },
+    });
 
-      // Also update session timestamp
-      await prisma.session.update({
-        where: { id: sessionId },
-        data: {
-          updatedAt: new Date(),
-        },
-      });
-    },
-    ERROR_CODES.SESSION_CONTEXT_UPDATE_FAILED,
-    {
+    // Also update session timestamp
+    await prisma.session.update({
+      where: { id: sessionId },
+      data: {
+        updatedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("Session context update failed", {
       operation: "session_context_update",
       sessionId,
       metadata: {
         hasAnalysisUpdate: !!updates.analysisSnapshots,
         hasMemoryUpdate: !!updates.memoryStore,
       },
-    },
-    "Session context updated successfully"
-  );
-
-  if (result.error) {
-    throw new Error(result.error.message);
+    });
+    throw err;
   }
 }
 
@@ -234,40 +227,37 @@ export async function updateSessionContext(
  * @param sessionId - Session ID to initialize
  */
 export async function initializeSessionContext(sessionId: string): Promise<void> {
-  const result = await logger.wrapOperation(
-    async () => {
-      // Create empty server data
-      const emptyData: ServerDataContent = {
-        analysisSnapshots: [],
-        aggregatedAnalysis: null,
-        memoryStore: null,
-        v7_relational_trace: null,
-        v7_analyses: [],
-        v7_context_lifecycle: null,
-        v7_session_dynamics: null,
-      };
+  try {
+    // Create empty server data
+    const emptyData: ServerDataContent = {
+      analysisSnapshots: [],
+      aggregatedAnalysis: null,
+      memoryStore: null,
+      v7_relational_trace: null,
+      v7_analyses: [],
+      v7_context_lifecycle: null,
+      v7_session_dynamics: null,
+    };
 
-      // Encrypt
-      const encryptedData = await encryptServerData(emptyData);
+    // Encrypt
+    const encryptedData = await encryptServerData(emptyData);
 
-      // Create SessionContext entry
-      await prisma.sessionContext.create({
-        data: {
-          sessionId,
-          encryptedData: encryptedData as any,
-        },
-      });
-    },
-    ERROR_CODES.SESSION_INITIALIZATION_FAILED,
-    {
+    // Create SessionContext entry
+    await prisma.sessionContext.create({
+      data: {
+        sessionId,
+        encryptedData: encryptedData as any,
+      },
+    });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("Session context initialization failed", {
       operation: "session_context_initialize",
       sessionId,
-    },
-    "Session context initialized successfully"
-  );
-
-  if (result.error) {
-    throw new Error(result.error.message);
+    });
+    throw err;
   }
 }
 

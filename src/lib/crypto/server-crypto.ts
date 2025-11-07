@@ -89,43 +89,36 @@ async function getAppEncryptionKey(): Promise<CryptoKey> {
  * });
  */
 export async function encryptServerData(data: object): Promise<EncryptedBlob> {
-  const result = await logger.wrapOperation(
-    async () => {
-      const key = await getAppEncryptionKey();
+  try {
+    const key = await getAppEncryptionKey();
 
-      // Generate random IV (12 bytes for GCM)
-      const iv = webcrypto.getRandomValues(new Uint8Array(12));
+    // Generate random IV (12 bytes for GCM)
+    const iv = webcrypto.getRandomValues(new Uint8Array(12));
 
-      // Serialize data to JSON
-      const jsonString = JSON.stringify(data);
-      const encoded = new TextEncoder().encode(jsonString);
+    // Serialize data to JSON
+    const jsonString = JSON.stringify(data);
+    const encoded = new TextEncoder().encode(jsonString);
 
-      // Encrypt with AES-GCM
-      const ciphertext = await webcrypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoded);
+    // Encrypt with AES-GCM
+    const ciphertext = await webcrypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoded);
 
-      // Return as base64-encoded blob
-      return {
-        version: 1,
-        alg: "AES-GCM" as const,
-        iv: Buffer.from(iv).toString("base64"),
-        ciphertext: Buffer.from(ciphertext).toString("base64"),
-      };
-    },
-    ERROR_CODES.CRYPTO_ENCRYPTION_FAILED,
-    {
+    // Return as base64-encoded blob
+    return {
+      version: 1,
+      alg: "AES-GCM" as const,
+      iv: Buffer.from(iv).toString("base64"),
+      ciphertext: Buffer.from(ciphertext).toString("base64"),
+    };
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("Server data encryption failed", {
       operation: "server_crypto_encrypt",
       metadata: {
         dataSize: JSON.stringify(data).length,
       },
-    },
-    "Server data encrypted successfully"
-  );
-
-  if (result.error) {
-    throw new Error(result.error.message);
+    });
+    throw err;
   }
-
-  return result.data;
 }
 
 /**
@@ -139,36 +132,29 @@ export async function encryptServerData(data: object): Promise<EncryptedBlob> {
  * const analyses = serverData.analysisSnapshots;
  */
 export async function decryptServerData<T = object>(blob: EncryptedBlob): Promise<T> {
-  const result = await logger.wrapOperation(
-    async () => {
-      const key = await getAppEncryptionKey();
+  try {
+    const key = await getAppEncryptionKey();
 
-      // Decode from base64
-      const iv = Buffer.from(blob.iv, "base64");
-      const ciphertext = Buffer.from(blob.ciphertext, "base64");
+    // Decode from base64
+    const iv = Buffer.from(blob.iv, "base64");
+    const ciphertext = Buffer.from(blob.ciphertext, "base64");
 
-      // Decrypt with AES-GCM
-      const decrypted = await webcrypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+    // Decrypt with AES-GCM
+    const decrypted = await webcrypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
 
-      // Decode and parse JSON
-      const decoded = new TextDecoder().decode(decrypted);
-      return JSON.parse(decoded) as T;
-    },
-    ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
-    {
+    // Decode and parse JSON
+    const decoded = new TextDecoder().decode(decrypted);
+    return JSON.parse(decoded) as T;
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("Server data decryption failed", {
       operation: "server_crypto_decrypt",
       metadata: {
         blobSize: blob.ciphertext.length,
       },
-    },
-    "Server data decrypted successfully"
-  );
-
-  if (result.error) {
-    throw new Error(result.error.message);
+    });
+    throw err;
   }
-
-  return result.data;
 }
 
 /**

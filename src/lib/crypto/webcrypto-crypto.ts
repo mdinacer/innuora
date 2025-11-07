@@ -2,7 +2,7 @@ import localforage from "localforage";
 
 import { EncryptedBlob, WrappedKeyPackage } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import type { ActionResult } from "@/types/action-result";
 
 /* webcrypto-crypto.ts
@@ -12,6 +12,27 @@ import type { ActionResult } from "@/types/action-result";
    - Content key is wrapped with AES-KW and stored as WrappedKeyPackage
 */
 const SESSION_KEY = "MCK";
+
+async function runCryptoAction<T>(
+  operation: () => Promise<T>,
+  context: { operation: string; metadata?: Record<string, unknown> },
+  errorCode: string
+): Promise<ActionResult<T>> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError(err.message, context);
+    return {
+      data: null,
+      error: {
+        message: err.message,
+        code: errorCode,
+      },
+    };
+  }
+}
 
 /* ---------- Runtime / utilities ---------- */
 const subtle = (globalThis as any).crypto?.subtle;
@@ -65,7 +86,7 @@ export async function deriveWrappingKeyFromPassword(
   saltB64: string,
   iterations = 600_000
 ): Promise<ActionResult<CryptoKey>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       const s = ensureSubtle();
       const enc = new TextEncoder();
@@ -89,8 +110,8 @@ export async function deriveWrappingKeyFromPassword(
 
       return wrappingKey;
     },
-    ERROR_CODES.CRYPTO_KEY_DERIVATION_FAILED,
-    { operation: "deriveWrappingKeyFromPassword", metadata: { iterations } }
+    { operation: "deriveWrappingKeyFromPassword", metadata: { iterations } },
+    ERROR_CODES.CRYPTO_KEY_DERIVATION_FAILED
   );
 }
 
@@ -98,13 +119,13 @@ export async function deriveWrappingKeyFromPassword(
 
 /** Generate a fresh AES-GCM content key (extractable so we can wrap/export if needed). */
 export async function generateContentKey(): Promise<ActionResult<CryptoKey>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       const s = ensureSubtle();
       return s.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     },
-    ERROR_CODES.CRYPTO_KEY_GENERATION_FAILED,
-    { operation: "generateContentKey" }
+    { operation: "generateContentKey" },
+    ERROR_CODES.CRYPTO_KEY_GENERATION_FAILED
   );
 }
 
@@ -133,7 +154,7 @@ export async function wrapContentKeyWithPassword(
   password: string,
   iterations = 600_000
 ): Promise<ActionResult<WrappedKeyPackage>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       const s = ensureSubtle();
       const salt = getRandomBytes(16);
@@ -158,8 +179,8 @@ export async function wrapContentKeyWithPassword(
         wrappedKey: wrappedB64,
       };
     },
-    ERROR_CODES.CRYPTO_KEY_WRAP_FAILED,
-    { operation: "wrapContentKeyWithPassword", metadata: { iterations } }
+    { operation: "wrapContentKeyWithPassword", metadata: { iterations } },
+    ERROR_CODES.CRYPTO_KEY_WRAP_FAILED
   );
 }
 
@@ -170,7 +191,7 @@ export async function unwrapContentKeyWithPassword(
   pkg: WrappedKeyPackage,
   password: string
 ): Promise<ActionResult<CryptoKey>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       const s = ensureSubtle();
 
@@ -205,8 +226,8 @@ export async function unwrapContentKeyWithPassword(
 
       return contentKey;
     },
-    ERROR_CODES.CRYPTO_KEY_UNWRAP_FAILED,
-    { operation: "unwrapContentKeyWithPassword", metadata: { iterations: pkg.iterations } }
+    { operation: "unwrapContentKeyWithPassword", metadata: { iterations: pkg.iterations } },
+    ERROR_CODES.CRYPTO_KEY_UNWRAP_FAILED
   );
 }
 
@@ -217,7 +238,7 @@ export async function unwrapContentKeyWithPassword(
  * Returns an EncryptedBlob (JSON-serializable): { iv, ciphertext }.
  */
 export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): Promise<ActionResult<EncryptedBlob>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       const json = JSON.stringify(data);
       const pt = new TextEncoder().encode(json);
@@ -230,8 +251,8 @@ export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): P
         ciphertext: arrayBufferToBase64(cipherBuffer),
       };
     },
-    ERROR_CODES.CRYPTO_ENCRYPTION_FAILED,
-    { operation: "encryptObjectWithKey" }
+    { operation: "encryptObjectWithKey" },
+    ERROR_CODES.CRYPTO_ENCRYPTION_FAILED
   );
 }
 
@@ -239,7 +260,7 @@ export async function encryptObjectWithKey<T>(data: T, contentKey: CryptoKey): P
  * Decrypt an EncryptedBlob using a contentKey and parse JSON back into T.
  */
 export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: CryptoKey): Promise<ActionResult<T>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       const s = ensureSubtle();
       if (!blob.iv || !blob.ciphertext) {
@@ -267,8 +288,8 @@ export async function decryptObjectWithKey<T>(blob: EncryptedBlob, contentKey: C
       const json = new TextDecoder().decode(plainBuf!);
       return JSON.parse(json) as T;
     },
-    ERROR_CODES.CRYPTO_DECRYPTION_FAILED,
-    { operation: "decryptObjectWithKey" }
+    { operation: "decryptObjectWithKey" },
+    ERROR_CODES.CRYPTO_DECRYPTION_FAILED
   );
 }
 
@@ -337,7 +358,7 @@ export async function getStoredContentKey(): Promise<CryptoKey | null> {
  * The "remember me" checkbox only controls auth session persistence, not encryption keys.
  */
 export async function storeContentKey(key: CryptoKey): Promise<ActionResult<void>> {
-  return await logger.wrapOperation(
+  return runCryptoAction(
     async () => {
       // Export CryptoKey to base64
       const keyB64 = await exportKeyToBase64(key);
@@ -347,8 +368,8 @@ export async function storeContentKey(key: CryptoKey): Promise<ActionResult<void
       // Always store in IndexedDB (persistent)
       await localforage.setItem(SESSION_KEY, keyB64);
     },
-    ERROR_CODES.CRYPTO_KEY_STORAGE_FAILED,
-    { operation: "storeContentKey" }
+    { operation: "storeContentKey" },
+    ERROR_CODES.CRYPTO_KEY_STORAGE_FAILED
   );
 }
 

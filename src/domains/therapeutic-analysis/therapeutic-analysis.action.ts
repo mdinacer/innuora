@@ -1,7 +1,10 @@
 "use server";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
-import { TherapeuticAnalysisEngine } from "@/domains/therapeutic-analysis/therapeutic-analysis.engine";
+import {
+  getAnalysisContextPrompt,
+  safeParseTherapeuticAnalysis,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.engine";
 import THERAPEUTIC_ANALYSIS_PROMPT from "@/domains/therapeutic-analysis/therapeutic-analysis.prompt";
 import { TherapeuticAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
@@ -28,13 +31,7 @@ export async function analyzeUserInput(
         });
       }
 
-      const therapeuticAnalysisEngine = new TherapeuticAnalysisEngine();
-      const analysisContextPrompt = therapeuticAnalysisEngine.getAnalysisContextPrompt(
-        userInput,
-        prevData,
-        sessionMetadata,
-        recentMessages
-      );
+      const analysisContextPrompt = getAnalysisContextPrompt(userInput, prevData, sessionMetadata, recentMessages);
 
       const prompts = [THERAPEUTIC_ANALYSIS_PROMPT, analysisContextPrompt];
 
@@ -63,7 +60,7 @@ export async function analyzeUserInput(
 
       const { message, modelTokenUsage, consumedCredits } = response;
 
-      const analysis = therapeuticAnalysisEngine.safeParseTherapeuticAnalysis(message);
+      const analysis = safeParseTherapeuticAnalysis(message);
       if (!analysis) {
         logger.logErrorAndThrow(
           ERROR_CODES.CHAT_ANALYSIS_FAILED,

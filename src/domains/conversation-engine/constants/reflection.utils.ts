@@ -1,6 +1,38 @@
 import { InnuoraAnalysis } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { ReflectiveResponse, RelationalTraceApp, SAFE_FALLBACK_TRACE } from "../types/reflection.types";
 
+// Cooldown Configuration Constants
+// These values control how frequently psychoeducation and curiosity can be used
+const COOLDOWN_CONFIG = {
+  psychoeducation: {
+    initialCooldown: 2.5, // Turns to wait after using psychoeducation
+    decayFactor: 0.5, // How fast cooldown decreases per turn (50% per turn)
+  },
+  curiosity: {
+    initialCooldown: 1.5, // Turns to wait after asking a question
+    decayFactor: 0.4, // How fast cooldown decreases per turn (60% decay per turn)
+  },
+  activeThreshold: 0.25, // Below this value, cooldown is considered inactive
+};
+
+/**
+ * Calculate cooldown value for next turn
+ * @param wasUsedThisTurn - Whether the feature was used in current turn
+ * @param previousCooldown - Cooldown value from previous turn
+ * @param config - Cooldown configuration (initial value and decay rate)
+ * @returns Updated cooldown value
+ */
+function calculateCooldown(
+  wasUsedThisTurn: boolean,
+  previousCooldown: number,
+  config: { initialCooldown: number; decayFactor: number }
+): number {
+  if (wasUsedThisTurn) {
+    return config.initialCooldown;
+  }
+  return Math.max(0, Number((previousCooldown * config.decayFactor).toFixed(2)));
+}
+
 /**
  * Trace evolution with fractional cooldown decay and progressive stance logic.
  */
@@ -17,17 +49,12 @@ export function updateTraceFromOutput(
   const prevPsychoeduCooldown = prevTrace.psychoedu_cooldown_remaining ?? 0;
   const prevCuriosityCooldown = prevTrace.curiosity_cooldown_remaining ?? 0;
 
-  const DECAY_FACTOR_PSYCHO = 0.5;
-  const DECAY_FACTOR_CURIOUS = 0.4;
-  const ACTIVE_THRESHOLD = 0.25;
-
-  const nextPsychoeduCooldown = hasNewPsychoedu
-    ? 2.5
-    : Math.max(0, Number((prevPsychoeduCooldown * DECAY_FACTOR_PSYCHO).toFixed(2)));
-
-  const nextCuriosityCooldown = hasNewQuestion
-    ? 1.5
-    : Math.max(0, parseFloat((prevCuriosityCooldown * DECAY_FACTOR_CURIOUS).toFixed(2)));
+  const nextPsychoeduCooldown = calculateCooldown(
+    hasNewPsychoedu,
+    prevPsychoeduCooldown,
+    COOLDOWN_CONFIG.psychoeducation
+  );
+  const nextCuriosityCooldown = calculateCooldown(hasNewQuestion, prevCuriosityCooldown, COOLDOWN_CONFIG.curiosity);
 
   const next: RelationalTraceApp = {
     ...prevTrace,
@@ -58,8 +85,10 @@ export function updateTraceFromOutput(
     next.relational_stance = stanceProgressionMap[current] ?? "steady";
   }
 
-  if ((next.psychoedu_cooldown_remaining ?? 0) <= ACTIVE_THRESHOLD) next.psychoedu_cooldown_remaining = 0;
-  if ((next.curiosity_cooldown_remaining ?? 0) <= ACTIVE_THRESHOLD) next.curiosity_cooldown_remaining = 0;
+  if ((next.psychoedu_cooldown_remaining ?? 0) <= COOLDOWN_CONFIG.activeThreshold)
+    next.psychoedu_cooldown_remaining = 0;
+  if ((next.curiosity_cooldown_remaining ?? 0) <= COOLDOWN_CONFIG.activeThreshold)
+    next.curiosity_cooldown_remaining = 0;
 
   return next;
 }
@@ -90,8 +119,8 @@ export function applyMetaGuidanceGating(
   if (!meta) return response;
 
   const trace = prevTrace ?? SAFE_FALLBACK_TRACE;
-  const curiosityActive = (trace.curiosity_cooldown_remaining ?? 0) > 0.2;
-  const psychoActive = (trace.psychoedu_cooldown_remaining ?? 0) > 0.2;
+  const curiosityActive = (trace.curiosity_cooldown_remaining ?? 0) > COOLDOWN_CONFIG.activeThreshold;
+  const psychoActive = (trace.psychoedu_cooldown_remaining ?? 0) > COOLDOWN_CONFIG.activeThreshold;
 
   const gated = { ...response };
   gated.meta = {
@@ -171,8 +200,8 @@ export function buildReflectionDirective(analysis?: InnuoraAnalysis, relationalT
   const allowCuriosity = analysis?.allow_curiosity ?? inferCuriosityAllowance(analysis);
   const allowPsycho = analysis?.allow_psychoeducation ?? inferPsychoeducationAllowance(analysis);
 
-  const readyForCuriosity = allowCuriosity && curiosityCooldown <= 0.25;
-  const readyForPsycho = allowPsycho && psychoCooldown <= 0.25;
+  const readyForCuriosity = allowCuriosity && curiosityCooldown <= COOLDOWN_CONFIG.activeThreshold;
+  const readyForPsycho = allowPsycho && psychoCooldown <= COOLDOWN_CONFIG.activeThreshold;
 
   const lines: string[] = ["### TURN DIRECTIVES"];
 
