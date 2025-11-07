@@ -46,7 +46,7 @@ export async function getSessionSummary(
       } as ChatCompletionMessageParam,
     ],
     {
-      model: "mini", // Use GPT-4.1-mini for session summaries
+      model: "background", // Use GPT-4.1-mini for session summaries
     }
   );
 

@@ -10,7 +10,7 @@ import { ArrowDownCircle, ArrowUpCircle, Loader2 } from "lucide-react";
 import { getUserCreditHistory } from "@/app/actions/credit-actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditUtils } from "@/lib/credits/credit-config";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 
 interface CreditsTransactionHistoryProps {
   limit?: number;

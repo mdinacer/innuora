@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { clearStoredContentKey, getStoredContentKey } from "@/lib/crypto/webcrypto-crypto";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RequireKeyPhrase() {

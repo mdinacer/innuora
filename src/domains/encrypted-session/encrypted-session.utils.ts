@@ -4,7 +4,7 @@ import { decryptSession, encryptSession } from "@/domains/encrypted-session/encr
 import { SessionsStoreState, useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { ERROR_CODES } from "@/lib/errors";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 
 // NOTE: memoryStore, aggregatedAnalysis, analysisSnapshots
 // are now stored server-side only in encrypted serverData field

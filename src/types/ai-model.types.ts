@@ -32,6 +32,7 @@ export interface AiModel {
 export type ModelTokenUsage = {
   completionTokens: number;
   promptTokens: number;
+  cachedTokens: number;
   totalTokens: number;
   timestamp: string;
   responseLength: number;

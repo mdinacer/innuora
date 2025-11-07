@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { resetSessionData } from "@/domains/active-session/active-session.utils";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { generateMessageId } from "@/domains/session-flow/utils/generate-id";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 
 interface ActiveSessionStoreState {

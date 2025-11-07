@@ -15,6 +15,8 @@ interface CreditOperationResult {
   success: boolean;
   newBalance: number;
   transactionId: string;
+  creditsAdded?: number;
+  creditsDeducted?: number;
 }
 
 // =========================
@@ -82,6 +84,7 @@ async function _addCreditsInternal(
       success: true,
       newBalance: updatedUser.creditsBalance,
       transactionId: transaction.id,
+      creditsAdded: amount,
     };
   });
 
@@ -139,6 +142,7 @@ async function _deductCreditsInternal(
       success: true,
       newBalance: updatedUser.creditsBalance,
       transactionId: transaction.id,
+      creditsDeducted: amount,
     };
   });
 

@@ -1,17 +1,15 @@
-// For backward compatibility, also export the singleton with the old name
-import { sessionSynchronizer as syncInstance } from "./session-synchronizer-v2";
+/**
+ * Session Sync Domain
+ *
+ * Uses the lite implementation for simplicity and performance.
+ * Provides session synchronization between Active Store → Encrypted Store → Database.
+ */
 
-// Export the new refactored synchronizer
-export { SessionSynchronizerV2, sessionSynchronizer } from "./session-synchronizer-v2";
-
-// Export individual services for advanced usage
-export { SyncConfigManager } from "./config/sync-config";
-export { SyncStateManager } from "./state/sync-state-manager";
-export { LocalSyncService } from "./services/local-sync-service";
-export { CloudSyncService } from "./services/cloud-sync-service";
-export { RetryService } from "./utils/retry-service";
+// Export the lite synchronizer
+export { sessionSynchronizer } from "./session-sync-lite";
 
 // Export types
 export * from "./session-sync.types";
 
-export { syncInstance as SessionSynchronizer };
+// For backward compatibility
+export { sessionSynchronizer as SessionSynchronizer } from "./session-sync-lite";

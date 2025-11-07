@@ -349,13 +349,15 @@ model SubscriptionRenewal {
 
 enum AiOperationType {
   ANALYSIS // User input analysis
-  RESPONSE // AI response generation
-  MEMORY_UPDATE // Session memory consolidation
-  MEMORY_RECALL // Memory retrieval
-  SESSION_WELLNESS // Session wellness check
-  SESSION_SUMMARY // Session summary generation
-  TITLE_UPDATE // Auto title update
   DIAGNOSTIC // Diagnostic report generation
+  MEMORY_RECALL // Memory retrieval
+  MEMORY_UPDATE // Session memory consolidation
+  REFLECTION // Reflection stage (GPT-4o)
+  RESPONSE // AI response generation
+  SESSION_SUMMARY // Session summary generation
+  SESSION_WELLNESS // Session wellness check
+  SYNTHESIS // Context synthesis stage (GPT-4o-mini)
+  TITLE_UPDATE // Auto title update
 }
 
 enum LogLevel {

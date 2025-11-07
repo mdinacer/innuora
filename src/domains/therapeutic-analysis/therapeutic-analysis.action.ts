@@ -44,7 +44,7 @@ export async function analyzeUserInput(
       // Background analysis doesn't need full GPT-4.1 quality for human-like feel
       const result = await processAiPromptsWithRetry(prompts, {
         max_completion_tokens: 2000,
-        model: "mini", // GPT-4.1-mini: $0.30/M input vs $2/M for GPT-4.1
+        model: "background", // GPT-4.1-mini: $0.30/M input vs $2/M for GPT-4.1
       });
 
       // Unwrap ActionResult

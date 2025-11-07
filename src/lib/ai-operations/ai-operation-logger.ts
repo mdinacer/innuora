@@ -12,12 +12,24 @@
 
 import { AiOperationType } from "@prisma/client";
 
+import { AIModelCategory } from "@/domains/ai-conversation/ai-models";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 
-const AI_MODEL_NAME = process.env.AI_MODEL_NAME as string;
+const OPERATION_MODEL_MAPPING: Record<AiOperationType, AIModelCategory> = {
+  ANALYSIS: "background",
+  DIAGNOSTIC: "diagnostic",
+  MEMORY_RECALL: "background",
+  MEMORY_UPDATE: "background",
+  REFLECTION: "reflection",
+  RESPONSE: "reflection",
+  SESSION_SUMMARY: "auxiliary",
+  SESSION_WELLNESS: "background",
+  SYNTHESIS: "auxiliary",
+  TITLE_UPDATE: "background",
+};
 
 function calculateAiCostUSD(usage: ModelTokenUsage): number {
   // Parse environment variables safely
@@ -75,7 +87,7 @@ export async function logAiOperation(context: AiOperationContext): Promise<void>
           sessionId: context.sessionId,
           messageId: context.messageId,
           operation: context.operation,
-          model: AI_MODEL_NAME,
+          model: OPERATION_MODEL_MAPPING[context.operation],
           inputTokens: context.tokenUsage.promptTokens || 0,
           outputTokens: context.tokenUsage.completionTokens || 0,
           totalTokens: context.tokenUsage.totalTokens || 0,
@@ -93,7 +105,7 @@ export async function logAiOperation(context: AiOperationContext): Promise<void>
       sessionId: context.sessionId,
       metadata: {
         operationType: context.operation,
-        model: AI_MODEL_NAME,
+        model: OPERATION_MODEL_MAPPING[context.operation],
         totalTokens: context.tokenUsage.totalTokens,
         creditsCharged: context.creditsCharged,
       },

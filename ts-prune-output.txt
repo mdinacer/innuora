@@ -1,0 +1,494 @@
+next.config.ts:126 - default
+playwright.config.ts:6 - default
+vitest.config.ts:5 - default
+src/middleware.ts:5 - middleware
+src/middleware.ts:9 - config
+.next/types/routes.d.ts:42 - ParamsOf
+.next/types/routes.d.ts:52 - PageRoutes (used in module)
+.next/types/routes.d.ts:52 - RedirectRoutes (used in module)
+.next/types/routes.d.ts:52 - RewriteRoutes (used in module)
+src/app/error.tsx:13 - default
+src/components/background-animation.tsx:31 - default
+src/components/dynamic-loaders.tsx:16 - SessionPage (used in module)
+src/components/dynamic-loaders.tsx:20 - SessionDetails (used in module)
+src/components/dynamic-loaders.tsx:24 - OpenChat (used in module)
+src/components/dynamic-loaders.tsx:28 - FlowChat (used in module)
+src/components/dynamic-loaders.tsx:33 - SessionForm (used in module)
+src/components/dynamic-loaders.tsx:37 - SignUpForm (used in module)
+src/components/dynamic-loaders.tsx:41 - SignInForm (used in module)
+src/components/dynamic-loaders.tsx:46 - AccountManagement (used in module)
+src/components/dynamic-loaders.tsx:50 - BillingManagement (used in module)
+src/components/dynamic-loaders.tsx:55 - SettingsPage (used in module)
+src/components/dynamic-loaders.tsx:60 - CreditsBalance (used in module)
+src/components/dynamic-loaders.tsx:64 - CreditsTransactionHistory (used in module)
+src/components/dynamic-loaders.tsx:77 - DynamicChat
+src/components/dynamic-loaders.tsx:82 - DynamicForms
+src/components/dynamic-loaders.tsx:88 - DynamicCredits
+src/config/app.ts:121 - AVATAR_LETTERS (used in module)
+src/config/app.ts:128 - APP_NAMES (used in module)
+src/config/app.ts:144 - SOCIAL_URLS (used in module)
+src/config/app.ts:154 - AppConfig
+src/config/app.ts:155 - AvatarLetter
+src/config/app.ts:156 - AppName
+src/config/app.ts:157 - EmailAddress
+src/config/app.ts:158 - SocialUrl
+src/lib/env-validation.ts:38 - validateEnvironmentVariables
+src/lib/env-validation.ts:119 - getOptionalEnvVar
+src/lib/env-validation.ts:127 - validateClientEnvironment
+src/lib/env-validation.ts:27 - EnvironmentValidationError (used in module)
+src/stores/app-user.store.ts:12 - AppUserStoreState (used in module)
+src/types/action-result.ts:7 - ActionError (used in module)
+src/types/ai-model.types.ts:1 - ModelMode (used in module)
+src/types/ai-model.types.ts:2 - Vendor (used in module)
+src/types/ai-model.types.ts:3 - ModelType
+src/types/ai-model.types.ts:10 - TokenUsage
+src/types/content.types.ts:7 - ContentCategorySchema (used in module)
+src/types/content.types.ts:27 - ContentCategory (used in module)
+src/types/content.types.ts:30 - GuideCategory
+src/types/content.types.ts:31 - InsightCategory
+src/types/content.types.ts:33 - ContentTypeSchema (used in module)
+src/types/content.types.ts:35 - ContentType (used in module)
+src/types/content.types.ts:37 - ContentIntentSchema (used in module)
+src/types/content.types.ts:48 - ContentIntent
+src/types/content.types.ts:54 - ContentMetadataSchema (used in module)
+src/types/content.types.ts:119 - ContentRecommendationContext
+src/types/flow-session.types.ts:94 - StepOfType (used in module)
+src/types/flow-session.types.ts:95 - UserInputStep
+src/types/metadata.types.ts:151 - isPaymentCreditMetadata
+src/types/metadata.types.ts:163 - isSubscriptionCreditMetadata
+src/types/metadata.types.ts:175 - isAiUsageCreditMetadata
+src/types/metadata.types.ts:187 - isSessionMetadata
+src/types/metadata.types.ts:205 - parseMetadata
+src/types/metadata.types.ts:222 - castMetadata
+src/types/metadata.types.ts:18 - PaymentCreditMetadata (used in module)
+src/types/metadata.types.ts:29 - SubscriptionCreditMetadata (used in module)
+src/types/metadata.types.ts:39 - AiUsageCreditMetadata (used in module)
+src/types/metadata.types.ts:50 - CreditTransactionMetadata
+src/types/metadata.types.ts:63 - SessionMetadata (used in module)
+src/types/metadata.types.ts:90 - UserProfileMetadata
+src/types/metadata.types.ts:109 - AuditLogMetadata
+src/types/metadata.types.ts:135 - NotificationMetadata
+src/types/open-chat-message.types.ts:1 - OpenChatMessageRole (used in module)
+src/types/server-analytics.types.ts:13 - TokenUsageRecord (used in module)
+src/types/server-analytics.types.ts:65 - OperationMetrics (used in module)
+src/types/server-analytics.types.ts:88 - ServerAnalytics (used in module)
+src/types/server-analytics.types.ts:183 - ServerAnalyticsSchema
+src/types/server-analytics.types.ts:214 - ServerAnalyticsUtils (used in module)
+src/app/[locale]/layout.tsx:22 - generateStaticParams
+src/app/[locale]/layout.tsx:29 - default
+src/app/[locale]/layout.tsx:26 - metadata
+src/app/[locale]/layout.tsx:27 - viewport
+src/app/actions/session-actions.ts:35 - getSessionsUpdateInfo
+src/app/actions/session-actions.ts:196 - getSessionChartData
+src/app/actions/user-actions.ts:16 - getUserById (used in module)
+src/app/actions/user-actions.ts:74 - getCurrentUserWithRelations
+src/app/actions/user-actions.ts:186 - updateUserById (used in module)
+src/app/actions/user-actions.ts:223 - deleteUserById (used in module)
+src/app/actions/user-actions.ts:335 - deleteCurrentUser
+src/app/actions/user-actions.ts:340 - checkUserExists
+src/app/actions/user-actions.ts:357 - updateUserProfile
+src/app/actions/user-config-actions.ts:138 - updateAppearanceSettings
+src/app/actions/user-config-actions.ts:9 - UserConfigData (used in module)
+src/app/actions/user-context.ts:63 - _getUserByAuthIdInternal
+src/app/actions/user-context.ts:13 - AuthenticatedUserContext (used in module)
+src/components/billing/payment-modal.tsx:252 - PaymentModal (used in module)
+src/components/billing/purchase-history.tsx:37 - PurchaseHistory (used in module)
+src/components/chat-ui/index.ts:1 - Container
+src/components/chat-ui/index.ts:2 - Header
+src/components/chat-ui/index.ts:3 - Indicator
+src/components/chat-ui/index.ts:4 - Menu
+src/components/chat-ui/index.ts:5 - MessagesContainer
+src/components/chat-ui/index.ts:6 - ThemeToggle
+src/components/content/content-recommendation-list.tsx:18 - ContentRecommendationList
+src/components/credits/credit-packages.tsx:173 - default
+src/components/credits/index.ts:2 - CreditsBalance
+src/components/credits/index.ts:3 - InsufficientCreditsWarning
+src/components/credits/index.ts:4 - CreditsTransactionHistory
+src/components/credits/index.ts:5 - CreditPackages
+src/components/credits/index.ts:8 - CreditTransaction
+src/components/credits/insufficient-credits-warning.tsx:89 - default
+src/components/crisis/crisis-confirmation-dialog.tsx:62 - default
+src/components/input/password-field.tsx:60 - Props (used in module)
+src/components/input/select-field.tsx:106 - default
+src/components/input/select-input.tsx:8 - SelectInputProps (used in module)
+src/components/input/select-input.tsx:100 - default
+src/components/mir-ui/badge.tsx:34 - BadgeProps (used in module)
+src/components/mir-ui/badge.tsx:42 - badgeVariants (used in module)
+src/components/mir-ui/button.tsx:38 - ButtonProps (used in module)
+src/components/pwa/pwa-install-prompt.tsx:175 - usePWAInstall
+src/components/pwa/service-worker-registration.tsx:42 - useBackgroundSync
+src/components/session-diagnostics/user-diagnostics-view.tsx:364 - default
+src/components/ui/alert-dialog.tsx:103 - AlertDialogPortal (used in module)
+src/components/ui/alert-dialog.tsx:104 - AlertDialogOverlay (used in module)
+src/components/ui/alert-dialog.tsx:105 - AlertDialogTrigger (used in module)
+src/components/ui/badge.tsx:23 - BadgeProps (used in module)
+src/components/ui/badge.tsx:29 - badgeVariants (used in module)
+src/components/ui/card.tsx:56 - CardFooter (used in module)
+src/components/ui/card.tsx:56 - CardAction (used in module)
+src/components/ui/dialog.tsx:119 - DialogOverlay (used in module)
+src/components/ui/dialog.tsx:120 - DialogPortal (used in module)
+src/components/ui/dropdown-menu.tsx:205 - DropdownMenuPortal (used in module)
+src/components/ui/dropdown-menu.tsx:211 - DropdownMenuCheckboxItem (used in module)
+src/components/ui/dropdown-menu.tsx:212 - DropdownMenuRadioGroup (used in module)
+src/components/ui/dropdown-menu.tsx:213 - DropdownMenuRadioItem (used in module)
+src/components/ui/dropdown-menu.tsx:215 - DropdownMenuShortcut (used in module)
+src/components/ui/dropdown-menu.tsx:216 - DropdownMenuSub (used in module)
+src/components/ui/dropdown-menu.tsx:217 - DropdownMenuSubTrigger (used in module)
+src/components/ui/dropdown-menu.tsx:218 - DropdownMenuSubContent (used in module)
+src/components/ui/form.tsx:143 - useFormField (used in module)
+src/components/ui/select.tsx:154 - SelectLabel (used in module)
+src/components/ui/select.tsx:155 - SelectScrollDownButton (used in module)
+src/components/ui/select.tsx:156 - SelectScrollUpButton (used in module)
+src/components/ui/select.tsx:157 - SelectSeparator (used in module)
+src/constants/app-config/index.ts:5 - METADATA
+src/constants/app-config/index.ts:3 - VIEWPORT
+src/constants/app-config/index.ts:4 - geistSans
+src/constants/app-config/index.ts:5 - geistMono
+src/constants/app-config/index.ts:6 - cairo
+src/constants/app-config/index.ts:11 - tajawal
+src/domains/chat-context/chat-context.manager.ts:9 - ChatContextManager
+src/domains/conversation-engine/index.ts:9 - handleHolisticUserInput
+src/domains/encrypted-session/encrypted-session.actions.ts:22 - getUserSessionOverviews
+src/domains/encrypted-session/encrypted-session.actions.ts:54 - getUserSessions
+src/domains/encrypted-session/encrypted-session.actions.ts:60 - getUserSession
+src/domains/encrypted-session/encrypted-session.actions.ts:66 - createSession
+src/domains/encrypted-session/encrypted-session.actions.ts:102 - addSession
+src/domains/encrypted-session/encrypted-session.actions.ts:128 - updateSession
+src/domains/encrypted-session/encrypted-session.actions.ts:151 - deleteSession
+src/domains/encrypted-session/encrypted-session.actions.ts:185 - getSessionsLastUpdate
+src/domains/encrypted-session/encrypted-session.actions.ts:196 - getSessionLastUpdate
+src/domains/encrypted-session/encrypted-session.utils.ts:11 - initialSessionData (used in module)
+src/domains/open-chat/open-chat.types.ts:41 - SessionSummary
+src/domains/session-analysis/session-analysis.types.ts:32 - SessionSummarySchema (used in module)
+src/domains/session-analysis/session-analysis.types.ts:38 - SessionSummary
+src/domains/session-diagnostics/session-diagnostics.core.ts:10 - parseSessionDiagnostics
+src/domains/session-diagnostics/session-diagnostics.core.ts:32 - shouldRegenerateSessionDiagnostics
+src/domains/session-diagnostics/session-diagnostics.core.ts:71 - estimateSessionDiagnosticsCost
+src/domains/session-diagnostics/session-diagnostics.prompts.ts:1 - SESSION_DIAGNOSTICS_PROMPT
+src/domains/session-diagnostics/session-diagnostics.prompts.ts:55 - SESSION_SUMMARY_PROMPT
+src/domains/session-diagnostics/session-diagnostics.prompts.ts:78 - INNUORA_STANDARD_DIAGNOSTICS_INSTRUCTIONS
+src/domains/session-diagnostics/session-diagnostics.service.ts:10 - generateSessionSummary
+src/domains/session-diagnostics/session-diagnostics.service.ts:14 - generateSessionDiagnostics
+src/domains/session-diagnostics/session-diagnostics.types.ts:2 - CognitiveDistortion
+src/domains/session-diagnostics/session-diagnostics.types.ts:3 - ConfidenceLevel (used in module)
+src/domains/session-diagnostics/session-diagnostics.types.ts:8 - COGNITIVE_DISTORTION_MAP
+src/domains/session-diagnostics/session-diagnostics.types.ts:9 - CONFIDENCE_LEVEL_MAP
+src/domains/session-diagnostics/session-diagnostics.types.ts:13 - SessionDiagnosticsInput
+src/domains/session-diagnostics/session-diagnostics.types.ts:19 - SessionDiagnosticsMetadata (used in module)
+src/domains/session-dynamics/index.ts:9 - EmotionalVector
+src/domains/session-dynamics/index.ts:14 - ReadinessValue
+src/domains/session-dynamics/index.ts:17 - SessionPhase
+src/domains/session-dynamics/index.ts:20 - SessionDynamicsMatrix
+src/domains/session-dynamics/index.ts:40 - DEFAULT_SDM
+src/domains/session-dynamics/index.ts:76 - updateSessionDynamicsMatrix
+src/domains/session-memory/session-memory.action.ts:126 - generateSessionMemoryFromCurrentSession
+src/domains/session-memory/session-memory.prompt.ts:32 - CHAT_MESSAGES_MEMORY_BUILD_INSTRUCTIONS
+src/domains/session-memory/session-memory.prompt.ts:63 - SESSION_MEMORY_REFERENCE_INSTRUCTIONS
+src/domains/session-summary/session-summary.action.ts:27 - getSessionSummary
+src/domains/session-sync/index.ts:5 - SessionSynchronizerV2
+src/domains/session-sync/index.ts:5 - sessionSynchronizer (used in module)
+src/domains/session-sync/index.ts:8 - SyncConfigManager
+src/domains/session-sync/index.ts:9 - SyncStateManager
+src/domains/session-sync/index.ts:10 - LocalSyncService
+src/domains/session-sync/index.ts:11 - CloudSyncService
+src/domains/session-sync/index.ts:12 - RetryService
+src/domains/session-sync/index.ts:17 - SessionSynchronizer
+src/domains/session-sync/index.ts:1 - SyncStatus
+src/domains/session-sync/index.ts:3 - SyncStatusDetailed
+src/domains/session-sync/index.ts:8 - SyncTimestamps
+src/domains/session-sync/index.ts:13 - SyncConfig
+src/domains/session-wellness/session-wellness.service.ts:10 - SessionWellnessService (used in module)
+src/domains/session-wellness/session-wellness.service.ts:168 - sessionWellnessService
+src/domains/session-wellness/session-wellness.types.ts:15 - SessionWellnessContext
+src/domains/therapeutic-analysis/analysis.prompt.ts:5 - INNUORA_ANALYSIS_MESSAGE_PARAM (used in module)
+src/domains/therapeutic-analysis/analysis.prompt.ts:128 - INNUORA_ANALYSIS_RESPONSE_FORMAT (used in module)
+src/domains/therapeutic-analysis/analysis.prompt.ts:225 - INNUORA_ANALYSIS_PROMPT
+src/domains/therapeutic-analysis/analysis.service.ts:14 - AnalysisServiceInput (used in module)
+src/domains/therapeutic-analysis/analysis.service.ts:20 - AnalysisServiceOutput (used in module)
+src/domains/therapeutic-analysis/therapeutic-analysis.action.ts:13 - analyzeUserInput
+src/domains/therapeutic-analysis/therapeutic-analysis.types.ts:6 - USER_STATE_MAP (used in module)
+src/domains/therapeutic-analysis/therapeutic-analysis.types.ts:12 - UserState
+src/domains/therapeutic-analysis/therapeutic-analysis.types.ts:14 - CRISIS_LEVEL_MAP (used in module)
+src/domains/therapeutic-analysis/therapeutic-analysis.types.ts:24 - EMOTION_INTENSITY_MAP (used in module)
+src/domains/therapeutic-analysis/therapeutic-analysis.types.ts:32 - ANALYSIS_VALUE_MAP (used in module)
+src/lib/ai-operations/ai-operation-logger.ts:117 - getUserTokenUsage
+src/lib/ai-operations/ai-operation-logger.ts:142 - getUserCreditsUsage
+src/lib/ai-operations/ai-operation-logger.ts:165 - getSessionOperations
+src/lib/ai-operations/ai-operation-logger.ts:188 - getUserOperationBreakdown
+src/lib/ai-operations/ai-operation-logger.ts:216 - getTotalRawCosts
+src/lib/ai-operations/ai-operation-logger.ts:239 - getTotalCreditsCharged
+src/lib/ai-operations/ai-operation-logger.ts:43 - AiOperationContext (used in module)
+src/lib/analytics/analytics.ts:262 - trackSession (used in module)
+src/lib/analytics/use-analytics.ts:81 - withAnalytics
+src/lib/billing/billing-config.ts:66 - DiagnosticTier (used in module)
+src/lib/billing/billing-config.ts:82 - BillingProducts (used in module)
+src/lib/billing/billing-config.ts:215 - BILLING_SECURITY (used in module)
+src/lib/billing/billing-config.ts:242 - TransactionReason
+src/lib/billing/billing-config.ts:243 - TransactionStatus
+src/lib/billing/billing-config.ts:244 - StripeWebhookEvent
+src/lib/billing/stripe-webhook-types.ts:7 - StripePaymentIntent (used in module)
+src/lib/billing/stripe-webhook-types.ts:21 - StripeInvoice (used in module)
+src/lib/billing/stripe-webhook-types.ts:31 - StripeSubscription (used in module)
+src/lib/billing/stripe-webhook-types.ts:50 - StripeWebhookEvent (used in module)
+src/lib/billing/tier-config.ts:126 - getTierConfig (used in module)
+src/lib/billing/tier-config.ts:133 - canAccessFeature
+src/lib/billing/tier-config.ts:141 - getDiagnosticLevel
+src/lib/billing/tier-config.ts:148 - hasSessionLimit
+src/lib/billing/tier-config.ts:157 - getSessionLimit
+src/lib/billing/tier-config.ts:165 - isSubscriptionTier
+src/lib/billing/tier-config.ts:172 - getTierName
+src/lib/billing/tier-config.ts:179 - getAllTiers
+src/lib/billing/tier-config.ts:186 - shouldShowUpgrade
+src/lib/billing/tier-config.ts:200 - getNextTier
+src/lib/billing/tier-config.ts:21 - DiagnosticLevel (used in module)
+src/lib/billing/tier-config.ts:23 - TierFeatures (used in module)
+src/lib/billing/tier-config.ts:38 - TierConfig (used in module)
+src/lib/billing/tier-config.ts:53 - TIER_CONFIG (used in module)
+src/lib/billing/transaction-queries.ts:88 - countPurchaseTransactionsByStatus
+src/lib/content/content-loader.ts:87 - getAllContent (used in module)
+src/lib/content/content-loader.ts:165 - getFeaturedContent
+src/lib/content/content-loader.ts:172 - getContentByCategory
+src/lib/content/content-loader.ts:179 - searchContent
+src/lib/content/content-recommender.ts:19 - recommendContentFromAnalysis
+src/lib/content/content-recommender.ts:126 - recommendContentForDistortions
+src/lib/content/content-recommender.ts:168 - getOnboardingContent
+src/lib/content/content-recommender.ts:185 - recommendContentForEmotions
+src/lib/cost-analysis/cost-analyzer.ts:86 - analyzeAIOperations (used in module)
+src/lib/cost-analysis/cost-analyzer.ts:211 - generateUserBehaviorModels (used in module)
+src/lib/cost-analysis/cost-analyzer.ts:23 - AIOperation (used in module)
+src/lib/cost-analysis/cost-analyzer.ts:38 - UserBehaviorModel (used in module)
+src/lib/credits/credits-utils.ts:21 - usdToCredits
+src/lib/credits/credits-utils.ts:9 - CREDIT_UNIT_USD (used in module)
+src/lib/credits/credits-utils.ts:40 - DiagnosticTier (used in module)
+src/lib/credits/credits-utils.ts:43 - DIAGNOSTIC_FEATURES
+src/lib/credits/credits-utils.ts:84 - CREDIT_PACKAGES (used in module)
+src/lib/credits/credits-utils.ts:162 - PackageKey
+src/lib/crypto/server-crypto.ts:178 - createEmptyServerData
+src/lib/dev-tools/dev-tools-config.ts:12 - DEV_TOOLS_ENABLED (used in module)
+src/lib/dev-tools/dev-tools-config.ts:23 - DEBUG_FLAGS
+src/lib/dev-tools/session-consumption-tracker.ts:141 - getAllOperations
+src/lib/dev-tools/session-consumption-tracker.ts:159 - isTrackingEnabled
+src/lib/errors/index.ts:2 - ERROR_CODES
+src/lib/errors/index.ts:3 - AppError
+src/lib/errors/index.ts:3 - isAppError
+src/lib/errors/index.ts:4 - mapSupabaseAuthError
+src/lib/errors/index.ts:4 - mapGeneralError
+src/lib/errors/index.ts:5 - ErrorCode
+src/lib/i18n/index.ts:50 - default
+src/lib/i18n/index.ts:9 - AppLocales (used in module)
+src/lib/i18n/index.ts:11 - APP_NAMESPACES (used in module)
+src/lib/i18n/index.ts:30 - AppNamespace
+src/lib/i18n/index.ts:32 - i18nNamespaces
+src/lib/i18n/index.ts:85 - FNS_LOCALES_MAP
+src/lib/notifications/email-service.ts:168 - notifyRefundProcessed
+src/lib/notifications/email-service.ts:79 - SendEmailParams (used in module)
+src/lib/session/session-context-service.ts:236 - initializeSessionContext
+src/lib/session/session-context-service.ts:281 - addAnalysisToContext
+src/lib/session/session-context-service.ts:299 - updateSessionMemory
+src/lib/session/session-context-service.ts:312 - getAnalysisSnapshots
+src/lib/session/session-context-service.ts:324 - getSessionMemory
+src/lib/session/session-context.utils.ts:16 - SessionData (used in module)
+src/lib/session/session-context.utils.ts:53 - SessionDataUpdate (used in module)
+src/lib/session/session-export.ts:107 - exportSessionAsText
+src/lib/session/session-export.ts:11 - SessionExportData (used in module)
+src/lib/supabase/client.ts:9 - supabase
+src/lib/usage-limits/usage-limits-config.ts:15 - LimitMode (used in module)
+src/lib/usage-limits/usage-limits-config.ts:85 - SubscriptionTier (used in module)
+src/lib/usage-limits/usage-limits-config.ts:394 - UsageLimitMode
+src/lib/usage-limits/usage-limits-config.ts:395 - SubscriptionTierId
+src/lib/usage-limits/usage-tracker.ts:258 - recordUsage
+src/lib/usage-limits/usage-tracker.ts:341 - resetMonthlyUsage
+src/lib/usage-limits/use-usage-limits.ts:37 - useUsageLimit
+src/lib/usage-limits/use-usage-limits.ts:110 - useSessionUsage
+src/lib/usage-limits/use-usage-limits.ts:170 - useSubscriptionTier
+src/lib/usage-limits/use-usage-limits.ts:217 - useUsageDisplayText
+src/lib/usage-limits/use-usage-limits.ts:18 - UseUsageLimitResult (used in module)
+src/lib/usage-limits/use-usage-limits.ts:98 - UseSessionUsageResult (used in module)
+src/lib/usage-limits/use-usage-limits.ts:159 - UseSubscriptionTierResult (used in module)
+src/lib/utils/capitalize-word.ts:1 - capitalize
+src/lib/zod/advanced-diagnostic.schema.ts:24 - AdvancedDiagnosticSchema (used in module)
+src/lib/zod/basic-diagnostic.schema.ts:3 - confidenceEnum (used in module)
+src/lib/zod/basic-diagnostic.schema.ts:4 - rigidityEnum (used in module)
+src/lib/zod/basic-diagnostic.schema.ts:5 - difficultyEnum (used in module)
+src/lib/zod/basic-diagnostic.schema.ts:6 - resourceCategoryEnum (used in module)
+src/lib/zod/basic-diagnostic.schema.ts:17 - BasicDiagnosticSchema (used in module)
+src/lib/zod/metadata.schema.ts:272 - validatePartialMetadata
+src/lib/zod/metadata.schema.ts:26 - PaymentCreditMetadata
+src/lib/zod/metadata.schema.ts:31 - SubscriptionCreditMetadataSchema (used in module)
+src/lib/zod/metadata.schema.ts:38 - SubscriptionCreditMetadata
+src/lib/zod/metadata.schema.ts:43 - AiUsageCreditMetadataSchema (used in module)
+src/lib/zod/metadata.schema.ts:51 - AiUsageCreditMetadata
+src/lib/zod/metadata.schema.ts:66 - PurchaseMetadata
+src/lib/zod/metadata.schema.ts:79 - RefundMetadata
+src/lib/zod/metadata.schema.ts:84 - CreditTransactionMetadataSchema (used in module)
+src/lib/zod/metadata.schema.ts:93 - CreditTransactionMetadata
+src/lib/zod/metadata.schema.ts:102 - TokenUsageSchema (used in module)
+src/lib/zod/metadata.schema.ts:116 - TokenUsage
+src/lib/zod/metadata.schema.ts:131 - SessionMetadata
+src/lib/zod/metadata.schema.ts:140 - NotificationPreferencesSchema (used in module)
+src/lib/zod/metadata.schema.ts:149 - UserProfileMetadataSchema (used in module)
+src/lib/zod/metadata.schema.ts:157 - UserProfileMetadata
+src/lib/zod/metadata.schema.ts:184 - DataExportMetadata
+src/lib/zod/metadata.schema.ts:193 - AuditLogMetadataSchema (used in module)
+src/lib/zod/metadata.schema.ts:213 - AuditLogMetadata
+src/lib/zod/metadata.schema.ts:222 - NotificationMetadataSchema (used in module)
+src/lib/zod/metadata.schema.ts:231 - NotificationMetadata
+src/lib/zod/session-flow-schema.ts:7 - StepTypeSchema (used in module)
+src/lib/zod/session-flow-schema.ts:9 - SelectModeSchema (used in module)
+src/lib/zod/session-flow-schema.ts:15 - UserOptionSchema (used in module)
+src/lib/zod/session-flow-schema.ts:21 - ParagraphsContentSchema (used in module)
+src/lib/zod/session-flow-schema.ts:28 - UserInputContentSchema (used in module)
+src/lib/zod/session-flow-schema.ts:36 - UserSelectContentSchema (used in module)
+src/lib/zod/session-flow-schema.ts:45 - EndContentSchema (used in module)
+src/lib/zod/session-flow-schema.ts:63 - FlowStepSchema (used in module)
+src/lib/zod/session-flow-schema.ts:91 - SessionFlowSchema (used in module)
+src/lib/zod/session-flow-schema.ts:101 - UserOption
+src/lib/zod/session-flow-schema.ts:102 - SessionFlow
+src/lib/zod/session-flow-schema.ts:103 - FlowStep
+src/lib/zod/user-actions.schema.ts:8 - UserAccountStatusSchema (used in module)
+src/lib/zod/user-actions.schema.ts:13 - AppLocalesSchema (used in module)
+src/lib/zod/user-actions.schema.ts:18 - UserRoleSchema (used in module)
+src/lib/zod/user-actions.schema.ts:23 - CreateUserSchema (used in module)
+src/lib/zod/user-actions.schema.ts:39 - UpdateUserSchema (used in module)
+src/lib/zod/user-actions.schema.ts:55 - UserLookupSchema (used in module)
+src/lib/zod/user-actions.schema.ts:62 - BulkUserOperationSchema (used in module)
+src/lib/zod/user-actions.schema.ts:78 - UserStatsQuerySchema (used in module)
+src/lib/zod/user-actions.schema.ts:87 - AdminUserManagementSchema (used in module)
+src/lib/zod/user-actions.schema.ts:99 - UserAccountStatusSchemaType
+src/lib/zod/user-actions.schema.ts:100 - UserRoleSchemaType
+src/lib/zod/user-actions.schema.ts:101 - CreateUserSchemaType
+src/lib/zod/user-actions.schema.ts:102 - UpdateUserSchemaType
+src/lib/zod/user-actions.schema.ts:103 - UserLookupSchemaType
+src/lib/zod/user-actions.schema.ts:104 - BulkUserOperationSchemaType
+src/lib/zod/user-actions.schema.ts:118 - UserStatsQuerySchemaType
+src/lib/zod/user-actions.schema.ts:119 - AdminUserManagementSchemaType
+src/lib/zod/user-actions.schema.ts:120 - AppLocalesSchemaType
+src/lib/zod/user-config.schema.ts:4 - UserConfigSchema
+src/app/[locale]/mock/data.ts:989 - advancedDiagnosisResult
+src/app/[locale]/mock/data.ts:1131 - basicDiagnosisResult
+src/app/[locale]/mock/data2.ts:4 - sampleSeesion2
+src/app/[locale]/mock/data2.ts:1802 - sampleAdvancedDiagnostic2
+src/app/[locale]/mock/data2.ts:1954 - sampleBasicDiagnostic2
+src/components/chat-ui/open-chat/index.ts:1 - Input
+src/components/chat-ui/open-chat/index.ts:2 - MessageBubble
+src/components/chat-ui/open-chat/index.ts:3 - default (used in module)
+src/components/diagnostics/advanced/advanced-diagnostic-page.tsx:313 - default
+src/components/diagnostics/basic/basic-diagnostic-page.tsx:32 - categoryIcons (used in module)
+src/components/diagnostics/basic/basic-diagnostic-page.tsx:43 - SectionIcons (used in module)
+src/components/diagnostics/basic/basic-diagnostic-page.tsx:364 - default
+src/components/profile/hooks/use-profile-field-translations.ts:27 - ProfileFieldTranslations (used in module)
+src/components/sessions/session-details/index.tsx:44 - default
+src/components/sessions/session-page/index.tsx:242 - default
+src/components/sessions/sessions-page/index.tsx:66 - default
+src/components/settings/sections/notification-settings.tsx:16 - default
+src/domains/ai-conversation/prompts/index.ts:1 - SecurityProtocolPrompt
+src/domains/ai-conversation/prompts/index.ts:2 - SessionAnalysisPrompt
+src/domains/ai-conversation/prompts/index.ts:3 - SummarizationPrompt
+src/domains/ai-conversation/prompts/prompt.persona.ts:4 - PERSONA_PROMPTS_LOCALIZED
+src/domains/ai-conversation/prompts/prompt.session-analysis.ts:3 - INNUORA_SESSION_ANALYSIS_PROMPT (used in module)
+src/domains/ai-conversation/prompts/prompt.session-analysis.ts:38 - INNUORA_SESSION_ANALYSIS_PROMPT_OPTIMIZED
+src/domains/ai-conversation/prompts/prompt.tone.ts:4 - TONE_INSTRUCTIONS_LOCALIZED (used in module)
+src/domains/ai-conversation/prompts/prompt.tone.ts:41 - REFLECTIVE_CATALYST_TONE
+src/domains/ai-conversation/prompts/prompt.tone.ts:57 - default
+src/domains/ai-conversation/prompts/prompt.user-context.ts:9 - buildUserProfileContext
+src/domains/conversation-engine/constants/prompts.ts:98 - HOLISTIC_REFLECTIVE_ENGINE_INSTRUCTIONS_EN_GPT4O_OPTIMAL (used in module)
+src/domains/conversation-engine/constants/prompts.ts:396 - HOLISTIC_REFLECTIVE_ENGINE_INSTRUCTIONS_AR (used in module)
+src/domains/conversation-engine/constants/prompts.ts:529 - HOLISTIC_REFLECTIVE_ENGINE_INSTRUCTIONS_FR (used in module)
+src/domains/conversation-engine/constants/reflection.prompt.ts:74 - INNUORA_FEWSHOT_DIALOGUES (used in module)
+src/domains/conversation-engine/constants/reflection.prompt.ts:146 - INNUORA_REFLECTION_INSTRUCTIONS_OLD
+src/domains/conversation-engine/constants/reflection.prompt.ts:354 - REFLECTIVE_RESPONSE_SCHEMA (used in module)
+src/domains/conversation-engine/services/conversation-window.service.ts:10 - ConversationWindowService
+src/domains/conversation-engine/services/reflection.service.ts:20 - ReflectionServiceInput (used in module)
+src/domains/conversation-engine/services/reflection.service.ts:28 - ReflectionServiceOutput (used in module)
+src/domains/conversation-engine/services/synthesis.service.ts:15 - SynthesisServiceInput (used in module)
+src/domains/conversation-engine/services/synthesis.service.ts:22 - SynthesisServiceOutput (used in module)
+src/domains/conversation-engine/types/index.ts:1 - RelationalTrace
+src/domains/conversation-engine/types/index.ts:9 - ConversationMessage
+src/domains/conversation-engine/types/index.ts:14 - ConversationWindow
+src/domains/conversation-engine/types/index.ts:16 - EngineConfig
+src/domains/conversation-engine/types/index.ts:22 - EngineInput
+src/domains/conversation-engine/types/index.ts:10 - PsychoeducationalThread
+src/domains/conversation-engine/types/index.ts:15 - Signals
+src/domains/conversation-engine/types/index.ts:20 - EngineOutput
+src/domains/conversation-engine/types/index.ts:25 - RelationalTraceApp
+src/domains/conversation-engine/types/index.ts:33 - ReflectiveResponseMeta
+src/domains/conversation-engine/types/index.ts:44 - ReflectiveResponse
+src/domains/conversation-engine/types/index.ts:86 - SAFE_FALLBACK_TRACE
+src/domains/conversation-engine/types/index.ts:6 - ContextLifecycle
+src/domains/conversation-engine/types/index.ts:13 - initialContextLifecycle
+src/domains/open-chat/hooks/use-session-memory.ts:8 - default
+src/domains/session-flow/constants/sessions.props.ts:15 - SessionBuilder (used in module)
+src/domains/session-flow/flows/index.ts:253 - buildOnboardingSessionFlow
+src/domains/session-flow/flows/index.ts:15 - ONBOARDING_SESSION_ID (used in module)
+src/domains/session-flow/flows/index.ts:85 - ONBOARDING_STEP_IDS (used in module)
+src/domains/session-flow/flows/index.ts:103 - OnboardingStepId (used in module)
+src/domains/session-flow/flows/index.ts:105 - ONBOARDING_SESSION_PROPS (used in module)
+src/domains/session-flow/hooks/use-flow-session.ts:11 - UseFlowSessionOptions (used in module)
+src/domains/session-flow/stores/flow-session.store.ts:42 - FlowSessionState (used in module)
+src/domains/session-sync/config/sync-config.ts:8 - DEFAULT_SYNC_CONFIG (used in module)
+src/domains/session-sync/utils/retry-service.ts:9 - RetryConfig (used in module)
+src/domains/session-sync/utils/retry-service.ts:16 - DEFAULT_RETRY_CONFIG (used in module)
+.next/types/app/[locale]/(protected)/layout.ts:54 - PageProps
+.next/types/app/[locale]/(protected)/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/[locale]/(public)/layout.ts:54 - PageProps
+.next/types/app/[locale]/(public)/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/[locale]/(public)/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(public)/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/layout.ts:54 - PageProps
+.next/types/app/[locale]/auth/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/[locale]/auth/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/page.ts:58 - LayoutProps
+.next/types/app/[locale]/cost-analysis/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/cost-analysis/page.ts:58 - LayoutProps
+.next/types/app/[locale]/mock/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/mock/page.ts:58 - LayoutProps
+.next/types/app/[locale]/offline/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/offline/page.ts:58 - LayoutProps
+.next/types/app/[locale]/onboarding/layout.ts:54 - PageProps
+.next/types/app/[locale]/onboarding/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/[locale]/onboarding/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/onboarding/page.ts:58 - LayoutProps
+.next/types/app/api/health/route.ts:313 - PageProps
+.next/types/app/api/health/route.ts:317 - LayoutProps
+src/components/chat-ui/flow-chat/messages/index.ts:1 - FlowEnd
+src/components/chat-ui/flow-chat/messages/index.ts:2 - FlowTextMessage
+src/components/chat-ui/flow-chat/messages/index.ts:3 - FlowUserInput
+src/components/chat-ui/flow-chat/messages/index.ts:4 - FlowUserMessage
+src/components/chat-ui/flow-chat/messages/index.ts:5 - FlowUserOptions
+src/components/chat-ui/flow-chat/messages/index.ts:6 - FlowParagraphs
+.next/types/app/[locale]/(protected)/account/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(protected)/account/page.ts:58 - LayoutProps
+.next/types/app/[locale]/(protected)/billing/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(protected)/billing/page.ts:58 - LayoutProps
+.next/types/app/[locale]/(protected)/sessions/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(protected)/sessions/page.ts:58 - LayoutProps
+.next/types/app/[locale]/(protected)/settings/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(protected)/settings/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/confirm/route.ts:313 - PageProps
+.next/types/app/[locale]/auth/confirm/route.ts:317 - LayoutProps
+.next/types/app/[locale]/auth/password-reset/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/password-reset/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/sign-in/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/sign-in/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/sign-up/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/sign-up/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/verify-email/layout.ts:54 - PageProps
+.next/types/app/[locale]/auth/verify-email/layout.ts:58 - LayoutProps (used in module)
+.next/types/app/[locale]/guides/[slug]/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/guides/[slug]/page.ts:58 - LayoutProps
+.next/types/app/[locale]/insights/[slug]/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/insights/[slug]/page.ts:58 - LayoutProps
+.next/types/app/api/analytics/summary/route.ts:313 - PageProps
+.next/types/app/api/analytics/summary/route.ts:317 - LayoutProps
+.next/types/app/api/stripe/webhook/route.ts:313 - PageProps
+.next/types/app/api/stripe/webhook/route.ts:317 - LayoutProps
+.next/types/app/[locale]/(protected)/sessions/[sessionId]/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(protected)/sessions/[sessionId]/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/verify-email/resend/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/verify-email/resend/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/verify-email/result/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/verify-email/result/page.ts:58 - LayoutProps
+.next/types/app/[locale]/auth/verify-email/sent/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/auth/verify-email/sent/page.ts:58 - LayoutProps
+.next/types/app/[locale]/(protected)/sessions/[sessionId]/details/page.ts:54 - PageProps (used in module)
+.next/types/app/[locale]/(protected)/sessions/[sessionId]/details/page.ts:58 - LayoutProps

@@ -12,14 +12,8 @@ async function syncPendingSessions() {
     }
 
     // Get session sync utilities
-    const { SessionSynchronizerV2 } = await import("@/domains/session-sync/session-synchronizer-v2");
-    const synchronizer = SessionSynchronizerV2.getInstance();
-
-    // TODO: Implement background sync
-    // Trigger sync for all pending sessions
-    // Note: SessionSynchronizerV2 doesn't have syncAllSessions method
-    // Background sync will handle individual sessions via service worker events
-
+    const { sessionSynchronizer } = await import("@/domains/session-sync");
+    await sessionSynchronizer.flushNow();
     console.log("Background sync completed successfully");
   } catch (error) {
     console.error("Background sync failed:", error);

@@ -3,8 +3,9 @@ import { Profile } from "@prisma/client";
 
 import { handleHolisticUserInput } from "@/domains/conversation-engine";
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
+import { trackAIOperationFromResponse } from "@/lib/dev-tools/use-consumption-tracker";
 import { AppLocales } from "@/lib/i18n";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { useAppUserStore } from "@/stores/app-user.store";
 //import { useUserDataStore } from "@/stores/user-data.store";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
@@ -70,7 +71,23 @@ export default function useSessionInput({ sessionId, locale = "en", onRoundCompl
           response: assistantMessage,
           creditsUsed,
           signals, // Crisis/resistance detection from holistic engine
+          _devTracking, // Development-only tracking data
         } = result;
+
+        // Track AI operation for development/testing (dev tools)
+        if (_devTracking) {
+          trackAIOperationFromResponse(
+            _devTracking.operationType,
+            "Holistic Conversation Response",
+            _devTracking.modelType,
+            _devTracking.tokenUsage,
+            {
+              messageId,
+              locale,
+              signals: signals,
+            }
+          );
+        }
 
         // Update client-side balance to reflect server-side deduction
         // Credits were already deducted on the server, just sync the UI

@@ -48,3 +48,6 @@ project-structure.txt
 .github
 /src/app/[locale]/mock
 /src/app/[locale]/(public)/test
+
+# Archived documentation
+.archived-docs/

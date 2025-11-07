@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-inn-bg-accent text-inn-text-primary shadow-sm hover:bg-inn-bg-accent/90",
+        default: "bg-inn-bg-accent-dark text-inn-text-primary shadow-sm hover:bg-inn-bg-accent-dark/90",
         accent: "bg-inn-bg-flame-dark text-white shadow-sm hover:bg-inn-bg-flame/90",
         destructive:
           "bg-destructive text-white shadow-sm hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",

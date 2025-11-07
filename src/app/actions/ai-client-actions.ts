@@ -1,9 +1,19 @@
 "use server";
 
-import { JSONSchema } from "openai/lib/jsonschema.mjs";
-import { ChatCompletion, ChatCompletionMessageParam, ChatModel } from "openai/resources";
+import {
+  ChatCompletion,
+  ChatCompletionMessageParam,
+  ChatModel,
+  ResponseFormatJSONObject,
+  ResponseFormatJSONSchema,
+  ResponseFormatText,
+} from "openai/resources";
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
+import { AIModelCategory } from "@/domains/ai-conversation/ai-models";
+import INNUORA_SECURITY_PROTOCOL, {
+  INNUORA_SECURITY_PROTOCOL_GPT4O,
+} from "@/domains/ai-conversation/prompts/prompt.security-protocol";
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
@@ -12,34 +22,26 @@ import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
 import type { ActionResult } from "@/types/action-result";
 import { AiMessageResponse } from "@/types/ai-model.types";
 
-type RequestOptions = {
+export type RequestOptions = {
   stream?: boolean;
   max_completion_tokens?: number;
   temperature?: number;
   top_p?: number;
   presence_penalty?: number;
   frequency_penalty?: number;
-  response_format?:
-    | {
-        json_schema: JSONSchema;
-        type: "json_schema";
-      }
-    | {
-        type: "text";
-      }
-    | {
-        type: "json_object";
-      };
+  response_format?: ResponseFormatText | ResponseFormatJSONSchema | ResponseFormatJSONObject;
+  stop?: string | string[] | null;
 
   seed?: number | null;
-  model?: "default" | "mini"; // Allow model selection: default = gpt-4.1 (human-like), mini = gpt-4.1-mini (cost-effective)
+  model?: AIModelCategory; // Model selection: default=gpt-4o, fallback=gpt-4.1, mini=gpt-4.1-mini
 };
 
-const DEFAULT_AI_OPTIONS: RequestOptions = {
-  stream: false,
-  max_completion_tokens: 700,
+const DEFAULT_AI_OPTIONS: Omit<RequestOptions, "model"> = {
   temperature: 0.6,
   top_p: 0.9,
+  presence_penalty: 0.1,
+  frequency_penalty: 0.2,
+  max_completion_tokens: 800,
 };
 
 // Credit calculation is now centralized in credit-config.ts
@@ -53,15 +55,17 @@ async function executeChatCompletion(
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
 ): Promise<ActionResult<ChatCompletion>> {
+  const securityProtocol = ["gpt-4.1", "gpt-4.1-mini"].includes(model)
+    ? INNUORA_SECURITY_PROTOCOL
+    : INNUORA_SECURITY_PROTOCOL_GPT4O;
   return await logger.wrapOperation(
     async () => {
       const completion = await openai.chat.completions.create({
-        model: model,
+        model,
         messages: prompts,
         ...options,
-        response_format: { type: "json_object" },
-        max_completion_tokens: 700,
       });
+
       return completion as ChatCompletion;
     },
     ERROR_CODES.AI_OPENAI_ERROR,
@@ -90,7 +94,7 @@ function assertValidPrompts(prompts: ChatCompletionMessageParam[]): void {
         new Error(`Prompt at index ${index} is missing required role or content`),
         {
           operation: "ai_validate_prompts",
-          metadata: { promptIndex: index },
+          metadata: { promptIndex: index, prompt },
         }
       );
     }
@@ -139,14 +143,16 @@ export async function processAiPrompts(
         }
       }
 
-      // Select model based on options (default = gpt-4o, mini = gpt-4o-mini)
-      const modelType = options.model || "mini"; // Default to mini for cost optimization
-      const modelConfig = modelType === "mini" ? AI_MODELS.fallback : AI_MODELS.default;
+      const { model, ...restOptions } = options;
+      // Select model based on options (default=gpt-4o, fallback=gpt-4.1, mini=gpt-4.1-mini)
+      const modelType = model || "reflection"; // Default to best quality for conversations
+      const modelConfig = AI_MODELS[modelType];
       const modelName = modelConfig.name as ChatModel;
 
+      console.log(modelName);
+
       // Remove 'model' from options to avoid passing "default" or "mini" string to OpenAI
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { model: _, ...restOptions } = options;
+
       const mergedOptions = { ...DEFAULT_AI_OPTIONS, ...restOptions };
 
       // Call OpenAI API with actual model name
@@ -162,6 +168,8 @@ export async function processAiPrompts(
 
       // At this point result.data is guaranteed to be non-null (logErrorAndThrow throws on error)
       const data = result.data!;
+
+      console.log("DATA:", data);
 
       // Extract and validate response
       const rawContent = data?.choices?.[0]?.message?.content?.trim();
@@ -180,6 +188,7 @@ export async function processAiPrompts(
         operation: "ai_send_prompts",
         metadata: {
           promptTokens: data.usage?.prompt_tokens || 0,
+          cached_tokens: data.usage?.prompt_tokens_details?.cached_tokens || 0,
           completionTokens: data.usage?.completion_tokens || 0,
           totalTokens: data.usage?.total_tokens || 0,
           responseLength: message.length,
@@ -197,6 +206,7 @@ export async function processAiPrompts(
           ? {
               completionTokens: data.usage.completion_tokens,
               promptTokens: data.usage.prompt_tokens,
+              cachedTokens: data.usage?.prompt_tokens_details?.cached_tokens || 0,
               totalTokens: data.usage.total_tokens,
               timestamp: new Date().toISOString(),
               responseLength: message.length,
@@ -209,7 +219,7 @@ export async function processAiPrompts(
     {
       operation: "ai_send_prompts",
       metadata: {
-        model: options.model || "default",
+        model: options.model || "reflection",
         vendor: "openai",
       },
     }

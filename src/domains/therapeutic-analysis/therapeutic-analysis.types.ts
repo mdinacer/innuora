@@ -174,3 +174,65 @@ export const SessionDiagnosticsSchema = z.object({
 });
 
 export type SessionDiagnostics = z.infer<typeof SessionDiagnosticsSchema>;
+
+//───────────────────────────────────────────────────────────────
+// INNUORA ANALYSIS — Lightweight cognitive-emotional analysis
+//───────────────────────────────────────────────────────────────
+export type InnuoraAnalysis = {
+  /** Emotional activation level inferred from tone and phrasing. */
+  intensity: "low" | "moderate" | "high";
+
+  /** Crisis severity inferred from language and tone. */
+  crisis_level: "none" | "low" | "moderate" | "high" | "immediate";
+
+  /** Openness and psychological readiness for reflective engagement. */
+  readiness: "avoidant" | "cautious" | "open" | "engaged" | "reflective";
+
+  /** Primary emotional tone detected in the user's language. */
+  emotion: "sadness" | "anger" | "guilt" | "fear" | "shame" | "numbness" | "confusion" | "hope";
+
+  /** Most salient cognitive distortion inferred from the user's statement. */
+  distortion:
+    | "none"
+    | "catastrophizing"
+    | "emotional reasoning"
+    | "should statements"
+    | "disqualifying positives"
+    | "personalization"
+    | "all-or-nothing thinking"
+    | "over-control";
+
+  /** ≤5 tokens — concise thematic label (e.g., "rest guilt", "meaning fatigue", "conditional worth"). */
+  theme: string;
+
+  /** If true, the Reflective Engine may safely include gentle curiosity in the next response. */
+  allow_curiosity: boolean;
+
+  /** If true, short contextual psychoeducation is appropriate in the next reflection. */
+  allow_psychoeducation: boolean;
+
+  /** Indicates readiness to cognitively process psychoeducational insight. */
+  psychoedu_ready: boolean;
+
+  /** ≤40 tokens — concise reasoning for emotional gating and intensity judgment. */
+  rationale: string;
+
+  /** ≤60 tokens — internal contextual notes to support continuity in future analysis. */
+  notes: string;
+};
+
+export const SAFE_FALLBACK_ANALYSIS: InnuoraAnalysis = {
+  intensity: "moderate",
+  crisis_level: "none",
+  readiness: "cautious",
+  emotion: "numbness",
+  distortion: "none",
+  theme: "emotional fatigue",
+  allow_curiosity: false,
+  allow_psychoeducation: false,
+  psychoedu_ready: false,
+  rationale:
+    "Initial round — no prior data. Assume moderate activation, emotional exhaustion baseline, and guarded openness.",
+  notes:
+    "Fallback analysis used for session initialization. Maintain containment and steady tone until clearer affect and readiness emerge.",
+};

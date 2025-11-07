@@ -5,7 +5,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { AppMessageVariant, ChatMessage, createAppMessage } from "@/types/flow-chat-messages.types";
 import { FlowStep, SessionFlow, StepType } from "@/types/flow-session.types";
 

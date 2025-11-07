@@ -11,13 +11,17 @@ import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-c
 import { MessageBubble } from "@/components/chat-ui/open-chat";
 import CodeView from "@/components/code-view";
 import { CreditsBalance, InsufficientCreditsWarning } from "@/components/credits";
+import { SessionConsumptionTracker } from "@/components/dev-tools/session-consumption-tracker";
 import LoadingComponent from "@/components/loading-component";
 import { SyncStatusIndicator } from "@/components/sessions/sync-status-indicator";
 import { Button } from "@/components/ui/button";
 import { APP_CONFIG } from "@/config/app";
 import { useChatController } from "@/domains/open-chat/hooks/use-chat-controller";
+import { ENABLE_CONSUMPTION_TRACKER } from "@/lib/dev-tools/dev-tools-config";
+import { useConsumptionTracker } from "@/lib/dev-tools/use-consumption-tracker";
 import { AppLocales } from "@/lib/i18n";
 import { exportSessionAsJSON, exportSessionAsMarkdown, prepareSessionExport } from "@/lib/session/session-export";
+import { useAppUserStore } from "@/stores/app-user.store";
 import { OpenChatMessage as ChatMessage } from "@/types/open-chat-message.types";
 
 interface Props {
@@ -38,6 +42,9 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
     locale: language as AppLocales,
     sessionId,
   });
+
+  // Initialize consumption tracker for dev/testing
+  useConsumptionTracker(sessionId);
 
   const { processMessage, addMessage, resetSession } = chatController.actions;
   const { hasHydrated, session, messages, isProcessing, processingError } = chatController.state;
@@ -180,7 +187,10 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
 
   return (
     <>
-      <CodeView data={session} className="absolute top-6 left-6 hover:z-50" />
+      <CodeView
+        data={{ session, profile: useAppUserStore.getState().user?.profile }}
+        className="absolute top-6 left-6 hover:z-50"
+      />
       <Button disabled={isProcessing} onClick={handleMessagesAnalyses} className="absolute bottom-6 right-6">
         {isProcessing ? "Processing..." : "Process"}
       </Button>
@@ -202,6 +212,9 @@ const SessionPage: React.FC<Props> = ({ sessionId }) => {
           <InsufficientCreditsWarning onPurchaseClick={() => router.push("/pricing")} />
         </div>
       )}
+
+      {/* Session Consumption Tracker (Dev Tool) */}
+      {ENABLE_CONSUMPTION_TRACKER && <SessionConsumptionTracker />}
 
       <Container
         title={session?.title ?? title}

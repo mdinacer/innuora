@@ -199,4 +199,17 @@ export interface ServerDataContent {
     last_warmth_level: number;
     psychoeducation_last_turn: boolean;
   };
+
+  // V7-specific fields (3-stage conversation engine)
+  // Allows coexistence with production holistic engine for A/B testing
+  v7_relational_trace?: any | null; // RelationalTrace from v7 reflection engine
+  v7_analyses?: any[] | null; // InnuoraAnalysis[] - cognitive-emotional analyses
+  v7_context_lifecycle?: {
+    // Context synthesis caching metadata
+    directive: string | null;
+    hash: string | null;
+    generatedAt: number | null;
+    usageCount: number;
+  } | null;
+  v7_session_dynamics?: any | null; // SessionDynamicsMatrix - multi-scale emotional tracking
 }

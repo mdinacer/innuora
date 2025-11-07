@@ -85,7 +85,7 @@ export class AISessionWellnessEngine {
         {
           temperature: 0.1,
           max_completion_tokens: 200,
-          model: "mini", // Use GPT-4.1-mini for wellness evaluation
+          model: "background", // Use GPT-4.1-mini for wellness evaluation
         }
       );
 

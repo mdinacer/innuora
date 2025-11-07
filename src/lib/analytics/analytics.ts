@@ -5,7 +5,7 @@
  * without compromising user privacy or encrypting sensitive data.
  */
 
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 
 // Analytics event types for business intelligence
 export type AnalyticsEvent =

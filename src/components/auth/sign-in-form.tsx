@@ -15,7 +15,7 @@ import TextField from "@/components/input/text-field";
 import { Form } from "@/components/ui/form";
 import { recoverContentKeyFromWrapped, storeContentKey } from "@/lib/crypto/webcrypto-crypto";
 import { WrappedKeyPackageSchema } from "@/lib/crypto/webcrypto-crypto.types";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { SignInSchema, SignInSchemaType } from "@/lib/zod/auth.schema";

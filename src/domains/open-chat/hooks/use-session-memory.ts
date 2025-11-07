@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 
 import { useSessionState } from "@/domains/open-chat/hooks/use-session.state";
 import { generateSessionMemory } from "@/domains/session-memory/session-memory.action";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { useAppUserStore } from "@/stores/app-user.store";
 
 export default function useSessionMemory({ sessionId }: { sessionId: string }) {

@@ -66,7 +66,7 @@ export async function generateSessionMemory(
 
   // Use GPT-4.1-mini for cost optimization
   const result = await processAiPromptsWithRetry([prompt], {
-    model: "mini", // GPT-4.1-mini for memory operations
+    model: "background", // GPT-4.1-mini for memory operations
   });
 
   if (result.error) {
@@ -152,7 +152,7 @@ export async function generateSessionMemoryFromCurrentSession(
 
   // Use GPT-4.1-mini for cost optimization
   const result = await processAiPromptsWithRetry([prompt], {
-    model: "mini", // GPT-4.1-mini for memory operations
+    model: "background", // GPT-4.1-mini for memory operations
   });
 
   if (result.error) {

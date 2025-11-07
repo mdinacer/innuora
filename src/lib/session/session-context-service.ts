@@ -14,8 +14,14 @@
  * so caching provides minimal benefit while risking stale data.
  */
 
-import { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
-import { TherapeuticAnalysisWithMessageId } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+import type { RelationalTrace } from "@/domains/conversation-engine/types/reflection.types";
+import type { ContextLifecycle } from "@/domains/conversation-engine/types/synthesis.types";
+import type { SessionAnalysis } from "@/domains/session-analysis/session-analysis.types";
+import type { SessionDynamicsMatrix } from "@/domains/session-dynamics";
+import type {
+  InnuoraAnalysis,
+  TherapeuticAnalysisWithMessageId,
+} from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { decryptServerData, encryptServerData, ServerDataContent } from "@/lib/crypto/server-crypto";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
@@ -32,6 +38,10 @@ export interface SessionContext {
   analysisSnapshots: TherapeuticAnalysisWithMessageId[];
   aggregatedAnalysis: SessionAnalysis | null;
   memoryStore: string | null;
+  v7_relational_trace: RelationalTrace | null;
+  v7_analyses: InnuoraAnalysis[];
+  v7_context_lifecycle: ContextLifecycle | null;
+  v7_session_dynamics: SessionDynamicsMatrix | null;
 }
 
 /**
@@ -104,6 +114,10 @@ export async function getSessionContext(sessionId: string, requiredUserId?: stri
           analysisSnapshots: [],
           aggregatedAnalysis: null,
           memoryStore: null,
+          v7_relational_trace: null,
+          v7_analyses: [],
+          v7_context_lifecycle: null,
+          v7_session_dynamics: null,
         };
       }
 
@@ -118,6 +132,10 @@ export async function getSessionContext(sessionId: string, requiredUserId?: stri
         analysisSnapshots: decryptedData.analysisSnapshots || [],
         aggregatedAnalysis: decryptedData.aggregatedAnalysis || null,
         memoryStore: decryptedData.memoryStore || null,
+        v7_relational_trace: (decryptedData.v7_relational_trace as RelationalTrace) ?? null,
+        v7_analyses: (decryptedData.v7_analyses as InnuoraAnalysis[]) ?? [],
+        v7_context_lifecycle: (decryptedData.v7_context_lifecycle as ContextLifecycle) ?? null,
+        v7_session_dynamics: (decryptedData.v7_session_dynamics as SessionDynamicsMatrix) ?? null,
       };
     },
     ERROR_CODES.SESSION_CONTEXT_FETCH_FAILED,
@@ -162,6 +180,10 @@ export async function updateSessionContext(
         analysisSnapshots: updates.analysisSnapshots ?? currentContext.analysisSnapshots,
         aggregatedAnalysis: updates.aggregatedAnalysis ?? currentContext.aggregatedAnalysis,
         memoryStore: updates.memoryStore ?? currentContext.memoryStore,
+        v7_relational_trace: updates.v7_relational_trace ?? currentContext.v7_relational_trace ?? null,
+        v7_analyses: updates.v7_analyses ?? currentContext.v7_analyses ?? [],
+        v7_context_lifecycle: updates.v7_context_lifecycle ?? currentContext.v7_context_lifecycle ?? null,
+        v7_session_dynamics: updates.v7_session_dynamics ?? currentContext.v7_session_dynamics ?? null,
       };
 
       // Encrypt updated data
@@ -219,6 +241,10 @@ export async function initializeSessionContext(sessionId: string): Promise<void>
         analysisSnapshots: [],
         aggregatedAnalysis: null,
         memoryStore: null,
+        v7_relational_trace: null,
+        v7_analyses: [],
+        v7_context_lifecycle: null,
+        v7_session_dynamics: null,
       };
 
       // Encrypt

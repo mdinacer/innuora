@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ClipboardClockIcon, CreditCardIcon, DockIcon, InfoIcon } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.client";
 import { cn } from "@/lib/utils";
 import { useAppUserStore } from "@/stores/app-user.store";
 import BillingCreditsPackages from "./billing-credits-packages";
