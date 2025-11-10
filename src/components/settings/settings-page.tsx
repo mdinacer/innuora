@@ -67,8 +67,8 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <SettingsIcon className="h-6 w-6 text-inn-bg-accent" />
-          <h1 className="text-3xl font-bold text-gray-900">{t("settings.title")}</h1>
+          <SettingsIcon className="h-6 w-6 text-primary" />
+          <h1 className="text-3xl font-bold">{t("settings.title")}</h1>
         </div>
         <p className="text-gray-600">{t("settings.description")}</p>
       </div>
@@ -77,26 +77,6 @@ export default function SettingsPage() {
       <Tabs value={activeSection} onValueChange={setActiveSection} className="relative flex gap-8 flex-col">
         {/* Sidebar Navigation */}
         <div className="w-full shrink-0">
-          {/* <Select onValueChange={(value) => setActiveSection(value)} defaultValue={activeSection}>
-            <SelectTrigger className="md:hidden w-full">
-              <SelectValue placeholder="Select a fruit" />
-            </SelectTrigger>
-            <SelectContent className="bg-inn-bg-card">
-              <SelectGroup>
-                <SelectLabel>Sections</SelectLabel>
-                {settingsSections.map((section) => (
-                  <SelectItem
-                    key={section.id}
-                    value={section.id}
-                    className="focus:bg-inn-bg-accent focus:text-inn-text-primary"
-                  >
-                    {section.icon}
-                    {section.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select> */}
           <TabsList dir={i18n.dir()} className="bg-transparent max-w-auto w-full">
             {settingsSections.map((section) => (
               <TabsTrigger
@@ -104,9 +84,9 @@ export default function SettingsPage() {
                 value={section.id}
                 className={cn(
                   "flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap",
-                  "data-[state=active]:font-medium data-[state=active]:text-inn-bg-accent data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                  "dark:data-[state=active]:text-inn-bg-accent dark:data-[state=active]:bg-transparent dark:data-[state=active]:shadow-none",
-                  "text-inn-text-secondary hover:text-inn-text-primary",
+                  "data-[state=active]:font-medium data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                  "dark:data-[state=active]:text-primary dark:data-[state=active]:bg-transparent dark:data-[state=active]:shadow-none",
+                  "text-muted-foreground hover:text-foreground",
                   "transition-all duration-300 ease-in-out",
                   "border-none rounded-none",
                   "w-full "

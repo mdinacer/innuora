@@ -27,7 +27,7 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
           className={cn(
             "rtl:font-arabic rtl:leading-4",
             "size-12 shrink-0 flex items-center justify-center",
-            "bg-inn-bg-accent",
+            "bg-primary",
             "rounded-2xl text-xl font-semibold ",
             "text-white"
           )}
@@ -35,7 +35,7 @@ const ChatUIHeader: React.FC<Props> = ({ className, title, subtitle, headerActio
           <span className="rtl:-translate-y-1">{defaultData.avatarLetter}</span>
         </div>
         <div className="header-info">
-          <h1 className=" text-inn-text-primary rtl:text-lg rtl:mt-1 font-bold rtl:font-arabic rtl:mb-1 mb-0.5 -tracking-[0.5px]">
+          <h1 className=" text-foreground rtl:text-lg rtl:mt-1 font-bold rtl:font-arabic rtl:mb-1 mb-0.5 -tracking-[0.5px]">
             {title || defaultData.title}
           </h1>
           <p className="text-primary/80 rtl:font-medium rtl:text-base text-sm">{subtitle || defaultData.subtitle}</p>

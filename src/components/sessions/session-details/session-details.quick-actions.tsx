@@ -2,9 +2,9 @@ import React from "react";
 import Link from "next/link";
 import { CogIcon, PencilIcon, PlayIcon } from "lucide-react";
 
-import { Button, buttonVariants } from "@/components/mir-ui/button";
-import Card from "@/components/mir-ui/card";
 import SessionForm from "@/components/sessions/session-form";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
@@ -18,9 +18,9 @@ const SessionDetailsQuickActions: React.FC<Props> = ({ className, session }) => 
   const publicId = useSessionStore((state) => state.getSessionPublicId(session.id));
 
   return (
-    <Card className={className}>
+    <Card className={cn("px-6", className)}>
       <h3 className="font-bold mb-4 flex items-center gap-2">
-        <CogIcon className="size-5 text-inn-bg-accent" />
+        <CogIcon className="size-5 text-primary" />
         Actions
       </h3>
 

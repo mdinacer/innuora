@@ -34,22 +34,22 @@ export default async function EmailValidationResultRoute({
           {/* <!-- Success Message --> */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">Account verified!</h1>
-            <p className="text-lg text-inn-text-secondary">
+            <p className="text-lg text-muted-foreground">
               Your email has been successfully verified. Welcome to Innuora!
             </p>
           </div>
 
           {/* <!-- Welcome Card --> */}
-          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
+          <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
             <h2 className="text-xl font-semibold mb-4">You're all set</h2>
-            <p className="text-inn-text-secondary mb-6">
+            <p className="text-muted-foreground mb-6">
               Your account is now active and ready to use. Start your journey of emotional reflection and clarity.
             </p>
 
             <div className="flex flex-col items-center sm:flex-row gap-3 w-full">
               <Link
                 href="/"
-                className="inline-flex w-full justify-center items-center gap-2 rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg"
+                className="inline-flex w-full justify-center items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg"
               >
                 <HomeIcon className="size-4 shrink-0" strokeWidth={2} />
                 Go to Home
@@ -58,8 +58,8 @@ export default async function EmailValidationResultRoute({
           </div>
 
           {/* <!-- Privacy Reminder --> */}
-          <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
-            <p className="text-sm text-inn-text-secondary">
+          <div className="p-4 rounded-xl bg-muted border border-primary/15">
+            <p className="text-sm text-muted-foreground">
               <strong>Privacy First:</strong> Your reflections and conversations are private by default and under your
               control.
             </p>
@@ -79,25 +79,25 @@ export default async function EmailValidationResultRoute({
             <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-4">
               Verification failed
             </h1>
-            <p className="text-lg text-inn-text-secondary" id="errorMessage">
+            <p className="text-lg text-muted-foreground" id="errorMessage">
               The verification link is invalid or has expired.
             </p>
           </div>
 
           {/* <!-- Error Details Card --> */}
-          <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
+          <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_4px_20px] shadow-black/8 mb-6">
             <h2 className="text-xl font-semibold mb-4">What went wrong?</h2>
-            <div className="text-left space-y-3 text-inn-text-secondary mb-6">
+            <div className="text-left space-y-3 text-muted-foreground mb-6">
               <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-inn-bg-accent mt-2 flex-shrink-0"></div>
+                <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
                 <span>The verification link may have expired (links expire after 24 hours)</span>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-inn-bg-accent mt-2 flex-shrink-0"></div>
+                <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
                 <span>The link may have been used already</span>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-inn-bg-accent mt-2 flex-shrink-0"></div>
+                <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
                 <span>There might be a technical issue</span>
               </div>
             </div>
@@ -105,14 +105,14 @@ export default async function EmailValidationResultRoute({
             <div className="flex flex-col sm:flex-row gap-3 mx-auto">
               <Link
                 href="/auth/verify-email/resend"
-                className="inline-flex justify-center flex-1 items-center gap-2 rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50"
+                className="inline-flex justify-center flex-1 items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
               >
                 <RefreshCwIcon className="size-4 shrink-0" strokeWidth={2} />
                 Send New Link
               </Link>
               <Link
                 href="/auth/sign-up"
-                className="inline-flex justify-center items-center gap-2 rounded-2xl border border-inn-border-light px-6 py-3 font-semibold text-inn-text-primary hover:text-inn-bg-accent hover:border-inn-bg-accent transition"
+                className="inline-flex justify-center items-center gap-2 rounded-2xl border border-border px-6 py-3 font-semibold text-foreground hover:text-primary hover:border-primary transition"
               >
                 Go back to Sign Up
               </Link>
@@ -120,10 +120,10 @@ export default async function EmailValidationResultRoute({
           </div>
 
           {/* <!-- Help Section --> */}
-          <div className="p-4 rounded-xl bg-inn-bg-soft border border-inn-bg-accent/15">
-            <p className="text-sm text-inn-text-secondary">
+          <div className="p-4 rounded-xl bg-muted border border-primary/15">
+            <p className="text-sm text-muted-foreground">
               Still having trouble? Email us at
-              <Link href={`"mailto:${APP_CONFIG.contact.support}"`} className="text-inn-bg-accent hover:underline">
+              <Link href={`"mailto:${APP_CONFIG.contact.support}"`} className="text-primary hover:underline">
                 {APP_CONFIG.contact.support}
               </Link>
               and we'll help you get verified.

@@ -142,12 +142,12 @@ const SignUpForm: React.FC<Props> = ({}) => {
         >
           {title}
         </h1>
-        <p className="text-inn-text-secondary rtl:text-lg rtl:font-arabic-body">{subtitle}</p>
+        <p className="text-muted-foreground rtl:text-lg rtl:font-arabic-body">{subtitle}</p>
       </div>
 
       {formError && (
         <div className="mb-6 ">
-          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 shadow-[0_2px_8px] shadow-lg">
             <div className="flex items-center gap-3">
               <XCircleIcon className="size-5 text-red-600 shrink-0 " />
               <div>
@@ -161,7 +161,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
       )}
 
       {/* <!-- Sign Up Form --> */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_4px_20px] shadow-inn-bg-accent/15">
+      <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_4px_20px] shadow-lg">
         <p>{errorText}</p>
 
         <Form {...form}>
@@ -195,11 +195,11 @@ const SignUpForm: React.FC<Props> = ({}) => {
               label={
                 <>
                   {formFields.termsAgree.prefix}{" "}
-                  <Link href="/terms" className="text-inn-bg-accent hover:underline font-semibold">
+                  <Link href="/terms" className="text-primary hover:underline font-semibold">
                     {formFields.termsAgree.terms}
                   </Link>{" "}
                   {formFields.termsAgree.and}{" "}
-                  <Link href="/privacy" className="text-inn-bg-accent hover:underline font-semibold">
+                  <Link href="/privacy" className="text-primary hover:underline font-semibold">
                     {formFields.termsAgree.privacy}
                   </Link>
                   .
@@ -210,7 +210,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              className="w-full rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
               {isSubmitting && (
                 <div className="inline-block size-4 border-2 border-white/50 border-t-white rounded-full animate-spin mr-2" />
@@ -223,9 +223,9 @@ const SignUpForm: React.FC<Props> = ({}) => {
 
       {/* <!-- Sign In Link --> */}
       <div className="text-center mt-6">
-        <p className="text-inn-text-secondary">
+        <p className="text-muted-foreground">
           {haveAccount.text}{" "}
-          <Link href="/auth/sign-in" className="text-inn-bg-accent font-medium hover:underline">
+          <Link href="/auth/sign-in" className="text-primary font-medium hover:underline">
             {haveAccount.link}
           </Link>
         </p>

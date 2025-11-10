@@ -30,17 +30,15 @@ const CheckboxField = <T extends FieldValues>({ className, name, control, label,
                 checked={field.value}
                 onCheckedChange={field.onChange}
                 className={cn(
-                  "data-[state=checked]:text-white rtl:mt-1 data-[state=checked]:bg-inn-bg-accent dark:data-[state=checked]:bg-inn-bg-accent-dark",
-                  "data-[state=checked]:border-inn-bg-accent-dark dark:data-[state=checked]:border-inn-bg-accent"
+                  "data-[state=checked]:text-white rtl:mt-1 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary",
+                  "data-[state=checked]:border-primary dark:data-[state=checked]:border-primary"
                 )}
               />
             </FormControl>
             <div className="grid gap-2">
               <FormLabel className="rtl:font-arabic-body rtl:text-base flex flex-wrap rtl:leading-7">{label}</FormLabel>
               {description && (
-                <FormDescription className="text-inn-text-secondary text-base rtl:text-lg">
-                  {description}
-                </FormDescription>
+                <FormDescription className="text-muted-foreground text-base rtl:text-lg">{description}</FormDescription>
               )}
             </div>
           </div>

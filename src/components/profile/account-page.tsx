@@ -2,10 +2,10 @@ import { User as AuthUser } from "@supabase/supabase-js";
 import { format } from "date-fns";
 import { CalendarIcon, CreditCardIcon, ShieldIcon, UserIcon } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import initTranslations, { AppLocales } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { UserWithRelations } from "@/types/user.types";
-import { Badge } from "../mir-ui/badge";
 import UserProfileForm from "./user-profile-form";
 
 interface Props {
@@ -47,19 +47,19 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
     <div className={cn("max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12", className)}>
       <div className="mb-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">{title}</h1>
-        <p className="text-inn-text-secondary">{subtitle}</p>
+        <p className="text-muted-foreground">{subtitle}</p>
       </div>
 
       <div className="space-y-6">
         {/* <!-- Profile Information --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <UserIcon className="size-5 text-inn-bg-accent shrink-0" />
+            <UserIcon className="size-5 text-primary shrink-0" />
             <h3 className="text-xl font-bold">{sections.profile.title}</h3>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-inn-bg-accent to-inn-bg-flame flex items-center justify-center text-2xl font-bold shadow-lg">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl font-bold shadow-lg">
               {user.profile?.displayName?.charAt(0) || <UserIcon />}
             </div>
 
@@ -67,11 +67,11 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
               <div className="flex items-center gap-3 mb-2">
                 <h4 className="text-lg font-bold">{user.profile?.displayName || sections.profile.noDisplayName}</h4>
               </div>
-              <div className="flex items-center gap-2 text-sm text-inn-text-secondary mb-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                 <CreditCardIcon className="size-4 shrink-0" />
                 <span>{authUser.email}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-inn-text-secondary">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarIcon className="size-4 shrink-0" />
                 <span>{sections.profile.memberSince}</span>
               </div>
@@ -81,22 +81,22 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
 
         <UserProfileForm
           userProfile={user.profile!}
-          className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10"
+          className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg"
         />
 
         {/* <!-- Email Information --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-4">
-            <CalendarIcon className="size-5 text-inn-bg-accent shrink-0" />
+            <CalendarIcon className="size-5 text-primary shrink-0" />
 
             <h3 className="text-xl font-bold">{sections.email.title}</h3>
           </div>
 
-          <div className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-4">
+          <div className="rounded-xl border border-border bg-muted p-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <p className="font-medium mb-1">{authUser.email}</p>
-                <p className="text-xs text-inn-text-secondary">{sections.email.immutableNotice}</p>
+                <p className="text-xs text-muted-foreground">{sections.email.immutableNotice}</p>
               </div>
               <Badge variant={"success"}>{sections.email.verified}</Badge>
             </div>
@@ -104,28 +104,28 @@ const AccountPage: React.FC<Props> = async ({ className, authUser, user, locale 
         </div>
 
         {/* <!-- Account Information --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-4">
-            <ShieldIcon className="size-5 text-inn-bg-accent shrink-0" />
+            <ShieldIcon className="size-5 text-primary shrink-0" />
 
             <h3 className="text-xl font-bold">{sections.account.title}</h3>
           </div>
 
           <div className="space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-inn-border-light p-4 gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-border p-4 gap-3">
               <div>
                 <h4 className="font-semibold mb-1">{sections.account.typeLabel}</h4>
-                <p className="text-sm text-inn-text-secondary">{sections.account.typeDescription}</p>
+                <p className="text-sm text-muted-foreground">{sections.account.typeDescription}</p>
               </div>
               <Badge className="uppercase" variant={"info"}>
                 {user.role}
               </Badge>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-inn-border-light p-4 gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-border p-4 gap-3">
               <div>
                 <h4 className="font-semibold mb-1">{sections.account.statusLabel}</h4>
-                <p className="text-sm text-inn-text-secondary">{sections.account.statusDescription}</p>
+                <p className="text-sm text-muted-foreground">{sections.account.statusDescription}</p>
               </div>
               <Badge className="uppercase" variant={"success"}>
                 {user.status}

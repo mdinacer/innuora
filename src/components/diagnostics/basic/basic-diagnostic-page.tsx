@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Markdown from "markdown-to-jsx";
 
-import { Badge } from "@/components/mir-ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 import { BasicDiagnostic } from "@/lib/zod/basic-diagnostic.schema";
@@ -80,11 +80,11 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
   return (
     <div className={cn("h-auto w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16", className)}>
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-xs font-semibold text-inn-bg-accent">
+        <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-primary/25 bg-muted px-3 py-1 text-xs font-semibold text-primary">
           Your Personal Insights - {session.messages.filter((message) => message.role === "user").length} Messages
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">Understanding Your Inner World</h1>
-        <p className="text-lg text-inn-text-secondary max-w-3xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Here's what we've noticed in our conversations together. These insights are meant to help you see patterns and
           find gentle ways forward.
         </p>
@@ -92,15 +92,15 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
 
       <div className="space-y-6 max-w-5xl mx-auto w-full">
         {/* <!-- What's Happening --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.whats_happening className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.whats_happening className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">What's Happening Right Now</h2>
           </div>
 
           <div className="space-y-4">
             {diagnostic.whats_happening.map((whatsHappening, index) => (
-              <div key={index} className="p-4 rounded-xl bg-inn-bg-soft border-l-4 border-inn-bg-accent">
+              <div key={index} className="p-4 rounded-xl bg-muted border-l-4 border-primary">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="text-base leading-relaxed">
                     <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>
@@ -120,15 +120,15 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
         </div>
 
         {/* <!-- Hidden Rules --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.hidden_rules className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.hidden_rules className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Hidden Rules You Might Be Following</h2>
           </div>
 
           <div className="space-y-4">
             {diagnostic.hidden_rules.map((hiddenRule, index) => (
-              <div key={index} className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-5">
+              <div key={index} className="rounded-xl border border-border bg-muted p-5">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <h3 className="font-semibold text-base">{hiddenRule.rule}</h3>
                   <div className="flex gap-2 flex-shrink-0">
@@ -143,7 +143,7 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
                     </Badge>
                   </div>
                 </div>
-                <div className="text-base text-inn-text-secondary leading-relaxed">
+                <div className="text-base text-muted-foreground leading-relaxed">
                   <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>
                     {hiddenRule.description}
                   </Markdown>
@@ -154,22 +154,22 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
         </div>
 
         {/* <!-- Why It Feels Heavy --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.why_heavy className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.why_heavy className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Why It Feels Heavy</h2>
           </div>
 
           <div className="space-y-4">
             {diagnostic.why_heavy.map((whyHeavy, index) => (
-              <div key={index} className="rounded-xl bg-inn-bg-soft p-5 border-l-4 border-inn-bg-flame">
+              <div key={index} className="rounded-xl bg-muted p-5 border-l-4 border-accent">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <h3 className="font-semibold">{whyHeavy.title}</h3>
                   <Badge variant={"neutral"} className={cn("capitalize", badgeColors.confidence[whyHeavy.confidence])}>
                     {whyHeavy.confidence}
                   </Badge>
                 </div>
-                <div className="text-base text-inn-text-secondary leading-relaxed">
+                <div className="text-base text-muted-foreground leading-relaxed">
                   <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>
                     {whyHeavy.description}
                   </Markdown>
@@ -180,15 +180,15 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
         </div>
 
         {/* <!-- The Bigger Picture --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.meta_patterns className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.meta_patterns className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">The Bigger Picture</h2>
           </div>
 
           <div className="space-y-4">
             {diagnostic.meta_patterns.map((metaPattern, index) => (
-              <div key={index} className="p-5 rounded-xl bg-inn-bg-soft border-l-4 border-inn-bg-accent">
+              <div key={index} className="p-5 rounded-xl bg-muted border-l-4 border-primary">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <Markdown
                     options={{
@@ -209,7 +209,7 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
                     {metaPattern.confidence}
                   </Badge>
                 </div>
-                <div className="text-base text-inn-text-secondary leading-relaxed">
+                <div className="text-base text-muted-foreground leading-relaxed">
                   <Markdown options={{ forceBlock: true, disableParsingRawHTML: true }}>
                     {metaPattern.description}
                   </Markdown>
@@ -220,15 +220,15 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
         </div>
 
         {/* <!-- Where You Have Power --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.leverage_points className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.leverage_points className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Where You Have Power</h2>
           </div>
 
           <div className="space-y-4">
             {diagnostic.leverage_points.map((leveragePoint, index) => (
-              <div key={index} className="p-5 rounded-xl border border-inn-border-light bg-inn-bg-soft">
+              <div key={index} className="p-5 rounded-xl border border-border bg-muted">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <Markdown
                     options={{
@@ -257,7 +257,7 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
                       strong: { props: { className: "font-bold" } },
                       em: { props: { className: "italic" } },
                       p: {
-                        props: { className: "text-base text-inn-text-secondary leading-relaxed" },
+                        props: { className: "text-base text-muted-foreground leading-relaxed" },
                       },
                     },
                   }}
@@ -270,9 +270,9 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
         </div>
 
         {/* <!-- Gentle Next Steps --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.where_to_start className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.where_to_start className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Gentle Next Steps</h2>
           </div>
 
@@ -280,7 +280,7 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
             {diagnostic.where_to_start.map((start, index) => (
               <div
                 key={index}
-                className="p-5 rounded-xl bg-gradient-to-r from-inn-bg-accent/10 to-inn-bg-soft border border-inn-bg-accent/30"
+                className="p-5 rounded-xl bg-gradient-to-r from-primary/10 to-muted border border-primary/30"
               >
                 <div className="flex items-center gap-2 mb-3">
                   <Badge className={cn("capitalize", badgeColors.difficulty[start.difficulty])} variant="neutral">
@@ -307,7 +307,7 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
                       strong: { props: { className: "font-bold" } },
                       em: { props: { className: "italic" } },
                       p: {
-                        props: { className: "text-base text-inn-text-secondary leading-relaxed" },
+                        props: { className: "text-base text-muted-foreground leading-relaxed" },
                       },
                     },
                   }}
@@ -320,9 +320,9 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
         </div>
 
         {/* <!-- Resources --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.relevant_resources className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.relevant_resources className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Resources That Might Help</h2>
           </div>
 
@@ -332,13 +332,13 @@ const BasicDiagnosticPage: React.FC<Props> = ({ className, session, diagnostic }
               return (
                 <div
                   key={index}
-                  className="p-4 rounded-xl border border-inn-border-light bg-inn-bg-soft hover:border-inn-bg-accent transition"
+                  className="p-4 rounded-xl border border-border bg-muted hover:border-primary transition"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-inn-bg-accent/20 flex items-center justify-center mb-3">
-                    <Icon className="size-5 text-inn-bg-accent shrink-0" />
+                  <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-3">
+                    <Icon className="size-5 text-primary shrink-0" />
                   </div>
                   <h3 className="font-semibold text-sm mb-1 capitalize">{resource.category.replace("-", " ")}</h3>
-                  <p className="text-base text-inn-text-secondary mb-2">{resource.goal}</p>
+                  <p className="text-base text-muted-foreground mb-2">{resource.goal}</p>
                   <Badge className={cn("capitalize", badgeColors.difficulty[resource.difficulty])} variant="neutral">
                     {resource.difficulty}
                   </Badge>

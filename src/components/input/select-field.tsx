@@ -54,8 +54,8 @@ const SelectField = <T extends FieldValues, Y extends object>({
             <Select value={field.value ? String(field.value) : undefined} onValueChange={field.onChange}>
               <SelectTrigger
                 className={cn(
-                  "hover:border-inn-bg-accent sm:py-3 sm:px-4 !h-auto",
-                  "bg-inn-bg-input rounded-2xl text-base",
+                  "hover:border-primary sm:py-3 sm:px-4 !h-auto",
+                  "bg-secondary rounded-2xl text-base",
                   className
                 )}
                 aria-invalid={!!error}
@@ -69,7 +69,7 @@ const SelectField = <T extends FieldValues, Y extends object>({
                   className="flex flex-col items-start gap-y-0.5 sm:p-6 text-left"
                 ></SelectValue> */}
               </SelectTrigger>
-              <SelectContent className="rounded-2xl bg-inn-bg-card">
+              <SelectContent className="rounded-2xl bg-card">
                 {options.map((option) => {
                   const isSelected = option.value === field.value;
                   return (
@@ -77,8 +77,8 @@ const SelectField = <T extends FieldValues, Y extends object>({
                       key={option.value}
                       value={option.value}
                       className={cn(
-                        "sm:hover:bg-inn-bg-secondary h-auto rounded-2xl !px-4 !py-3",
-                        isSelected ? "sm:bg-inn-bg-accent sm:text-white" : ""
+                        "sm:hover:bg-secondary h-auto rounded-2xl !px-4 !py-3",
+                        isSelected ? "sm:bg-primary sm:text-white" : ""
                       )}
                     >
                       {option.description ? (

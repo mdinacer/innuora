@@ -37,11 +37,11 @@ export default function Error({ error, reset }: ErrorPageProps) {
   }, [error]);
 
   return (
-    <div className="min-h-screen rtl:font-arabic-body bg-mir-bg-primary flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-mir-bg-card rounded-3xl shadow-2xl p-8 text-center relative overflow-hidden">
+    <div className="min-h-screen rtl:font-arabic-body bg-background flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-card rounded-3xl shadow-elevated p-8 text-center relative overflow-hidden">
         {/* Decorative background shapes */}
-        <div className="absolute -top-12 -right-12 w-24 h-24 bg-mir-bg-accent/10 rounded-full animate-pulse" />
-        <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-mir-bg-accent/15 rounded-full" />
+        <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary opacity-10 rounded-full animate-pulse" />
+        <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-primary opacity-20 rounded-full" />
 
         {/* Error icon */}
         <div className="w-20 h-20 mx-auto mb-2 flex items-center justify-center">
@@ -49,7 +49,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
         </div>
 
         {/* Error content */}
-        <h1 className="text-2xl rtl:font-arabic font-bold text-mir-text-primary mb-3">{title}</h1>
+        <h1 className="text-2xl rtl:font-arabic font-bold text-foreground mb-3">{title}</h1>
 
         <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{description} </p>
 
@@ -65,7 +65,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
         <div className="space-y-3">
           <button
             onClick={reset}
-            className="w-full bg-mir-bg-accent text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
+            className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
           >
             <RefreshCcwIcon className="size-4" />
             <span className="rtl:mt-1">{actions.tryAgain}</span>
@@ -73,7 +73,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
 
           <button
             onClick={handleGoBack}
-            className="w-full hover:bg-mir-bg-soft text-mir-text-primary hover:text-white font-medium py-3 px-6 border border-mir-border-light/50 hover:border-mir-bg-accent/30 rounded-xl transition-all duration-300"
+            className="w-full bg-transparent text-foreground font-medium py-3 px-6 border border-border rounded-xl transition-all duration-300 hover:bg-muted"
           >
             <span className="rtl:mt-1">{actions.goHome}</span>
           </button>

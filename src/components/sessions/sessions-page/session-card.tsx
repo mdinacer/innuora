@@ -55,12 +55,12 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
       aria-labelledby={`session-title-${session.id}`}
       className={cn(
         "w-full group",
-        "bg-inn-bg-card border border-inn-border-light/30 rounded-3xl overflow-hidden",
+        "bg-card border border-border/30 rounded-3xl overflow-hidden",
         "flex flex-col",
-        "sm:backdrop-blur-xs sm:backdrop-saturate-200 sm:bg-inn-bg-card/30",
-        "hover:border-inn-bg-accent/30 hover:-translate-y-0.5",
+        "sm:backdrop-blur-xs sm:backdrop-saturate-200 sm:bg-card/30",
+        "hover:border-primary/30 hover:-translate-y-0.5",
         "transition-all duration-200 ease-in-out",
-        "focus:outline-none focus:ring-2 focus:ring-inn-bg-accent"
+        "focus:outline-none focus:ring-2 focus:ring-primary"
       )}
     >
       {updatesData && (
@@ -71,7 +71,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
 
       {/* Header with session type */}
       <div className="min-h-1/5 p-6 pb-0 w-full flex items-start justify-between">
-        <div className="bg-gradient-to-br from-inn-bg-accent to-[#ff8a7a] size-12 flex items-center justify-center shrink-0 rounded-2xl">
+        <div className="bg-gradient-to-br from-primary to-[#ff8a7a] size-12 flex items-center justify-center shrink-0 rounded-2xl">
           <TextIcon className="size-6 shrink-0" aria-hidden="true" />
         </div>
 
@@ -79,9 +79,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
           <div
             className={cn(
               "inline-flex items-center h-[30px] w-[34px] sm:w-auto border gap-x-2 text-sm px-2 py-1 rounded-lg",
-              isOnCloud
-                ? "border-inn-bg-accent/20 bg-inn-bg-soft text-inn-bg-accent"
-                : "bg-inn-bg-input border-inn-border-light"
+              isOnCloud ? "border-primary/20 bg-muted text-primary" : "bg-secondary border-border text-muted-foreground"
             )}
             aria-label={isOnCloud ? cloud : local} // screen reader text
           >
@@ -94,7 +92,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
           </div>
 
           <div
-            className="inline-flex items-center border gap-x-2 text-sm px-2 py-1 rounded-lg bg-inn-bg-input border-inn-border-light text-inn-text-secondary"
+            className="inline-flex items-center border gap-x-2 text-sm px-2 py-1 rounded-lg bg-secondary border-border text-muted-foreground"
             aria-label={`${session.metadata.messageCount} ${messages}`}
           >
             <MessageSquareTextIcon className="size-4 shrink-0" aria-hidden="true" />
@@ -104,7 +102,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
 
           <Link
             href={`/sessions/${publicId}/details`}
-            className="inline-flex aspect-square items-center border border-transparent gap-x-2 text-sm p-1 rounded-lg hover:bg-inn-bg-input hover:border-inn-border-light text-inn-text-secondary hover:text-inn-bg-accent"
+            className="inline-flex aspect-square items-center border border-transparent gap-x-2 text-sm p-1 rounded-lg hover:bg-secondary hover:border-border text-muted-foreground hover:text-primary"
             aria-label={`${continueText} details`}
           >
             <InfoIcon className="size-5 shrink-0" aria-hidden="true" />
@@ -116,13 +114,13 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
       <div className="flex-1 px-6 py-6 flex flex-col gap-2">
         <h3
           id={`session-title-${session.id}`}
-          className="font-bold text-inn-text-primary group-hover:text-inn-bg-accent transition-colors duration-300 leading-tight"
+          className="font-bold text-foreground group-hover:text-primary transition-colors duration-300 leading-tight"
         >
           {session.title}
         </h3>
         <p
           className={cn(
-            "text-inn-text-secondary leading-relaxed text-base rtl:text-base line-clamp-2",
+            "text-muted-foreground leading-relaxed text-base rtl:text-base line-clamp-2",
             "group-hover:text-opacity-80 transition-all duration-300"
           )}
         >
@@ -131,10 +129,10 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
       </div>
 
       {/* Bottom actions */}
-      <div className="min-h-1/5 p-6 pt-4 border-t border-inn-border-light/30 flex items-center justify-between">
+      <div className="min-h-1/5 p-6 pt-4 border-t border-border/30 flex items-center justify-between">
         <Link
           href={`/sessions/${publicId || session.id}`}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-inn-bg-accent text-white font-medium text-sm hover:shadow-[0_4px_20px] hover:shadow-black/10 hover:scale-105 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white font-medium text-sm hover:shadow-[0_4px_20px] hover:shadow-black/10 hover:scale-105 transition-all"
           aria-label={`${continueText} to session`}
         >
           <ChevronRightIcon className="size-3.5 shrink-0 rtl:rotate-180" aria-hidden="true" />
@@ -143,7 +141,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
 
         <div>
           <div
-            className="text-xs rtl:text-base rtl:font-arabic-body text-inn-text-secondary font-medium"
+            className="text-xs rtl:text-base rtl:font-arabic-body text-muted-foreground font-medium"
             aria-label={`Last updated ${formatDistanceToNow(new Date(session.updatedAt), { addSuffix: true, locale: fnsLocale })}`}
           >
             {formatDistanceToNow(new Date(session.updatedAt), { addSuffix: true, locale: fnsLocale })}

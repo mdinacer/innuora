@@ -10,6 +10,7 @@ import { Container } from "@/components/chat-ui";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import FlowChatMessageRenderer from "@/components/chat-ui/flow-chat/flow-chat.message-renderer";
 import LanguageDropdown from "@/components/language-dropdown";
+import { Button } from "@/components/ui/button";
 import { APP_CONFIG } from "@/config/app";
 import { SESSIONS_IDS } from "@/domains/session-flow/constants/sessions.props";
 import { useFlowSession } from "@/domains/session-flow/hooks/use-flow-session";
@@ -17,7 +18,6 @@ import { cn } from "@/lib/utils";
 import { useAppUserStore } from "@/stores/app-user.store";
 import { ChatMessage } from "@/types/flow-chat-messages.types";
 import { SessionFlow, UserOption } from "@/types/flow-session.types";
-import { Button } from "../mir-ui/button";
 
 interface Props {
   className?: string;

@@ -72,13 +72,13 @@ const UserMenu: React.FC<Props> = () => {
           aria-label={`${fullName} menu`}
           onKeyDown={handleKeyDown}
           className={cn(
-            "flex items-center gap-2 sm:gap-3 rounded-2xl border border-inn-border-light",
-            "bg-inn-bg-card px-2 sm:px-3 py-2 hover:border-inn-bg-accent transition",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-inn-bg-accent focus-visible:ring-offset-2"
+            "flex items-center gap-2 sm:gap-3 rounded-2xl border border-border",
+            "bg-card px-2 sm:px-3 py-2 hover:border-primary transition",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           )}
         >
           <div
-            className="sm:size-8 size-6 rounded-full bg-gradient-to-br from-inn-bg-accent to-inn-bg-flame flex items-center justify-center text-sm font-bold text-white"
+            className="sm:size-8 size-6 rounded-full bg-brand-gradient flex items-center justify-center text-sm font-bold text-primary-foreground"
             role="img"
             aria-label={`User avatar for ${fullName}`}
           >
@@ -93,24 +93,20 @@ const UserMenu: React.FC<Props> = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className={cn(
-          "min-w-[280px] rounded-2xl border border-inn-border-light bg-inn-bg-card",
-          "shadow-[0_8px_30px] shadow-inn-bg-accent/25 focus:outline-none"
-        )}
+        className={cn("min-w-[280px] rounded-2xl border border-border bg-card", "shadow-elevated focus:outline-none")}
         side="bottom"
         align="end"
         sideOffset={4}
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div
-            className="flex p-4 items-center justify-between  rounded-lg bg-inn-bg-soft"
+            className="flex p-4 items-center justify-between rounded-lg bg-muted"
             role="status"
             aria-label="Credit balance"
           >
-            <span className="text-xs text-inn-text-secondary">Credits Balance</span>
+            <span className="text-xs text-muted-foreground">Credits Balance</span>
             <span
-              className="bg-inn-bg-accent/15 text-inn-bg-accent inline-flex items-center py-0.5 px-2 
-                           text-xs font-semibold rounded-md"
+              className="bg-primary/15 text-primary inline-flex items-center py-0.5 px-2 text-xs font-semibold rounded-md"
               aria-live="polite"
             >
               {user?.creditsBalance ?? 0}
@@ -125,7 +121,7 @@ const UserMenu: React.FC<Props> = () => {
             <DropdownMenuItem
               key={item.label}
               asChild
-              className="sm:hover:bg-inn-bg-secondary text-sm font-medium px-3 py-2.5 rounded-xl focus-visible:bg-inn-bg-secondary"
+              className="sm:hover:bg-muted text-sm font-medium px-3 py-2.5 rounded-xl focus-visible:bg-muted"
             >
               <Link href={item.href} aria-label={`Go to ${item.label}`} className="flex items-center gap-x-3">
                 <item.icon className="size-[18px]" aria-hidden="true" />
@@ -137,10 +133,7 @@ const UserMenu: React.FC<Props> = () => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          className="sm:hover:bg-inn-bg-secondary text-sm font-medium px-3 py-2.5 rounded-xl"
-          role="menuitem"
-        >
+        <DropdownMenuItem className="sm:hover:bg-muted text-sm font-medium px-3 py-2.5 rounded-xl" role="menuitem">
           <HelpCircleIcon className="size-[18px]" aria-hidden="true" />
           Help & Support
         </DropdownMenuItem>

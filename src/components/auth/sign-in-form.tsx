@@ -146,12 +146,12 @@ const SignInForm: React.FC<Props> = ({ className }) => {
       {/* <!-- Welcome Header --> */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-3">{title}</h1>
-        <p className="text-inn-text-secondary">{subtitle}</p>
+        <p className="text-muted-foreground">{subtitle}</p>
       </div>
 
       {formError && (
         <div className="mb-6 ">
-          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+          <div className="rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 shadow-[0_2px_8px] shadow-lg">
             <div className="flex items-center gap-3">
               <XCircleIcon className="size-5 text-red-600 shrink-0 " />
               <div>
@@ -165,7 +165,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
       )}
 
       {/* <!-- Sign In Form --> */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-[0_4px_20px] shadow-inn-bg-accent/15">
+      <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_4px_20px] shadow-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSignIn)} className="space-y-6">
             {/* <!-- Email Field --> */}
@@ -190,7 +190,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
             <div className="text-right">
               <CheckboxField name="remember" control={form.control} label={formFields.remember} />
 
-              <Link href="/auth/forgot-password" className="text-sm text-inn-bg-accent hover:underline">
+              <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
                 {formFields.forgot_password}
               </Link>
             </div>
@@ -200,7 +200,7 @@ const SignInForm: React.FC<Props> = ({ className }) => {
               type="submit"
               disabled={isSubmitting || isRedirecting}
               className={cn(
-                "w-full rounded-2xl inline-flex items-center gap-x-2 justify-center bg-inn-bg-accent  focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50",
+                "w-full rounded-2xl inline-flex items-center gap-x-2 justify-center bg-primary  focus:ring-2 focus:ring-primary focus:ring-opacity-50",
                 "px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none",
                 "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               )}
@@ -216,9 +216,9 @@ const SignInForm: React.FC<Props> = ({ className }) => {
 
       {/* <!-- Sign Up Link --> */}
       <div className="text-center mt-6">
-        <p className="text-inn-text-secondary inline-flex gap-x-2">
+        <p className="text-muted-foreground inline-flex gap-x-2">
           <span>{no_account.text}</span>
-          <Link href="/auth/sign-up" className="text-inn-bg-accent font-medium hover:underline">
+          <Link href="/auth/sign-up" className="text-primary font-medium hover:underline">
             {no_account.link}
           </Link>
         </p>

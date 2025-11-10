@@ -9,7 +9,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     redirect("/sessions");
   }
   return (
-    <div className="min-h-screen w-screen standalone:w-full flex flex-col bg-inn-bg-primary text-inn-text-primary">
+    <div className="min-h-screen w-screen standalone:w-full flex flex-col bg-background text-foreground">
       <Header />
       <main>{children}</main>
     </div>

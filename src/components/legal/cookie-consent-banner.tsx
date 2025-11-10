@@ -85,26 +85,26 @@ export function CookieConsentBanner() {
       <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
 
       {/* Banner content */}
-      <div className="relative bg-inn-bg-card border-t border-inn-border-light shadow-2xl">
+      <div className="relative bg-card border-t border-border shadow-2xl">
         <div className="max-w-6xl mx-auto p-6">
           <div className="flex items-start gap-4">
             {/* Icon */}
-            <div className="rounded-full bg-inn-bg-accent/10 p-3 flex-shrink-0">
-              <Cookie className="h-6 w-6 text-inn-bg-accent" />
+            <div className="rounded-full bg-primary/10 p-3 flex-shrink-0">
+              <Cookie className="h-6 w-6 text-primary" />
             </div>
 
             {/* Content */}
             <div className="flex-1">
               <h3 className="font-semibold text-lg mb-2">Cookie & Privacy Preferences</h3>
-              <p className="text-sm text-inn-text-secondary mb-4 max-w-3xl">
+              <p className="text-sm text-muted-foreground mb-4 max-w-3xl">
                 We use <strong>essential cookies</strong> to operate our service (authentication, session management).
                 We also use <strong>optional analytics cookies</strong> to improve your experience. You have full
                 control - choose your preferences below.
               </p>
 
               {/* Cookie details */}
-              <details className="text-sm text-inn-text-secondary mb-4">
-                <summary className="cursor-pointer hover:text-inn-text-primary font-medium mb-2">
+              <details className="text-sm text-muted-foreground mb-4">
+                <summary className="cursor-pointer hover:text-foreground font-medium mb-2">
                   What cookies do we use?
                 </summary>
                 <ul className="list-disc list-inside space-y-1 ml-4 mt-2">
@@ -125,7 +125,7 @@ export function CookieConsentBanner() {
                 <Button
                   onClick={handleAccept}
                   disabled={isLoading}
-                  className="rounded-2xl bg-inn-bg-accent text-white hover:opacity-90 transition shadow-lg"
+                  className="rounded-2xl bg-primary text-white hover:opacity-90 transition shadow-lg"
                 >
                   {isLoading ? "Saving..." : "Accept All"}
                 </Button>
@@ -134,7 +134,7 @@ export function CookieConsentBanner() {
                   onClick={handleEssentialOnly}
                   disabled={isLoading}
                   variant="outline"
-                  className="rounded-2xl border-inn-border-light hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+                  className="rounded-2xl border-border hover:border-primary hover:text-primary transition"
                 >
                   Essential Only
                 </Button>
@@ -143,15 +143,15 @@ export function CookieConsentBanner() {
                   onClick={handleReject}
                   disabled={isLoading}
                   variant="ghost"
-                  className="rounded-2xl text-inn-text-secondary hover:text-inn-text-primary"
+                  className="rounded-2xl text-muted-foreground hover:text-foreground"
                 >
                   Reject All Optional
                 </Button>
               </div>
 
-              <p className="text-xs text-inn-text-secondary mt-3">
+              <p className="text-xs text-muted-foreground mt-3">
                 You can change your preferences anytime in{" "}
-                <Link href="/settings" className="text-inn-bg-accent hover:underline">
+                <Link href="/settings" className="text-primary hover:underline">
                   Privacy Settings
                 </Link>
                 . Learn more in our{" "}
@@ -159,7 +159,7 @@ export function CookieConsentBanner() {
                   href="https://www.innuora.com/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-inn-bg-accent hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Privacy Policy
                 </a>

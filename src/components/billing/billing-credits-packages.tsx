@@ -20,8 +20,8 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
   return (
     <div
       className={cn(
-        "rounded-2xl   bg-inn-bg-card p-6 shadow-[0_4px_20px] shadow-inn-bg-accent/15  hover:shadow-[0_8px_30px] hover:shadow-inn-bg-accent/25 relative",
-        product.popular ? "border-2 border-inn-bg-accent" : "border border-inn-border-light",
+        "rounded-2xl   bg-card p-6 shadow-[0_4px_20px] shadow-lg  hover:shadow-[0_8px_30px] hover:shadow-xl relative",
+        product.popular ? "border-2 border-primary" : "border border-border",
         "hover:-translate-y-1 transition-all duration-300 ease-in-out",
         className
       )}
@@ -30,29 +30,29 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
         <div
           className={cn(
             "popular-badge",
-            "absolute -top-3 right-5 bg-inn-bg-flame text-white rounded-2xl text-xs py-1 px-3 font-semibold shadow-[0_4px_12px] shadow-inn-bg-flame/40"
+            "absolute -top-3 right-5 bg-accent text-white rounded-2xl text-xs py-1 px-3 font-semibold shadow-[0_4px_12px] shadow-2xl"
           )}
         >
           POPULAR
         </div>
       )}
       <div className="text-center mb-4">
-        <div className={cn("text-sm font-semibold mb-2", isPremium ? "text-inn-bg-flame" : "text-inn-bg-accent")}>
+        <div className={cn("text-sm font-semibold mb-2", isPremium ? "text-accent" : "text-primary")}>
           {product.label}
         </div>
-        <div className="text-sm text-inn-text-secondary mb-4 ">{product.tagline}</div>
+        <div className="text-sm text-muted-foreground mb-4 ">{product.tagline}</div>
         <div className="text-4xl font-extrabold mb-1">
-          {formatCredits(product.credits)} <span className="text-sm text-inn-text-secondary">credits</span>
+          {formatCredits(product.credits)} <span className="text-sm text-muted-foreground">credits</span>
         </div>
       </div>
       <div className="text-center mb-6">
         <div className="text-3xl font-bold mb-1">${product.price.toFixed(2)}</div>
-        <div className="text-xs text-inn-text-secondary">one-time purchase</div>
+        <div className="text-xs text-muted-foreground">one-time purchase</div>
       </div>
       <button
         type="button"
         onClick={onPurchase}
-        className="w-full rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:translate-y-[-2px] transition shadow-[0_8px_30px] shadow-inn-bg-accent/25"
+        className="w-full rounded-2xl bg-primary px-6 py-3 font-semibold text-white hover:translate-y-[-2px] transition shadow-[0_8px_30px] shadow-xl"
       >
         Purchase
       </button>
@@ -149,7 +149,7 @@ const BillingCreditsPackages: React.FC<Props> = ({ userId, userEmail, userName, 
     <div id="tab-purchase" className="tab-content ">
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-bold mb-2">Secure Your Therapeutic Support</h2>
-        <p className="text-inn-text-secondary max-w-2xl mx-auto">
+        <p className="text-muted-foreground max-w-2xl mx-auto">
           Choose a credit package that fits your needs. All packages provide uninterrupted access to AI-powered
           therapeutic conversations.
         </p>

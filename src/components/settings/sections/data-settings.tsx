@@ -72,36 +72,36 @@ export default function DataSettings(): React.JSX.Element {
   return (
     <div className="space-y-6">
       {/* GDPR Compliance Notice */}
-      <Alert className="rounded-2xl border-inn-bg-accent/30 bg-inn-bg-soft">
-        <Download className="h-4 w-4 text-inn-bg-accent" />
-        <AlertDescription className="text-inn-text-secondary">
+      <Alert className="rounded-2xl border-primary/30 bg-muted">
+        <Download className="h-4 w-4 text-primary" />
+        <AlertDescription className="text-muted-foreground">
           <strong>{alerts.rights.title}</strong> {alerts.rights.message}
         </AlertDescription>
       </Alert>
 
       {/* Data Export */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <Download className="h-5 w-5 text-inn-bg-accent" />
+          <Download className="h-5 w-5 text-primary" />
           <h3 className="text-xl font-semibold">{exportCopy.title}</h3>
         </div>
 
-        <p className="text-sm text-inn-text-secondary mb-6">{exportCopy.description}</p>
+        <p className="text-sm text-muted-foreground mb-6">{exportCopy.description}</p>
 
-        <div className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-4">
+        <div className="rounded-xl border border-border bg-muted p-4">
           <h4 className="font-semibold mb-2">{exportCopy.card.title}</h4>
-          <p className="text-sm text-inn-text-secondary mb-4">{exportCopy.card.description}</p>
+          <p className="text-sm text-muted-foreground mb-4">{exportCopy.card.description}</p>
           <Button
             onClick={handleExportData}
             disabled={exportInProgress}
-            className="w-full rounded-2xl bg-inn-bg-accent text-white hover:opacity-90 transition shadow-lg"
+            className="w-full rounded-2xl bg-primary text-white hover:opacity-90 transition shadow-lg"
           >
             {exportInProgress ? exportCopy.card.button.loading : exportCopy.card.button.default}
           </Button>
 
           {exportInProgress && (
-            <div className="rounded-xl border border-inn-bg-accent/30 bg-white/50 dark:bg-black/20 p-3 mt-4">
-              <p className="text-sm text-inn-bg-accent font-medium">{exportCopy.card.progress}</p>
+            <div className="rounded-xl border border-primary/30 bg-white/50 dark:bg-black/20 p-3 mt-4">
+              <p className="text-sm text-primary font-medium">{exportCopy.card.progress}</p>
             </div>
           )}
         </div>
@@ -114,15 +114,15 @@ export default function DataSettings(): React.JSX.Element {
       </div>
 
       {/* Cloud Backup Info */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <Download className="h-5 w-5 text-inn-bg-accent" />
+          <Download className="h-5 w-5 text-primary" />
           <h3 className="text-xl font-semibold">{backup.title}</h3>
         </div>
 
-        <div className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-4">
-          <p className="text-sm text-inn-text-secondary">{backup.description}</p>
-          <p className="text-xs text-inn-text-secondary mt-2">
+        <div className="rounded-xl border border-border bg-muted p-4">
+          <p className="text-sm text-muted-foreground">{backup.description}</p>
+          <p className="text-xs text-muted-foreground mt-2">
             <strong>{backup.privacy.label}</strong> {backup.privacy.message}
           </p>
         </div>
@@ -136,10 +136,10 @@ export default function DataSettings(): React.JSX.Element {
         </h4>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-xl border border-red-500/30 bg-inn-bg-card p-4">
+          <div className="flex items-center justify-between rounded-xl border border-red-500/30 bg-card p-4">
             <div>
               <h5 className="font-semibold mb-1">{danger.delete.title}</h5>
-              <p className="text-sm text-inn-text-secondary">{danger.delete.description}</p>
+              <p className="text-sm text-muted-foreground">{danger.delete.description}</p>
             </div>
             <Button
               variant="destructive"

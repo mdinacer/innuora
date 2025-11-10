@@ -14,7 +14,7 @@ interface ProfileFieldRowProps {
 export const ProfileFieldRow = React.memo<ProfileFieldRowProps>(({ label, value, className }) => {
   return (
     <div className={className || "grid grid-cols-3"}>
-      <span className="text-sm text-inn-text-secondary">{label}</span>
+      <span className="text-sm text-muted-foreground">{label}</span>
       <span className="col-span-2">{value}</span>
     </div>
   );
@@ -31,7 +31,7 @@ interface ProfileFieldListProps {
 export const ProfileFieldList = React.memo<ProfileFieldListProps>(({ label, items, className }) => {
   return (
     <div className={className || "grid grid-cols-3"}>
-      <span className="text-sm text-inn-text-secondary">{label}</span>
+      <span className="text-sm text-muted-foreground">{label}</span>
       <ul className="list-disc list-inside col-span-2">
         {items.map((item, index) => (
           <li className="list-item" key={index}>

@@ -91,7 +91,7 @@ const PasswordField = <T extends FieldValues>({
                 <input
                   aria-invalid={fieldState.invalid}
                   aria-describedby={label}
-                  className="w-full rounded-2xl border border-inn-border-light bg-inn-bg-input px-4 py-3 ltr:pr-12 rtl:pl-12 text-inn-text-primary placeholder-inn-text-secondary outline-none transition focus:border-inn-bg-accent focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-20"
+                  className="w-full rounded-2xl border border-border bg-secondary px-4 py-3 ltr:pr-12 rtl:pl-12 text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20"
                   {...field}
                   {...props}
                   type={isVisible ? "text" : "password"}
@@ -99,7 +99,7 @@ const PasswordField = <T extends FieldValues>({
                 <button
                   onClick={() => setVisible((prev) => !prev)}
                   type="button"
-                  className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-inn-text-secondary hover:text-inn-text-primary transition-all"
+                  className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-all"
                   aria-label="Toggle password visibility"
                 >
                   {isVisible ? <EyeOffIcon className="size-5 shrink-0" /> : <EyeIcon className="size-5 shrink-0" />}
@@ -111,10 +111,10 @@ const PasswordField = <T extends FieldValues>({
             {showPasswordStrength && (
               <div className="mt-2">
                 <div className="flex space-x-1 mb-1">
-                  <div className="flex-1 h-1 bg-inn-border-light rounded-full">
+                  <div className="flex-1 h-1 bg-border rounded-full">
                     <div
                       className={cn(
-                        "password-strength bg-inn-border-light h-1 rounded-[2px] transition-all duration-300 ease-in-out",
+                        "password-strength bg-border h-1 rounded-[2px] transition-all duration-300 ease-in-out",
                         passwordStrength?.styles?.bg,
                         passwordStrength?.styles?.width
                       )}

@@ -155,7 +155,7 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-6">
       {/* Product Summary */}
-      <div className="rounded-2xl bg-inn-bg-soft border border-inn-border-light p-4">
+      <div className="rounded-2xl bg-muted border border-border p-4">
         <h3 className="font-semibold text-lg">
           {BillingUtils.formatAmount(BillingUtils.dollarsToCents(product.price))} - {product.label} Package
         </h3>
@@ -209,14 +209,14 @@ function PaymentForm({ userEmail, userName, productKey, onSuccess, onError, onCa
           type="button"
           onClick={onCancel}
           disabled={status === "processing_payment"}
-          className="flex-1 rounded-2xl border border-inn-border-light px-6 py-3 text-base font-semibold hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+          className="flex-1 rounded-2xl border border-border px-6 py-3 text-base font-semibold hover:border-primary hover:text-primary transition"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={status === "processing_payment" || status === "creating_intent" || status === "succeeded"}
-          className="flex-1 rounded-2xl bg-inn-bg-accent px-6 py-3 text-base font-semibold text-white shadow-lg disabled:opacity-50"
+          className="flex-1 rounded-2xl bg-primary px-6 py-3 text-base font-semibold text-white shadow-lg disabled:opacity-50"
         >
           {status === "creating_intent" || status === "processing_payment" ? (
             <>
@@ -302,15 +302,15 @@ export function PaymentModal({ isOpen, onClose, userEmail, userName, productKey,
       ) : (
         <DialogContent
           showCloseButton={false}
-          className="sm:max-w-lg p-0 bg-inn-bg-card rounded-3xl border border-inn-border-light shadow-[0_20px_60px] shadow-black/30 max-w-[500px] max-h-[90vh]"
+          className="sm:max-w-lg p-0 bg-card rounded-3xl border border-border shadow-[0_20px_60px] shadow-black/30 max-w-[500px] max-h-[90vh]"
         >
-          <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-inn-border-light">
+          <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-border">
             <div>
               <DialogTitle className="text-xl font-bold">Secure Your Support</DialogTitle>
               <DialogDescription className="hidden" />
             </div>
             <DialogClose asChild>
-              <button className="w-8 h-8 rounded-full hover:bg-inn-bg-secondary flex items-center justify-center transition">
+              <button className="w-8 h-8 rounded-full hover:bg-secondary flex items-center justify-center transition">
                 <XIcon className="size-5 shrink-0" />
               </button>
             </DialogClose>

@@ -91,7 +91,7 @@ const SessionNamingDialog: React.FC<Props> = ({ session, onSubmitted }) => {
       <DialogTrigger asChild>
         <Button variant="outline">{t("session_naming.trigger")}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-inn-bg-card rounded-2xl border-inn-border-light">
+      <DialogContent className="sm:max-w-[425px] bg-card rounded-2xl border-border">
         <DialogHeader>
           <DialogTitle>{t("session_naming.title")}</DialogTitle>
           <DialogDescription>
@@ -113,7 +113,7 @@ const SessionNamingDialog: React.FC<Props> = ({ session, onSubmitted }) => {
                     <SelectItem key={locale} value={locale}>
                       {t(`common:languages.${locale}`)}{" "}
                       {locale === language && (
-                        <span className=" text-inn-text-secondary text-sm">
+                        <span className=" text-muted-foreground text-sm">
                           ({t("session_naming.placeholders.current")})
                         </span>
                       )}
@@ -122,28 +122,28 @@ const SessionNamingDialog: React.FC<Props> = ({ session, onSubmitted }) => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <p className="text-sm text-inn-text-secondary">{t("session_naming.fields.language.description")}</p>
+            <p className="text-sm text-muted-foreground">{t("session_naming.fields.language.description")}</p>
           </div>
 
-          <div className=" bg-inn-bg-primary p-4 rounded-2xl">
-            <p className=" text-sm text-inn-text-secondary font-medium">{t("session_naming.placeholders.current")}</p>
+          <div className=" bg-background p-4 rounded-2xl">
+            <p className=" text-sm text-muted-foreground font-medium">{t("session_naming.placeholders.current")}</p>
             <div>
               <p className="font-semibold">{session.title}</p>
-              {session.subtitle && <p className="text-sm text-inn-text-secondary">{session.subtitle}</p>}
+              {session.subtitle && <p className="text-sm text-muted-foreground">{session.subtitle}</p>}
             </div>
           </div>
-          <div className=" bg-inn-bg-primary p-4 rounded-2xl" dir={selectedLocale === "ar" ? "rtl" : "ltr"}>
-            <p className=" text-sm text-inn-text-secondary font-medium">{t("session_naming.placeholders.generated")}</p>
+          <div className=" bg-background p-4 rounded-2xl" dir={selectedLocale === "ar" ? "rtl" : "ltr"}>
+            <p className=" text-sm text-muted-foreground font-medium">{t("session_naming.placeholders.generated")}</p>
             <div>
               <p className="font-semibold rtl:font-arabic">
                 {generatedData?.title || t("session_naming.placeholders.title")}
               </p>
-              <p className="text-sm text-inn-text-secondary rtl:font-arabic-body">
+              <p className="text-sm text-muted-foreground rtl:font-arabic-body">
                 {generatedData?.subtitle || t("session_naming.placeholders.subtitle")}
               </p>
             </div>
           </div>
-          <p className="text-xs italic text-inn-text-secondary">{t("session_naming.notes.preview")}</p>
+          <p className="text-xs italic text-muted-foreground">{t("session_naming.notes.preview")}</p>
 
           <div>
             <Button disabled={isGenerating || isSubmitting} className="w-full" onClick={handleGenerateData}>
@@ -157,7 +157,7 @@ const SessionNamingDialog: React.FC<Props> = ({ session, onSubmitted }) => {
               {error}
             </div>
           ) : (
-            <div className="p-4 rounded-2xl text-center text-sm bg-inn-bg-flame/20 border border-inn-bg-flame/50">
+            <div className="p-4 rounded-2xl text-center text-sm bg-accent/20 border border-accent/50">
               {t("session_naming.notes.credits")}
             </div>
           )}

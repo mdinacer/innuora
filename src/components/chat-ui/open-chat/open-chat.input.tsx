@@ -39,14 +39,14 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
   const isDisabled = inputValue.length === 0 || isLoading;
 
   return (
-    <div className={cn("p-6 pt-0 bg-inn-bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
+    <div className={cn("p-6 pt-0 bg-card/50 backdrop-blur-lg backdrop-saturate-150", className)}>
       <div
         className={cn(
           "flex gap-3 items-center",
-          "bg-inn-bg-input",
+          "bg-secondary",
           "rounded-3xl p-1",
           "transition-all duration-300 ease-in-out",
-          "focus-within:bg-inn-border-light",
+          "focus-within:bg-muted",
           "rtl:pl-4 ltr:pr-4"
         )}
       >
@@ -54,7 +54,7 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           ref={inputRef}
           className={cn(
             "flex-1 bg-transparent border-none focus:outline-none py-3.5 px-4",
-            "resize-none min-h-6 max-h-[100px] leading-6 placeholder:text-inn-text-secondary"
+            "resize-none min-h-6 max-h-[100px] leading-6 placeholder:text-muted-foreground"
           )}
           rows={1}
           value={inputValue}
@@ -72,9 +72,9 @@ const OpenChatInput: React.FC<Props> = ({ className, isLoading = false, onSendMe
           title={t("actionTitle")}
           className={cn(
             "size-10 border-none rounded-full flex items-center justify-center",
-            "bg-inn-bg-accent",
+            "bg-primary",
             "cursor-pointer transition-all duration-300 ease-in-out shrink-0",
-            "hover:not-disabled:scale-105 hover:not-disabled:shadow-[0_4px_12px] shadow-inn-bg-accent/40",
+            "hover:not-disabled:scale-105 hover:not-disabled:shadow-[0_4px_12px] shadow-2xl",
             "disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
           )}
         >

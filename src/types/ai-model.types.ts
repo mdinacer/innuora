@@ -42,4 +42,5 @@ export type AiMessageResponse = {
   message: string;
   modelTokenUsage: ModelTokenUsage | null;
   consumedCredits: number;
+  elapsedMs: number;
 };

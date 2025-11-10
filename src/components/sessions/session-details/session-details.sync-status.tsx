@@ -10,8 +10,6 @@ import {
   pushSession,
   updateSession,
 } from "@/app/actions/session-actions";
-import { Button } from "@/components/mir-ui/button";
-import Card from "@/components/mir-ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,10 +20,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
 import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
+import { cn } from "@/lib/utils";
 
 interface Props {
   className?: string;
@@ -196,9 +197,9 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
   }[status];
 
   return (
-    <Card className={className}>
+    <Card className={cn("px-6", className)}>
       <h3 className="font-bold mb-4 flex items-center gap-2">
-        <CloudIcon className="size-5 text-inn-bg-accent shrink-0" />
+        <CloudIcon className="size-5 text-primary shrink-0" />
         Cloud Sync
       </h3>
 

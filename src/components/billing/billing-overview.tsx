@@ -12,9 +12,9 @@ interface Props {
 const BillingOverview: React.FC<Props> = ({}) => {
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <CreditCardIcon className="size-6 text-inn-bg-accent shrink-0" />
+          <CreditCardIcon className="size-6 text-primary shrink-0" />
 
           <h3 className="text-xl font-semibold">Current Balance</h3>
         </div>
@@ -23,15 +23,15 @@ const BillingOverview: React.FC<Props> = ({}) => {
             showUSDValue={false}
             content={({ currentBalance, subText }) => (
               <>
-                <div className="text-5xl font-extrabold text-inn-bg-accent mb-2">{currentBalance}</div>
-                <div className="text-inn-text-secondary">{subText}</div>
+                <div className="text-5xl font-extrabold text-primary mb-2">{currentBalance}</div>
+                <div className="text-muted-foreground">{subText}</div>
               </>
             )}
           />
         </div>
-        <div className="rounded-xl bg-inn-bg-soft border border-inn-bg-accent/25 p-4">
+        <div className="rounded-xl bg-muted border border-primary/25 p-4">
           <h4 className="font-semibold mb-2">How Credits Work</h4>
-          <ul className="text-sm text-inn-text-secondary space-y-1 list-disc list-inside">
+          <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
             <li>Each credit supports your ongoing space for reflection and emotional clarity</li>
             <li>Conversations typically draw 15-35 credits, depending on depth and pace</li>
             <li>Your credits don't expire - they wait for you, whenever you're ready to continue</li>
@@ -41,13 +41,13 @@ const BillingOverview: React.FC<Props> = ({}) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10 text-center">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg text-center">
           <div className="text-3xl font-bold text-green-500 mb-1">Secure</div>
           <div className="text-sm font-medium mb-1">Payment Processing</div>
           <div className="text-xs text-[var(--text-secondary)]">256-bit SSL encryption</div>
         </div>
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10 text-center">
-          <div className="text-3xl font-bold text-inn-bg-accent mb-1">24/7</div>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg text-center">
+          <div className="text-3xl font-bold text-primary mb-1">24/7</div>
           <div className="text-sm font-medium mb-1">Support Available</div>
           <div className="text-xs text-[var(--text-secondary)]">Always here to help</div>
         </div>

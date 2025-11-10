@@ -152,11 +152,7 @@ export async function handleHolisticUserInput(
         prevAnalysis,
         relationalTrace: relationalTrace || undefined,
       }),
-      generateAnalysis({
-        userInput,
-        messagesWindow: conversationWindow,
-        prevAnalyses: analyses,
-      }),
+      generateAnalysis(userInput),
     ]);
 
     const { response: reflectiveResponse, nextTrace } = reflectionResult;

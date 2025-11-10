@@ -40,21 +40,21 @@ export default function ResetPasswordRoute() {
         {/* <!-- Header --> */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight mb-3">Reset your password</h1>
-          <p className="text-inn-text-secondary">
+          <p className="text-muted-foreground">
             Enter your email address and we'll send you a link to reset your password
           </p>
         </div>
 
         {/* <!-- Request Form --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-8 shadow-md">
+        <div className="rounded-2xl border border-border bg-card p-8 shadow-md">
           <PasswordResetForm />
         </div>
 
         {/* <!-- Back to Sign In --> */}
         <div className="text-center mt-6">
-          <p className="text-inn-text-secondary inline-flex gap-x-2">
+          <p className="text-muted-foreground inline-flex gap-x-2">
             Remember your password?
-            <Link href="/auth/sign-in" className="text-inn-bg-accent font-medium hover:underline">
+            <Link href="/auth/sign-in" className="text-primary font-medium hover:underline">
               Sign in
             </Link>
           </p>

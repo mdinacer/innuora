@@ -25,12 +25,10 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
         secondaryContent={t("guide")}
         primaryContent={<GraduationCapIcon className="size-6 shrink-0" />}
       />
-      <h3
-        className={cn("card-title", " text-2xl font-bold text-inn-text-primary mb-2 leading-[1.3] -tracking-[0.3px]")}
-      >
+      <h3 className={cn("card-title", "text-2xl font-bold text-foreground mb-2 leading-[1.3] -tracking-[0.3px]")}>
         {title}
       </h3>
-      <p className={"mb-4 text-inn-text-primary/70"}>{subtitle}</p>
+      <p className={"mb-4 text-foreground/70"}>{subtitle}</p>
       {paragraphs.map((paragraph, index) => (
         <div
           key={index}
@@ -44,7 +42,7 @@ const FlowChatParagraphs: React.FC<Props> = ({ message, isDisabled = false, onMo
         <button
           onClick={onMoveToNextStep}
           className={
-            "mt-4 ltr:ml-auto rtl:mr-auto flex items-center gap-1.5 text-inn-bg-accent text-base rtl:text-lg font-semibold cursor-pointer bg-none border-none p-0"
+            "mt-4 ltr:ml-auto rtl:mr-auto flex items-center gap-1.5 text-primary text-base rtl:text-lg font-semibold cursor-pointer bg-none border-none p-0"
           }
         >
           <span>{buttonText}</span>

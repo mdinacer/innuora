@@ -24,16 +24,16 @@ const CrisisConfirmationDialog: React.FC<Props> = ({ isCrisis = false, onConfirm
 
   return (
     <Dialog open={isCrisis} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[425px] p-6 sm:p-8 rounded-[2rem] bg-inn-bg-primary">
+      <DialogContent className="sm:max-w-[425px] p-6 sm:p-8 rounded-[2rem] bg-background">
         <DialogHeader className="mt-4">
           <DialogTitle className="text-xl sm:text-2xl">I want to make sure you're safe</DialogTitle>
-          <DialogDescription className="text-sm sm:text-base text-inn-text-secondary">
+          <DialogDescription className="text-sm sm:text-base text-muted-foreground">
             I noticed some signals that concern me. I need to pause and ask directly:
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-8">
-          <div className="rounded-lg bg-inn-bg-soft border border-border p-5">
-            <p className="text-base font-medium text-inn-text-secondary text-center">
+          <div className="rounded-lg bg-muted border border-border p-5">
+            <p className="text-base font-medium text-muted-foreground text-center">
               Are you in immediate danger right now, or thinking about harming yourself?
             </p>
           </div>
@@ -48,7 +48,7 @@ const CrisisConfirmationDialog: React.FC<Props> = ({ isCrisis = false, onConfirm
           </div>
         </div>
         <DialogFooter>
-          <div className="pt-2 border-t border-b-inn-border-light">
+          <div className="pt-2 border-t border-b-border">
             <p className="text-xs text-center text-muted-foreground">
               If you're unsure, please choose "I need help now". it's always better to connect with support.
             </p>

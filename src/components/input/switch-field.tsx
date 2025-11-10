@@ -27,7 +27,7 @@ const SwitchField = <T extends FieldValues>({ control, name, label, description 
             <Switch
               checked={field.value}
               onCheckedChange={field.onChange}
-              className="data-[state=checked]:bg-inn-bg-accent"
+              className="data-[state=checked]:bg-primary"
             />
           </FormControl>
         </FormItem>

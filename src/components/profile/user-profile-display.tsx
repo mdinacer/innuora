@@ -6,7 +6,7 @@
 
 import React from "react";
 
-import { Button } from "@/components/mir-ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UserProfileInput } from "@/lib/zod/user-profile.schema";
 import { useProfileFieldLabels, useProfileFieldTranslations } from "./hooks/use-profile-field-translations";
@@ -25,9 +25,11 @@ export const UserProfileDisplay = React.memo<UserProfileDisplayProps>(({ profile
   return (
     <div className={cn("flex flex-col gap-y-6", className)}>
       <div className="flex md:flex-row flex-col gap-y-2 items-center justify-between">
-        <p className="text-sm text-inn-text-secondary mb-2">{fields.description}</p>
+        <p className="text-sm text-muted-foreground mb-2">{fields.description}</p>
         <Button
-          className="w-full md:w-auto rounded-2xl bg-inn-bg-accent px-6 py-3 text-base font-semibold text-white hover:translate-y-[-1px] transition shadow-lg whitespace-nowrap"
+          size="lg"
+          variant="primary"
+          className="w-full md:w-auto shadow-lg hover:-translate-y-0.5"
           onClick={onEdit}
         >
           {fields.actions.edit}

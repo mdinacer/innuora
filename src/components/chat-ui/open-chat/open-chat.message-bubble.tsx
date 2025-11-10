@@ -14,9 +14,9 @@ interface Props {
 }
 
 const STYLES_MAP = {
-  user: "bg-inn-bg-accent-dark text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
-  assistant: "bg-inn-bg-input rounded-[20px] ltr:rounded-tl-[6px] rtl:rounded-tr-[6px]",
-  system: "bg-inn-bg-input rounded-[20px] rounded-tl-[6px]",
+  user: "bg-primary text-white rounded-[20px] rtl:rounded-tl-[6px] ltr:rounded-tr-[6px]",
+  assistant: "bg-secondary rounded-[20px] ltr:rounded-tl-[6px] rtl:rounded-tr-[6px]",
+  system: "bg-secondary rounded-[20px] rounded-tl-[6px]",
 };
 
 const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
@@ -26,13 +26,13 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
   const formattedDate = format(new Date(message.timestamp), "HH:mm");
   const messageStyle = STYLES_MAP[role];
   return (
-    <div className={cn("mb-8 opacity-0 animate-slide-in-up duration-[600ms] ease-in delay-200", className)}>
+    <div className={cn("mb-8 animate-slide-in-up duration-[600ms] ease-in delay-200", className)}>
       <div className={cn("flex flex-col gap-3 mb-4 md:flex-row items-start", isUser ? " md:flex-row-reverse" : "")}>
         <div
           className={cn(
             "size-9 rounded-lg flex items-center justify-center",
             "text-sm font-semibold rtl:font-sans shrink-0 text-white",
-            isUser ? "bg-inn-bg-secondary" : "bg-inn-bg-accent-dark"
+            isUser ? "bg-secondary" : "bg-primary"
           )}
         >
           {isUser ? "U" : "I"}
@@ -49,7 +49,7 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
             content
           ) : (
             <Markdown
-              className="prose rtl:text-lg text-inn-text-primary [&>p]:mb-3 last:[&>p]:mb-0"
+              className="prose rtl:text-lg text-foreground [&>p]:mb-3 last:[&>p]:mb-0"
               options={{
                 forceBlock: true,
                 disableParsingRawHTML: true,
@@ -60,7 +60,7 @@ const OpenChatMessageBubble: React.FC<Props> = ({ message, className }) => {
           )}
         </div>
       </div>
-      <div className={cn("message-time", " text-xs text-inn-text-secondary mt-2 text-center font-medium")}>
+      <div className={cn("message-time", " text-xs text-muted-foreground mt-2 text-center font-medium")}>
         {formattedDate}
         {message.role === "assistant" && message.creditsUsed && (
           <span className="ml-2 opacity-75">

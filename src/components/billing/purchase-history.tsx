@@ -116,7 +116,7 @@ export function PurchaseHistory({ className = "", limit = 10 }: PurchaseHistoryP
 
   if (isLoading) {
     return (
-      <Card className={cn("bg-inn-bg-card", className)}>
+      <Card className={cn("bg-card", className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Receipt className="h-5 w-5" />
@@ -128,15 +128,15 @@ export function PurchaseHistory({ className = "", limit = 10 }: PurchaseHistoryP
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <Skeleton className="h-4 w-4 rounded-full bg-inn-bg-secondary" />
+                  <Skeleton className="h-4 w-4 rounded-full bg-secondary" />
                   <div>
-                    <Skeleton className="h-4 w-32 mb-2 bg-inn-bg-secondary" />
-                    <Skeleton className="h-3 w-24 bg-inn-bg-secondary" />
+                    <Skeleton className="h-4 w-32 mb-2 bg-secondary" />
+                    <Skeleton className="h-3 w-24 bg-secondary" />
                   </div>
                 </div>
                 <div className="text-right">
-                  <Skeleton className="h-4 w-20 mb-2 bg-inn-bg-secondary" />
-                  <Skeleton className="h-3 w-16 bg-inn-bg-secondary" />
+                  <Skeleton className="h-4 w-20 mb-2 bg-secondary" />
+                  <Skeleton className="h-3 w-16 bg-secondary" />
                 </div>
               </div>
             ))}
@@ -148,7 +148,7 @@ export function PurchaseHistory({ className = "", limit = 10 }: PurchaseHistoryP
 
   if (error) {
     return (
-      <Card className={cn("bg-inn-bg-card", className)}>
+      <Card className={cn("bg-card", className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Receipt className="h-5 w-5" />
@@ -170,7 +170,7 @@ export function PurchaseHistory({ className = "", limit = 10 }: PurchaseHistoryP
   }
 
   return (
-    <Card className={cn("bg-inn-bg-card border-inn-border-light", className)}>
+    <Card className={cn("bg-card border-border", className)}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -196,7 +196,7 @@ export function PurchaseHistory({ className = "", limit = 10 }: PurchaseHistoryP
             {purchases.map((purchase) => (
               <div
                 key={purchase.id}
-                className="flex items-center justify-between p-4 rounded-xl border border-inn-border-light hover:border-inn-bg-accent transition-colors"
+                className="flex items-center justify-between p-4 rounded-xl border border-border hover:border-primary transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   {getStatusIcon(purchase.status)}

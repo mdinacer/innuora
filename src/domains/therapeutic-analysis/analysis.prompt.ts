@@ -2,7 +2,7 @@ import { ChatCompletionMessageParam, ResponseFormatJSONSchema } from "openai/res
 
 import { RequestOptions } from "@/app/actions/ai-client-actions";
 
-export const INNUORA_ANALYSIS_MESSAGE_PARAM: ChatCompletionMessageParam = {
+const INNUORA_ANALYSIS_MESSAGE_PARAM: ChatCompletionMessageParam = {
   role: "system",
   content: `
 You are a cognitive–emotional analysis engine.
@@ -125,7 +125,7 @@ USER: "I don’t want to live anymore."
 `.trim(),
 };
 
-export const INNUORA_ANALYSIS_RESPONSE_FORMAT: ResponseFormatJSONSchema = {
+const INNUORA_ANALYSIS_RESPONSE_FORMAT: ResponseFormatJSONSchema = {
   type: "json_schema",
   json_schema: {
     name: "InnuoraAnalysis",
@@ -210,9 +210,7 @@ export const INNUORA_ANALYSIS_RESPONSE_FORMAT: ResponseFormatJSONSchema = {
   },
 };
 
-export const INNUORA_ANALYSIS_INSTRUCTIONS = INNUORA_ANALYSIS_MESSAGE_PARAM.content;
-
-export const INNUORA_ANALYSIS_PROMPT_OPTIONS: RequestOptions = {
+const INNUORA_ANALYSIS_PROMPT_OPTIONS: RequestOptions = {
   model: "background",
   response_format: INNUORA_ANALYSIS_RESPONSE_FORMAT,
   temperature: 0.18,

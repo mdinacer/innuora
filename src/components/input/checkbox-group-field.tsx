@@ -60,7 +60,7 @@ const CheckboxGroupField = <T extends FieldValues, Y extends object>({
                     key={option.value}
                     htmlFor={option.value}
                     className={cn(
-                      "flex items-start gap-3 p-3 rounded-lg hover:bg-inn-bg-secondary cursor-pointer transition-all",
+                      "flex items-start gap-3 p-3 rounded-lg hover:bg-secondary cursor-pointer transition-all",
                       { "opacity-50 cursor-not-allowed pointer-events-none": isDisabled }
                     )}
                   >
@@ -79,10 +79,10 @@ const CheckboxGroupField = <T extends FieldValues, Y extends object>({
                       type="checkbox"
                       className={cn(
                         "checkbox-custom mt-0.5",
-                        "appearance-none size-5 border-2 border-inn-border-light",
-                        "rounded-md bg-inn-bg-input cursor-pointer transition-all duration-200 ease-in relative shrink-0",
-                        "hover:border-inn-bg-accent",
-                        "checked:bg-inn-bg-accent checked:border-inn-bg-accent",
+                        "appearance-none size-5 border-2 border-border",
+                        "rounded-md bg-secondary cursor-pointer transition-all duration-200 ease-in relative shrink-0",
+                        "hover:border-primary",
+                        "checked:bg-primary checked:border-primary",
                         "after:content-[''] after:absolute after:left-[6px] after:top-[2px]",
                         "after:w-[5px] after:h-[10px]",
                         "after:border-solid after:border-white",

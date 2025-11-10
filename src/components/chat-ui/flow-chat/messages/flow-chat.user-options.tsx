@@ -27,12 +27,12 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
       className={cn(
         "option-item w-full p-4 mb-2 rounded-[12px] text-base cursor-pointer",
         "ltr:text-left rtl:text-right",
-        "border border-inn-border-light bg-inn-bg-input",
-        "bg-inn-bg-card transition-all duration-200 ease-in-out",
-        "hover:not-disabled:border-inn-bg-accent hover:not-disabled:bg-inn-bg-card",
+        "border border-border bg-secondary",
+        "bg-card transition-all duration-200 ease-in-out",
+        "hover:not-disabled:border-primary hover:not-disabled:bg-card",
         isVisible ? "block animate-fade-in" : "hidden",
         {
-          "border-inn-bg-accent bg-inn-bg-card text-inn-bg-accent shadow-[0_0_0_1px] shadow-inn-bg-accent": isSelected,
+          "border-primary bg-card text-primary shadow-[0_0_0_1px] shadow-xl": isSelected,
         },
         "disabled:opacity-50 disabled:cursor-not-allowed",
         className
@@ -44,13 +44,13 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
           <div
             className={cn(
               "option-checkbox",
-              "size-5  border-2 border-inn-border-light",
+              "size-5  border-2 border-border",
               "flex items-center justify-center",
               "rounded-full shrink-0",
               "transition-all duration-200 ease-in",
 
               {
-                "border-inn-bg-accent bg-inn-bg-accent ": isSelected,
+                "border-primary bg-primary ": isSelected,
               }
             )}
             role="checkbox"
@@ -65,7 +65,7 @@ const OptionItem = ({ className, option, isSelected, isVisible, isDisabled, onCl
             className={cn(
               "option-description",
               "text-sm rtl:text-lg  mt-1 leading-[1.4]",
-              isSelected ? "text-inn-bg-accent/70" : "text-inn-text-secondary"
+              isSelected ? "text-primary/70" : "text-muted-foreground"
             )}
           >
             {description}
@@ -138,9 +138,7 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, isCurrentStep, onUserSe
         secondaryContent={modeText}
       />
 
-      <h3
-        className={cn("card-title", " text-2xl font-bold text-inn-text-primary mb-2 leading-[1.3] -tracking-[0.3px]")}
-      >
+      <h3 className={cn("card-title", "text-2xl font-bold text-foreground mb-2 leading-[1.3] -tracking-[0.3px]")}>
         {label}
       </h3>
       <div className="option-list mb-4">
@@ -163,11 +161,11 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, isCurrentStep, onUserSe
           <button
             className={cn(
               "show-more-btn",
-              "bg-inn-bg-soft border border-inn-border-light",
+              "bg-muted border border-border",
               "py-2 px-4 rounded-2xl text-sm rtl:text-base rtl:font-arabic-body font-medium cursor-pointer",
               "transition-all duration-200 ease-in-out",
-              " inline-flex items-center gap-1.5",
-              "hover:border-inn-bg-flame hover:text-inn-bg-flame"
+              "inline-flex items-center gap-1.5",
+              "hover:border-accent hover:text-accent"
             )}
             onClick={() => setCollapsed((prev) => !prev)}
             aria-expanded={!isCollapsed}
@@ -180,15 +178,15 @@ const FlowChatUserOptions: React.FC<Props> = ({ message, isCurrentStep, onUserSe
           </button>
         </div>
       )}
-      <div className="input-hint mb-4 text-inn-text-primary/70">{hint}</div>
+      <div className="input-hint mb-4 text-foreground/70">{hint}</div>
 
       <button
         className={cn(
           "action-btn primary",
           "w-full py-3.5 px-5 rounded-[12px] border-none font-semibold cursor-pointer",
           "transition-all duration-200 ease-in-out",
-          "bg-inn-bg-accent text-white",
-          "hover:bg-[#ff5a4a]",
+          "bg-primary text-primary-foreground",
+          "hover:bg-primary/90",
           "disabled:opacity-50 disabled:cursor-not-allowed"
         )}
         disabled={!selectedOptions.length}

@@ -15,7 +15,7 @@ export default async function Layout({
   return (
     <>
       <Header
-        className="fixed top-0 pointer-events-auto standalone:pt-safe backdrop-saturate-150 standalone:inset-x-safe inset-x-0 bg-mir-bg-primary/30 backdrop-blur-sm z-50"
+        className="fixed top-0 pointer-events-auto standalone:pt-safe backdrop-saturate-150 standalone:inset-x-safe inset-x-0 bg-background/80 backdrop-blur-sm z-50"
         sideContent={
           <div>
             <LanguageDropdown />
@@ -25,7 +25,7 @@ export default async function Layout({
       {children}
 
       <Footer locale={locale as AppLocales} />
-      <div className="hidden fixed bottom-0 inset-x-0 standalone:block h-[env(safe-area-inset-bottom)] z-40  backdrop-blur-md backdrop-saturate-150 bg-mir-bg-card/50"></div>
+      <div className="hidden fixed bottom-0 inset-x-0 standalone:block h-[env(safe-area-inset-bottom)] z-40  backdrop-blur-md backdrop-saturate-150 bg-card/50"></div>
     </>
   );
 }

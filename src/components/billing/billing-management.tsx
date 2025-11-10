@@ -61,7 +61,7 @@ export function BillingManagement({ className = "" }: BillingManagementProps = {
     <div className={cn("max-w-4xl w-full mx-auto h-full", className)}>
       <div className=" px-6 py-8">
         <h1 className="text-3xl md:text-4xl font-extrabold mb-2">Billing & Credits</h1>
-        <p className="text-inn-text-secondary">
+        <p className="text-muted-foreground">
           Manage your credits, view purchase history, and secure ongoing therapeutic support.
         </p>
       </div>
@@ -74,9 +74,9 @@ export function BillingManagement({ className = "" }: BillingManagementProps = {
               value={tab.id}
               className={cn(
                 "flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-pre-wrap sm:whitespace-nowrap",
-                "data-[state=active]:text-inn-bg-accent data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                "dark:data-[state=active]:text-inn-bg-accent dark:data-[state=active]:bg-transparent dark:data-[state=active]:shadow-none",
-                "text-inn-text-secondary hover:text-inn-text-primary",
+                "data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                "dark:data-[state=active]:text-primary dark:data-[state=active]:bg-transparent dark:data-[state=active]:shadow-none",
+                "text-muted-foreground hover:text-foreground",
                 "transition-all duration-300 ease-in-out",
                 "border-none rounded-none"
               )}

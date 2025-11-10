@@ -1,8 +1,8 @@
 import React from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { DiagnosticCognitiveDistortion } from "@/lib/zod/advanced-diagnostic.schema";
-import { Badge } from "../../mir-ui/badge";
 
 const MAX_VISIBLE_ITEMS = 1;
 
@@ -17,7 +17,7 @@ const DiagnosticDistortionCard: React.FC<Props> = ({ distortion, messages = [], 
   const [collapsed, setCollapsed] = React.useState(true);
   const { title, description, severity, frequency } = distortion;
   return (
-    <div className="rounded-xl flex flex-col border border-inn-border-light bg-inn-bg-soft p-4">
+    <div className="rounded-xl flex flex-col border border-border bg-muted p-4">
       <div className="flex flex-col flex-1">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold text-sm">{title}</h3>
@@ -25,8 +25,8 @@ const DiagnosticDistortionCard: React.FC<Props> = ({ distortion, messages = [], 
             {severity}
           </Badge>
         </div>
-        <p className="text-xs text-inn-text-secondary mb-3">{description}</p>
-        <div className="text-xs text-inn-text-secondary mb-3">
+        <p className="text-xs text-muted-foreground mb-3">{description}</p>
+        <div className="text-xs text-muted-foreground mb-3">
           <div className="font-semibold mb-1">Session Excerpts:</div>
           <ol className=" list-decimal list-inside space-y-3">
             {messages.map((item, index) => (
@@ -38,7 +38,7 @@ const DiagnosticDistortionCard: React.FC<Props> = ({ distortion, messages = [], 
           {messages.length > MAX_VISIBLE_ITEMS && (
             <div className="flex items-center justify-end py-2 px-4">
               <button
-                className=" text-inn-text-secondary hover:text-inn-text-primary transition"
+                className=" text-muted-foreground hover:text-foreground transition"
                 onClick={() => setCollapsed(!collapsed)}
               >
                 {collapsed ? "Show more" : "Show less"}

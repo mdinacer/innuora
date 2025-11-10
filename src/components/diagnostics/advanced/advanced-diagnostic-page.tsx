@@ -17,11 +17,11 @@ import {
   ZapIcon,
 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { TherapeuticAnalysisWithMessageId } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { cn } from "@/lib/utils";
 import { AdvancedDiagnostic } from "@/lib/zod/advanced-diagnostic.schema";
-import { Badge } from "../../mir-ui/badge";
 import DiagnosticDistortionCard from "./advanced-diagnostic-distortion-card";
 import DiagnosticThemeCard from "./advanced-diagnostic-theme-card";
 
@@ -86,11 +86,11 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
     <div className={cn("h-auto w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16", className)}>
       {/* <!-- Hero Section --> */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-inn-bg-accent/25 bg-inn-bg-soft px-3 py-1 text-xs font-semibold text-inn-bg-accent">
+        <div className="inline-flex items-center gap-2 mb-4 rounded-full border border-primary/25 bg-muted px-3 py-1 text-xs font-semibold text-primary">
           Advanced Diagnostic Report - {session.messages.filter((message) => message.role === "user").length} Messages
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">Session Advanced Insights</h1>
-        <p className="text-lg text-inn-text-secondary max-w-3xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Innuora compiles session interactions to identify recurring emotional and behavioral patterns, cognitive
           distortions, and relevant themes, providing structured insights to support clinical assessment and treatment
           planning.
@@ -99,23 +99,23 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
 
       <div className="max-w-5xl mx-auto space-y-6">
         {/* <!-- Emotional State --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-4">
-            <SectionIcons.emotional_state className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.emotional_state className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Current Emotional State</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <div className="rounded-xl bg-inn-bg-soft p-4">
-              <div className="text-sm text-inn-text-secondary mb-1">Primary Emotion</div>
+            <div className="rounded-xl bg-muted p-4">
+              <div className="text-sm text-muted-foreground mb-1">Primary Emotion</div>
               <div className="text-2xl font-bold capitalize">{diagnostic.emotional_state.primary}</div>
             </div>
-            <div className="rounded-xl bg-inn-bg-soft p-4">
-              <div className="text-sm text-inn-text-secondary mb-2">Secondary Emotions</div>
+            <div className="rounded-xl bg-muted p-4">
+              <div className="text-sm text-muted-foreground mb-2">Secondary Emotions</div>
               <div className="flex flex-wrap gap-2">
                 {diagnostic.emotional_state.secondary.map((emotion) => (
                   <span
-                    className="capitalize bg-inn-bg-accent/15 text-inn-bg-accent inline-flex items-center py-1 px-2.5 text-xs font-semibold rounded-lg"
+                    className="capitalize bg-primary/15 text-primary inline-flex items-center py-1 px-2.5 text-xs font-semibold rounded-lg"
                     key={emotion}
                   >
                     {emotion}
@@ -124,16 +124,16 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
               </div>
             </div>
           </div>
-          <div className="mt-4 p-3 rounded-xl bg-inn-bg-soft border border-inn-border-light">
-            <div className="text-xs font-semibold text-inn-text-secondary mb-1">Emotional Congruence</div>
+          <div className="mt-4 p-3 rounded-xl bg-muted border border-border">
+            <div className="text-xs font-semibold text-muted-foreground mb-1">Emotional Congruence</div>
             <div className="text-sm first-letter:uppercase">{`${diagnostic.emotional_state.congruence} - emotions match reported experiences`}</div>
           </div>
         </div>
 
         {/* <!-- Risk Assessment --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-4">
-            <SectionIcons.risk_assessment className="text-inn-bg-flame size-6 shrink-0" />
+            <SectionIcons.risk_assessment className="text-accent size-6 shrink-0" />
 
             <h2 className="text-xl font-bold">Risk Assessment</h2>
             <Badge
@@ -144,15 +144,15 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
             </Badge>
           </div>
 
-          <div className="rounded-xl bg-inn-bg-soft p-4 border-l-4 border-inn-bg-flame">
+          <div className="rounded-xl bg-muted p-4 border-l-4 border-accent">
             <p className="text-sm">{diagnostic.risk_assessment.notes} </p>
           </div>
         </div>
 
         {/* <!-- All Themes --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.themes className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.themes className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Identified Themes ({`${diagnostic.themes.length} Total`})</h2>
           </div>
 
@@ -169,9 +169,9 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
         </div>
 
         {/* <!-- All Cognitive Distortions --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.cognitive_distortions className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.cognitive_distortions className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">
               Cognitive Distortions ({`${diagnostic.cognitive_distortions.length} Total`})
             </h2>
@@ -193,16 +193,16 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
         </div>
 
         {/* <!-- Therapist Focus --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.therapist_focus className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.therapist_focus className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Therapist Focus Areas</h2>
           </div>
 
           <div className="grid gap-3">
             {diagnostic.therapist_focus.map((focus, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-inn-bg-soft">
-                <div className="w-6 h-6 rounded-full bg-inn-bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted">
+                <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-white text-xs font-bold">{index + 1}</span>
                 </div>
                 <div className="text-base">{focus}</div>
@@ -212,15 +212,15 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
         </div>
 
         {/* <!-- Clinical Interpretations --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.clinical_interpretations className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.clinical_interpretations className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Clinical Interpretations</h2>
           </div>
 
           <div className="space-y-3">
             {diagnostic.clinical_interpretations.map((interpretation, index) => (
-              <div key={index} className="p-4 rounded-xl bg-inn-bg-soft border-l-4 border-inn-bg-accent">
+              <div key={index} className="p-4 rounded-xl bg-muted border-l-4 border-primary">
                 <p className="text-sm">{interpretation} </p>
               </div>
             ))}
@@ -228,16 +228,16 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
         </div>
 
         {/* <!-- Treatment Recommendations --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.treatment_recommendations className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.treatment_recommendations className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Treatment Recommendations</h2>
           </div>
 
           <div className="space-y-3">
             {diagnostic.treatment_recommendations.map((recommendation, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 rounded-lg border border-inn-border-light">
-                <CheckIcon className="size-4 text-inn-bg-accent shrink-0 mt-1" />
+              <div key={index} className="flex items-start gap-3 p-3 rounded-lg border border-border">
+                <CheckIcon className="size-4 text-primary shrink-0 mt-1" />
                 <p className="text-sm">{recommendation}</p>
               </div>
             ))}
@@ -245,16 +245,16 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
         </div>
 
         {/* <!-- Professional Language --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.professional_language className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.professional_language className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Professional Language & Terminology</h2>
           </div>
 
           <div className="space-y-3">
             {diagnostic.professional_language.map((term, index) => (
-              <div key={index} className="flex items-center gap-3 w-full p-3 rounded-lg border border-inn-border-light">
-                <ChevronRightIcon className="size-4 text-inn-bg-accent shrink-0" />
+              <div key={index} className="flex items-center gap-3 w-full p-3 rounded-lg border border-border">
+                <ChevronRightIcon className="size-4 text-primary shrink-0" />
                 <p className="text-sm">{term}</p>
               </div>
             ))}
@@ -262,17 +262,17 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
         </div>
 
         {/* <!-- Clinical Insights --> */}
-        <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
           <div className="flex items-center gap-2 mb-6">
-            <SectionIcons.clinical_insights className="text-inn-bg-accent size-6 shrink-0" />
+            <SectionIcons.clinical_insights className="text-primary size-6 shrink-0" />
             <h2 className="text-xl font-bold">Clinical Insights</h2>
           </div>
 
           <div className="space-y-4">
             {diagnostic.clinical_insights.map((insight, index) => (
-              <div key={index} className="p-4 rounded-xl bg-inn-bg-soft">
+              <div key={index} className="p-4 rounded-xl bg-muted">
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-inn-bg-accent flex-shrink-0 mt-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2"></div>
                   <p className="text-sm">{insight}</p>
                 </div>
               </div>
@@ -299,7 +299,7 @@ const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, sessio
             </p>
             <Link
               href="#"
-              className="inline-flex rounded-2xl bg-white px-8 py-3 font-semibold text-inn-bg-accent transition hover:translate-y-[-2px] shadow-lg"
+              className="inline-flex rounded-2xl bg-white px-8 py-3 font-semibold text-primary transition hover:translate-y-[-2px] shadow-lg"
             >
               Request Early Access
             </Link>

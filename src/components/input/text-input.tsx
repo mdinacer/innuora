@@ -21,7 +21,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     return (
       <div className={cn("mb-6", containerClassName)}>
         {label && (
-          <label htmlFor={id} className="rtl:font-arabic-body block mb-2 font-semibold text-inn-text-primary">
+          <label htmlFor={id} className="rtl:font-arabic-body block mb-2 font-semibold text-foreground">
             {label}{" "}
             {props.required && (
               <span className="text-destructive" aria-hidden="true">
@@ -39,14 +39,14 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           className={cn(
             "w-full py-3 px-4",
             "rounded-2xl border",
-            "bg-inn-bg-input text-inn-text-primary",
+            "bg-secondary text-foreground",
             "text-base rtl:font-arabic-body",
             "transition-all duration-200 ease-in outline-none resize-none",
             "focus:shadow-[0_0_0_3px]",
-            "placeholder:text-inn-text-secondary",
+            "placeholder:text-muted-foreground",
             error
               ? "border-destructive focus:shadow-destructive/10"
-              : "border-inn-border-light focus:border-inn-bg-accent focus:shadow-inn-bg-accent/10",
+              : "border-border focus:border-primary focus:shadow-lg",
             { "mb-1": !!error || !!description },
             className
           )}
@@ -56,7 +56,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             {error}
           </p>
         ) : description ? (
-          <p id={descriptionId} className="mt-1 text-sm text-inn-text-secondary">
+          <p id={descriptionId} className="mt-1 text-sm text-muted-foreground">
             {description}
           </p>
         ) : null}

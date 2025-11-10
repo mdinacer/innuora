@@ -22,7 +22,7 @@ const SessionsPageActions: React.FC<Props> = ({}) => {
         {/* <!-- Insights Link --> */}
         <Link
           href="/insights"
-          className="flex items-center gap-2 rounded-2xl border border-inn-border-light bg-inn-bg-card px-4 py-2 text-sm font-medium transition hover:shadow-[0_2px_8px] shadow-inn-bg-accent/10 hover:border-inn-bg-accent/50"
+          className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-2 text-sm font-medium transition hover:shadow-[0_2px_8px] shadow-lg hover:border-primary/50"
         >
           <TrendingUp className="size-4" />
           {t("actions.viewInsights")}
@@ -33,13 +33,13 @@ const SessionsPageActions: React.FC<Props> = ({}) => {
           <input
             type="text"
             placeholder={t("searchPlaceholder")}
-            className="w-64 rounded-2xl border border-inn-border-light bg-inn-bg-input ltr:pl-10 rtl:pr-10 py-2 text-sm outline-none transition focus:border-inn-bg-accent focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-20"
+            className="w-64 rounded-2xl border border-border bg-secondary ltr:pl-10 rtl:pr-10 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20"
           />
-          <SearchIcon className="size-4 absolute ltr:left-3 rtl:right-4  top-1/2 -translate-y-1/2 text-inn-text-secondary" />
+          <SearchIcon className="size-4 absolute ltr:left-3 rtl:right-4  top-1/2 -translate-y-1/2 text-muted-foreground" />
         </div>
 
         {/* <!-- Filter --> */}
-        {/* <button className="flex items-center gap-2 rounded-2xl border border-inn-border-light bg-inn-bg-card px-4 py-2 text-sm font-medium transition hover:shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+        {/* <button className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-2 text-sm font-medium transition hover:shadow-[0_2px_8px] shadow-lg">
           <FilterIcon className="size-4" />
           Filter
         </button> */}

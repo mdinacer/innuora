@@ -10,8 +10,8 @@ import { UseFormReturn } from "react-hook-form";
 import CheckboxGroupField from "@/components/input/checkbox-group-field";
 import RadiogroupField from "@/components/input/radio-group-field";
 import TextField from "@/components/input/text-field";
-import { Button } from "@/components/mir-ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { UserProfileInput } from "@/lib/zod/user-profile.schema";
@@ -37,11 +37,8 @@ export const UserProfileEdit = React.memo<UserProfileEditProps>(({ form, onSubmi
 
         <Accordion type="single" collapsible className="w-full space-y-3" defaultValue="age-group">
           {/* Age Group */}
-          <AccordionItem
-            value="age-group"
-            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-          >
-            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+          <AccordionItem value="age-group" className="rounded-xl border border-border bg-muted overflow-hidden">
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary transition border-none font-semibold text-base">
               {fields.ageGroup}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
@@ -58,9 +55,9 @@ export const UserProfileEdit = React.memo<UserProfileEditProps>(({ form, onSubmi
           {/* Identity Connection */}
           <AccordionItem
             value="identity-connection"
-            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+            className="rounded-xl border border-border bg-muted overflow-hidden"
           >
-            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary transition border-none font-semibold text-base">
               {fields.identityConnection}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
@@ -76,11 +73,8 @@ export const UserProfileEdit = React.memo<UserProfileEditProps>(({ form, onSubmi
           </AccordionItem>
 
           {/* Social Pressure */}
-          <AccordionItem
-            value="social-pressure"
-            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-          >
-            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+          <AccordionItem value="social-pressure" className="rounded-xl border border-border bg-muted overflow-hidden">
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary transition border-none font-semibold text-base">
               {fields.socialPressure.title}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
@@ -100,9 +94,9 @@ export const UserProfileEdit = React.memo<UserProfileEditProps>(({ form, onSubmi
           {/* Emotional Concerns */}
           <AccordionItem
             value="emotional-concerns"
-            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+            className="rounded-xl border border-border bg-muted overflow-hidden"
           >
-            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary transition border-none font-semibold text-base">
               {fields.emotionalConcerns.title}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
@@ -120,11 +114,8 @@ export const UserProfileEdit = React.memo<UserProfileEditProps>(({ form, onSubmi
           </AccordionItem>
 
           {/* Coping Mechanism */}
-          <AccordionItem
-            value="coping_mechanism"
-            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
-          >
-            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+          <AccordionItem value="coping_mechanism" className="rounded-xl border border-border bg-muted overflow-hidden">
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary transition border-none font-semibold text-base">
               {fields.copingMechanism}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">
@@ -142,9 +133,9 @@ export const UserProfileEdit = React.memo<UserProfileEditProps>(({ form, onSubmi
           {/* Emotional Aspirations */}
           <AccordionItem
             value="emotional_aspirations"
-            className="rounded-xl border border-inn-border-light bg-inn-bg-soft overflow-hidden"
+            className="rounded-xl border border-border bg-muted overflow-hidden"
           >
-            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-inn-bg-secondary transition border-none font-semibold text-base">
+            <AccordionTrigger className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary transition border-none font-semibold text-base">
               {fields.emotionalAspirations.title}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-4 pt-0 gap-4 text-balance">

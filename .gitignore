@@ -51,3 +51,6 @@ project-structure.txt
 
 # Archived documentation
 .archived-docs/
+
+# Deprecated code
+.deprecated/

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { createSession } from "@/app/actions/session-actions";
 import SwitchField from "@/components/input/switch-field";
 import TextField from "@/components/input/text-field";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -29,7 +30,6 @@ import { generateId } from "@/domains/session-flow/utils/generate-id";
 import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
 import { useAppUserStore } from "@/stores/app-user.store";
 import TextareaField from "../input/textarea-field";
-import { Button } from "../mir-ui/button";
 
 interface Props {
   className?: string;
@@ -158,14 +158,14 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
           {trigger || (
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg"
+              className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg"
             >
               <PlusIcon className="size-4" />
               {data.trigger}
             </button>
           )}
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] rounded-2xl bg-inn-bg-card">
+        <DialogContent className="sm:max-w-[425px] rounded-2xl bg-card">
           <Form {...form}>
             <form onSubmit={handleSubmit(handleOnSubmit)} className="grid gap-4 rtl:font-arabic-body">
               <DialogHeader className="rtl:text-right">
@@ -211,7 +211,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
                   {/* <button
                     type="button"
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-inn-bg-card border border-inn-border-light px-6 py-3 font-semibold text-white shadow transition-all"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-card border border-border px-6 py-3 font-semibold text-white shadow transition-all"
                   >
                     {data.actions.cancel}
                   </button> */}

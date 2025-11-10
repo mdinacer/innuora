@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { ClockIcon, CoinsIcon, FilePenLineIcon, FilePlusIcon, Loader2Icon, MessageSquareIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { Badge } from "@/components/mir-ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SessionLoadingState, SessionState } from "./cloud-session-sync-state";
 
@@ -64,7 +64,7 @@ const CloudSessionStateCard: React.FC<Props> = ({ className, sessionData, loadin
   return (
     <div
       className={cn(
-        "flex flex-col sm:flex-row gap-y-4 sm:gap-y-0 items-center justify-between p-4 bg-inn-bg-card border border-inn-border-light rounded-xl shadow-[0_2px_8px] shadow-black/5 hover:shadow-[0_4px_20px] hover:shadow-black/10 transition animate-slide-in-up",
+        "flex flex-col sm:flex-row gap-y-4 sm:gap-y-0 items-center justify-between p-4 bg-card border border-border rounded-xl shadow-[0_2px_8px] shadow-black/5 hover:shadow-[0_4px_20px] hover:shadow-black/10 transition animate-slide-in-up",
         className
       )}
     >
@@ -84,7 +84,7 @@ const CloudSessionStateCard: React.FC<Props> = ({ className, sessionData, loadin
           </div>
 
           {/* <!-- Session Meta --> */}
-          <div className="flex items-center gap-4 mt-2 text-xs text-inn-text-secondary">
+          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <ClockIcon className="size-3 shrink-0" />
               <span>{format(sessionData.timestamp, "PP")}</span>
@@ -106,7 +106,7 @@ const CloudSessionStateCard: React.FC<Props> = ({ className, sessionData, loadin
         onClick={handleOnClick}
         className={cn(
           "inline-flex items-center justify-center gap-x-2",
-          "px-4 py-2 bg-inn-bg-accent min-w-34 w-full sm:w-auto text-white rounded-xl font-medium transition hover:opacity-90 active:scale-95",
+          "px-4 py-2 bg-primary min-w-34 w-full sm:w-auto text-white rounded-xl font-medium transition hover:opacity-90 active:scale-95",
           "disabled:pointer-events-none disabled:opacity-50 disabled:scale-100"
         )}
       >

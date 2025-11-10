@@ -171,11 +171,11 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="relative overflow-hidden w-full bg-inn-bg-soft rounded-2xl border p-6 border-inn-border-light">
+      <div className="relative overflow-hidden w-full bg-muted rounded-2xl border p-6 border-border">
         {isFetching ? (
           <div>
             <h2 className="text-xl font-bold">{title.loading.title}</h2>
-            <p className="text-inn-text-secondary text-sm">{title.loading.subtitle}</p>
+            <p className="text-muted-foreground text-sm">{title.loading.subtitle}</p>
           </div>
         ) : (
           <>
@@ -188,7 +188,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
             >
               <div>
                 <h2 className={"text-xl font-bold mb-1"}>{hasUpdates ? title.unsynced.title : title.synced.title}</h2>
-                <p className="text-inn-text-secondary text-sm">
+                <p className="text-muted-foreground text-sm">
                   {hasUpdates ? title.unsynced.subtitle : title.synced.subtitle}
                 </p>
               </div>
@@ -199,7 +199,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
                     disabled={isSyncing || Object.values(sessionsLoadingState).some((state) => state.loading)}
                     onClick={handleSyncAll}
                     className={cn(
-                      "px-6 py-2 bg-inn-bg-accent text-white rounded-xl font-semibold transition hover:opacity-90 flex items-center justify-center gap-2",
+                      "px-6 py-2 bg-primary text-white rounded-xl font-semibold transition hover:opacity-90 flex items-center justify-center gap-2",
                       "disabled:pointer-events-none disabled:opacity-50"
                     )}
                   >
@@ -214,7 +214,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
                     onClick={clearStates}
                     disabled={isSyncing}
                     className={cn(
-                      "flex-1 sm:flex-none px-4 py-2 bg-inn-bg-card border border-inn-border-light text-inn-text-secondary rounded-xl font-medium transition hover:bg-inn-bg-input hover:text-inn-text-primary",
+                      "flex-1 sm:flex-none px-4 py-2 bg-card border border-border text-muted-foreground rounded-xl font-medium transition hover:bg-secondary hover:text-foreground",
                       "disabled:pointer-events-none disabled:opacity-50"
                     )}
                   >
@@ -224,7 +224,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
               ) : (
                 <button
                   onClick={handleCheckUpdates}
-                  className="flex-1 sm:flex-none px-4 py-2 bg-inn-bg-card border border-inn-border-light text-inn-text-secondary rounded-xl font-medium transition hover:bg-inn-bg-input hover:text-inn-text-primary"
+                  className="flex-1 sm:flex-none px-4 py-2 bg-card border border-border text-muted-foreground rounded-xl font-medium transition hover:bg-secondary hover:text-foreground"
                 >
                   {isSyncing ? buttons.checking : buttons.check}
                 </button>

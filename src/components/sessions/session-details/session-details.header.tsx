@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { format, formatDuration, intervalToDuration } from "date-fns";
-import { ArrowDownIcon, ClockIcon, CoinsIcon, MessageSquareTextIcon, PencilIcon, TextIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ClockIcon,
+  CoinsIcon,
+  MessageSquareTextIcon,
+  PencilIcon,
+  TextIcon,
+  type LucideIcon,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { generateSessionTitle } from "@/app/actions/session-actions";
-import { Button } from "@/components/mir-ui/button";
-import InfoCard from "@/components/mir-ui/info-card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { CreditUtils } from "@/lib/credits/credit-config";
@@ -17,6 +25,25 @@ interface Props {
   className?: string;
   session: Session;
 }
+
+interface MetricCardProps {
+  icon: LucideIcon;
+  title: string;
+  value: React.ReactNode;
+  description?: string;
+  className?: string;
+}
+
+const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, title, value, description, className }) => (
+  <Card className={cn("px-6 py-4 gap-2", className)}>
+    <div className="flex items-center gap-2 mb-2">
+      <Icon className="size-4 text-primary" />
+      <span className="text-sm font-medium text-muted-foreground">{title}</span>
+    </div>
+    <div className="text-xl font-bold">{value}</div>
+    {description && <p className="text-xs text-muted-foreground">{description}</p>}
+  </Card>
+);
 
 const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
   const [sessionData, setSessionData] = useState({
@@ -66,20 +93,20 @@ const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
   return (
     <div className={cn("mb-8", className)}>
       <div className="flex items-center gap-x-6 mb-6">
-        <div className="w-12 hidden md:flex h-12 shrink-0 rounded-full bg-inn-bg-soft border border-inn-bg-accent/25  items-center justify-center">
-          <TextIcon className="size-6 text-inn-bg-accent" />
+        <div className="w-12 hidden md:flex h-12 shrink-0 rounded-full bg-muted border border-primary/25  items-center justify-center">
+          <TextIcon className="size-6 text-primary" />
         </div>
         <div>
           <h1
             id="sessionTitle"
-            className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight cursor-pointer hover:text-inn-bg-accent transition"
+            className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight cursor-pointer hover:text-primary transition"
           >
             {sessionData.title}
           </h1>
 
           <p
             id="sessionSubtitle"
-            className="text-lg text-inn-text-secondary cursor-pointer hover:text-inn-text-primary transition"
+            className="text-lg text-muted-foreground cursor-pointer hover:text-foreground transition"
           >
             {sessionData.subtitle}
           </p>
@@ -97,31 +124,28 @@ const SessionDetailsHeader: React.FC<Props> = ({ className, session }) => {
 
       {/* <!-- Session Meta Info --> */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <InfoCard
+        <MetricCard
           icon={MessageSquareTextIcon}
           title={cards.messages.title}
           value={session.metadata?.messageCount ?? 0}
-          classNames={{ icon: "text-inn-bg-accent" }}
         />
-        <InfoCard
+        <MetricCard
           icon={CoinsIcon}
           title={cards.credits.title}
           value={CreditUtils.formatCreditsForDisplay(session.metadata?.creditsUsed ?? 0)}
-          classNames={{ icon: "text-inn-bg-accent" }}
         />
-        <InfoCard
+        <MetricCard
           className="md:col-span-1 col-span-2"
           icon={ClockIcon}
           title={cards.duration.title}
           value={formatDuration(intervalToDuration({ start: 0, end: session.metadata?.activeDurationMs ?? 0 }), {
             format: ["hours", "minutes", "seconds"],
           })}
-          classNames={{ icon: "text-inn-bg-accent" }}
         />
       </div>
 
       {/* <!-- Session Timestamps --> */}
-      <div className="flex flex-col sm:flex-row gap-4 text-sm text-inn-text-secondary mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 text-sm text-muted-foreground mb-6">
         <div className="flex items-center gap-2">
           <ArrowDownIcon className="size-4" />
           <span>

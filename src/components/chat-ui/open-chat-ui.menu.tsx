@@ -80,18 +80,18 @@ const OpenChatUIMenu = ({ onAction, disabled }: Props) => {
             aria-label="Open chat actions"
             className={cn(
               "menu-button",
-              "size-9 bg-inn-bg-input",
+              "size-9 bg-secondary",
               "flex items-center justify-center",
               "border-none rounded-xl cursor-pointer",
               "transition-all duration-300 ease-in",
-              "hover:bg-inn-border-light",
+              "hover:bg-border",
               "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
           >
             <EllipsisVerticalIcon className="size-5" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-inn-bg-card">
+        <DropdownMenuContent align="end" className="bg-card">
           <DropdownMenuItem
             onClick={() => {
               handleActionSelect("reset");
@@ -109,7 +109,7 @@ const OpenChatUIMenu = ({ onAction, disabled }: Props) => {
       </DropdownMenu>
 
       <AlertDialog open={isOpen} onOpenChange={handleDialogClose}>
-        <AlertDialogContent className="bg-inn-bg-card">
+        <AlertDialogContent className="bg-card">
           <AlertDialogHeader>
             <AlertDialogTitle>{dialogContent?.title}</AlertDialogTitle>
             <AlertDialogDescription>
@@ -122,10 +122,7 @@ const OpenChatUIMenu = ({ onAction, disabled }: Props) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{dialogContent?.actions.cancel}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-inn-bg-accent text-inn-text-accent hover:bg-inn-bg-accent-dark"
-              onClick={handleDialogConfirm}
-            >
+            <AlertDialogAction className="bg-primary text-primary hover:bg-primary" onClick={handleDialogConfirm}>
               {dialogContent?.actions.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>

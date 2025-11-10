@@ -1,8 +1,8 @@
 import React from "react";
 import { AlertTriangleIcon, RotateCcwIcon, TrashIcon } from "lucide-react";
 
-import { Button } from "@/components/mir-ui/button";
-import Card from "@/components/mir-ui/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Session } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ interface Props {
 
 const SessionDetailsDangerZone: React.FC<Props> = ({ className }) => {
   return (
-    <Card className={cn("border-red-200 dark:border-red-800", className)}>
+    <Card className={cn("border-red-200 dark:border-red-800 px-6", className)}>
       <h3 className="font-bold mb-4 flex items-center gap-2 text-red-600 dark:text-red-400">
         <AlertTriangleIcon className="size-5" />
         Danger Zone

@@ -75,7 +75,7 @@ const PasswordResetForm: React.FC = () => {
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            "w-full rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inn-bg-accent focus:ring-opacity-50",
+            "w-full rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow transition hover:translate-y-[-1px] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           )}
         >

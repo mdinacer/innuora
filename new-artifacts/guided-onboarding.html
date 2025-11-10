@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mirael — Guided Onboarding Concept</title>
+    <style>
+      :root {
+        --brand-deep: #05354f;
+        --brand-mid: #0b5b87;
+        --brand-soft: #e9f6ff;
+        --accent-sunrise: #ffb26d;
+        --accent-rose: #ffc7c2;
+        --text-primary: #0d1c2a;
+        --text-muted: #4b6275;
+        --card-bg: rgba(255, 255, 255, 0.86);
+        --card-shadow: 0 35px 90px -45px rgba(5, 53, 79, 0.6);
+        --radius-xl: 28px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "SF Pro Display", system-ui, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text-primary);
+        background: linear-gradient(135deg, #02111f 0%, var(--brand-deep) 35%, var(--brand-mid) 70%, #1f9ed4 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 24px;
+      }
+
+      .shell {
+        width: min(1100px, 100%);
+        backdrop-filter: blur(18px);
+        border-radius: 40px;
+        padding: 48px;
+        background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 80px 160px -80px rgba(2, 17, 31, 0.9);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.5rem, 4vw, 3.8rem);
+        line-height: 1.1;
+        margin: 0 0 16px;
+        color: #fff;
+      }
+
+      .hero-copy p {
+        color: rgba(233, 246, 255, 0.95);
+        font-size: 1.1rem;
+        line-height: 1.7;
+      }
+
+      .actions {
+        margin-top: 32px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 16px 32px;
+        border-radius: 999px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: transform 220ms ease, box-shadow 220ms ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(120deg, #3dc3ff, #8fe6ff);
+        color: #082032;
+        box-shadow: 0 20px 40px -20px rgba(61, 195, 255, 0.8);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .btn:hover {
+        transform: translateY(-4px);
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: var(--radius-xl);
+        padding: 24px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        min-height: 200px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), transparent 55%);
+        opacity: 0.35;
+      }
+
+      .card h3 {
+        margin-top: 0;
+        font-size: 1.1rem;
+      }
+
+      .card p {
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      .step {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--brand-mid);
+        font-weight: 600;
+      }
+
+      .affirmation {
+        margin-top: 32px;
+        border-radius: 32px;
+        padding: 24px 28px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        background: linear-gradient(120deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.1));
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        font-size: 1rem;
+      }
+
+      .pulse {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(120deg, var(--accent-sunrise), var(--accent-rose));
+        animation: breathe 4s ease-in-out infinite;
+        box-shadow: 0 0 25px -5px rgba(255, 178, 109, 0.9);
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="step">Step 01 · Gentle Arrival</p>
+          <h1>Hi Mirael, I'm ready to feel lighter today.</h1>
+          <p>
+            The onboarding flow pairs CBT cues with mindful visuals so people sense calm before the first session. Copy avoids
+            medical jargon and focuses on agency. Cards highlight what users gain: grounding, agency, and a bilingual companion.
+          </p>
+          <div class="actions">
+            <button class="btn btn-primary">Begin grounding session</button>
+            <button class="btn btn-secondary">Preview the approach</button>
+          </div>
+        </div>
+        <div class="card-grid">
+          <article class="card">
+            <p class="step">Why Mirael</p>
+            <h3>Guided CBT, tailored to your energy</h3>
+            <p>
+              Choose a voice, pace, and language that resonates. The system adapts breathing, reframing, and journaling prompts
+              live during the conversation.
+            </p>
+          </article>
+          <article class="card">
+            <p class="step">Your rhythm</p>
+            <h3>Micro-practices, macro relief</h3>
+            <p>
+              Stack gentle practices under 5 minutes. Resurface them when stress spikes so gains feel compounding and personal.
+            </p>
+          </article>
+          <article class="card">
+            <p class="step">Multilingual trust</p>
+            <h3>English · العربية · Français</h3>
+            <p>
+              Mirael honors the nuances of RTL scripts and idioms so support lands authentically in every locale.
+            </p>
+          </article>
+        </div>
+        <div class="affirmation">
+          <div class="pulse"></div>
+          <div>
+            <strong>Grounding mantra</strong>
+            <p>“My thoughts are real, yet I’m more than any single thought. I choose the pace today.”</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

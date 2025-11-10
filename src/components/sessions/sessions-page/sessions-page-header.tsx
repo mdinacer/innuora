@@ -14,7 +14,7 @@ const SessionsPageHeader = () => {
   return (
     <div className="mb-8">
       <h1 className="text-3xl rtl:font-arabic md:text-4xl font-extrabold leading-tight tracking-tight mb-3">{title}</h1>
-      <p className="text-lg text-inn-text-secondary rtl:font-arabic-body">{subtitle} </p>
+      <p className="text-lg text-muted-foreground rtl:font-arabic-body">{subtitle} </p>
     </div>
   );
 };

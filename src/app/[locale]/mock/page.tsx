@@ -145,7 +145,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="h-screen  w-full  items-center bg-inn-bg-primary py-30 justify-center">
+    <div className="h-screen  w-full  items-center bg-background py-30 justify-center">
       <Button onClick={generateDiagnostics} disabled={loading}>
         {loading ? "Testing Diagnostics..." : "Test Enhanced Diagnostic Prompts"}
       </Button>

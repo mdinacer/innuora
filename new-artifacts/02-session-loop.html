@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Innuora · Session Loop Concept</title>
+    <style>
+      :root {
+        --bg: #060e17;
+        --panel-dark: #0d1f2f;
+        --panel-soft: rgba(15, 27, 45, 0.85);
+        --brand: #4f9bff;
+        --accent: #f9b28c;
+        --muted: #99b4cf;
+        --text: #f4f8ff;
+        --border: rgba(255, 255, 255, 0.14);
+        --radius-xl: 34px;
+        font-family: "General Sans", "Inter", system-ui;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: radial-gradient(circle at top, rgba(79, 155, 255, 0.18), transparent 50%), var(--bg);
+        min-height: 100vh;
+        padding: 48px 16px 80px;
+        color: var(--text);
+      }
+
+      .layout {
+        width: min(1200px, 100%);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 28px;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--panel-dark);
+        border-radius: var(--radius-xl);
+        padding: 28px;
+        border: 1px solid var(--border);
+        box-shadow: 0 35px 80px -60px rgba(0, 0, 0, 0.85);
+      }
+
+      .card {
+        background: var(--panel-soft);
+        border-radius: 24px;
+        padding: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .session-intro h1 {
+        margin: 0 0 16px;
+        font-size: clamp(2rem, 4vw, 2.8rem);
+      }
+
+      .session-intro p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .chip-row {
+        margin-top: 22px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .breath-card {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .breath-card svg {
+        width: 80px;
+        height: 80px;
+      }
+
+      .circle {
+        fill: none;
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 283;
+        stroke-dashoffset: 220;
+        animation: breathe 6s ease-in-out infinite;
+      }
+
+      @keyframes breathe {
+        0% {
+          stroke-dashoffset: 220;
+        }
+        50% {
+          stroke-dashoffset: 40;
+        }
+        100% {
+          stroke-dashoffset: 220;
+        }
+      }
+
+      .insight-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 16px;
+      }
+
+      .insight-item {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 22px;
+        padding: 16px 18px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .insight-item strong {
+        display: block;
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        color: var(--muted);
+      }
+
+      main.panel {
+        background: rgba(9, 16, 27, 0.86);
+        backdrop-filter: blur(12px);
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      header.session-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .marker {
+        letter-spacing: 0.2em;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .bubble {
+        max-width: 90%;
+        padding: 18px 22px;
+        border-radius: 24px;
+        line-height: 1.6;
+        position: relative;
+      }
+
+      .bubble.guide {
+        background: #0e3c63;
+        color: #ebf3ff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .bubble.user {
+        align-self: flex-end;
+        background: rgba(79, 155, 255, 0.1);
+        color: var(--text);
+        border: 1px solid rgba(79, 155, 255, 0.4);
+      }
+
+      .bubble strong {
+        display: block;
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .support-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+      }
+
+      .support-card {
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .support-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      form.prompt {
+        margin-top: auto;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 14px;
+        align-items: flex-end;
+      }
+
+      textarea {
+        border-radius: 24px;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        padding: 18px 22px;
+        min-height: 110px;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      textarea:focus-visible {
+        outline: 3px solid rgba(79, 155, 255, 0.35);
+        border-color: var(--brand);
+      }
+
+      button.primary {
+        border: none;
+        border-radius: 999px;
+        padding: 16px 28px;
+        font-size: 1rem;
+        font-weight: 600;
+        background: linear-gradient(120deg, var(--brand), #63c9ff);
+        color: #031427;
+        cursor: pointer;
+        box-shadow: 0 25px 60px -30px rgba(79, 155, 255, 0.8);
+      }
+
+      button.primary:focus-visible {
+        outline: 3px solid rgba(255, 255, 255, 0.6);
+        outline-offset: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="panel session-intro">
+        <span class="chip">Session 08 · Re-entry protocol</span>
+        <h1>Innuora stays with your nervous system, not the to-do list.</h1>
+        <p>
+          High-performing women relapse into burnout when they act from duty, not regulation. This panel mirrors the production sidebar:
+          breathing cues, multilingual toggles, and encrypted insights.
+        </p>
+
+        <div class="chip-row">
+          <span class="chip">Tone · Steady companion</span>
+          <span class="chip">Language · English → العربية affirmations</span>
+          <span class="chip">Duration · 14 min</span>
+        </div>
+
+        <section class="card breath-card" aria-label="Breathing">
+          <svg viewBox="0 0 100 100" role="img" aria-label="Animated breathing">
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4f9bff" />
+                <stop offset="100%" stop-color="#f9b28c" />
+              </linearGradient>
+            </defs>
+            <circle class="circle" cx="50" cy="50" r="45" stroke="url(#grad)"></circle>
+          </svg>
+          <div>
+            <p style="margin: 0; font-weight: 600;">Box breathing 4 · 4 · 6</p>
+            <p style="margin: 6px 0 0; color: var(--muted);">Haptic pulse on mobile, audio cue optional.</p>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Session anchors">
+          <h3 style="margin-top: 0;">Tonight’s anchors</h3>
+          <ul class="insight-list">
+            <li class="insight-item">
+              <strong>Body check</strong>
+              Jaw tension easing · heart rate 82 BPM → 74 BPM.
+            </li>
+            <li class="insight-item">
+              <strong>Thought pattern</strong>
+              “If I rest, everything collapses.” → reframed with CBT ladder.
+            </li>
+            <li class="insight-item">
+              <strong>Micro action</strong>
+              Audio note to future self in Arabic + English summary.
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <main class="panel" aria-live="polite">
+        <header class="session-meta">
+          <div>
+            <p style="margin: 0; letter-spacing: 0.3em; font-size: 0.75rem; color: var(--muted);">Live CBT loop</p>
+            <h2 style="margin: 8px 0 0; font-size: 1.5rem;">Evening recalibration with Innuora</h2>
+          </div>
+          <button style="border: none; background: rgba(79, 155, 255, 0.12); color: var(--brand); padding: 10px 18px; border-radius: 999px;">
+            Switch to bilingual audio
+          </button>
+        </header>
+
+        <section class="timeline" aria-label="Messages">
+          <span class="marker">20:32 · Grounding</span>
+          <div class="bubble guide">
+            <strong>Innuora</strong>
+            Your shoulders lifted when you described tomorrow’s review. Before we plan, what sentence did that tension whisper?
+          </div>
+          <div class="bubble user">
+            It whispered, “If you slow down again, they’ll know you’re slipping.”
+          </div>
+          <div class="bubble guide">
+            <strong>Innuora</strong>
+            Thank you. Notice where that sentence lands—temperature, texture, movement. I’ll keep the breathing cue pulsing until the
+            pull softens.
+          </div>
+          <div class="bubble user">
+            It sits in my throat, tight and hot.
+          </div>
+          <div class="bubble guide">
+            <strong>Innuora</strong>
+            Let’s invite it to loosen. On the next inhale, say “I can pause and remain respected” in whichever language feels safer.
+          </div>
+        </section>
+
+        <div class="support-strip" aria-label="Suggested supports">
+          <div class="support-card">
+            <strong>Micro reframe</strong>
+            Rest recalibrates my precision; speed isn’t the only proof.
+          </div>
+          <div class="support-card">
+            <strong>Body scan</strong>
+            Chest down by 7 BPM · send stats to Insights.
+          </div>
+          <div class="support-card">
+            <strong>Next prompt</strong>
+            Ask Innuora for an FR affirmation or crisis plan.
+          </div>
+        </div>
+
+        <form class="prompt" aria-label="Reply box">
+          <label class="sr-only" for="reply">Your reflection</label>
+          <textarea id="reply" placeholder="Share what shifted, or request a CBT exercise..."></textarea>
+          <button type="submit" class="primary">Send to vault</button>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>

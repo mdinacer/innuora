@@ -28,12 +28,12 @@ export default function LoadingComponent({ isLoading = true, className, ...props
       <div
         className={cn(
           "loading-container",
-          "max-w-lg w-full m-5 bg-inn-bg-card/50 py-12 px-8",
+          "max-w-lg w-full m-5 bg-card/50 py-12 px-8",
           "rounded-3xl text-center relative overflow-hidden",
           "transition-all duration-300 ease-in",
           "shadow-[0_8px_30px] shadow-black/40",
-          "before:absolute before:content-[''] before:-top-[50px] before:-right-[50px] before:size-30 before:bg-inn-bg-accent before:rounded-full before:opacity-5",
-          "after:absolute after:content-[''] after:-bottom-[30px] after:-left-[30px] after:size-20 after:bg-inn-bg-accent after:rounded-full after:opacity-10",
+          "before:absolute before:content-[''] before:-top-[50px] before:-right-[50px] before:size-30 before:bg-primary before:rounded-full before:opacity-5",
+          "after:absolute after:content-[''] after:-bottom-[30px] after:-left-[30px] after:size-20 after:bg-primary after:rounded-full after:opacity-10",
           "sm:backdrop-blur-md sm:backdrop-saturate-150",
           "rtl:font-arabic-body"
         )}
@@ -43,7 +43,7 @@ export default function LoadingComponent({ isLoading = true, className, ...props
           <div
             className={cn(
               "loading-avatar",
-              "size-20 bg-inn-bg-accent rounded-3xl",
+              "size-20 bg-primary rounded-3xl",
               "flex items-center justify-center",
               "text-[32px] font-bold text-white mb-6 relative",
               "font-sans"
@@ -56,7 +56,7 @@ export default function LoadingComponent({ isLoading = true, className, ...props
           <h2
             className={cn(
               "loading-title",
-              "rtl:font-arabic text-inn-text-primary text-2xl font-bold mb-2 rtl:mb-3 tracking-[-0.5px] "
+              "rtl:font-arabic text-foreground text-2xl font-bold mb-2 rtl:mb-3 tracking-[-0.5px] "
             )}
           >
             {title}
@@ -73,7 +73,7 @@ export default function LoadingComponent({ isLoading = true, className, ...props
                 key={index}
                 className={cn(
                   "typing-dot",
-                  "size-3 bg-inn-bg-accent rounded-full",
+                  "size-3 bg-primary rounded-full",
                   "animate-typing-bounce nth-[2]:delay-[0.2s] nth-[3]:delay-[0.4s]"
                 )}
               ></div>

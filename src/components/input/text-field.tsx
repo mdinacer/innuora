@@ -24,7 +24,7 @@ const TextField = <T extends FieldValues>({ control, name, label, helperText, ..
         <FormItem>
           {label && (
             <FormLabel className="rtl:font-arabic-body rtl:text-lg mb-1 font-semibold text-base">
-              {label} {props.required && <span className="text-inn-bg-accent">*</span>}
+              {label} {props.required && <span className="text-primary">*</span>}
             </FormLabel>
           )}
           <FormControl>

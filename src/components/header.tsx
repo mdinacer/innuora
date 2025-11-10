@@ -15,7 +15,7 @@ export default function Header({ middleContent, sideContent, className }: Props)
   return (
     <header
       className={cn(
-        "border-b border-inn-border-light/20 bg-inn-bg-primary/50 backdrop-blur-md backdrop-saturate-200 relative",
+        "border-b border-border/40 bg-background/80 backdrop-blur-md backdrop-saturate-200 relative",
         className
       )}
     >

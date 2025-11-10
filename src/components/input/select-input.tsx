@@ -50,7 +50,7 @@ const SelectInput = <T extends object>({
   return (
     <div className={cn("mb-6", containerClassName)}>
       {label && (
-        <label htmlFor={id} className="rtl:font-arabic-body block mb-2 font-semibold text-inn-text-primary">
+        <label htmlFor={id} className="rtl:font-arabic-body block mb-2 font-semibold text-foreground">
           {label}
           {required && (
             <span className="text-destructive" aria-hidden="true">
@@ -63,7 +63,7 @@ const SelectInput = <T extends object>({
       <Select {...props}>
         <SelectTrigger
           id={id}
-          className={cn("hover:border-inn-bg-accent", className)}
+          className={cn("hover:border-primary", className)}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : descriptionId}
         >
@@ -76,7 +76,7 @@ const SelectInput = <T extends object>({
               <SelectItem
                 key={option.value}
                 value={option.value}
-                className={cn("sm:hover:bg-inn-bg-secondary", isSelected ? "sm:bg-inn-bg-accent sm:text-white" : "")}
+                className={cn("sm:hover:bg-secondary", isSelected ? "sm:bg-primary sm:text-white" : "")}
               >
                 {option.label}
               </SelectItem>
@@ -89,7 +89,7 @@ const SelectInput = <T extends object>({
           {error}
         </p>
       ) : description ? (
-        <p id={descriptionId} className="mt-1 text-sm text-inn-text-secondary">
+        <p id={descriptionId} className="mt-1 text-sm text-muted-foreground">
           {description}
         </p>
       ) : null}

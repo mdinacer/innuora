@@ -47,39 +47,39 @@ export default function SecuritySettings(): React.JSX.Element {
   return (
     <div className="space-y-6">
       {/* Security Overview */}
-      <Alert className="rounded-2xl border-inn-bg-accent/30 bg-inn-bg-soft">
-        <Shield className="h-4 w-4 text-inn-bg-accent" />
-        <AlertDescription className="text-inn-text-secondary">{overview.message}</AlertDescription>
+      <Alert className="rounded-2xl border-primary/30 bg-muted">
+        <Shield className="h-4 w-4 text-primary" />
+        <AlertDescription className="text-muted-foreground">{overview.message}</AlertDescription>
       </Alert>
 
       {/* Password & Authentication */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <Key className="h-5 w-5 text-inn-bg-accent" />
+          <Key className="h-5 w-5 text-primary" />
           <h3 className="text-xl font-semibold">{auth.title}</h3>
         </div>
 
         <div className="space-y-4">
           {/* Change Password */}
-          <div className="flex items-center justify-between rounded-xl border border-inn-border-light p-4 hover:border-inn-bg-accent/50 transition">
+          <div className="flex items-center justify-between rounded-xl border border-border p-4 hover:border-primary/50 transition">
             <div>
               <h4 className="font-semibold mb-1">{auth.password.title}</h4>
-              <p className="text-sm text-inn-text-secondary">{auth.password.lastChanged}</p>
+              <p className="text-sm text-muted-foreground">{auth.password.lastChanged}</p>
             </div>
             <Button
               variant="outline"
-              className="rounded-2xl border-inn-border-light hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+              className="rounded-2xl border-border hover:border-primary hover:text-primary transition"
             >
               {auth.changeButton}
             </Button>
           </div>
 
           {/* Two-Factor Authentication */}
-          <div className="rounded-xl border border-inn-border-light p-4">
+          <div className="rounded-xl border border-border p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h4 className="font-semibold mb-1">{auth.twoFactor.title}</h4>
-                <p className="text-sm text-inn-text-secondary">{auth.twoFactor.description}</p>
+                <p className="text-sm text-muted-foreground">{auth.twoFactor.description}</p>
               </div>
               <div className="flex items-center gap-3">
                 {!twoFactorEnabled && (
@@ -92,8 +92,8 @@ export default function SecuritySettings(): React.JSX.Element {
                   className={cn(
                     "rounded-2xl px-6 py-2 font-semibold shadow-lg transition",
                     twoFactorEnabled
-                      ? "bg-inn-bg-secondary text-inn-text-primary hover:bg-inn-bg-secondary/80"
-                      : "bg-inn-bg-accent text-white hover:opacity-90"
+                      ? "bg-secondary text-foreground hover:bg-secondary/80"
+                      : "bg-primary text-white hover:opacity-90"
                   )}
                 >
                   {twoFactorEnabled ? auth.twoFactor.disable : auth.twoFactor.enable}
@@ -111,22 +111,22 @@ export default function SecuritySettings(): React.JSX.Element {
       </div>
 
       {/* Session Management */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="h-5 w-5 text-inn-bg-accent" />
+          <Clock className="h-5 w-5 text-primary" />
           <h3 className="text-xl font-semibold">{session.title}</h3>
         </div>
 
-        <div className="rounded-xl border border-inn-border-light p-4">
+        <div className="rounded-xl border border-border p-4">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold mb-1">{session.autoLogout.title}</h4>
-              <p className="text-sm text-inn-text-secondary">{session.autoLogout.description}</p>
+              <p className="text-sm text-muted-foreground">{session.autoLogout.description}</p>
             </div>
             <select
               value={sessionTimeout}
               onChange={(e) => setSessionTimeout(Number(e.target.value))}
-              className="rounded-xl border border-inn-border-light bg-inn-bg-card px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-inn-bg-accent transition"
+              className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary transition"
             >
               {timeoutOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -139,20 +139,20 @@ export default function SecuritySettings(): React.JSX.Element {
       </div>
 
       {/* Data Export */}
-      <div className="rounded-2xl border border-inn-border-light bg-inn-bg-card p-6 shadow-[0_2px_8px] shadow-inn-bg-accent/10">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <Download className="h-5 w-5 text-inn-bg-accent" />
+          <Download className="h-5 w-5 text-primary" />
           <h3 className="text-xl font-semibold">{exportCopy.title}</h3>
         </div>
 
-        <div className="flex items-center justify-between rounded-xl border border-inn-border-light p-4 hover:border-inn-bg-accent/50 transition">
+        <div className="flex items-center justify-between rounded-xl border border-border p-4 hover:border-primary/50 transition">
           <div>
             <h4 className="font-semibold mb-1">{exportCopy.card.title}</h4>
-            <p className="text-sm text-inn-text-secondary">{exportCopy.card.description}</p>
+            <p className="text-sm text-muted-foreground">{exportCopy.card.description}</p>
           </div>
           <Button
             variant="outline"
-            className="rounded-2xl border-inn-border-light hover:border-inn-bg-accent hover:text-inn-bg-accent transition"
+            className="rounded-2xl border-border hover:border-primary hover:text-primary transition"
           >
             {exportCopy.card.button}
           </Button>
@@ -161,7 +161,7 @@ export default function SecuritySettings(): React.JSX.Element {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button className="rounded-2xl bg-inn-bg-accent px-6 py-3 font-semibold text-white hover:opacity-90 transition shadow-lg">
+        <Button className="rounded-2xl bg-primary px-6 py-3 font-semibold text-white hover:opacity-90 transition shadow-lg">
           {actionLabels.save}
         </Button>
       </div>

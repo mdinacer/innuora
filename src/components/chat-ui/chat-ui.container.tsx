@@ -11,8 +11,8 @@ const DecorativeOrbs = () => (
     className={cn("absolute top-20 right-0 z-[1] size-[200px] overflow-hidden rounded-bl-3xl max-[480px]:rounded-none")}
     aria-hidden="true"
   >
-    <div className="absolute -top-[50px] -right-[50px] size-[120px] rounded-full bg-inn-bg-accent opacity-10" />
-    <div className="absolute top-[20px] right-[30px] size-[80px] rounded-full bg-inn-bg-accent opacity-15" />
+    <div className="absolute -top-[50px] -right-[50px] size-[120px] rounded-full bg-primary opacity-10" />
+    <div className="absolute top-[20px] right-[30px] size-[80px] rounded-full bg-primary opacity-15" />
   </div>
 );
 
@@ -56,7 +56,7 @@ const ChatUIContainer = <T,>({
         "relative flex flex-col max-w-2xl mx-auto h-[calc(100vh-40px)]",
         "mt-5 mb-5",
         "rounded-3xl",
-        "bg-inn-bg-card",
+        "bg-card",
         "shadow-[0_8px_30px] shadow-black/12 dark:shadow-black/40",
         "overflow-hidden relative",
         "transition-all duration-300 ease-in",
@@ -68,7 +68,7 @@ const ChatUIContainer = <T,>({
         title={title}
         subtitle={subtitle}
         headerActions={headerActions}
-        className="absolute top-0 inset-x-0 bg-inn-bg-card/30 backdrop-blur-lg backdrop-saturate-150"
+        className="absolute top-0 inset-x-0 bg-card/30 backdrop-blur-lg backdrop-saturate-150"
       />
 
       <MessagesContainer ref={messagesContainerRef} className="pt-[120px] pb-[100px] flex flex-col">

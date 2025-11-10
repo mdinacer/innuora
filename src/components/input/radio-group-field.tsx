@@ -54,7 +54,7 @@ const RadiogroupField = <T extends FieldValues, Y extends object>({
                 <label
                   key={option.value}
                   htmlFor={option.value}
-                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-inn-bg-secondary cursor-pointer transition-all"
+                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-secondary cursor-pointer transition-all"
                 >
                   <input
                     id={option.value}
@@ -65,15 +65,15 @@ const RadiogroupField = <T extends FieldValues, Y extends object>({
                     type="radio"
                     className={cn(
                       "appearance-none mt-0.5",
-                      "size-5 border-2 border-inn-border-light rounded-full",
-                      "bg-inn-bg-input cursor-pointer",
+                      "size-5 border-2 border-border rounded-full",
+                      "bg-secondary cursor-pointer",
                       "transition-all duration-200 ease-in",
                       "relative shrink-0",
                       "after:content-[''] after:absolute",
                       "after:top-1/2 after:left-1/2",
                       "after:-translate-x-1/2 after:-translate-y-1/2",
                       "after:size-2.5 after:rounded-full",
-                      " after:bg-inn-bg-accent",
+                      " after:bg-primary",
                       "checked:after:block after:hidden"
                     )}
                     value={option.value}

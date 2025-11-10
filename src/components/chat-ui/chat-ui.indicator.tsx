@@ -24,7 +24,7 @@ const OpenChatIndicator: React.FC<Props> = ({ className, isVisible }) => {
         className={cn(
           "typing-bubble",
           "py-4 px-5 rounded-[20px] rounded-bl-[6px]",
-          "bg-inn-bg-input",
+          "bg-secondary",
           "flex gap-1 items-center"
         )}
       >
@@ -33,7 +33,7 @@ const OpenChatIndicator: React.FC<Props> = ({ className, isVisible }) => {
             key={index}
             className={cn(
               "typing-dot",
-              "size-2 bg-inn-bg-accent rounded-full",
+              "size-2 bg-primary rounded-full",
               "animate-typing-bounce nth-[2]:delay-[0.2s] nth-[3]:delay-[0.4s]"
             )}
           ></div>

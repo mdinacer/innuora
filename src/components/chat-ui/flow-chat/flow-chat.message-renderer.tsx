@@ -31,19 +31,19 @@ interface Props {
 // Utility function to get message-specific styling
 const getMessageStyling = (messageType: MessageType, variant?: AppMessageVariant) => {
   if (messageType === MessageType.USER) {
-    return "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white";
+    return "bg-primary dark:bg-primary font-medium text-white";
   }
 
   // APP message variants
   if (variant === AppMessageVariant.END) {
-    return "bg-inn-bg-accent dark:bg-inn-bg-accent-dark font-medium text-white";
+    return "bg-primary dark:bg-primary font-medium text-white";
   }
 
   if (variant === AppMessageVariant.INPUT || variant === AppMessageVariant.SELECT) {
-    return "bg-inn-bg-card text-inn-text-primary";
+    return "bg-card text-foreground";
   }
 
-  return "bg-inn-bg-secondary text-inn-text-primary";
+  return "bg-secondary text-foreground";
 };
 
 // Fallback component for unknown message types

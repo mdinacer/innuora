@@ -18,7 +18,7 @@ const compat = new FlatCompat({
 export default [
   // Global ignores
   {
-    ignores: ["src/components/ui/**/*", "src/lib/generated/**/*", ".next/**", "node_modules/**", "artifacts"],
+    ignores: ["src/components/ui/**/*", "src/lib/generated/**/*", ".next/**", "node_modules/**", "artifacts", ".deprecated/**"],
   },
 
   // Base configuration

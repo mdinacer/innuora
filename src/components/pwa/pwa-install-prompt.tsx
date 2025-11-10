@@ -101,7 +101,7 @@ export function PWAInstallPrompt({
     return (
       <div
         className={cn(
-          "fixed bottom-4 left-4 right-4 z-50 rounded-lg border border-inn-border-light bg-white p-4 shadow-lg dark:bg-gray-900",
+          "fixed bottom-4 left-4 right-4 z-50 rounded-lg border border-border bg-white p-4 shadow-lg dark:bg-gray-900",
           {
             "top-4": variant === "modal",
             "bottom-20 left-1/2 w-80 -translate-x-1/2": variant === "floating",
@@ -112,10 +112,10 @@ export function PWAInstallPrompt({
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="mb-2 flex items-center gap-2">
-              <Smartphone className="h-5 w-5 text-inn-bg-accent" />
-              <h3 className="font-semibold text-inn-text-primary">Install Innuora</h3>
+              <Smartphone className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-foreground">Install Innuora</h3>
             </div>
-            <p className="mb-3 text-sm text-inn-text-secondary">
+            <p className="mb-3 text-sm text-muted-foreground">
               Add Innuora to your home screen for a better experience. Tap the Share button{" "}
               <span className="font-mono">⎖</span> then "Add to Home Screen".
             </p>
@@ -133,7 +133,7 @@ export function PWAInstallPrompt({
     return (
       <div
         className={cn(
-          "fixed bottom-4 left-4 right-4 z-50 rounded-lg border border-inn-border-light bg-white p-4 shadow-lg dark:bg-gray-900",
+          "fixed bottom-4 left-4 right-4 z-50 rounded-lg border border-border bg-white p-4 shadow-lg dark:bg-gray-900",
           {
             "top-4": variant === "modal",
             "bottom-20 left-1/2 w-80 -translate-x-1/2": variant === "floating",
@@ -144,15 +144,15 @@ export function PWAInstallPrompt({
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="mb-2 flex items-center gap-2">
-              <Download className="h-5 w-5 text-inn-bg-accent" />
-              <h3 className="font-semibold text-inn-text-primary">Install Innuora</h3>
+              <Download className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-foreground">Install Innuora</h3>
             </div>
-            <p className="mb-3 text-sm text-inn-text-secondary">
+            <p className="mb-3 text-sm text-muted-foreground">
               Get the full app experience. Install Innuora to access it from your home screen and use it offline when
               connection is restored.
             </p>
             <div className="flex gap-2">
-              <Button onClick={handleInstall} className="bg-inn-bg-accent text-white hover:bg-inn-bg-accent-dark">
+              <Button onClick={handleInstall} className="bg-primary text-white hover:bg-primary">
                 Install App
               </Button>
               <Button variant="outline" onClick={handleDismiss}>

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 /**
  * Extracts a JSON string from a larger text input.
  * Handles optional ```json blocks or raw JSON embedded in text.
@@ -37,5 +39,35 @@ export function parseJsonObject<T extends Record<string, any>>(text: string): T 
   } catch (error: any) {
     console.error("JSON parsing error:", error, "\nInput text:", text);
     throw new Error(`Failed to parse JSON: ${error.message}`);
+  }
+}
+
+type ParseOptions<T> = {
+  schema?: z.ZodType<T>;
+};
+
+export function parseJsonObjectWithValidation<T extends Record<string, any>>(
+  text: string,
+  options?: ParseOptions<T>
+): T {
+  try {
+    const jsonString = extractJsonString(text);
+    const parsedObject = JSON.parse(jsonString);
+
+    // If schema is provided, use Zod validation
+    if (options?.schema) {
+      return options.schema.parse(parsedObject);
+    }
+
+    // Otherwise, do basic validation
+    if (typeof parsedObject !== "object" || parsedObject === null || Array.isArray(parsedObject)) {
+      throw new Error("Parsed value is not a valid object.");
+    }
+
+    return parsedObject as T;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("JSON parsing error:", message, "\nInput text:", text);
+    throw new Error(`Failed to parse JSON: ${message}`);
   }
 }

@@ -1,8 +1,8 @@
 import React from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { DiagnosticTheme } from "@/lib/zod/advanced-diagnostic.schema";
-import { Badge } from "../../mir-ui/badge";
 
 interface Props {
   className?: string;
@@ -14,7 +14,7 @@ interface Props {
 const DiagnosticThemeCard: React.FC<Props> = ({ theme, severityClassName, trajectoryClassName }) => {
   const { title, description, severity, trajectory, evidence } = theme;
   return (
-    <div className="rounded-xl border border-inn-border-light bg-inn-bg-soft p-4">
+    <div className="rounded-xl border border-border bg-muted p-4">
       <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
         <h3 className="font-semibold">{title}</h3>
         <div className="flex gap-2">
@@ -26,8 +26,8 @@ const DiagnosticThemeCard: React.FC<Props> = ({ theme, severityClassName, trajec
           </Badge>
         </div>
       </div>
-      <p className="text-sm text-inn-text-secondary mb-3">{description}</p>
-      <div className="text-sm text-inn-text-secondary">
+      <p className="text-sm text-muted-foreground mb-3">{description}</p>
+      <div className="text-sm text-muted-foreground">
         <div className="font-semibold mb-1">Evidence:</div>
         <ul className="list-disc list-inside space-y-0.5">
           {evidence.map((item, index) => (

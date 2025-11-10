@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-import { cairo, geistMono, geistSans, METADATA, tajawal, VIEWPORT } from "@/constants/app-config";
+import { METADATA, VIEWPORT } from "@/constants/app-config";
+import { arabicBody, arabicTitle, sans, serif } from "@/constants/app-config/fonts";
 
 import "../globals.css";
 
@@ -18,6 +19,7 @@ import TranslationProvider from "@/components/translation-provider";
 import { Toaster } from "@/components/ui/sonner";
 import initTranslations, { i18nNamespaces } from "@/lib/i18n";
 import i18nConfig from "@/lib/i18n/config";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return i18nConfig.locales.map((locale) => ({ locale }));
@@ -43,7 +45,13 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
       <body
-        className={`relative standalone:p-safe ${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${tajawal.variable} ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-inn-bg-primary`}
+        className={cn(
+          "relative standalone:p-safe ltr:font-sans rtl:font-arabic-body text-base rtl:text-lg antialiased scroll-smooth bg-background",
+          sans.variable,
+          serif.variable,
+          arabicBody.variable,
+          arabicTitle.variable
+        )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TranslationProvider locale={locale} resources={resources} namespaces={i18nNamespaces}>

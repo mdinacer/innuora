@@ -11,9 +11,7 @@ import {
 
 import { findCurrentUser } from "@/app/actions/auth-actions";
 import { AIModelCategory } from "@/domains/ai-conversation/ai-models";
-import INNUORA_SECURITY_PROTOCOL, {
-  INNUORA_SECURITY_PROTOCOL_GPT4O,
-} from "@/domains/ai-conversation/prompts/prompt.security-protocol";
+import { SECURITY_PROTOCOL_BY_MODEL } from "@/domains/ai-conversation/prompts/prompt.security-protocol";
 import { AppError } from "@/lib/errors";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
@@ -55,14 +53,13 @@ async function executeChatCompletion(
   prompts: ChatCompletionMessageParam[],
   options: Partial<RequestOptions>
 ): Promise<ActionResult<ChatCompletion>> {
-  const securityProtocol = ["gpt-4.1", "gpt-4.1-mini"].includes(model)
-    ? INNUORA_SECURITY_PROTOCOL
-    : INNUORA_SECURITY_PROTOCOL_GPT4O;
+  const securityProtocol = SECURITY_PROTOCOL_BY_MODEL[model];
+  console.log("Use model: ", model);
   return await logger.wrapOperation(
     async () => {
       const completion = await openai.chat.completions.create({
         model,
-        messages: prompts,
+        messages: prompts, //[securityProtocol, ...prompts],
         ...options,
       });
 
@@ -112,6 +109,8 @@ export async function processAiPrompts(
 ): Promise<ActionResult<AiMessageResponse>> {
   return await logger.wrapOperation(
     async () => {
+      const start = performance.now();
+
       // Import model configuration (simple constants from env)
       const { AI_MODELS } = await import("@/domains/ai-conversation/ai-models");
 
@@ -199,6 +198,7 @@ export async function processAiPrompts(
       // Profit margin is controlled by pack pricing, not by code multipliers
       const totalTokens = data.usage?.total_tokens || 0;
       const consumedCredits = data.usage ? CreditUtils.calculateBillableCredits(totalTokens) : 0;
+      const timeElapsed = performance.now() - start;
 
       return {
         message,
@@ -213,6 +213,7 @@ export async function processAiPrompts(
             }
           : null,
         consumedCredits,
+        elapsedMs: timeElapsed,
       };
     },
     ERROR_CODES.AI_REQUEST_FAILED,
