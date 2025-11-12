@@ -3,7 +3,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 import { processAiPromptsWithRetry } from "@/app/actions/ai-client-actions";
 import { parseJsonObject } from "@/lib/utils/parse-json";
-import { useConversationStore } from "../../stores/use-conversation-store";
+import { useConversationStore } from "../stores/use-conversation-store";
 import { MEMORY_ANALYSIS_PROMPT } from "./prompt";
 import { MemoryAnalysis } from "./types";
 import { buildMemoryIndex } from "./utils";
@@ -15,7 +15,7 @@ export default function useAnalyzeMemory() {
     if (!userInput.trim().length) {
       throw new Error("No input provided");
     }
-    console.log("Memory Analysis Started");
+
     setExtracting(true);
 
     try {
@@ -62,7 +62,6 @@ END OF ANCHORS CONTEXT
 
       conversationStore.addFacts(parsedMemory.extracted_memories);
 
-      console.log("Memory Analysis Completed", { prompts, anchors });
       return {
         data: parsedMemory,
         tokenUsage: aiResults.data.modelTokenUsage,

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,19 +13,40 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useCrisisStore } from "@/stores/crisis-store";
 
-interface Props {
-  isCrisis: boolean;
+const CrisisConfirmationDialog: React.FC = () => {
+  const crisisState = useCrisisStore((state) => state.crisisState);
+  const router = useRouter();
+  const handleOpenChange = useCallback(
+    (isConfirmed: boolean) => {
+      if (crisisState !== "detected") return;
 
-  onConfirmCrisis: (value: boolean) => void;
-}
+      const crisisStoreState = useCrisisStore.getState();
+      const lastCrisisEvent = crisisStoreState.getLastEvent();
 
-const CrisisConfirmationDialog: React.FC<Props> = ({ isCrisis = false, onConfirmCrisis }) => {
-  const handleOpenChange = useCallback(onConfirmCrisis, [onConfirmCrisis]);
+      if (isConfirmed) {
+        crisisStoreState.setCrisisState("confirmed");
+        router.push("/crisis");
+      } else {
+        crisisStoreState.setCrisisState("none");
+        if (lastCrisisEvent) {
+          crisisStoreState.updateEvent(lastCrisisEvent.id, { resolvedAt: Date.now() });
+        }
+      }
+    },
+    [crisisState, router]
+  );
 
   return (
-    <Dialog open={isCrisis} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[425px] p-6 sm:p-8 rounded-[2rem] bg-background">
+    <Dialog open={crisisState === "detected"} onOpenChange={handleOpenChange}>
+      <DialogContent
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+        showCloseButton={false}
+        className="sm:max-w-[425px] p-6 sm:p-8 rounded-[2rem] bg-background"
+      >
         <DialogHeader className="mt-4">
           <DialogTitle className="text-xl sm:text-2xl">I want to make sure you're safe</DialogTitle>
           <DialogDescription className="text-sm sm:text-base text-muted-foreground">
@@ -39,7 +61,9 @@ const CrisisConfirmationDialog: React.FC<Props> = ({ isCrisis = false, onConfirm
           </div>
 
           <div className="flex sm:flex-col gap-y-4">
-            <Button size={"lg"}>Yes, I need help now</Button>
+            <Button size={"lg"} onClick={() => handleOpenChange(true)}>
+              Yes, I need help now
+            </Button>
             <DialogClose asChild>
               <Button size={"lg"} variant="outline">
                 No, I'm safe to continue

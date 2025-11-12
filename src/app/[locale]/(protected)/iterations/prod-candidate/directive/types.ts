@@ -1,9 +1,3 @@
-export interface MemoryCue {
-  entities?: string[];
-  themes?: string[];
-  people?: string[];
-}
-
 export interface ReflectionDirective {
   intent: "contain" | "validate" | "gently_explore" | "reframe" | "anchor";
   stance: "grounding" | "steady" | "exploratory" | "nurturing" | "directive";
@@ -15,14 +9,10 @@ export interface ReflectionDirective {
   risk_level: "none" | "low" | "moderate";
   crisis: "none" | "mild" | "moderate" | "high" | "immediate";
 
-  cognitive_patterns?: string[];
-  emotional_themes?: string[];
-  distortions_detected?: string[];
-  implicit_needs?: string[];
-
-  // update_memory: boolean;
-  // recall_memory: boolean;
-  // memory_cues?: MemoryCue[];
+  cognitive_patterns: string[];
+  emotional_themes: string[];
+  distortions_detected: string[];
+  implicit_needs: string[];
 
   rationale: string;
 }
@@ -39,9 +29,6 @@ export const DEFAULT_REFLECTION_DIRECTIVE: ReflectionDirective = {
   emotional_themes: [],
   distortions_detected: [],
   implicit_needs: ["safety", "validation"],
-  // update_memory: false,
-  // recall_memory: false,
-  // memory_cues: [],
   rationale:
-    "Initial exchange: establish emotional safety and containment with a calm, grounding stance before any exploration.",
+    "Initial exchange — prioritize emotional containment and grounding. Create psychological safety before inviting exploration or insight.",
 };

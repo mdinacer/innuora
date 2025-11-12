@@ -37,7 +37,7 @@ export interface TestEntry {
   [key: string]: unknown;
 }
 
-interface TokenBucket {
+export interface TokenBucket {
   prompt: number;
   completion: number;
   cached: number;

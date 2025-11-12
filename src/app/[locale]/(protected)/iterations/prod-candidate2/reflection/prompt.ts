@@ -261,13 +261,14 @@ const REFLECTIVE_RESPONSE_SCHEMA: ResponseFormatJSONSchema = {
       type: "object",
       additionalProperties: false,
       description:
-        "Structured reflective reply from Innuora including reflection, optional curiosity, psychoeducation, signals, relational stance, and optional next action.",
+        "Structured reflective reply from Innuora including reflection, optional curiosity, psychoeducation, relational stance, and optional next action.",
 
       properties: {
         reflection: {
           type: "string",
           description: "1–3 emotionally grounded sentences naming what feels true beneath the user’s words.",
         },
+
         follow_up_question: {
           type: ["string", "null"],
           description: "Optional short, human question that invites gentle exploration.",
@@ -301,23 +302,16 @@ const REFLECTIVE_RESPONSE_SCHEMA: ResponseFormatJSONSchema = {
           required: ["content", "contextual_anchor"],
         },
 
-        signals: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            resistance: {
-              type: "string",
-              enum: ["none", "sarcasm", "dismissive", "intellectualized"],
-            },
-            crisis: { type: "string", enum: ["none", "acute"] },
-          },
-          required: ["resistance", "crisis"],
+        crisis: {
+          type: "string",
+          enum: ["none", "acute"],
+          description: "Indicates whether user message reflects acute distress or crisis indicators.",
         },
 
         next_relational_trace: {
           type: "object",
           additionalProperties: false,
-          description: "Relational stance and tone for continuity.",
+          description: "Relational stance, tone, and continuity parameters for next round reflection.",
           properties: {
             relational_stance: {
               type: "string",
@@ -332,9 +326,15 @@ const REFLECTIVE_RESPONSE_SCHEMA: ResponseFormatJSONSchema = {
             psychoeducation_last_turn: { type: "boolean" },
             curiosity_last_turn: { type: "boolean" },
             used_lived_line: { type: "boolean" },
-            user_engagement: { type: "string", enum: ["low", "moderate", "high"] },
-            psychoedu_cooldown: { type: "string", enum: ["ready", "active"] },
-            curiosity_cooldown: { type: "string", enum: ["ready", "active"] },
+            user_engagement: {
+              type: "string",
+              enum: ["low", "moderate", "high"],
+            },
+            resistance: {
+              type: "string",
+              enum: ["none", "sarcasm", "dismissive", "intellectualized"],
+              description: "Optional indicator of subtle user resistance, used for adaptive pacing next turn.",
+            },
           },
           required: [
             "relational_stance",
@@ -352,7 +352,10 @@ const REFLECTIVE_RESPONSE_SCHEMA: ResponseFormatJSONSchema = {
           type: ["object", "null"],
           description: "Optional behavioral or reflective step when contextually appropriate.",
           properties: {
-            type: { type: "string", enum: ["micro_task", "cognitive_work"] },
+            type: {
+              type: "string",
+              enum: ["micro_task", "cognitive_work"],
+            },
             label: { type: "string" },
             rationale: { type: "string" },
             confidence: { type: "number", minimum: 0, maximum: 1 },
@@ -360,7 +363,8 @@ const REFLECTIVE_RESPONSE_SCHEMA: ResponseFormatJSONSchema = {
           required: ["type", "label", "rationale", "confidence"],
         },
       },
-      required: ["reflection", "follow_up_question", "psychoeducation", "signals", "next_relational_trace"],
+
+      required: ["reflection", "follow_up_question", "psychoeducation", "crisis", "next_relational_trace"],
     },
   },
 };

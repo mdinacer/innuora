@@ -8,7 +8,6 @@ import { buildReflectionDirectivePrompt } from "./utils";
 
 export default function useHandleDirective() {
   const handleReflectionDirective = async (input: string, relationalTrace: RelationalTrace) => {
-    console.log("Reflective Directive Started");
     const prompts = buildReflectionDirectivePrompt(input, relationalTrace);
     const aiResult = await processAiPromptsWithRetry(prompts, REFLECTION_DIRECTIVE_PROMPT.options);
 
@@ -23,7 +22,6 @@ export default function useHandleDirective() {
 
     useConversationStore.getState().addDirective(directive);
 
-    console.log("Reflective Directive Completed");
     return {
       response: directive,
       tokenUsage: aiResult.data.modelTokenUsage,
