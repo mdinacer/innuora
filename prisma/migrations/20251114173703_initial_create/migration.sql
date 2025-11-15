@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "AiOperationType" AS ENUM ('ANALYSIS', 'RESPONSE', 'MEMORY_UPDATE', 'MEMORY_RECALL', 'SESSION_WELLNESS', 'SESSION_SUMMARY', 'TITLE_UPDATE', 'DIAGNOSTIC');
+CREATE TYPE "AiOperationType" AS ENUM ('DIRECTIVE', 'MEMORY_ANALYSIS', 'REFLECTION', 'SESSION_WELLNESS');
 
 -- CreateEnum
 CREATE TYPE "LogLevel" AS ENUM ('INFO', 'WARN', 'ERROR', 'AUDIT');
@@ -42,6 +42,21 @@ CREATE TYPE "RenewalStatus" AS ENUM ('pending', 'processed', 'failed', 'skipped'
 
 -- CreateEnum
 CREATE TYPE "UserTier" AS ENUM ('FREE', 'STARTER', 'REGULAR', 'PREMIUM');
+
+-- CreateEnum
+CREATE TYPE "DirectiveIntent" AS ENUM ('contain', 'validate', 'gently_explore', 'reframe', 'anchor');
+
+-- CreateEnum
+CREATE TYPE "DirectiveStance" AS ENUM ('grounding', 'steady', 'exploratory', 'nurturing', 'directive');
+
+-- CreateEnum
+CREATE TYPE "DirectiveTone" AS ENUM ('calm', 'warm', 'curious', 'firm', 'light');
+
+-- CreateEnum
+CREATE TYPE "DirectiveRiskLevel" AS ENUM ('none', 'low', 'moderate');
+
+-- CreateEnum
+CREATE TYPE "CrisisLevel" AS ENUM ('none', 'mild', 'moderate', 'high', 'immediate');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -118,9 +133,8 @@ CREATE TABLE "sessions" (
     "title" TEXT NOT NULL,
     "subtitle" TEXT,
     "autoUpdateTitle" BOOLEAN NOT NULL DEFAULT false,
-    "persist_on_cloud" BOOLEAN NOT NULL DEFAULT true,
     "metadata" JSONB NOT NULL,
-    "encrypted_data" JSONB,
+    "messages" JSONB,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -130,11 +144,34 @@ CREATE TABLE "sessions" (
 -- CreateTable
 CREATE TABLE "session_contexts" (
     "session_id" TEXT NOT NULL,
-    "encrypted_data" JSONB NOT NULL,
+    "relational_trace" JSONB,
+    "session_wellness" JSONB,
+    "factual_memory" JSONB,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "session_contexts_pkey" PRIMARY KEY ("session_id")
+);
+
+-- CreateTable
+CREATE TABLE "ReflectionDirective" (
+    "id" TEXT NOT NULL,
+    "sessionId" TEXT NOT NULL,
+    "intent" "DirectiveIntent" NOT NULL,
+    "stance" "DirectiveStance" NOT NULL,
+    "tone" "DirectiveTone" NOT NULL,
+    "allow_psychoeducation" BOOLEAN NOT NULL,
+    "allow_curiosity" BOOLEAN NOT NULL,
+    "risk_level" "DirectiveRiskLevel" NOT NULL,
+    "crisis" "CrisisLevel" NOT NULL,
+    "cognitive_patterns" TEXT[],
+    "emotional_themes" TEXT[],
+    "distortions_detected" TEXT[],
+    "implicit_needs" TEXT[],
+    "rationale" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ReflectionDirective_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -291,6 +328,9 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user
 
 -- AddForeignKey
 ALTER TABLE "session_contexts" ADD CONSTRAINT "session_contexts_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "sessions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReflectionDirective" ADD CONSTRAINT "ReflectionDirective_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "session_contexts"("session_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ai_operation_logs" ADD CONSTRAINT "ai_operation_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

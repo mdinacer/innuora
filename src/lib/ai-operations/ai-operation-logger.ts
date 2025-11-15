@@ -12,41 +12,17 @@
 
 import { AiOperationType } from "@prisma/client";
 
-import { AIModelCategory } from "@/domains/ai-conversation/ai-models";
+import { AIModelCategory, calculateModelCostUsd } from "@/domains/ai-conversation/ai-models";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { ModelTokenUsage } from "@/types/ai-model.types";
 
 const OPERATION_MODEL_MAPPING: Record<AiOperationType, AIModelCategory> = {
-  ANALYSIS: "background",
-  DIAGNOSTIC: "diagnostic",
-  MEMORY_RECALL: "background",
-  MEMORY_UPDATE: "background",
+  DIRECTIVE: "background",
+  MEMORY_ANALYSIS: "background",
   REFLECTION: "reflection",
-  RESPONSE: "reflection",
-  SESSION_SUMMARY: "auxiliary",
   SESSION_WELLNESS: "background",
-  SYNTHESIS: "auxiliary",
-  TITLE_UPDATE: "background",
 };
-
-function calculateAiCostUSD(usage: ModelTokenUsage): number {
-  // Parse environment variables safely
-  const inputRate = parseFloat(process.env.AI_MODEL_PRICE_INPUT_PER_1K || "0.0003");
-  const outputRate = parseFloat(process.env.AI_MODEL_PRICE_OUTPUT_PER_1K || "0.0006");
-
-  if (isNaN(inputRate) || isNaN(outputRate)) {
-    throw new Error("Invalid AI model pricing environment variables.");
-  }
-
-  // Compute USD cost
-  const inputCost = (usage.promptTokens / 1000) * inputRate;
-  const outputCost = (usage.completionTokens / 1000) * outputRate;
-  const totalCost = inputCost + outputCost;
-
-  // Round to 6 decimal places for precision
-  return Number(totalCost.toFixed(6));
-}
 
 /**
  * Context for logging an AI operation
@@ -55,6 +31,7 @@ export interface AiOperationContext {
   userId: string;
   sessionId: string;
   messageId?: string;
+  aiModel: AIModelCategory;
   operation: AiOperationType;
   tokenUsage: ModelTokenUsage;
   creditsCharged: number;
@@ -90,7 +67,7 @@ export async function logAiOperation(context: AiOperationContext): Promise<void>
         outputTokens: context.tokenUsage.completionTokens || 0,
         totalTokens: context.tokenUsage.totalTokens || 0,
         creditsCharged: context.creditsCharged,
-        rawCostUSD: calculateAiCostUSD(context.tokenUsage),
+        rawCostUSD: calculateModelCostUsd(context.aiModel, context.tokenUsage).total,
         metadata: context.metadata || {},
         timestamp: new Date(),
       },

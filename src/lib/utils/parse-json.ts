@@ -37,7 +37,7 @@ export function parseJsonObject<T extends Record<string, any>>(text: string): T 
 
     return parsedObject as T;
   } catch (error: any) {
-    console.error("JSON parsing error:", error, "\nInput text:", text);
+    console.error("JSON parsing error:", error, "\nInput text:", text.slice(0, 200));
     throw new Error(`Failed to parse JSON: ${error.message}`);
   }
 }
@@ -48,18 +48,16 @@ type ParseOptions<T> = {
 
 export function parseJsonObjectWithValidation<T extends Record<string, any>>(
   text: string,
-  options?: ParseOptions<T>
+  options: ParseOptions<T>
 ): T {
   try {
     const jsonString = extractJsonString(text);
     const parsedObject = JSON.parse(jsonString);
 
-    // If schema is provided, use Zod validation
     if (options?.schema) {
       return options.schema.parse(parsedObject);
     }
 
-    // Otherwise, do basic validation
     if (typeof parsedObject !== "object" || parsedObject === null || Array.isArray(parsedObject)) {
       throw new Error("Parsed value is not a valid object.");
     }
@@ -67,7 +65,11 @@ export function parseJsonObjectWithValidation<T extends Record<string, any>>(
     return parsedObject as T;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error("JSON parsing error:", message, "\nInput text:", text);
+
+    // SECURITY: Truncate input to avoid logging sensitive AI responses
+    const truncatedInput = text.length > 200 ? `${text.substring(0, 200)}... (${text.length} chars total)` : text;
+
+    console.error("JSON parsing error:", message, "\nInput (truncated):", truncatedInput.slice(0, 200));
     throw new Error(`Failed to parse JSON: ${message}`);
   }
 }

@@ -10,7 +10,7 @@ interface Props {
 const OpenChatIndicator: React.FC<Props> = ({ className, isVisible }) => {
   if (!isVisible) return null;
   return (
-    <div className={cn("typing-indicator", "items-center flex gap-3 mb-6 opacity-0", "animate-slide-in-up", className)}>
+    <div className={cn("typing-indicator", "items-center flex gap-3 mb-6", "animate-slide-in-up", className)}>
       <div
         className={cn(
           "message-avatar",

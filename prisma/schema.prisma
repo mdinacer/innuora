@@ -151,13 +151,13 @@ model Session {
   title           String // title of session
   subtitle        String? // subtitle of session
   autoUpdateTitle Boolean @default(false)
-  persistOnCloud  Boolean @default(true) @map("persist_on_cloud") // user consent for cloud backup
+  persistOnCloud  Boolean @default(false)
 
   // Client-visible metadata (minimal, no sensitive data)
   metadata Json // { messageCount: int, creditsUsed: int } - NO token details, NO costs
 
-  // User messages (encrypted with user password - E2EE)
-  encryptedData Json? @map("encrypted_data") // { messages: [...] }
+  // User messages (encrypted with user password)
+  messages Json? @map("messages") // { messages: [...] }
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -182,7 +182,10 @@ model SessionContext {
   // Server-only therapeutic data (encrypted with APP_ENCRYPTION_KEY)
   // Contains: { analysisSnapshots, aggregatedAnalysis, memoryStore, continuitySummary }
   // NEVER sent to client - only used server-side for continuity
-  encryptedData Json @map("encrypted_data") // EncryptedBlob
+  directives      ReflectionDirective[] // 1:N inside context
+  relationalTrace Json?                 @map("relational_trace")
+  sessionWellness Json?                 @map("session_wellness")
+  factualMemory   Json?                 @map("factual_memory") // encrypted if needed
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
@@ -191,6 +194,31 @@ model SessionContext {
   // Performance indexes
   @@index([sessionId])
   @@map("session_contexts")
+}
+
+model ReflectionDirective {
+  id        String         @id @default(cuid())
+  sessionId String // FK to SessionContext
+  context   SessionContext @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+
+  intent DirectiveIntent
+  stance DirectiveStance
+  tone   DirectiveTone
+
+  allow_psychoeducation Boolean
+  allow_curiosity       Boolean
+
+  risk_level DirectiveRiskLevel
+  crisis     CrisisLevel
+
+  cognitive_patterns   String[]
+  emotional_themes     String[]
+  distortions_detected String[]
+  implicit_needs       String[]
+
+  rationale String @db.Text()
+
+  createdAt DateTime @default(now())
 }
 
 // =========================
@@ -348,16 +376,10 @@ model SubscriptionRenewal {
 // =========================
 
 enum AiOperationType {
-  ANALYSIS // User input analysis
-  DIAGNOSTIC // Diagnostic report generation
-  MEMORY_RECALL // Memory retrieval
-  MEMORY_UPDATE // Session memory consolidation
+  DIRECTIVE // User input analysis
+  MEMORY_ANALYSIS // Memory extraction/recall
   REFLECTION // Reflection stage (GPT-4o)
-  RESPONSE // AI response generation
-  SESSION_SUMMARY // Session summary generation
   SESSION_WELLNESS // Session wellness check
-  SYNTHESIS // Context synthesis stage (GPT-4o-mini)
-  TITLE_UPDATE // Auto title update
 }
 
 enum LogLevel {
@@ -467,4 +489,43 @@ enum UserTier {
   STARTER
   REGULAR
   PREMIUM
+}
+
+// Directives Enums
+enum DirectiveIntent {
+  contain
+  validate
+  gently_explore
+  reframe
+  anchor
+}
+
+enum DirectiveStance {
+  grounding
+  steady
+  exploratory
+  nurturing
+  directive
+}
+
+enum DirectiveTone {
+  calm
+  warm
+  curious
+  firm
+  light
+}
+
+enum DirectiveRiskLevel {
+  none
+  low
+  moderate
+}
+
+enum CrisisLevel {
+  none
+  mild
+  moderate
+  high
+  immediate
 }

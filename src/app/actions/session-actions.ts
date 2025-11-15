@@ -86,6 +86,8 @@ export async function createSession(sessionCreateInput: SessionCreate) {
           persistOnCloud: sessionCreateInput.persistOnCloud || false,
           metadata: {
             messageCount: 0,
+            creditsUsed: 0,
+            activeDurationMs: 0,
           },
           user: {
             connect: { authId: authUser.id },
@@ -124,7 +126,7 @@ export async function pushSession(sessionCreateInput: Prisma.SessionCreateWithou
       operation: "session_push",
       metadata: {
         title: sessionCreateInput.title,
-        hasEncryptedData: !!sessionCreateInput.encryptedData,
+        hasEncryptedData: !!sessionCreateInput.messages,
       },
     },
     `Session pushed: ${sessionCreateInput.title}`
@@ -368,7 +370,7 @@ export async function generateSessionTitle(
       logAiOperation({
         userId: authenticatedUser.id,
         sessionId: sessionId,
-        operation: "TITLE_UPDATE",
+        operation: "REFLECTION",
         tokenUsage: aiResponse.modelTokenUsage,
         creditsCharged: aiResponse.consumedCredits || 0,
       }).catch((error) => {

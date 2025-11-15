@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Encrypted Session Store
  * Manages encrypted sessions in browser storage with automatic persistence
@@ -122,6 +123,7 @@ export const useSessionStore = create<SessionsStoreState>()(
           }
 
           // Session ID has changed → update maps + sessions
+
           const { [oldSessionId]: _, ...restSessions } = state.sessions;
           const { [publicId]: __, ...restPublicIdMap } = state.publicIdMap;
           const { [oldSessionId]: ___, ...restSessionIdMap } = state.sessionIdMap;

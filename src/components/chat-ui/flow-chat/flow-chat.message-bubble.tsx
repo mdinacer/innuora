@@ -11,7 +11,7 @@ const FlowChatMessageBubble: React.FC<Props> = ({ className, children }) => {
     <div
       className={cn(
         "max-w-[95%] min-w-[40%] rounded-[20px]",
-        "animate-slide-in-up delay-200 opacity-0",
+        "animate-slide-in-up delay-200",
         "mb-[56px] p-6 border border-border",
         "shadow-[0_2px_12px] shadow-black/5",
         className

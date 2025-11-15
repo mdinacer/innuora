@@ -168,8 +168,6 @@ export async function processAiPrompts(
       // At this point result.data is guaranteed to be non-null (logErrorAndThrow throws on error)
       const data = result.data!;
 
-      console.log("DATA:", data);
-
       // Extract and validate response
       const rawContent = data?.choices?.[0]?.message?.content?.trim();
       if (!rawContent) {
