@@ -1,45 +1,45 @@
 {
-    "crisis": {
-        "title": "You're safe right now",
-        "intro": "Take a slow breath. You made it here, and that’s enough for this moment.",
-        "grounding": {
-            "heading": "You don’t have to hold this alone.",
-            "options": [
-                "Reach out to someone you trust: a friend, a family member, or a counselor.",
-                "If you already have a therapist, let them know what’s happening.",
-                "Or connect with a trained crisis responder below."
-            ]
-        },
-        "contacts": {
-            "heading": "Crisis Support - Global Access",
-            "us_hotline": {
-                "name": "988 Suicide and Crisis Lifeline (U.S.)",
-                "details": "Call or text 988. Available 24/7. Free and confidential."
-            },
-            "intl_prompt": "If you’re outside the U.S., you can find international helplines here:"
-        },
-        "finder": {
-            "label": "Find someone who can help near you",
-            "select_placeholder": "Select your country",
-            "search_placeholder": "Search country...",
-            "no_country_found": "No country found.",
-            "detect_button": {
-                "default": "Detect my location",
-                "loading": "Detecting..."
-            },
-            "help_text": "You can pick your country or tap Detect to let Innuora locate you. Your browser may ask for permission; that’s normal. Your location is used just once to suggest nearby crisis lines. It’s never stored or shared.",
-            "error": {
-                "no_support": "Your browser doesn’t support location detection.",
-                "denied": "Location permission was denied. You can type your country manually.",
-                "failed": "Couldn’t locate you right now. Try typing your country instead.",
-                "access": "Couldn’t access your location. Please type your country manually."
-            },
-            "search_button": "View crisis helplines in your country"
-        },
-        "disclaimer": {
-            "title": "Important:",
-            "text": "Innuora is not an emergency service. If you are in immediate danger, please call your local emergency number (for example, 911 in the U.S. or 112 in the EU) or go to your nearest emergency department."
-        },
-        "exit": "I’m okay now, take me back"
-    }
+  "crisis": {
+    "title": "You're safe right now",
+    "intro": "Take a slow breath. You made it here, and that’s enough for this moment.",
+    "grounding": {
+      "heading": "You don’t have to hold this alone.",
+      "options": [
+        "Reach out to someone you trust: a friend, a family member, or a counselor.",
+        "If you already have a therapist, let them know what’s happening.",
+        "Or connect with a trained crisis responder below."
+      ]
+    },
+    "contacts": {
+      "heading": "Crisis Support - Global Access",
+      "us_hotline": {
+        "name": "988 Suicide and Crisis Lifeline (U.S.)",
+        "details": "Call or text 988. Available 24/7. Free and confidential."
+      },
+      "intl_prompt": "If you’re outside the U.S., you can find international helplines here:"
+    },
+    "finder": {
+      "label": "Find someone who can help near you",
+      "select_placeholder": "Select your country",
+      "search_placeholder": "Search country...",
+      "no_country_found": "No country found.",
+      "detect_button": {
+        "default": "Detect my location",
+        "loading": "Detecting..."
+      },
+      "help_text": "You can pick your country or tap Detect to let Innuora locate you. Your browser may ask for permission; that’s normal. Your location is used just once to suggest nearby crisis lines. It’s never stored or shared.",
+      "error": {
+        "no_support": "Your browser doesn’t support location detection.",
+        "denied": "Location permission was denied. You can type your country manually.",
+        "failed": "Couldn’t locate you right now. Try typing your country instead.",
+        "access": "Couldn’t access your location. Please type your country manually."
+      },
+      "search_button": "View crisis helplines in your country"
+    },
+    "disclaimer": {
+      "title": "Important:",
+      "text": "Innuora is not an emergency service. If you are in immediate danger, please call your local emergency number (for example, 911 in the U.S. or 112 in the EU) or go to your nearest emergency department."
+    },
+    "exit": "I’m okay now, take me back"
+  }
 }

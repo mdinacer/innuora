@@ -46,6 +46,7 @@ This contrasts with production's **holistic single-stage engine** where one GPT-
 - **Testing**: Can validate each stage independently
 
 **Trade-offs**:
+
 - ✅ Rich diagnostic data for iteration/testing
 - ✅ Clear separation of concerns
 - ❌ Higher cost (~3-6 credits vs ~2 credits)
@@ -85,26 +86,29 @@ const processUserInput = async (input: string) => {
 ---
 
 ```typescript
-  // STEP 1: PROGRESSIVE MEMORY ANALYSIS (Lines 64-79)
-  let memoryAnalysisPromise: Promise<any> | null = null;
+// STEP 1: PROGRESSIVE MEMORY ANALYSIS (Lines 64-79)
+let memoryAnalysisPromise: Promise<any> | null = null;
 
-  if (updatedMessages.length > MESSAGES_WINDOW_SIZE) {  // Only if > 8 messages
-    const indexToAnalyze = updatedMessages.length - MESSAGES_WINDOW_SIZE - 1;  // -9 position
-    const msgToAnalyze = updatedMessages[indexToAnalyze];  // Get 9th-oldest message
+if (updatedMessages.length > MESSAGES_WINDOW_SIZE) {
+  // Only if > 8 messages
+  const indexToAnalyze = updatedMessages.length - MESSAGES_WINDOW_SIZE - 1; // -9 position
+  const msgToAnalyze = updatedMessages[indexToAnalyze]; // Get 9th-oldest message
 
-    if (msgToAnalyze.role === "user") {  // Only analyze user messages
-      // Note: Line 72 shows commented flag for tracking processed messages
-      // msgToAnalyze.memoryProcessed = true;  ← Future-proofing
+  if (msgToAnalyze.role === "user") {
+    // Only analyze user messages
+    // Note: Line 72 shows commented flag for tracking processed messages
+    // msgToAnalyze.memoryProcessed = true;  ← Future-proofing
 
-      memoryAnalysisPromise = handleMemoryAnalysis(msgToAnalyze.content).catch((e: unknown) => {
-        console.error("[Innuora] handleMemoryAnalysis error:", e);
-        return { data: null, tokenUsage: null, elapsedMs: 0, error: e };
-      });
-    }
+    memoryAnalysisPromise = handleMemoryAnalysis(msgToAnalyze.content).catch((e: unknown) => {
+      console.error("[Innuora] handleMemoryAnalysis error:", e);
+      return { data: null, tokenUsage: null, elapsedMs: 0, error: e };
+    });
   }
+}
 ```
 
 **Critical Optimization**:
+
 - Memory analysis ONLY fires when message count > 8
 - Analyzes message at position `length - 9` (just fell out of window)
 - Promise started but NOT awaited yet (allows parallel execution)
@@ -113,17 +117,18 @@ const processUserInput = async (input: string) => {
 ---
 
 ```typescript
-  // STEP 2: REFLECTION DIRECTIVE (Line 81)
-  const directiveResults = await handleReflectionDirective(input, relationalTrace);
+// STEP 2: REFLECTION DIRECTIVE (Line 81)
+const directiveResults = await handleReflectionDirective(input, relationalTrace);
 
-  if (directiveResults.tokenUsage) {
-    telemetryStore.updateTokenTelemetry("background", "reflective_directive", directiveResults.tokenUsage);
-  }
+if (directiveResults.tokenUsage) {
+  telemetryStore.updateTokenTelemetry("background", "reflective_directive", directiveResults.tokenUsage);
+}
 ```
 
 **Blocking Operation**: This MUST complete before reflection can start. Provides therapeutic guidance for GPT-4o.
 
 **Input**:
+
 - `input`: Current user message
 - `relationalTrace`: Previous conversation state (stance, tone, focus, notes, psychoedu/curiosity cooldowns)
 
@@ -132,26 +137,25 @@ const processUserInput = async (input: string) => {
 ---
 
 ```typescript
-  // STEP 3: AWAIT MEMORY ANALYSIS (Lines 87-99)
-  const memoryAnalysisResults = memoryAnalysisPromise
-    ? await memoryAnalysisPromise
-    : { data: null };
+// STEP 3: AWAIT MEMORY ANALYSIS (Lines 87-99)
+const memoryAnalysisResults = memoryAnalysisPromise ? await memoryAnalysisPromise : { data: null };
 
-  if (memoryAnalysisResults?.tokenUsage) {
-    telemetryStore.updateTokenTelemetry("background", "memory_analysis", memoryAnalysisResults.tokenUsage);
-  }
+if (memoryAnalysisResults?.tokenUsage) {
+  telemetryStore.updateTokenTelemetry("background", "memory_analysis", memoryAnalysisResults.tokenUsage);
+}
 
-  let memoryMatches: FactualMemory[] = [];
+let memoryMatches: FactualMemory[] = [];
 
-  if (memoryAnalysisResults?.data) {
-    const { memory_cues = [] } = memoryAnalysisResults.data;
-    console.log("Should Recall");  // Debug logging
+if (memoryAnalysisResults?.data) {
+  const { memory_cues = [] } = memoryAnalysisResults.data;
+  console.log("Should Recall"); // Debug logging
 
-    memoryMatches = handleRecallMemory(memory_cues);  // LOCAL matching (no AI call)
-  }
+  memoryMatches = handleRecallMemory(memory_cues); // LOCAL matching (no AI call)
+}
 ```
 
 **Memory Recall Flow**:
+
 1. Wait for memory analysis to complete (if it was triggered)
 2. Extract `memory_cues` from results
 3. Match cues against stored `factualMemory` using token overlap
@@ -162,24 +166,25 @@ const processUserInput = async (input: string) => {
 ---
 
 ```typescript
-  // STEP 4: REFLECTION GENERATION (Lines 101-107)
-  const reflectionResults = await handleReflection(
-    input,
-    directiveResults.response,  // ReflectionDirective
-    messagesWindow,             // Last 8 messages
-    memoryMatches               // Recalled factual memories
-  );
+// STEP 4: REFLECTION GENERATION (Lines 101-107)
+const reflectionResults = await handleReflection(
+  input,
+  directiveResults.response, // ReflectionDirective
+  messagesWindow, // Last 8 messages
+  memoryMatches // Recalled factual memories
+);
 
-  if (!reflectionResults?.data) throw new Error("No reflection output");
+if (!reflectionResults?.data) throw new Error("No reflection output");
 
-  if (reflectionResults.tokenUsage) {
-    telemetryStore.updateTokenTelemetry("reflection", "reflection", reflectionResults.tokenUsage);
-  }
+if (reflectionResults.tokenUsage) {
+  telemetryStore.updateTokenTelemetry("reflection", "reflection", reflectionResults.tokenUsage);
+}
 ```
 
 **Main AI Response**: GPT-4o generates warm therapeutic response using all context.
 
 **Input**:
+
 - User input
 - Directive (therapeutic guidance)
 - Last 8 messages (conversation window)
@@ -191,47 +196,48 @@ const processUserInput = async (input: string) => {
 ---
 
 ```typescript
-  // STEP 5: FORMAT & DISPLAY (Lines 109-143)
-  const reflectionData = reflectionResults.data;
+// STEP 5: FORMAT & DISPLAY (Lines 109-143)
+const reflectionData = reflectionResults.data;
 
-  const content = [
-    reflectionData.reflection,              // Always included
-    reflectionData.psychoeducation?.content, // Optional CBT insight
-    reflectionData.follow_up_question,      // Optional exploration
-  ]
-    .filter(Boolean)  // Remove nulls
-    .join("\n\n");    // Separate with blank lines
+const content = [
+  reflectionData.reflection, // Always included
+  reflectionData.psychoeducation?.content, // Optional CBT insight
+  reflectionData.follow_up_question, // Optional exploration
+]
+  .filter(Boolean) // Remove nulls
+  .join("\n\n"); // Separate with blank lines
 
-  // Record telemetry for debugging/analysis
-  telemetryStore.addEntry(messageId, {
-    userInput: input.trim(),
-    memory: {
-      extracted: memoryAnalysisResults?.data?.extracted_memories,
-      cues: memoryAnalysisResults?.data?.memory_cues,
-      matches: memoryMatches,
-      recalled: memoryMatches.length > 0,
-      timeElapsed: memoryAnalysisResults.elapsedMs,
-    },
-    directive: {
-      data: directiveResults.response,
-      timeElapsed: directiveResults.elapsedMs,
-    },
-    reflection: {
-      data: reflectionResults.data,
-      timeElapsed: reflectionResults.elapsedTime,
-    },
-  });
+// Record telemetry for debugging/analysis
+telemetryStore.addEntry(messageId, {
+  userInput: input.trim(),
+  memory: {
+    extracted: memoryAnalysisResults?.data?.extracted_memories,
+    cues: memoryAnalysisResults?.data?.memory_cues,
+    matches: memoryMatches,
+    recalled: memoryMatches.length > 0,
+    timeElapsed: memoryAnalysisResults.elapsedMs,
+  },
+  directive: {
+    data: directiveResults.response,
+    timeElapsed: directiveResults.elapsedMs,
+  },
+  reflection: {
+    data: reflectionResults.data,
+    timeElapsed: reflectionResults.elapsedTime,
+  },
+});
 
-  // Add assistant response to conversation
-  conversationStore.addMessage({
-    id: generateMessageId(),
-    role: "assistant",
-    content,  // Formatted response
-    timestamp: Date.now(),
-  });
+// Add assistant response to conversation
+conversationStore.addMessage({
+  id: generateMessageId(),
+  role: "assistant",
+  content, // Formatted response
+  timestamp: Date.now(),
+});
 ```
 
 **Final Assembly**:
+
 - Combines reflection + optional psychoedu + optional question
 - Logs complete diagnostic trail to telemetry store
 - Adds assistant message to conversation
@@ -273,12 +279,14 @@ Rules:
 **Prompt Quality**: ⭐⭐⭐⭐⭐ (9/10)
 
 **Strengths**:
+
 - Clear distinction between extraction (new facts) vs cues (references)
 - Explicit exclusion criteria (no emotions, temporaries, hypotheticals)
 - Normalization rules ensure consistent anchor format
 - Family term normalization ("mother/mum/mom" → "mother")
 
 **Weaknesses**:
+
 - No examples of ambiguous cases (would help model accuracy)
 - "When uncertain, prefer cue or skip" might cause under-extraction
 
@@ -301,15 +309,25 @@ Normalization:
 
 ```typescript
 interface FactualMemory {
-  category: "person" | "work" | "family" | "health" | "education" |
-            "location" | "event" | "habit" | "preference" | "belief" |
-            "goal" | "other";
-  summary: string;  // Concise factual description
+  category:
+    | "person"
+    | "work"
+    | "family"
+    | "health"
+    | "education"
+    | "location"
+    | "event"
+    | "habit"
+    | "preference"
+    | "belief"
+    | "goal"
+    | "other";
+  summary: string; // Concise factual description
   anchors: {
-    entities: string[];  // Roles, organizations, subjects
-    people?: string[];   // Personal/relational names
-    themes?: string[];   // Recurring concepts
-    aliases?: Record<string, string[]>;  // Alternative names
+    entities: string[]; // Roles, organizations, subjects
+    people?: string[]; // Personal/relational names
+    themes?: string[]; // Recurring concepts
+    aliases?: Record<string, string[]>; // Alternative names
   };
   temporal_scope: "ongoing" | "past" | "future" | "uncertain";
   emotional_valence: "neutral" | "positive" | "negative" | "mixed";
@@ -317,6 +335,7 @@ interface FactualMemory {
 ```
 
 **Design Assessment**:
+
 - ✅ `category` helps organize memory store
 - ✅ `temporal_scope` enables obsolescence detection ("ongoing" → "past")
 - ✅ `emotional_valence` adds affective dimension
@@ -351,7 +370,7 @@ export function recallMemoriesFromCues(cues: MemoryCue[], memories: FactualMemor
     // Check overlap
     const overlapScore = [...cueTokens].filter((t) => memTokens.has(t)).length;
 
-    if (overlapScore >= 2) matches.push(memory);  // Threshold: 2 tokens
+    if (overlapScore >= 2) matches.push(memory); // Threshold: 2 tokens
   }
 
   // Deduplicate by summary
@@ -365,34 +384,38 @@ export function recallMemoriesFromCues(cues: MemoryCue[], memories: FactualMemor
 ```
 
 **Algorithm Analysis**:
+
 - **Complexity**: O(C × M) where C = cue tokens, M = memories
 - **Threshold**: Fixed at 2 overlapping tokens
 - **Deduplication**: By exact summary string match
 
 **Strengths**:
+
 - Fast (no AI call, pure JavaScript)
 - Deterministic matching
 - Prevents duplicate recalls
 
 **Weaknesses**:
+
 - Fixed threshold (2) might miss single-entity references
   - Example: "How's Mom?" has 1 anchor ("mother") → No match!
 - No fuzzy matching (requires exact token match)
 - No relevance scoring (all matches treated equally)
 
 **Improvement Opportunity**:
+
 ```typescript
 // Dynamic thresholding
-const threshold = cueTokens.size <= 2 ? 1 : 2;  // Lower threshold for simple cues
+const threshold = cueTokens.size <= 2 ? 1 : 2; // Lower threshold for simple cues
 ```
 
 #### AI Configuration
 
 ```typescript
-model: "background"  // GPT-4.1-mini per CLAUDE.md
-temperature: 0.1     // Deterministic (factual extraction)
-top_p: 0.9
-max_completion_tokens: 320
+model: "background"; // GPT-4.1-mini per CLAUDE.md
+temperature: 0.1; // Deterministic (factual extraction)
+top_p: 0.9;
+max_completion_tokens: 320;
 ```
 
 **Cost**: ~1 credit per analysis (0.5-0.8 typical)
@@ -429,11 +452,13 @@ Return only structured JSON per schema. No commentary or natural language.
 **Prompt Quality**: ⭐⭐⭐⭐☆ (8/10)
 
 **Strengths**:
+
 - Clear role definition ("decide stance, NOT write reflections")
 - Well-structured taxonomy (intent/stance/tone)
 - Crisis awareness baked in
 
 **Weaknesses**:
+
 - No examples of directive outputs
 - Limited guidance on when to choose each intent/stance
 - Doesn't explain relationship between intent and stance
@@ -449,17 +474,18 @@ interface ReflectionDirective {
   allow_curiosity: boolean;
   risk_level: "none" | "low" | "moderate";
   crisis: "none" | "mild" | "moderate" | "high" | "immediate";
-  cognitive_patterns: string[];      // e.g., "rumination", "self-criticism"
-  emotional_themes: string[];        // e.g., "pressure", "exhaustion"
-  distortions_detected: string[];    // e.g., "catastrophizing", "should statements"
-  implicit_needs: string[];          // e.g., "rest", "validation", "safety"
-  rationale: string;                 // One-line explanation
+  cognitive_patterns: string[]; // e.g., "rumination", "self-criticism"
+  emotional_themes: string[]; // e.g., "pressure", "exhaustion"
+  distortions_detected: string[]; // e.g., "catastrophizing", "should statements"
+  implicit_needs: string[]; // e.g., "rest", "validation", "safety"
+  rationale: string; // One-line explanation
 }
 ```
 
 **Taxonomy Quality**:
 
 **Intent** (What to do):
+
 - `contain` → Prioritize safety/presence
 - `validate` → Mirror emotional truth
 - `gently_explore` → Ask brief question
@@ -467,6 +493,7 @@ interface ReflectionDirective {
 - `anchor` → Ground in reality
 
 **Stance** (How to be):
+
 - `grounding` → Anchor in calm presence
 - `steady` → Contain before exploring
 - `exploratory` → Follow curiosity with warmth
@@ -474,6 +501,7 @@ interface ReflectionDirective {
 - `directive` → Clear guidance (rare)
 
 **Tone** (Emotional color):
+
 - `calm` → Slow, steady, grounded
 - `warm` → Personal, soft, empathic
 - `curious` → Open, invitational
@@ -544,6 +572,7 @@ Rationale: User expresses pressure and overwhelm; maintain steady validation.
 ```
 
 **Genius Design**:
+
 - Converts terse enums into **actionable prose**
 - Includes diagnostic context (patterns, themes, needs)
 - Weaves in memory recalls naturally
@@ -628,6 +657,7 @@ Let continuity, not correction, guide the way you respond.
 **Prompt Quality**: ⭐⭐⭐⭐⭐ (10/10)
 
 **Strengths**:
+
 - **Voice is fully embodied** - "lived, grounded presence"
 - **Clear therapeutic stance** - relational, not procedural
 - **Specific style guidance** - short, rhythmic, emotionally real
@@ -652,6 +682,7 @@ and no one holds you."
 ```
 
 **These examples are therapeutic gold**:
+
 - Validate + deepen emotional truth
 - Use "I" sparingly but effectively
 - Short, rhythmic sentences
@@ -671,6 +702,7 @@ her office helped you unwind after. Maybe the timing changed the rhythm, not the
 ```
 
 **Key Teaching**:
+
 - Reference past details naturally ("you mentioned", "you used to")
 - Don't restate facts mechanically
 - Weave memory into emotional reflection
@@ -733,6 +765,7 @@ interface ReflectiveResponse {
 ```
 
 **Cooldown System** (Prevents Repetitiveness):
+
 - `psychoeducation_last_turn`: true → Avoid psychoedu next turn
 - `curiosity_last_turn`: true → Avoid questions next turn
 - `psychoedu_cooldown` / `curiosity_cooldown`: Track readiness
@@ -743,16 +776,17 @@ This prevents back-to-back questions or insights, maintaining conversational flo
 
 ```typescript
 const prompts: ChatCompletionMessageParam[] = [
-  baseSystemPrompt,  // Innuora character + style
+  baseSystemPrompt, // Innuora character + style
   ...(contextDirective ? [{ role: "system", content: contextDirective }] : []),
   // Therapeutic guidance
   ...messagesWindow.map((m) => ({ role: m.role, content: m.content })),
   // Last 8 messages
-  { role: "user", content: userInput },  // Current message
+  { role: "user", content: userInput }, // Current message
 ];
 ```
 
 **Total Context**:
+
 1. Character prompt (~1,500 tokens)
 2. Directive context (~300-500 tokens depending on wellness/memory)
 3. Last 8 messages (~1,200-1,500 tokens)
@@ -763,12 +797,12 @@ const prompts: ChatCompletionMessageParam[] = [
 #### AI Configuration
 
 ```typescript
-model: "reflection"  // GPT-4o per CLAUDE.md
-temperature: 0.65    // Moderate creativity
-top_p: 0.85
-presence_penalty: 0.3  // Discourage repetition
-frequency_penalty: 0.3  // Encourage variety
-max_completion_tokens: 2048  // Allow long responses
+model: "reflection"; // GPT-4o per CLAUDE.md
+temperature: 0.65; // Moderate creativity
+top_p: 0.85;
+presence_penalty: 0.3; // Discourage repetition
+frequency_penalty: 0.3; // Encourage variety
+max_completion_tokens: 2048; // Allow long responses
 ```
 
 **Cost**: ~2-5 credits per response (depends on output length)
@@ -821,11 +855,13 @@ End softly and support rest.
 **Prompt Quality**: ⭐⭐⭐⭐☆ (8/10)
 
 **Strengths**:
+
 - Clear phase taxonomy (opening → closure)
 - Distinction between reflective vs ruminative looping
 - Actionable closure states (continue/near/ready)
 
 **Weaknesses**:
+
 - Phase definitions lack specificity (when is it "deep_reflection" vs "resolution"?)
 - No examples of ambiguous cases
 - "opening" phase never appears in test results (may be unused)
@@ -837,7 +873,7 @@ interface SessionWellness {
   phase: "opening" | "exploration" | "deep_reflection" | "resolution" | "closure";
   closure_state: "continue" | "near_closure" | "ready_to_end";
   tone_recommendation: "containment" | "validation" | "closure" | "redirect";
-  rationale: string;  // ≤25 words
+  rationale: string; // ≤25 words
 }
 ```
 
@@ -853,7 +889,7 @@ useEffect(() => {
 
   const shouldRun =
     userCount > 0 &&
-    userCount % 10 === 0 &&  // Every 10 user messages
+    userCount % 10 === 0 && // Every 10 user messages
     userCount !== lastCheckAt.current;
 
   if (shouldRun) {
@@ -885,6 +921,7 @@ export function buildSessionWellnessInput(
 ```
 
 **Context**:
+
 - Last 8 messages
 - Previous wellness state (for continuity)
 - **NO therapeutic analysis, no memory, no directive**
@@ -894,8 +931,8 @@ This is simpler than initially thought - wellness check only sees raw messages, 
 #### AI Configuration
 
 ```typescript
-model: "background"  // GPT-4.1-mini
-temperature: 0.2     // Low variance (consistent assessment)
+model: "background"; // GPT-4.1-mini
+temperature: 0.2; // Low variance (consistent assessment)
 ```
 
 **Cost**: ~1 credit per check (every 10 messages)
@@ -954,11 +991,10 @@ lastWellnessCheck: {  // Default ready-to-end state
 
 ```typescript
 interface RelationalTraceApp {
-  relational_stance: "grounding" | "steady" | "exploratory" | "clarifying" |
-                     "nurturing" | "directive";
+  relational_stance: "grounding" | "steady" | "exploratory" | "clarifying" | "nurturing" | "directive";
   tone: "warm" | "calm" | "curious" | "light" | "firm";
-  focus: string;  // e.g., "emotional regulation", "grief processing"
-  notes: string;  // e.g., "User feeling overwhelmed. Maintain containment."
+  focus: string; // e.g., "emotional regulation", "grief processing"
+  notes: string; // e.g., "User feeling overwhelmed. Maintain containment."
   psychoeducation_last_turn: boolean;
   curiosity_last_turn: boolean;
   used_lived_line: boolean;
@@ -971,6 +1007,7 @@ interface RelationalTraceApp {
 **This is the conversation's "memory" across turns** - tracks therapeutic state, not factual content.
 
 **Update Flow**:
+
 1. Reflection generates `next_relational_trace`
 2. Hook calls `setRelationalTrace(next_relational_trace)`
 3. Next turn uses updated trace as input to directive
@@ -1087,13 +1124,16 @@ interface RelationalTraceApp {
 ### 5.2 Data Dependencies
 
 **Blocking Dependencies** (must complete before next step):
+
 1. Directive → Reflection (reflection needs directive guidance)
 2. Memory Analysis → Reflection (reflection needs memory matches)
 
 **Non-Blocking** (async, no dependency):
+
 - Wellness Check (runs independently every 10 messages)
 
 **Parallel Opportunities**:
+
 - Directive + Memory Analysis could theoretically run in parallel
 - Currently: Memory starts as promise, directive awaited, then memory awaited
 - This allows some overlap but not full parallelization
@@ -1106,13 +1146,13 @@ interface RelationalTraceApp {
 
 **Per Message Exchange** (typical 35-message session):
 
-| Operation | Model | Tokens (avg) | Frequency | Total |
-|-----------|-------|--------------|-----------|-------|
-| **Directive** | GPT-4.1-mini | ~700 | Every msg | 24,500 |
-| **Memory Analysis** | GPT-4.1-mini | ~400 | Every 9th | 1,200 |
-| **Reflection** | GPT-4o | ~3,200 | Every msg | 112,000 |
-| **Wellness** | GPT-4.1-mini | ~700 | Every 10th | 2,100 |
-| **Total** | | | | **~140,000** |
+| Operation           | Model        | Tokens (avg) | Frequency  | Total        |
+| ------------------- | ------------ | ------------ | ---------- | ------------ |
+| **Directive**       | GPT-4.1-mini | ~700         | Every msg  | 24,500       |
+| **Memory Analysis** | GPT-4.1-mini | ~400         | Every 9th  | 1,200        |
+| **Reflection**      | GPT-4o       | ~3,200       | Every msg  | 112,000      |
+| **Wellness**        | GPT-4.1-mini | ~700         | Every 10th | 2,100        |
+| **Total**           |              |              |            | **~140,000** |
 
 **With Caching** (from test results): ~71% cache hit rate → ~51,000 tokens saved
 
@@ -1122,26 +1162,29 @@ interface RelationalTraceApp {
 
 **Model Pricing** (from CLAUDE.md):
 
-| Model | Category | Base | Input Mult | Output Mult |
-|-------|----------|------|-----------|-------------|
-| GPT-4.1-mini | background | 1 | 0.0015 | 0.006 |
-| GPT-4o | reflection | 2 | 0.0025 | 0.01 |
+| Model        | Category   | Base | Input Mult | Output Mult |
+| ------------ | ---------- | ---- | ---------- | ----------- |
+| GPT-4.1-mini | background | 1    | 0.0015     | 0.006       |
+| GPT-4o       | reflection | 2    | 0.0025     | 0.01        |
 
 **Per-Operation Cost**:
 
 1. **Directive** (~700 tokens):
+
    - Base: 1 credit
    - Input: ~560 tokens × 0.0015 = 0.84 credits
    - Output: ~45 tokens × 0.006 = 0.27 credits
    - **Total**: ~2.1 credits
 
 2. **Memory Analysis** (~400 tokens):
+
    - Base: 1 credit
    - Input: ~80 tokens × 0.0015 = 0.12 credits
    - Output: ~320 tokens × 0.006 = 1.92 credits
    - **Total**: ~3.04 credits (but only every 9th message)
 
 3. **Reflection** (~3,200 tokens):
+
    - Base: 2 credits
    - Input: ~3,000 tokens × 0.0025 = 7.5 credits
    - Output: ~200 tokens × 0.01 = 2 credits
@@ -1152,6 +1195,7 @@ interface RelationalTraceApp {
    - Similar to directive: ~2 credits (but only every 10th message)
 
 **Average Per Message**:
+
 - Directive: 2.1 credits (always)
 - Reflection: 11.5 credits (always)
 - Memory: 3.04 credits ÷ 9 = ~0.34 credits (amortized)
@@ -1167,6 +1211,7 @@ interface RelationalTraceApp {
 ### 6.3 Latency Analysis
 
 **Sequential Operations** (must wait):
+
 1. Directive: ~1.8s
 2. Memory Analysis: ~1.7s (if triggered, runs partially parallel)
 3. Reflection: ~7.2s
@@ -1184,30 +1229,35 @@ interface RelationalTraceApp {
 ### 7.1 Clinical Quality
 
 **Voice & Presence**: ⭐⭐⭐⭐⭐ (10/10)
+
 - Innuora's character is fully realized
 - "Lived, grounded presence" - not performative therapist
 - Micro-breaths ("Yeah… I get that.") create warmth
 - Short, rhythmic sentences feel natural
 
 **Therapeutic Approach**: ⭐⭐⭐⭐☆ (9/10)
+
 - CBT-informed (distortion detection, psychoeducation)
 - Person-centered (follows user's pace)
 - Trauma-informed (containment before exploration)
 - Relational (not procedural)
 
 **Emotional Intelligence**: ⭐⭐⭐⭐⭐ (10/10)
+
 - Directive layer catches emotional nuance
 - Intent/stance/tone taxonomy is sophisticated
 - Cooldown system prevents repetitiveness
 - Crisis detection at multiple layers
 
 **Memory & Continuity**: ⭐⭐⭐⭐☆ (8/10)
+
 - Progressive memory analysis is smart
 - Anchor-based recall works well
 - Natural integration in responses
 - BUT: Fixed recall threshold (2) might miss simple references
 
 **Session Wellness**: ⭐⭐⭐⭐☆ (8/10)
+
 - Phase taxonomy tracks therapeutic arc
 - Looping distinction (reflective vs ruminative) is excellent
 - Gentle suggestion model respects autonomy
@@ -1229,12 +1279,14 @@ interface RelationalTraceApp {
 ### 8.1 Memory System Edge Cases
 
 **Case 1: User deletes messages**
+
 - **Issue**: Index calculation breaks (`length - 9` points to wrong message)
 - **Current Handling**: None (commented `memoryProcessed` flag on line 72)
 - **Risk**: Low (unlikely user action in iteration)
 - **Fix**: Uncomment processing flag, check before analyzing
 
 **Case 2: Simple name reference**
+
 - **Example**: "How's Mom?"
 - **Issue**: Only 1 anchor ("mother") → Overlap score = 1 → No match!
 - **Current Handling**: No recall (threshold = 2)
@@ -1242,6 +1294,7 @@ interface RelationalTraceApp {
 - **Fix**: Dynamic threshold based on cue complexity
 
 **Case 3: Memory store growth**
+
 - **Issue**: No consolidation → 50+ facts → slow matching
 - **Current Handling**: None
 - **Risk**: Medium-High (performance degrades over time)
@@ -1250,11 +1303,13 @@ interface RelationalTraceApp {
 ### 8.2 Directive System Edge Cases
 
 **Case 1: Ambiguous emotional state**
+
 - **Example**: User is both relieved and anxious
 - **Handling**: Directive includes arrays (`emotional_themes`, `implicit_needs`)
 - **Quality**: Good - can capture mixed states
 
 **Case 2: Conflicting signals**
+
 - **Example**: Directive says "allow_curiosity: false" but user explicitly asks question
 - **Handling**: Not explicitly handled
 - **Risk**: Low - reflection can override if contextually appropriate
@@ -1262,28 +1317,33 @@ interface RelationalTraceApp {
 ### 8.3 Reflection System Edge Cases
 
 **Case 1: Very long user input**
+
 - **Issue**: Might exceed token limits when combined with context
 - **Handling**: Not explicitly handled
 - **Risk**: Low (unlikely users write 2,000+ word messages)
 
 **Case 2: Contradictory directive & wellness**
+
 - **Example**: Directive says "explore" but wellness says "ready_to_end"
 - **Handling**: Wellness context added to directive, GPT-4o resolves
 - **Quality**: Good - LLM can balance competing guidance
 
 **Case 3: Back-to-back psychoeducation**
+
 - **Handling**: `psychoeducation_last_turn` flag prevents
 - **Quality**: Excellent - prevents didactic feel
 
 ### 8.4 Wellness System Edge Cases
 
 **Case 1: Rapid topic shifts**
+
 - **Example**: User resolves Topic A, immediately starts Topic B
 - **Issue**: Wellness might suggest ending after A resolution
 - **Handling**: Gentle suggestion model (user can decline)
 - **Risk**: Low - user choice mitigates
 
 **Case 2: False positive closure**
+
 - **Example**: "Thanks, I'm good" (dismissive resistance)
 - **Handling**: No cross-validation with directive resistance signals
 - **Risk**: Medium - could suggest ending during avoidance
@@ -1295,44 +1355,44 @@ interface RelationalTraceApp {
 
 ### 9.1 Architecture Comparison
 
-| Aspect | prod-candidate | Production (Holistic) |
-|--------|----------------|----------------------|
-| **Philosophy** | Diagnostic-first modular pipeline | Single-stage holistic engine |
-| **AI Calls** | 4 per message (directive, memory, reflection, wellness*) | 1 per message (reflection only) |
-| **Models Used** | GPT-4.1-mini + GPT-4o | GPT-4o only |
-| **Token Usage** | ~140k per 35 msgs | ~50k per 35 msgs (estimated) |
-| **Cost** | ~490 credits ($4.90) | ~70 credits ($0.70) |
-| **Latency** | 9-11s per response | 5-7s per response |
-| **Diagnostics** | Rich (directive, memory, wellness visible) | Minimal (just response) |
-| **Complexity** | High (4 interdependent systems) | Low (single prompt) |
-| **Maintenance** | Complex (multiple prompts to tune) | Simple (one prompt) |
-| **Testing** | Each component testable separately | Black box (end-to-end only) |
+| Aspect          | prod-candidate                                            | Production (Holistic)           |
+| --------------- | --------------------------------------------------------- | ------------------------------- |
+| **Philosophy**  | Diagnostic-first modular pipeline                         | Single-stage holistic engine    |
+| **AI Calls**    | 4 per message (directive, memory, reflection, wellness\*) | 1 per message (reflection only) |
+| **Models Used** | GPT-4.1-mini + GPT-4o                                     | GPT-4o only                     |
+| **Token Usage** | ~140k per 35 msgs                                         | ~50k per 35 msgs (estimated)    |
+| **Cost**        | ~490 credits ($4.90)                                      | ~70 credits ($0.70)             |
+| **Latency**     | 9-11s per response                                        | 5-7s per response               |
+| **Diagnostics** | Rich (directive, memory, wellness visible)                | Minimal (just response)         |
+| **Complexity**  | High (4 interdependent systems)                           | Low (single prompt)             |
+| **Maintenance** | Complex (multiple prompts to tune)                        | Simple (one prompt)             |
+| **Testing**     | Each component testable separately                        | Black box (end-to-end only)     |
 
-*Wellness runs every 10 messages
+\*Wellness runs every 10 messages
 
 ### 9.2 Memory Comparison
 
-| Feature | prod-candidate | Production |
-|---------|----------------|------------|
-| **Storage** | Structured factual memories with anchors | Consolidated AI-generated summary (150-300 words) |
-| **Extraction** | Progressive (only old messages) | On-demand when "significant new info" shared |
-| **Recall** | Token-based matching (entities/people/themes) | Entire memory included in every prompt |
-| **Precision** | High (specific facts recalled) | Medium (general context) |
-| **Token Cost** | Low (progressive analysis) | Medium (full memory every turn) |
-| **Scalability** | Good (local matching) | Needs periodic consolidation |
+| Feature         | prod-candidate                                | Production                                        |
+| --------------- | --------------------------------------------- | ------------------------------------------------- |
+| **Storage**     | Structured factual memories with anchors      | Consolidated AI-generated summary (150-300 words) |
+| **Extraction**  | Progressive (only old messages)               | On-demand when "significant new info" shared      |
+| **Recall**      | Token-based matching (entities/people/themes) | Entire memory included in every prompt            |
+| **Precision**   | High (specific facts recalled)                | Medium (general context)                          |
+| **Token Cost**  | Low (progressive analysis)                    | Medium (full memory every turn)                   |
+| **Scalability** | Good (local matching)                         | Needs periodic consolidation                      |
 
 **Verdict**: prod-candidate's structured memory is **more sophisticated** but **not yet consolidated** (user confirmed this is planned).
 
 ### 9.3 Wellness Comparison
 
-| Feature | prod-candidate | Production |
-|---------|----------------|------------|
-| **Exists?** | Yes (experimental) | Yes (domain/session-wellness) |
-| **Trigger** | Every 10 user messages | Every 10 messages (any role) |
-| **Output** | Phase + closure_state + tone_recommendation | suggest_conclusion + should_end + loop_assessment |
-| **Decision Type** | Graduated (continue/near/ready) | Binary (end: yes/no) |
-| **Integration** | Injected into reflection context when relevant | Not visible in prod-candidate iteration |
-| **Safety Gates** | None (gentle suggestion only) | Crisis blocking in production |
+| Feature           | prod-candidate                                 | Production                                        |
+| ----------------- | ---------------------------------------------- | ------------------------------------------------- |
+| **Exists?**       | Yes (experimental)                             | Yes (domain/session-wellness)                     |
+| **Trigger**       | Every 10 user messages                         | Every 10 messages (any role)                      |
+| **Output**        | Phase + closure_state + tone_recommendation    | suggest_conclusion + should_end + loop_assessment |
+| **Decision Type** | Graduated (continue/near/ready)                | Binary (end: yes/no)                              |
+| **Integration**   | Injected into reflection context when relevant | Not visible in prod-candidate iteration           |
+| **Safety Gates**  | None (gentle suggestion only)                  | Crisis blocking in production                     |
 
 **Verdict**: prod-candidate has **richer output** (phase tracking) but **no safety validation**. User confirmed wellness is just a "gentle hint" with user choice.
 
@@ -1343,6 +1403,7 @@ interface RelationalTraceApp {
 ### 10.1 Critical (Before Production)
 
 #### 1. Add Memory Consolidation
+
 - **Issue**: Memory store will grow unbounded
 - **Fix**: Consolidate every 30 facts (merge duplicates, prune obsolete)
 - **User Response**: Planned, not implemented yet
@@ -1355,10 +1416,12 @@ interface RelationalTraceApp {
   ```
 
 #### 2. Implement Message Processing Flag
+
 - **Issue**: Message deletion breaks index calculation
 - **Fix**: Uncomment line 72, add `memoryProcessed` to message type
 - **Effort**: Low
 - **Implementation**:
+
   ```typescript
   interface OpenChatMessage {
     // ... existing fields
@@ -1372,6 +1435,7 @@ interface RelationalTraceApp {
   ```
 
 #### 3. Dynamic Recall Threshold
+
 - **Issue**: Simple references ("How's Mom?") don't match
 - **Fix**: Lower threshold to 1 for simple cues (≤2 anchors)
 - **Effort**: Low
@@ -1384,6 +1448,7 @@ interface RelationalTraceApp {
 ### 10.2 Important (Quality Improvements)
 
 #### 4. Cost Optimization
+
 - **Issue**: 7x more expensive than production
 - **Options**:
   a. Use directive analysis summaries in wellness (not raw messages) → 3.5x token reduction
@@ -1392,6 +1457,7 @@ interface RelationalTraceApp {
 - **Trade-off**: Diagnostic richness vs cost
 
 #### 5. Latency Optimization
+
 - **Issue**: 50-100% slower than production
 - **Options**:
   a. True parallelization of directive + memory analysis
@@ -1400,6 +1466,7 @@ interface RelationalTraceApp {
 - **Best Win**: Streaming (maintains quality, improves UX)
 
 #### 6. Memory Recall Enhancement
+
 - Add relevance scoring (not just binary match/no-match)
 - Rank matches by recency × anchor overlap
 - Limit recalls to top 2-3 most relevant (prevent context bloat)
@@ -1407,28 +1474,32 @@ interface RelationalTraceApp {
 ### 10.3 Nice-to-Have (Polish)
 
 #### 7. Add Memory Metadata
+
 ```typescript
 interface FactualMemory {
   // ... existing fields
-  extractedAt: number;        // Timestamp for pruning
-  lastRecalledAt?: number;    // Track usage
-  recallCount: number;        // Popularity metric
-  obsolete?: boolean;         // Marked for removal
-  confidence: number;         // 0-1, decay over time
+  extractedAt: number; // Timestamp for pruning
+  lastRecalledAt?: number; // Track usage
+  recallCount: number; // Popularity metric
+  obsolete?: boolean; // Marked for removal
+  confidence: number; // 0-1, decay over time
 }
 ```
 
 #### 8. Wellness Insight Tracking
+
 - Log wellness phase transitions
 - Track average session duration by phase
 - Identify users who never reach closure (chronic avoidance pattern)
 
 #### 9. Directive Confidence Scoring
+
 - Add confidence field to directive output
 - Use low confidence to trigger clarifying questions
 - Track directive accuracy vs user engagement
 
 #### 10. Few-Shot Prompt Enhancement
+
 - Add more continuity examples (current: 5, could expand to 10-15)
 - Include edge cases (resistance, topic shifts, crisis grounding)
 - Version prompts for easier A/B testing
@@ -1459,6 +1530,7 @@ interface FactualMemory {
 **Overall**: 7/10 (Strong foundation, needs optimization)
 
 **By Category**:
+
 - **Therapeutic Quality**: 9/10 ⭐ Excellent
 - **Technical Implementation**: 8/10 ⭐ Solid
 - **Performance**: 5/10 ⚠️ Needs work
@@ -1471,6 +1543,7 @@ interface FactualMemory {
 **Recommendation**: **Not as direct replacement, but as evolution path**
 
 **Hybrid Approach**:
+
 1. **Keep** production's single-call simplicity for cost/latency
 2. **Adopt** prod-candidate's progressive memory system
 3. **Adopt** prod-candidate's wellness phase tracking
@@ -1478,6 +1551,7 @@ interface FactualMemory {
 5. **Consider** directive as optional "diagnostic mode" for complex cases
 
 **OR: Ship prod-candidate as "Premium Mode"**:
+
 - Free tier: Production holistic engine (~2 credits/msg)
 - Premium tier: prod-candidate diagnostic engine (~14 credits/msg)
 - User choice based on depth vs speed preference

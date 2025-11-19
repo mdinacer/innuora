@@ -1,7 +1,7 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
 import { addCreditsToUser } from "@/app/actions/credit-actions";

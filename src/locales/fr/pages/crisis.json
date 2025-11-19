@@ -1,45 +1,45 @@
 {
-    "crisis": {
-        "title": "Tu es en sécurité maintenant",
-        "intro": "Respire lentement. Tu es ici, et cela suffit pour le moment.",
-        "grounding": {
-            "heading": "Tu n’as pas à porter cela toute seule.",
-            "options": [
-                "Contacte quelqu’un en qui tu as confiance : une amie, un membre de ta famille ou une conseillère.",
-                "Si tu as déjà une thérapeute, fais-lui savoir ce que tu traverses.",
-                "Ou entre en contact avec une personne formée pour répondre aux situations de crise ci-dessous."
-            ]
-        },
-        "contacts": {
-            "heading": "Soutien en cas de crise – Accès mondial",
-            "us_hotline": {
-                "name": "Ligne d’assistance 988 pour la crise et la prévention du suicide (États-Unis)",
-                "details": "Appelle ou envoie un SMS au 988. Service disponible 24 h/24, gratuit et confidentiel."
-            },
-            "intl_prompt": "Si tu es en dehors des États-Unis, tu peux trouver les lignes d’assistance internationales ici :"
-        },
-        "finder": {
-            "label": "Trouve quelqu’un qui peut t’aider près de chez toi",
-            "select_placeholder": "Choisis ton pays",
-            "search_placeholder": "Rechercher un pays...",
-            "no_country_found": "Aucun pays trouvé.",
-            "detect_button": {
-                "default": "Détecter ma position",
-                "loading": "Détection en cours..."
-            },
-            "help_text": "Tu peux choisir ton pays ou appuyer sur « Détecter » pour permettre à Innuora de localiser ta position. Il se peut que ton navigateur demande une autorisation ; c’est normal. Ta position est utilisée une seule fois pour suggérer des lignes d’aide locales et n’est jamais enregistrée ni partagée.",
-            "error": {
-                "no_support": "Ton navigateur ne prend pas en charge la détection de position.",
-                "denied": "L’autorisation de localisation a été refusée. Tu peux saisir ton pays manuellement.",
-                "failed": "Impossible de détecter ta position pour le moment. Essaie de saisir ton pays à la place.",
-                "access": "Impossible d’accéder à ta localisation. Saisis ton pays manuellement."
-            },
-            "search_button": "Voir les lignes d’assistance dans ton pays"
-        },
-        "disclaimer": {
-            "title": "Important :",
-            "text": "Innuora n’est pas un service d’urgence. Si tu es en danger immédiat, appelle le numéro d’urgence de ton pays (par exemple : 911 aux États-Unis ou 112 dans l’Union européenne) ou rends-toi au service d’urgence le plus proche."
-        },
-        "exit": "Je vais mieux maintenant, retourner à la page précédente"
-    }
+  "crisis": {
+    "title": "Tu es en sécurité maintenant",
+    "intro": "Respire lentement. Tu es ici, et cela suffit pour le moment.",
+    "grounding": {
+      "heading": "Tu n’as pas à porter cela toute seule.",
+      "options": [
+        "Contacte quelqu’un en qui tu as confiance : une amie, un membre de ta famille ou une conseillère.",
+        "Si tu as déjà une thérapeute, fais-lui savoir ce que tu traverses.",
+        "Ou entre en contact avec une personne formée pour répondre aux situations de crise ci-dessous."
+      ]
+    },
+    "contacts": {
+      "heading": "Soutien en cas de crise – Accès mondial",
+      "us_hotline": {
+        "name": "Ligne d’assistance 988 pour la crise et la prévention du suicide (États-Unis)",
+        "details": "Appelle ou envoie un SMS au 988. Service disponible 24 h/24, gratuit et confidentiel."
+      },
+      "intl_prompt": "Si tu es en dehors des États-Unis, tu peux trouver les lignes d’assistance internationales ici :"
+    },
+    "finder": {
+      "label": "Trouve quelqu’un qui peut t’aider près de chez toi",
+      "select_placeholder": "Choisis ton pays",
+      "search_placeholder": "Rechercher un pays...",
+      "no_country_found": "Aucun pays trouvé.",
+      "detect_button": {
+        "default": "Détecter ma position",
+        "loading": "Détection en cours..."
+      },
+      "help_text": "Tu peux choisir ton pays ou appuyer sur « Détecter » pour permettre à Innuora de localiser ta position. Il se peut que ton navigateur demande une autorisation ; c’est normal. Ta position est utilisée une seule fois pour suggérer des lignes d’aide locales et n’est jamais enregistrée ni partagée.",
+      "error": {
+        "no_support": "Ton navigateur ne prend pas en charge la détection de position.",
+        "denied": "L’autorisation de localisation a été refusée. Tu peux saisir ton pays manuellement.",
+        "failed": "Impossible de détecter ta position pour le moment. Essaie de saisir ton pays à la place.",
+        "access": "Impossible d’accéder à ta localisation. Saisis ton pays manuellement."
+      },
+      "search_button": "Voir les lignes d’assistance dans ton pays"
+    },
+    "disclaimer": {
+      "title": "Important :",
+      "text": "Innuora n’est pas un service d’urgence. Si tu es en danger immédiat, appelle le numéro d’urgence de ton pays (par exemple : 911 aux États-Unis ou 112 dans l’Union européenne) ou rends-toi au service d’urgence le plus proche."
+    },
+    "exit": "Je vais mieux maintenant, retourner à la page précédente"
+  }
 }

@@ -6,11 +6,11 @@
  * to find the most relevant 2-3 articles.
  */
 
+import { PsychoeducationCategory } from "@/domains/guidance-flow/reflection/types";
 import { AppLocales } from "@/lib/i18n";
 import { ContentCategory } from "@/types/content.types";
-import { PsychoeducationCategory } from "@/domains/guidance-flow/reflection/types";
-import { filterContent, searchContent } from "./content-loader";
 import type { ContentPreview } from "@/types/content.types";
+import { filterContent, searchContent } from "./content-loader";
 
 // ─────────────────────────────────────────────────────────────
 // Category Mapping Configuration
@@ -190,5 +190,7 @@ export function batchRecommendArticles(
   locale: AppLocales = "en",
   limitPerItem: number = 2
 ): PsychoeducationArticleMapping[] {
-  return psychoeducationItems.map((item) => recommendArticlesForPsychoeducation(item.category, item.subject, locale, limitPerItem));
+  return psychoeducationItems.map((item) =>
+    recommendArticlesForPsychoeducation(item.category, item.subject, locale, limitPerItem)
+  );
 }
