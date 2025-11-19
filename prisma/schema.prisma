@@ -23,7 +23,7 @@ model User {
   // Business fields
   role           UserRole?          @default(user)
   tier           UserTier?          @default(FREE)
-  creditsBalance Int                @default(0) @map("credits_balance")
+  creditsBalance Decimal            @default(0) @map("credits_balance") @db.Decimal(10, 2)
   status         UserAccountStatus? @default(active)
   isOnboarded    Boolean            @default(false)
 
@@ -219,6 +219,8 @@ model ReflectionDirective {
   rationale String @db.Text()
 
   createdAt DateTime @default(now())
+
+  @@map("reflection_directives")
 }
 
 // =========================
@@ -246,8 +248,8 @@ model AiOperationLog {
   totalTokens  Int @map("total_tokens")
 
   // Billing details
-  creditsCharged Int   @map("credits_charged") // Credits charged to user
-  rawCostUSD     Float @map("raw_cost_usd") // Actual API cost
+  creditsCharged Decimal @map("credits_charged") @db.Decimal(10, 2) // Credits charged to user
+  rawCostUSD     Float   @map("raw_cost_usd") // Actual API cost
 
   // Operational metadata
   metadata Json? // { isRetry, analysisValue, isLightweight, etc. }
@@ -273,7 +275,7 @@ model CreditTransaction {
 
   // Transaction details
   type      CreditTransactionType // CREDIT | DEBIT
-  amount    Int // Credits amount (always positive)
+  amount    Decimal               @db.Decimal(10, 2) // Credits amount (always positive)
   reason    String // "ai_usage", "purchase", "admin_adjustment"
   sessionId String?               @map("session_id") // Link to session if AI usage
 

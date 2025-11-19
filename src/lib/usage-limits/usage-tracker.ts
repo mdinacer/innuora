@@ -223,7 +223,11 @@ async function checkCreditLimit(userId: string, _monthlyAllocation: number): Pro
     throw new Error(`User not found: ${userId}`);
   }
 
-  const balance = user.creditsBalance || 0;
+  // Convert Decimal to number
+  const balance =
+    user.creditsBalance && typeof user.creditsBalance !== "number"
+      ? user.creditsBalance.toNumber()
+      : (user.creditsBalance as number) || 0;
   const minimumRequired = USAGE_LIMITS_CONFIG.creditLimits.minimumToStart;
   const canProceed = balance >= minimumRequired;
 

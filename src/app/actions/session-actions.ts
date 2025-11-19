@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
 import { SESSION_TITLE_GENERATE_PROMPT_LOCALIZED } from "@/domains/ai-conversation/prompts/prompt.session-title";
+import { SessionCreate } from "@/domains/guidance-flow/types/session-runtime";
 import { mapAnalysesToChartData } from "@/domains/session-analysis/session-analysis.utils";
 import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
 import { ERROR_CODES } from "@/lib/errors";
@@ -14,7 +15,6 @@ import { prisma } from "@/lib/prisma";
 import { getSessionContext } from "@/lib/session/session-context-service";
 import { formatMessages } from "@/lib/utils/format-message";
 import { parseJsonObject } from "@/lib/utils/parse-json";
-import { SessionCreate } from "@/lib/zod/session-create.schema";
 import { OpenChatMessage } from "@/types/open-chat-message.types";
 import { AnalysisChartPoint } from "@/types/session-analysis-chart";
 import { processAiPromptsWithRetry } from "./ai-client-actions";
@@ -91,6 +91,9 @@ export async function createSession(sessionCreateInput: SessionCreate) {
           },
           user: {
             connect: { authId: authUser.id },
+          },
+          serverContext: {
+            create: {},
           },
         },
       }),
@@ -371,6 +374,7 @@ export async function generateSessionTitle(
         userId: authenticatedUser.id,
         sessionId: sessionId,
         operation: "REFLECTION",
+        aiModel: "background",
         tokenUsage: aiResponse.modelTokenUsage,
         creditsCharged: aiResponse.consumedCredits || 0,
       }).catch((error) => {

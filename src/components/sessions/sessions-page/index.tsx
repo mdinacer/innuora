@@ -6,11 +6,11 @@ import LoadingComponent from "@/components/loading-component";
 import SessionsEmptyState from "@/components/sessions/sessions-page//sessions-empty-state";
 import SessionsPageActions from "@/components/sessions/sessions-page//sessions-page-actions";
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
+import CloudSessionSyncState from "@/components/sessions/sessions-page/cloud-sessions/cloud-session-sync-state";
 import SessionCard from "@/components/sessions/sessions-page/session-card";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
 import { SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
-import CloudSessionSyncState from "./cloud-sessions/cloud-session-sync-state";
 
 interface SessionsPageProps {
   className?: string;
@@ -21,10 +21,10 @@ const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
   const sessions = useSessionStore((state) => state.sessions);
 
   const sessionsOverview = useMemo(() => {
-    if (Object.keys(sessions).length === 0) return [] as SessionOverview[];
+    if (Object.keys(sessions).length === 0) return [] as (SessionOverview & { publicId: string })[];
     return Object.entries(sessions).map(([id, session]) => ({
       id: session.id,
-      obfuscatedId: id,
+      publicId: id,
       title: session.title,
       subtitle: session.subtitle,
       autoUpdateTitle: session.autoUpdateTitle,
@@ -45,14 +45,14 @@ const SessionsPage: React.FC<SessionsPageProps> = ({ className }) => {
     <div className={cn("max-w-6xl mx-auto px-6 py-12 flex flex-col", className)}>
       <SessionsPageHeader />
 
-      {hasHydrated && <CloudSessionSyncState className="my-6" sessions={Object.values(sessions)} />}
+      {hasHydrated && <CloudSessionSyncState className="my-6" />}
 
       {sessionsOverview.length > 0 ? (
         <>
           <SessionsPageActions />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2" id="sessionsGrid">
-            {sessionsOverview.map((session, index) => (
-              <SessionCard key={index} session={session} />
+            {sessionsOverview.map(({ publicId, ...session }, index) => (
+              <SessionCard key={index} session={session} publicId={publicId} />
             ))}
           </div>
         </>

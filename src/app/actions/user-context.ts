@@ -1,10 +1,18 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
+
 import { requireCurrentUser } from "@/app/actions/auth-actions";
 import { UserTier } from "@/lib/billing/tier-config";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
+
+// Helper to convert Prisma Decimal to number
+function toNumber(decimal: Prisma.Decimal | number): number {
+  if (typeof decimal === "number") return decimal;
+  return decimal.toNumber();
+}
 
 /**
  * User data needed for most operations
@@ -51,7 +59,7 @@ export async function getAuthenticatedUserContext(): Promise<AuthenticatedUserCo
     authId: authUser.id,
     id: user.id,
     tier: (user.tier ?? "FREE") as UserTier,
-    creditsBalance: user.creditsBalance,
+    creditsBalance: toNumber(user.creditsBalance),
     role: user.role,
   };
 }
@@ -79,7 +87,7 @@ export async function _getUserByAuthIdInternal(authId: string): Promise<Authenti
     authId,
     id: user.id,
     tier: (user.tier ?? "FREE") as UserTier,
-    creditsBalance: user.creditsBalance,
+    creditsBalance: toNumber(user.creditsBalance),
     role: user.role,
   };
 }

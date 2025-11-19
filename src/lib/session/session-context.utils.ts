@@ -23,27 +23,83 @@ export interface SessionData {
 /**
  * Extract typed session data from encrypted session context
  */
-export function getSessionData(sessionContext: SessionContext | null): SessionData {
-  if (!sessionContext) {
+export async function getSessionContext(sessionId: string, requiredUserId?: string): Promise<SessionContext> {
+  try {
+    // Fetch session with separate context table
+    const session = await prisma.session.findUnique({
+      where: { id: sessionId },
+      select: {
+        id: true,
+        userId: true,
+        serverContext: {
+          select: {
+            factualMemory: true,
+            relationalTrace: true,
+            sessionWellness: true,
+            directives: true,
+          },
+        },
+      },
+    });
+
+    if (!session) {
+      logger.logErrorAndThrow(ERROR_CODES.SESSION_NOT_FOUND, new Error(`Session not found: ${sessionId}`), {
+        operation: "session_context_get",
+        sessionId,
+      });
+      // TypeScript doesn't know logErrorAndThrow never returns
+      throw new Error("Unreachable");
+    }
+
+    // SECURITY: Validate session ownership if requiredUserId provided
+    if (requiredUserId && session.userId !== requiredUserId) {
+      logger.logErrorAndThrow(
+        ERROR_CODES.AUTH_UNAUTHORIZED,
+        new Error(`User ${requiredUserId} does not own session ${sessionId}`),
+        {
+          operation: "session_context_get_ownership_check",
+          sessionId,
+          metadata: {
+            requiredUserId,
+            actualUserId: session.userId,
+          },
+        }
+      );
+    }
+
+    // If no server context exists yet, return empty context
+    if (!session.serverContext) {
+      return {
+        sessionId: session.id,
+        factualMemory: [],
+        relationalTrace: null,
+        sessionWellness: null,
+        directives: [],
+      };
+    }
+
+    // Decrypt server data from SessionContext table
+    const decryptedData = session.serverContext.factualMemory
+      ? await decryptServerData<FactualMemory[]>(session.serverContext.factualMemory as EncryptedBlob)
+      : [];
+
     return {
-      relationalTrace: null,
-      analyses: [],
-      contextLifecycle: initialContextLifecycle,
-      sessionDynamics: null,
+      sessionId: session.id,
+      factualMemory: decryptedData,
+      relationalTrace: session.serverContext.relationalTrace as RelationalTrace | null,
+      sessionWellness: session.serverContext.sessionWellness as SessionPhaseEvaluation | null,
+      directives: session.serverContext.directives as ReflectionDirective[],
     };
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+
+    const err = error instanceof Error ? error : new Error(String(error));
+    await logger.logError("Session context fetch failed", {
+      operation: "session_context_get",
+      sessionId,
+    });
+    throw err;
   }
-
-  const relationalTrace = (sessionContext.v7_relational_trace as RelationalTrace) || null;
-  const analyses = (sessionContext.v7_analyses as InnuoraAnalysis[]) || [];
-  const contextLifecycle = (sessionContext.v7_context_lifecycle as ContextLifecycle) || initialContextLifecycle;
-  const sessionDynamics = (sessionContext.v7_session_dynamics as SessionDynamicsMatrix) || null;
-
-  return {
-    relationalTrace,
-    analyses,
-    contextLifecycle,
-    sessionDynamics,
-  };
 }
 
 //───────────────────────────────────────────────────────────────

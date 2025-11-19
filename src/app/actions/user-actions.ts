@@ -12,6 +12,19 @@ import type { ActionResult } from "@/types/action-result";
 import { UserWithRelations } from "@/types/user.types";
 import { assertCurrentUserId, requireCurrentUser } from "./auth-actions";
 
+// Helper to convert Prisma Decimal to number for client serialization
+function serializeUser<T extends { creditsBalance?: Prisma.Decimal | number }>(
+  user: T
+): T & { creditsBalance: number } {
+  return {
+    ...user,
+    creditsBalance:
+      user.creditsBalance && typeof user.creditsBalance !== "number"
+        ? user.creditsBalance.toNumber()
+        : (user.creditsBalance as number) || 0,
+  };
+}
+
 // Core user functions
 export async function getUserById(authUserId: string): Promise<ActionResult<AppUser | null>> {
   await assertCurrentUserId(authUserId);
@@ -32,14 +45,16 @@ export async function getUserWithRelationsById(authUserId: string): Promise<Acti
   await assertCurrentUserId(authUserId);
 
   return await logger.wrapOperation(
-    () =>
-      prisma.user.findUnique({
+    async () => {
+      const user = await prisma.user.findUnique({
         where: { authId: authUserId },
         include: {
           profile: true,
           config: true,
         },
-      }),
+      });
+      return user ? serializeUser(user) : null;
+    },
     ERROR_CODES.SERVER_ERROR,
     {
       operation: "user_get_with_relations_by_id",
@@ -190,12 +205,14 @@ export async function updateUserById(
   await assertCurrentUserId(authUserId);
 
   return await logger.wrapOperation(
-    () =>
-      prisma.user.update({
+    async () => {
+      const user = await prisma.user.update({
         where: { authId: authUserId },
         data: userData,
         include: { profile: true, config: true },
-      }),
+      });
+      return serializeUser(user);
+    },
     ERROR_CODES.USER_UPDATE_FAILED,
     {
       operation: "user_update_by_id",

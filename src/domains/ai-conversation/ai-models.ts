@@ -124,7 +124,10 @@ export function calculateModelCostUsd(model: AIModelCategory, tokenUsage: ModelT
   // Get model config
   const cfg = AI_MODELS[model];
 
-  const { cachedTokens, promptTokens: inputTokens, completionTokens: outputTokens } = tokenUsage;
+  // Extract with defaults to handle undefined values
+  const inputTokens = tokenUsage.promptTokens || 0;
+  const outputTokens = tokenUsage.completionTokens || 0;
+  const cachedTokens = tokenUsage.cachedTokens || 0;
 
   // Compute token splits
   const effectiveInputTokens = Math.max(inputTokens - cachedTokens, 0);

@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { createSession } from "@/app/actions/session-actions";
+import { createSession, updateSession } from "@/app/actions/session-actions";
 import SwitchField from "@/components/input/switch-field";
 import TextField from "@/components/input/text-field";
+import TextareaField from "@/components/input/textarea-field";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,26 +24,23 @@ import {
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { APP_CONFIG } from "@/config/app";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
-import { createStoreSession, getDecryptedStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
-import { Session } from "@/domains/open-chat/open-chat.types";
-import { generateId } from "@/domains/session-flow/utils/generate-id";
-import { SessionCreate, SessionCreateSchema } from "@/lib/zod/session-create.schema";
+import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
+import { SessionCreate, SessionCreateSchema, SessionMetadata } from "@/domains/guidance-flow/types/session-runtime";
+import { EncryptedSession } from "@/domains/guidance-flow/types/session-server";
 import { useAppUserStore } from "@/stores/app-user.store";
-import TextareaField from "../input/textarea-field";
 
 interface Props {
   className?: string;
-  session?: Session;
+  session?: EncryptedSession;
   trigger?: React.ReactNode;
   onSubmit?: (session: SessionCreate) => void;
-  onSubmitted?: (session: Session) => void;
+  onSubmitted?: (session: EncryptedSession) => void;
 }
 
 const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted }) => {
   const [isOpen, setOpen] = useState(false);
   const { t } = useTranslation("pages/sessions", { keyPrefix: "sessions.form" });
-  const encryptedStore = useSessionStore();
+  const sessionStore = useSessionStore();
   const user = useAppUserStore((state) => state.user);
 
   const form = useForm<SessionCreate>({
@@ -91,66 +89,102 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
     [isEdit, t]
   );
 
-  const handleOnSubmit = useCallback(
-    async (data: SessionCreate) => {
-      if (!user) return;
-      if (onSubmit) {
-        onSubmit(data);
-        return;
-      }
-      const id = session?.id || generateId("Session");
+  const handleCreateSession = async (createInput: SessionCreate, userId: string): Promise<EncryptedSession> => {
+    const { persistOnCloud = false } = createInput;
 
-      if (session) {
-        // Update existing session
-        const updatedSession = await encryptedStore.getSession(id);
-        if (updatedSession) {
-          await encryptedStore.updateSession(id, { ...updatedSession, ...data });
-        }
-      } else if (data.persistOnCloud) {
-        // Create cloud session first
-        const result = await createSession(data);
+    const now = new Date();
 
-        // Handle error
-        if (result.error) {
-          return;
-        }
+    const newSession: EncryptedSession = {
+      id: crypto.randomUUID(),
+      userId: userId,
+      title: createInput.title || "No Title",
+      subtitle: createInput.subtitle || null,
+      createdAt: now,
+      updatedAt: now,
+      autoUpdateTitle: createInput.autoUpdateTitle || false,
+      persistOnCloud: createInput.persistOnCloud || false,
+      metadata: {
+        messageCount: 0,
+        creditsUsed: 0,
+        activeDurationMs: 0,
+      } as SessionMetadata,
+      messages: null,
+    };
 
-        const session = result.data;
-
-        // Create local encrypted session
-        await createStoreSession(
-          {
-            id: session.id,
-            title: session.title,
-            subtitle: session.subtitle || undefined,
-            autoUpdateTitle: session.autoUpdateTitle,
-            persistOnCloud: true,
-          },
-          encryptedStore
-        );
-
-        useSessionStore.getState().addSession(session);
-      } else {
-        // Create local-only session
-        await createStoreSession({
-          title: data.title || generateId("Session"),
-          subtitle: data.subtitle,
-          autoUpdateTitle: data.autoUpdateTitle,
-          persistOnCloud: data.persistOnCloud,
-          userId: user.id,
-        });
+    if (persistOnCloud) {
+      const { data, error } = await createSession({
+        ...createInput,
+      });
+      if (error || !newSession) {
+        throw new Error("Error creating session");
       }
 
-      // Get the updated session and call onSubmit
-      const updatedSession = await getDecryptedStoreSession(id, encryptedStore);
-      if (updatedSession) {
-        onSubmitted?.(updatedSession);
+      newSession.id = data.id;
+      newSession.createdAt = data.createdAt;
+      newSession.updatedAt = data.updatedAt;
+    }
+
+    console.log("Local Session", {
+      createdAt: newSession.createdAt,
+      updatedAt: newSession.updatedAt,
+    });
+
+    sessionStore.addSession(newSession);
+
+    return newSession;
+  };
+
+  const handleUpdateSession = async (
+    updateInput: SessionCreate,
+    existing: EncryptedSession
+  ): Promise<EncryptedSession> => {
+    const { persistOnCloud = false } = updateInput;
+
+    const now = new Date();
+    existing.title = updateInput.title || existing.title;
+    existing.subtitle = updateInput.subtitle ?? existing.subtitle;
+    existing.autoUpdateTitle = updateInput.autoUpdateTitle ?? existing.autoUpdateTitle;
+    existing.persistOnCloud = updateInput.persistOnCloud ?? existing.persistOnCloud;
+    existing.updatedAt = now;
+
+    if (persistOnCloud) {
+      const { data, error } = await updateSession(existing.id, {
+        title: existing.title,
+        subtitle: existing.subtitle,
+        autoUpdateTitle: existing.autoUpdateTitle,
+      });
+
+      if (error || !data) {
+        throw new Error("Error updating session");
       }
 
-      setOpen(false);
-    },
-    [onSubmit, session, encryptedStore, onSubmitted, user]
-  );
+      existing.updatedAt = data.updatedAt;
+    }
+
+    sessionStore.updateSession(existing.id, existing);
+    return existing;
+  };
+
+  const handleOnSubmit = async (data: SessionCreate) => {
+    if (!user) return;
+    if (onSubmit) {
+      onSubmit(data);
+      return;
+    }
+
+    const isUpdate = !!session;
+
+    const updatedSession = isUpdate
+      ? await handleUpdateSession(data, session)
+      : await handleCreateSession(data, user.id);
+
+    if (updatedSession) {
+      onSubmitted?.(updatedSession);
+    }
+
+    setOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <form>
@@ -208,15 +242,7 @@ const SessionForm: React.FC<Props> = ({ session, trigger, onSubmit, onSubmitted 
                   <Button type="button" disabled={isSubmitting} variant="outline">
                     {data.actions.cancel}
                   </Button>
-                  {/* <button
-                    type="button"
-                    disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-card border border-border px-6 py-3 font-semibold text-white shadow transition-all"
-                  >
-                    {data.actions.cancel}
-                  </button> */}
                 </DialogClose>
-                {/* <Button type="submit">{data.actions.submit}</Button> */}
 
                 <Button type="submit" disabled={isSubmitting} variant="primary">
                   {isSubmitting && <Loader2Icon className="size-4 animate-spin" />}

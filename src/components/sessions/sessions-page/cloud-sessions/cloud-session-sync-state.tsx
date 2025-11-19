@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Session } from "@prisma/client";
 import { DownloadIcon, Loader2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { getSessionsInfo } from "@/app/actions/session-actions";
+import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
+import { SessionMetadata } from "@/domains/guidance-flow/types/session-runtime";
 import { SessionMeta } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 import CloudSessionStateCard from "./cloud-session-state-card";
@@ -13,7 +14,7 @@ import CloudSessionStateCard from "./cloud-session-state-card";
 export type SessionState = {
   id: string;
   title: string;
-  metadata: SessionMeta;
+  metadata: SessionMetadata;
   timestamp: Date;
   state: "new" | "updated";
 };
@@ -26,9 +27,8 @@ export type SessionLoadingState = {
 
 interface Props {
   className?: string;
-  sessions: Session[];
 }
-const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) => {
+const CloudSessionSyncState: React.FC<Props> = ({ className }) => {
   const { t } = useTranslation("pages/cloud_updates", { keyPrefix: "cloud_updates" });
 
   const { title, buttons } = useMemo(
@@ -64,6 +64,8 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
 
   const [cloudSessionsState, setCloudSessionsState] = React.useState<SessionState[]>([]);
   const [sessionsLoadingState, setSessionsLoadingState] = React.useState<Record<string, SessionLoadingState>>({});
+  const hasHydrated = useSessionStore((state) => state.hasHydrated);
+  const sessionsStore = useSessionStore((state) => state);
 
   const setSessionLoadingState = (sessionId: string, state: SessionLoadingState) => {
     setSessionsLoadingState((prev) => ({
@@ -72,15 +74,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
     }));
   };
 
-  const sessionsMap = useMemo(() => {
-    return sessions.reduce(
-      (acc, session) => {
-        acc[session.id] = session;
-        return acc;
-      },
-      {} as Record<string, Session>
-    );
-  }, [sessions]);
+  //const sessionsMap = sessions as Record<string, EncryptedSession>;
 
   const initialFetchRef = React.useRef(true);
 
@@ -94,7 +88,8 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
       const nextLoadingStates: Record<string, SessionLoadingState> = {};
 
       for (const remoteSession of remoteSessions) {
-        const localSession = sessionsMap[remoteSession.id];
+        const localSession = sessionsStore.getSessionById(remoteSession.id); //sessions[remoteSession.id];
+
         if (localSession === undefined) {
           data.push({
             id: remoteSession.id,
@@ -106,6 +101,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
         } else {
           const localTime = new Date(localSession.updatedAt).getTime();
           const remoteTime = new Date(remoteSession.updatedAt).getTime();
+
           if (localTime < remoteTime) {
             data.push({
               id: remoteSession.id,
@@ -125,7 +121,7 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
     } catch (error) {
       console.error("Error fetching sessions:", error);
     }
-  }, [sessionsMap]);
+  }, [sessionsStore]);
 
   useEffect(() => {
     let mounted = true;
@@ -168,6 +164,10 @@ const CloudSessionSyncState: React.FC<Props> = ({ className, sessions = [] }) =>
     setCloudSessionsState([]);
     setSessionsLoadingState({});
   };
+
+  if (!hasHydrated) {
+    return null;
+  }
 
   return (
     <div className={cn("w-full", className)}>

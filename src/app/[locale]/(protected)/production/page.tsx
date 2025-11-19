@@ -3,11 +3,11 @@
 import { createSession } from "@/app/actions/session-actions";
 import CodeView from "@/components/code-view";
 import { Button } from "@/components/ui/button";
+import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
+import { SessionMetadataSchema } from "@/domains/guidance-flow/types/session-runtime";
+import { EncryptedSession } from "@/domains/guidance-flow/types/session-server";
 import { SessionCreate } from "@/lib/zod/session-create.schema";
 import { useAppUserStore } from "@/stores/app-user.store";
-import { SessionMetadataSchema } from "./schemas/session-metadata.schema";
-import { useSessionStore } from "./stores/sessions-store";
-import { EncryptedSession } from "./types/session-server";
 
 export default function Page() {
   const user = useAppUserStore((state) => state.user);

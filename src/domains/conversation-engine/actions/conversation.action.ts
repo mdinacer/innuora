@@ -18,6 +18,7 @@ import { AiOperationType } from "@prisma/client";
 
 import { deductCreditsFromUser } from "@/app/actions/credit-actions";
 import { getAuthenticatedUserContext } from "@/app/actions/user-context";
+import { calculateCreditsFromUsage } from "@/domains/credits/model-credits-calculation";
 import { updateSessionDynamicsMatrix } from "@/domains/session-dynamics";
 import { generateAnalysis } from "@/domains/therapeutic-analysis/analysis.service";
 import { logAiOperation } from "@/lib/ai-operations/ai-operation-logger";
@@ -261,15 +262,25 @@ async function processCreditsDeduction(
 ): Promise<number> {
   if (!tokenUsage) return 0;
 
-  // Calculate credits based on total tokens: ~40 tokens = 1 credit
-  const totalCredits = Math.max(1, Math.ceil(tokenUsage.totalTokens / 40));
+  // Calculate credits based on actual model pricing and token breakdown
+  const creditResult = calculateCreditsFromUsage("reflection", {
+    promptTokens: tokenUsage.promptTokens,
+    completionTokens: tokenUsage.completionTokens,
+    cachedTokens: tokenUsage.cachedTokens ?? 0,
+    totalTokens: tokenUsage.totalTokens,
+    timestamp: new Date().toISOString(),
+    responseLength: 0,
+  });
 
-  const result = await deductCreditsFromUser(authId, totalCredits, "ai_usage", sessionId, {
+  const result = await deductCreditsFromUser(authId, creditResult.credits, "ai_usage", "reflection", sessionId, {
     messageId,
     operationType: "reflection",
     promptTokens: tokenUsage.promptTokens,
     completionTokens: tokenUsage.completionTokens,
     cachedTokens: tokenUsage.cachedTokens,
+    // Include cost breakdown for transparency
+    rawCostUsd: creditResult.rawCostUsd,
+    adjustedCostUsd: creditResult.adjustedCostUsd,
   });
 
   return result.data?.creditsDeducted || 0;

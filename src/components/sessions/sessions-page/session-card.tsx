@@ -11,17 +11,17 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { SessionOverview } from "@/domains/open-chat/open-chat.types";
 import { AppLocales } from "@/lib/i18n";
 import { fnsLocalesMap } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 type SessionCardProps = {
+  publicId: string;
   session: SessionOverview;
 };
 
-const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
+const SessionCard: React.FC<SessionCardProps> = ({ session, publicId }) => {
   const {
     t,
     i18n: { language },
@@ -33,7 +33,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
   const fnsLocale = fnsLocalesMap[language as AppLocales];
 
   // Simple store getter - no memoization needed
-  const publicId = useSessionStore.getState().getSessionPublicId(session.id);
+  //const publicId = useSessionStore.getState().getSessionPublicId(session.id);
 
   const {
     cloud,
@@ -131,7 +131,7 @@ const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
       {/* Bottom actions */}
       <div className="min-h-1/5 p-6 pt-4 border-t border-border/30 flex items-center justify-between">
         <Link
-          href={`/sessions/${publicId || session.id}`}
+          href={`/sessions/${publicId}`}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white font-medium text-sm hover:shadow-[0_4px_20px] hover:shadow-black/10 hover:scale-105 transition-all"
           aria-label={`${continueText} to session`}
         >

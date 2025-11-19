@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { requireCurrentUser } from "@/app/actions/auth-actions";
@@ -19,6 +20,12 @@ import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import { PurchaseMetadataSchema, RefundMetadataSchema, validateMetadata } from "@/lib/zod/metadata.schema";
 import type { ActionResult } from "@/types/action-result";
+
+// Helper to convert Prisma Decimal to number
+function toNumber(decimal: Prisma.Decimal | number): number {
+  if (typeof decimal === "number") return decimal;
+  return decimal.toNumber();
+}
 
 // =========================
 // Types and Interfaces
@@ -101,7 +108,7 @@ export async function createCreditPurchaseIntent(
       }
 
       // Check credit limits
-      const totalCreditsAfterPurchase = user.creditsBalance + product.credits;
+      const totalCreditsAfterPurchase = toNumber(user.creditsBalance) + product.credits;
       if (totalCreditsAfterPurchase > TRANSACTION_CONFIG.limits.maxCreditsPerPurchase) {
         return {
           success: false,

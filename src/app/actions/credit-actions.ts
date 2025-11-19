@@ -3,13 +3,19 @@
 // =========================
 // Types and Constants
 // =========================
-import type { CreditTransaction } from "@prisma/client";
+import type { CreditTransaction, Prisma } from "@prisma/client";
 
 import { getAuthenticatedUserContext } from "@/app/actions/user-context";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
 import type { ActionResult } from "@/types/action-result";
+
+// Helper to convert Prisma Decimal to number
+function toNumber(decimal: Prisma.Decimal | number): number {
+  if (typeof decimal === "number") return decimal;
+  return decimal.toNumber();
+}
 
 interface CreditOperationResult {
   success: boolean;
@@ -38,7 +44,7 @@ async function _getUserCreditsBalanceInternal(authId: string): Promise<number> {
     throw new Error(`User not found: ${authId}`);
   }
 
-  return user.creditsBalance || 0;
+  return toNumber(user.creditsBalance) || 0;
 }
 
 /**
@@ -82,7 +88,7 @@ async function _addCreditsInternal(
 
     return {
       success: true,
-      newBalance: updatedUser.creditsBalance,
+      newBalance: toNumber(updatedUser.creditsBalance),
       transactionId: transaction.id,
       creditsAdded: amount,
     };
@@ -107,14 +113,23 @@ async function _deductCreditsInternal(
     throw new Error("Credit amount must be positive");
   }
 
-  // Check sufficient balance first
-  const currentBalance = await _getUserCreditsBalanceInternal(authId);
-  if (currentBalance < amount) {
-    throw new Error(`Insufficient credits. Required: ${amount}, Available: ${currentBalance}`);
-  }
-
-  // Use transaction to ensure atomicity
+  // Use transaction to ensure atomicity and prevent race conditions
   const result = await prisma.$transaction(async (tx) => {
+    // Check sufficient balance inside transaction
+    const user = await tx.user.findUnique({
+      where: { authId },
+      select: { id: true, creditsBalance: true },
+    });
+
+    if (!user) {
+      throw new Error(`User not found: ${authId}`);
+    }
+
+    const currentBalance = toNumber(user.creditsBalance);
+    if (currentBalance < amount) {
+      throw new Error(`Insufficient credits. Required: ${amount}, Available: ${currentBalance}`);
+    }
+
     // Update user balance
     const updatedUser = await tx.user.update({
       where: { authId },
@@ -140,7 +155,7 @@ async function _deductCreditsInternal(
 
     return {
       success: true,
-      newBalance: updatedUser.creditsBalance,
+      newBalance: toNumber(updatedUser.creditsBalance),
       transactionId: transaction.id,
       creditsDeducted: amount,
     };
@@ -164,7 +179,8 @@ export async function getUserCreditsBalance(): Promise<ActionResult<number>> {
       const userContext = await getAuthenticatedUserContext();
 
       // Return balance from context (no additional DB call needed)
-      return userContext.creditsBalance;
+      // Convert Decimal to number for client consumption
+      return toNumber(userContext.creditsBalance);
     },
     ERROR_CODES.USER_NOT_FOUND,
     {
@@ -223,6 +239,7 @@ export async function deductCreditsFromUser(
   authId: string,
   amount: number,
   reason: string,
+  // model: AIModelCategory,
   sessionId?: string,
   metadata?: Record<string, any>
 ): Promise<ActionResult<CreditOperationResult>> {
@@ -377,7 +394,7 @@ export async function adminAdjustCredits(
         if (!targetUser) {
           throw new Error(`Target user not found: ${targetUserId}`);
         }
-        const currentBalance = targetUser.creditsBalance;
+        const currentBalance = toNumber(targetUser.creditsBalance);
         if (currentBalance < Math.abs(amount)) {
           logger.logErrorAndThrow(
             ERROR_CODES.VALIDATION_FAILED,
@@ -422,7 +439,7 @@ export async function adminAdjustCredits(
 
         return {
           success: true,
-          newBalance: updatedUser.creditsBalance,
+          newBalance: toNumber(updatedUser.creditsBalance),
           transactionId: transaction.id,
         };
       });

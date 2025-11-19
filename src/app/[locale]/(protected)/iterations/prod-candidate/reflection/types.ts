@@ -7,8 +7,8 @@ export type RelationalTrace = {
   curiosity_last_turn: boolean;
   used_lived_line: boolean;
   user_engagement: "low" | "moderate" | "high";
-  psychoedu_cooldown?: "ready" | "active"; // optional: not required by schema
-  curiosity_cooldown?: "ready" | "active"; // optional: not required by schema
+  // psychoedu_cooldown?: "ready" | "active"; // optional: not required by schema
+  // curiosity_cooldown?: "ready" | "active"; // optional: not required by schema
 };
 
 export interface RelationalTraceApp extends RelationalTrace {
@@ -78,8 +78,8 @@ export const SAFE_FALLBACK_TRACE: RelationalTraceApp = {
   curiosity_last_turn: false,
   used_lived_line: false,
   user_engagement: "moderate",
-  psychoedu_cooldown: "ready",
-  curiosity_cooldown: "ready",
-  psychoedu_cooldown_remaining: 0,
-  curiosity_cooldown_remaining: 0,
+  // psychoedu_cooldown: "ready",
+  // curiosity_cooldown: "ready",
+  // psychoedu_cooldown_remaining: 0,
+  // curiosity_cooldown_remaining: 0,
 };
