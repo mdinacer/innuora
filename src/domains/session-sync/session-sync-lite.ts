@@ -1,10 +1,11 @@
-import { Prisma, Session as PrismaSession } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 import { getSessionsUpdateInfo, updateSession } from "@/app/actions/session-actions";
-import { useActiveSessionStore } from "@/domains/active-session/active-session.store";
-import { decryptSession, encryptSession } from "@/domains/encrypted-session/encrypted-session.crypto";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
-import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
+import { useSessionStore } from "@/domains/session-persistence";
+import { EncryptedSession } from "@/domains/session-persistence/session-persistence.types";
+import { decryptSession, encryptSession } from "@/domains/session-persistence/session-persistence.utils";
+import { useActiveSessionStore } from "@/domains/session-state";
+import { ConversationSession as Session, SessionMetadataSchema } from "@/domains/session-state/session-state.types";
 import { SyncStatus, SyncStatusDetailed } from "@/domains/session-sync/session-sync.types";
 
 type StatusListener = (sessionId: string, status: SyncStatusDetailed) => void;
@@ -63,7 +64,7 @@ async function fetchRemoteInfo(): Promise<Map<string, RemoteSessionInfo>> {
   }
 }
 
-function buildCloudPayload(session: PrismaSession): Prisma.SessionUpdateWithoutUserInput {
+function buildCloudPayload(session: EncryptedSession): Prisma.SessionUpdateWithoutUserInput {
   const parsedMetadata = SessionMetadataSchema.safeParse(session.metadata);
   const sanitizedMetadata = parsedMetadata.success ? { ...parsedMetadata.data, tokenUsage: [] } : { tokenUsage: [] };
 
@@ -75,8 +76,8 @@ function buildCloudPayload(session: PrismaSession): Prisma.SessionUpdateWithoutU
     updatedAt: new Date(),
   };
 
-  if (session.encryptedData) {
-    update.encryptedData = session.encryptedData as Prisma.InputJsonValue;
+  if (session.messages) {
+    update.messages = session.messages as Prisma.InputJsonValue;
   }
 
   return update;

@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 
 import LoadingComponent from "@/components/loading-component";
-import { useActiveSessionStore } from "@/domains/guidance-flow/stores/active-session-store";
+import { useActiveSessionStore } from "@/domains/session-state";
 
 interface Props {
   publicId: string;

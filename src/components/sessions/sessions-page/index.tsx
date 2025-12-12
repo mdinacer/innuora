@@ -8,8 +8,8 @@ import SessionsPageActions from "@/components/sessions/sessions-page//sessions-p
 import SessionsPageHeader from "@/components/sessions/sessions-page//sessions-page-header";
 import CloudSessionSyncState from "@/components/sessions/sessions-page/cloud-sessions/cloud-session-sync-state";
 import SessionCard from "@/components/sessions/sessions-page/session-card";
-import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
 import { SessionMetadataSchema, SessionOverview } from "@/domains/open-chat/open-chat.types";
+import { useSessionStore } from "@/domains/session-persistence";
 import { cn } from "@/lib/utils";
 
 interface SessionsPageProps {

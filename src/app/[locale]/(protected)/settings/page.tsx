@@ -3,9 +3,9 @@ import { Metadata } from "next";
 import { findCurrentUser } from "@/app/actions/auth-actions";
 import { DynamicPages } from "@/components/dynamic-loaders";
 import Header from "@/components/header";
+import UserMenu from "@/components/user-menu";
 import { APP_CONFIG } from "@/config/app";
 import initTranslations from "@/lib/i18n";
-import UserMenu from "@/user-menu";
 
 // =========================
 // Metadata

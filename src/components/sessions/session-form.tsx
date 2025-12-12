@@ -24,9 +24,9 @@ import {
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { APP_CONFIG } from "@/config/app";
-import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
-import { SessionCreate, SessionCreateSchema, SessionMetadata } from "@/domains/guidance-flow/types/session-runtime";
-import { EncryptedSession } from "@/domains/guidance-flow/types/session-server";
+import { useSessionStore } from "@/domains/session-persistence";
+import { EncryptedSession } from "@/domains/session-persistence/session-persistence.types";
+import { SessionCreate, SessionCreateSchema, SessionMetadata } from "@/domains/session-state/session-state.types";
 import { useAppUserStore } from "@/stores/app-user.store";
 
 interface Props {

@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 
 import LoadingComponent from "@/components/loading-component";
+import SessionDecrypt from "@/components/sessions/session-decryptor";
 import SessionDetailsPage from "@/components/sessions/session-details";
-import SessionDecrypt from "@/domains/encrypted-session/components/session-decryptor";
 
 export default async function SessionDetailsRoute({
   params,

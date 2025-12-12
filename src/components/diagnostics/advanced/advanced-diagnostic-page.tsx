@@ -19,7 +19,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Session } from "@/domains/open-chat/open-chat.types";
-import { TherapeuticAnalysisWithMessageId } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
+//import { TherapeuticAnalysisWithMessageId } from "@/domains/therapeutic-analysis/therapeutic-analysis.types";
 import { cn } from "@/lib/utils";
 import { AdvancedDiagnostic } from "@/lib/zod/advanced-diagnostic.schema";
 import DiagnosticDistortionCard from "./advanced-diagnostic-distortion-card";
@@ -66,9 +66,9 @@ const SectionIcons: Record<string, LucideIcon> = {
   clinical_insights: EyeIcon, // insights into patterns, cognitive shifts
 };
 
-const getMessagesIdByDistortion = (distortion: string, analysis: TherapeuticAnalysisWithMessageId[]) => {
-  return analysis.filter((item) => item.distortions.some((d) => d.type === distortion)).map((item) => item.messageId);
-};
+// const getMessagesIdByDistortion = (distortion: string, analysis: TherapeuticAnalysisWithMessageId[]) => {
+//   return analysis.filter((item) => item.distortions.some((d) => d.type === distortion)).map((item) => item.messageId);
+// };
 
 interface Props {
   className?: string;
@@ -78,7 +78,7 @@ interface Props {
 
 const AdvancedDiagnosticPage: React.FC<Props> = ({ className, diagnostic, session }) => {
   const getDistortionMessages = (distortion: string) => {
-    const messagesIds = getMessagesIdByDistortion(distortion, []);
+    const messagesIds = [] as string[]; //getMessagesIdByDistortion(distortion, []); //TODO: Review Implementation
     if (messagesIds.length === 0) return [];
     return session.messages.filter((message) => messagesIds.includes(message.id)).map((message) => message.content);
   };

@@ -16,8 +16,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Psychoeducation } from "@/domains/guidance-flow/reflection/types";
-import { ConversationMessage } from "@/domains/guidance-flow/types/chat-message";
+import { Psychoeducation } from "@/domains/reflection";
+import { ConversationMessage } from "@/domains/shared-types";
 import { cn } from "@/lib/utils";
 
 interface Props {

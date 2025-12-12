@@ -1,21 +1,20 @@
 import React from "react";
 import Link from "next/link";
-import { CogIcon, PencilIcon, PlayIcon } from "lucide-react";
+import { CogIcon, PlayIcon } from "lucide-react";
 
-import SessionForm from "@/components/sessions/session-form";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
-import { Session } from "@/domains/open-chat/open-chat.types";
+import { useSessionStore } from "@/domains/session-persistence";
+import { ConversationSession } from "@/domains/session-state/session-state.types";
 import { cn } from "@/lib/utils";
 
 interface Props {
   className?: string;
-  session: Session;
+  session: ConversationSession;
 }
 
 const SessionDetailsQuickActions: React.FC<Props> = ({ className, session }) => {
-  const publicId = useSessionStore((state) => state.getSessionPublicId(session.id));
+  const publicId = useSessionStore((state) => state.getSessionByPublicId(session.id));
 
   return (
     <Card className={cn("px-6", className)}>
@@ -35,7 +34,7 @@ const SessionDetailsQuickActions: React.FC<Props> = ({ className, session }) => 
           </Link>
         )}
 
-        <SessionForm
+        {/* <SessionForm
           session={session}
           trigger={
             <Button variant="secondary" size="full" className="justify-start">
@@ -43,7 +42,7 @@ const SessionDetailsQuickActions: React.FC<Props> = ({ className, session }) => 
               Edit Details
             </Button>
           }
-        />
+        /> */}
       </div>
     </Card>
   );

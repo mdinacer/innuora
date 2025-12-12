@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { User as AuthUser } from "@supabase/supabase-js";
 
 import { getUserWithRelationsById } from "@/app/actions/user-actions";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { useSessionStore } from "@/domains/session-persistence";
 import { useAppUserStore } from "@/stores/app-user.store";
 
 export default function useLoadUserData({ authUser }: { authUser: AuthUser }) {
@@ -27,7 +27,7 @@ export default function useLoadUserData({ authUser }: { authUser: AuthUser }) {
       storeState.setUser(appUser);
 
       // Set current user ID in session store for filtering
-      useSessionStore.getState().setCurrentUserId(appUser.id);
+      useSessionStore.getState().setUserId(appUser.id);
     } catch {
       // Error already logged by the action
     }

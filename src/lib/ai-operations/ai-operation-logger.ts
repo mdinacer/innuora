@@ -13,9 +13,9 @@
 import { AiOperationType } from "@prisma/client";
 
 import { AIModelCategory, calculateModelCostUsd } from "@/domains/ai-conversation/ai-models";
+import { ModelTokenUsage } from "@/domains/shared-types";
 import { logger } from "@/lib/logging/unified-logger";
 import { prisma } from "@/lib/prisma";
-import { ModelTokenUsage } from "@/types/ai-model.types";
 
 const OPERATION_MODEL_MAPPING: Record<AiOperationType, AIModelCategory> = {
   DIRECTIVE: "background",
@@ -112,125 +112,4 @@ export async function getUserTokenUsage(userId: string, startDate: Date, endDate
   });
 
   return result._sum.totalTokens || 0;
-}
-
-/**
- * Gets total credits charged to a user in a time period
- *
- * @param userId - User ID
- * @param startDate - Start of period
- * @param endDate - End of period
- * @returns Total credits charged
- */
-export async function getUserCreditsUsage(userId: string, startDate: Date, endDate: Date): Promise<number> {
-  const result = await prisma.aiOperationLog.aggregate({
-    where: {
-      userId,
-      timestamp: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    _sum: {
-      creditsCharged: true,
-    },
-  });
-
-  return result._sum.creditsCharged || 0;
-}
-
-/**
- * Gets operation breakdown for a session
- *
- * @param sessionId - Session ID
- * @returns Array of operation logs
- */
-export async function getSessionOperations(sessionId: string) {
-  return await prisma.aiOperationLog.findMany({
-    where: { sessionId },
-    orderBy: { timestamp: "asc" },
-    select: {
-      operation: true,
-      model: true,
-      totalTokens: true,
-      creditsCharged: true,
-      rawCostUSD: true,
-      timestamp: true,
-    },
-  });
-}
-
-/**
- * Gets cost breakdown by operation type for a user
- *
- * @param userId - User ID
- * @param startDate - Start of period
- * @param endDate - End of period
- * @returns Operation type breakdown
- */
-export async function getUserOperationBreakdown(userId: string, startDate: Date, endDate: Date) {
-  return await prisma.aiOperationLog.groupBy({
-    by: ["operation"],
-    where: {
-      userId,
-      timestamp: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    _sum: {
-      totalTokens: true,
-      creditsCharged: true,
-      rawCostUSD: true,
-    },
-    _count: {
-      operation: true,
-    },
-  });
-}
-
-/**
- * Gets total raw API costs for billing reconciliation
- *
- * @param startDate - Start of period
- * @param endDate - End of period
- * @returns Total raw costs
- */
-export async function getTotalRawCosts(startDate: Date, endDate: Date): Promise<number> {
-  const result = await prisma.aiOperationLog.aggregate({
-    where: {
-      timestamp: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    _sum: {
-      rawCostUSD: true,
-    },
-  });
-
-  return result._sum.rawCostUSD || 0;
-}
-
-/**
- * Gets total credits charged for revenue calculation
- *
- * @param startDate - Start of period
- * @param endDate - End of period
- * @returns Total credits charged
- */
-export async function getTotalCreditsCharged(startDate: Date, endDate: Date): Promise<number> {
-  const result = await prisma.aiOperationLog.aggregate({
-    where: {
-      timestamp: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    _sum: {
-      creditsCharged: true,
-    },
-  });
-
-  return result._sum.creditsCharged || 0;
 }

@@ -6,8 +6,17 @@ import { ERROR_CODES } from "@/lib/errors/error-codes";
 // Import mocked modules
 import openai from "@/lib/openai";
 import { MemoryRateLimiter } from "@/lib/rate-limiting/rate-limiter";
-import { AiModel } from "@/types/ai-model.types";
 import { processAiPrompts, processAiPromptsWithRetry } from "../ai-client-actions";
+
+// Legacy test file - using old AiModel structure
+type LegacyAiModel = {
+  model: string;
+  apiPath: string;
+  context: number;
+  pricing: { prompt: number; completion: number };
+  vendor: string;
+  mode: string;
+};
 
 // Mock the logger to avoid test pollution
 vi.mock("@/lib/logging/unified-logger", () => ({
@@ -50,7 +59,7 @@ vi.mock("@/lib/rate-limiting/rate-limiter", async () => {
 });
 
 describe.skip("AI Actions Rate Limiting", () => {
-  const mockOpenAIModel: AiModel = {
+  const mockOpenAIModel: LegacyAiModel = {
     model: "gpt-4o",
     apiPath: "gpt-4o",
     context: 128000,
@@ -293,7 +302,7 @@ describe.skip("AI Actions Rate Limiting", () => {
 
     it("should handle cost-based rate limiting for expensive models", async () => {
       const userId = "user123";
-      const expensiveModel: AiModel = {
+      const expensiveModel: LegacyAiModel = {
         ...mockOpenAIModel,
         model: "gpt-4",
         pricing: { prompt: 0.03, completion: 0.06 }, // Much more expensive

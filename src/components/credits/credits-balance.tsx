@@ -18,7 +18,7 @@ export function CreditsBalance({ className = "", showUSDValue = false, content }
   const user = useAppUserStore((state) => state.user);
   const hasHydrated = useAppUserStore((state) => state.hasHydrated);
 
-  const balance = user?.creditsBalance ?? 0;
+  const balance = user?.creditsBalance?.toNumber() ?? 0;
 
   const { usdValue, mainText, subText } = useMemo(() => {
     const currentBalance = balance;

@@ -2,9 +2,9 @@ import { Metadata } from "next";
 
 import { DynamicPages } from "@/components/dynamic-loaders";
 import Header from "@/components/header";
+import UserMenu from "@/components/user-menu";
 import { APP_CONFIG } from "@/config/app";
 import { createClient } from "@/lib/supabase/server";
-import UserMenu from "@/user-menu";
 
 // =========================
 // Metadata

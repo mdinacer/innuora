@@ -5,9 +5,9 @@ import { DownloadIcon, Loader2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { getSessionsInfo } from "@/app/actions/session-actions";
-import { useSessionStore } from "@/domains/guidance-flow/stores/sessions-store";
-import { SessionMetadata } from "@/domains/guidance-flow/types/session-runtime";
 import { SessionMeta } from "@/domains/open-chat/open-chat.types";
+import { useSessionStore } from "@/domains/session-persistence";
+import { SessionMetadata } from "@/domains/session-state/session-state.types";
 import { cn } from "@/lib/utils";
 import CloudSessionStateCard from "./cloud-session-state-card";
 

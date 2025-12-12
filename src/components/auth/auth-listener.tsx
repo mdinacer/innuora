@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
+import { useSessionStore } from "@/domains/session-persistence";
 import { createClient } from "@/lib/supabase/client";
 
 const AuthListener: React.FC = () => {
@@ -11,7 +11,7 @@ const AuthListener: React.FC = () => {
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") {
         // Clear current user ID to hide sessions
-        useSessionStore.getState().setCurrentUserId(null);
+        useSessionStore.getState().setUserId(null);
 
         // Clear storage (sessions are backed up to cloud if persistOnCloud=true)
         useSessionStore.persist.clearStorage();

@@ -14,8 +14,9 @@ import { useTranslation } from "react-i18next";
 import { generateSessionTitle } from "@/app/actions/session-actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
 import { Session } from "@/domains/open-chat/open-chat.types";
+import { useSessionStore } from "@/domains/session-persistence";
+import { ConversationSession } from "@/domains/session-state/session-state.types";
 import { CreditUtils } from "@/lib/credits/credit-config";
 import { AppLocales, FNS_LOCALES_MAP } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,7 @@ import SessionNamingDialog from "../session-naming-dialog";
 
 interface Props {
   className?: string;
-  session: Session;
+  session: ConversationSession;
 }
 
 interface MetricCardProps {

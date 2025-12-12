@@ -142,7 +142,7 @@ export function CreditsTransactionHistory({ limit = 20, className = "" }: Credit
                 <div className="text-right">
                   <div className={`font-semibold ${getTransactionColor(transaction.type)}`}>
                     {transaction.type === CreditTransactionType.CREDIT ? "+" : "-"}
-                    {CreditUtils.formatCreditsForDisplay(transaction.amount)} credits
+                    {CreditUtils.formatCreditsForDisplay(transaction.amount.toNumber())} credits
                   </div>
                 </div>
               </div>

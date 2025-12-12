@@ -3,16 +3,9 @@ import { useRouter } from "next/navigation";
 import { isAfter } from "date-fns";
 import { CloudIcon, CloudOffIcon, DownloadIcon, UploadIcon } from "lucide-react";
 
-import {
-  deleteSession,
-  getSessionById,
-  getSessionUpdateInfo,
-  pushSession,
-  updateSession,
-} from "@/app/actions/session-actions";
+import { getSessionUpdateInfo } from "@/app/actions/session-actions";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -22,10 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
-import { updateStoreSession } from "@/domains/encrypted-session/encrypted-session.utils";
-import { Session, SessionMetadataSchema } from "@/domains/open-chat/open-chat.types";
-import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
+import { Session } from "@/domains/open-chat/open-chat.types";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -43,107 +33,99 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const pushToCloud = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const state = useSessionStore.getState();
-      const encryptedSession = state.sessions[session.id];
-      if (!encryptedSession) throw new Error("Session not found");
-
-      // Transform functions (defined inline to avoid dependency issues)
-      const transformForUpdate = (encryptedSession: any) => {
-        const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
-        const metadata = {
-          originalId: id,
-          originalUserId: userId,
-          originalCreatedAt: createdAt,
-          originalUpdatedAt: updatedAt,
-        };
-        return {
-          ...rest,
-          subtitle: session.subtitle || null,
-          metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : metadata,
-          encryptedData: encryptedSession.encryptedData as EncryptedBlob,
-        };
-      };
-
-      const transformForCreate = (encryptedSession: any) => {
-        const { encryptedData, metadata, ...rest } = encryptedSession;
-        return {
-          ...rest,
-          subtitle: session.subtitle || null,
-          metadata: metadata ? SessionMetadataSchema.parse(metadata) : {},
-          encryptedData: encryptedData as EncryptedBlob,
-        };
-      };
-
-      let result;
-      if (session.persistOnCloud) {
-        const payload = transformForUpdate(encryptedSession);
-        result = await updateSession(session.id, payload);
-      } else {
-        const payload = transformForCreate(encryptedSession);
-        result = await pushSession(payload);
-      }
-
-      // Handle error
-      if (result.error) {
-        setError(result.error.message);
-        return;
-      }
-
-      const sessionData = result.data;
-
-      if (!session.persistOnCloud) {
-        const publicId = state.publicIdMap[session.id];
-        if (sessionData.id && publicId) state.setSession(publicId, sessionData);
-        router.refresh();
-      }
-
-      setCloudInfo({ id: sessionData.id, updatedAt: sessionData.updatedAt });
-      state.setSession(session.id, sessionData);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to sync");
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // setError(null);
+    // try {
+    //   const state = useSessionStore.getState();
+    //   const encryptedSession = state.sessions[session.id];
+    //   if (!encryptedSession) throw new Error("Session not found");
+    //   // Transform functions (defined inline to avoid dependency issues)
+    //   const transformForUpdate = (encryptedSession: any) => {
+    //     const { id, userId, createdAt, updatedAt, ...rest } = encryptedSession;
+    //     const metadata = {
+    //       originalId: id,
+    //       originalUserId: userId,
+    //       originalCreatedAt: createdAt,
+    //       originalUpdatedAt: updatedAt,
+    //     };
+    //     return {
+    //       ...rest,
+    //       subtitle: session.subtitle || null,
+    //       metadata: encryptedSession.metadata ? SessionMetadataSchema.parse(encryptedSession.metadata) : metadata,
+    //       encryptedData: encryptedSession.encryptedData as EncryptedBlob,
+    //     };
+    //   };
+    //   const transformForCreate = (encryptedSession: any) => {
+    //     const { encryptedData, metadata, ...rest } = encryptedSession;
+    //     return {
+    //       ...rest,
+    //       subtitle: session.subtitle || null,
+    //       metadata: metadata ? SessionMetadataSchema.parse(metadata) : {},
+    //       encryptedData: encryptedData as EncryptedBlob,
+    //     };
+    //   };
+    //   let result;
+    //   if (session.persistOnCloud) {
+    //     const payload = transformForUpdate(encryptedSession);
+    //     result = await updateSession(session.id, payload);
+    //   } else {
+    //     const payload = transformForCreate(encryptedSession);
+    //     result = await pushSession(payload);
+    //   }
+    //   // Handle error
+    //   if (result.error) {
+    //     setError(result.error.message);
+    //     return;
+    //   }
+    //   const sessionData = result.data;
+    //   if (!session.persistOnCloud) {
+    //     const publicId = state.publicIdMap[session.id];
+    //     if (sessionData.id && publicId) state.setSession(publicId, sessionData);
+    //     router.refresh();
+    //   }
+    //   setCloudInfo({ id: sessionData.id, updatedAt: sessionData.updatedAt });
+    //   state.setSession(session.id, sessionData);
+    // } catch (error) {
+    //   setError(error instanceof Error ? error.message : "Failed to sync");
+    // } finally {
+    //   setLoading(false);
+    // }
   }, [session, router]);
 
   const pullFromCloud = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const state = useSessionStore.getState();
-      const publicId = state.getSessionPublicId(session.id);
-      const result = await getSessionById(session.id);
-
-      if (result && publicId) {
-        state.setSession(publicId, result);
-        setCloudInfo({ id: result.id, updatedAt: result.updatedAt });
-      } else {
-        throw new Error("Session not found on cloud");
-      }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to pull");
-    } finally {
-      setLoading(false);
-    }
-  }, [session.id]);
-  const removeFromCloud = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await deleteSession(session.id);
-      const state = useSessionStore.getState();
-      await updateStoreSession(session.id, { ...session, persistOnCloud: false }, state);
-      setCloudInfo(null);
-      setShowDeleteDialog(false);
-      router.refresh();
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to remove");
-    } finally {
-      setLoading(false);
-    }
+    //   setLoading(true);
+    //   setError(null);
+    //   try {
+    //     const state = useSessionStore.getState();
+    //     const publicId = state.getSessionPublicId(session.id);
+    //     const result = await getSessionById(session.id);
+    //     if (result && publicId) {
+    //       state.setSession(publicId, result);
+    //       setCloudInfo({ id: result.id, updatedAt: result.updatedAt });
+    //     } else {
+    //       throw new Error("Session not found on cloud");
+    //     }
+    //   } catch (error) {
+    //     setError(error instanceof Error ? error.message : "Failed to pull");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }, [session.id]);
+    // const removeFromCloud = useCallback(async () => {
+    //   setLoading(true);
+    //   setError(null);
+    //   try {
+    //     await deleteSession(session.id);
+    //     const state = useSessionStore.getState();
+    //     await updateStoreSession(session.id, { ...session, persistOnCloud: false }, state);
+    //     setCloudInfo(null);
+    //     setShowDeleteDialog(false);
+    //     router.refresh();
+    //   } catch (error) {
+    //     setError(error instanceof Error ? error.message : "Failed to remove");
+    //   } finally {
+    //     setLoading(false);
+    //   }
   }, [session, router]);
   const isOnCloud = session.persistOnCloud;
 
@@ -284,9 +266,9 @@ const SessionDetailsSyncStatus: React.FC<Props> = ({ className, session }) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={removeFromCloud} disabled={loading}>
+            {/* <AlertDialogAction onClick={removeFromCloud} disabled={loading}>
               {loading ? "Removing..." : "Remove"}
-            </AlertDialogAction>
+            </AlertDialogAction> */}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

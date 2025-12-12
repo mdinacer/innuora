@@ -6,7 +6,7 @@
 
 import { ChatModel } from "openai/resources";
 
-import { ModelTokenUsage } from "@/types/ai-model.types";
+import { ModelTokenUsage } from "@/domains/shared-types";
 
 export type ModelConfig = {
   name: ChatModel;

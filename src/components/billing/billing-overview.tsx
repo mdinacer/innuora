@@ -12,7 +12,7 @@ interface Props {
 const BillingOverview: React.FC<Props> = ({}) => {
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
         <div className="flex items-center gap-2 mb-4">
           <CreditCardIcon className="size-6 text-primary shrink-0" />
 
@@ -41,12 +41,12 @@ const BillingOverview: React.FC<Props> = ({}) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg text-center">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-lg text-center">
           <div className="text-3xl font-bold text-green-500 mb-1">Secure</div>
           <div className="text-sm font-medium mb-1">Payment Processing</div>
           <div className="text-xs text-[var(--text-secondary)]">256-bit SSL encryption</div>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg text-center">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-lg text-center">
           <div className="text-3xl font-bold text-primary mb-1">24/7</div>
           <div className="text-sm font-medium mb-1">Support Available</div>
           <div className="text-xs text-[var(--text-secondary)]">Always here to help</div>

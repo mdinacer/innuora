@@ -6,7 +6,7 @@ import { CheckIcon } from "lucide-react";
 const BillingHelp = () => {
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
         <h3 className="text-xl font-semibold mb-4">Payment Security</h3>
         <p className="text-[var(--text-secondary)] mb-4">
           Your payment information is secured by Stripe, a PCI-compliant payment processor trusted by millions of
@@ -18,7 +18,7 @@ const BillingHelp = () => {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
         <h3 className="text-xl font-semibold mb-4">Credit Policy</h3>
         <ul className="text-[var(--text-secondary)] space-y-2">
           <li className="flex items-start gap-2">
@@ -40,7 +40,7 @@ const BillingHelp = () => {
         </ul>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_8px] shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
         <h3 className="text-xl font-semibold mb-4">Support</h3>
         <p className="text-[var(--text-secondary)] mb-4">
           Need help with billing or have questions about your credits?

@@ -18,9 +18,9 @@ import { logger } from "@/lib/logging/unified-logger";
 import openai from "@/lib/openai";
 import { rateLimiter } from "@/lib/rate-limiting/rate-limiter";
 import type { ActionResult } from "@/types/action-result";
-import { AiMessageResponse } from "@/types/ai-model.types";
+import { AiMessageResponse } from "@/types/ai-response.types";
 
-export type RequestOptions = {
+export type AiRequestOptions = {
   stream?: boolean;
   max_completion_tokens?: number;
   temperature?: number;
@@ -34,7 +34,7 @@ export type RequestOptions = {
   model?: AIModelCategory; // Model selection: default=gpt-4o, fallback=gpt-4.1, mini=gpt-4.1-mini
 };
 
-const DEFAULT_AI_OPTIONS: Omit<RequestOptions, "model"> = {
+const DEFAULT_AI_OPTIONS: Omit<AiRequestOptions, "model"> = {
   temperature: 0.6,
   top_p: 0.9,
   presence_penalty: 0.1,
@@ -51,7 +51,7 @@ const DEFAULT_AI_OPTIONS: Omit<RequestOptions, "model"> = {
 async function executeChatCompletion(
   model: ChatModel,
   prompts: ChatCompletionMessageParam[],
-  options: Partial<RequestOptions>
+  options: Partial<AiRequestOptions>
 ): Promise<ActionResult<ChatCompletion>> {
   const securityProtocol = SECURITY_PROTOCOL_BY_MODEL[model];
   console.log("Use model: ", model);
@@ -105,7 +105,7 @@ function assertValidPrompts(prompts: ChatCompletionMessageParam[]): void {
  */
 export async function processAiPrompts(
   prompts: ChatCompletionMessageParam[],
-  options: Partial<RequestOptions> = {}
+  options: Partial<AiRequestOptions> = {}
 ): Promise<ActionResult<AiMessageResponse>> {
   return await logger.wrapOperation(
     async () => {
@@ -231,7 +231,7 @@ export async function processAiPrompts(
  */
 export async function processAiPromptsWithRetry(
   prompts: ChatCompletionMessageParam[],
-  options: Partial<RequestOptions> = {},
+  options: Partial<AiRequestOptions> = {},
   maxRetries: number = 3,
   retryDelay: number = 1000
 ): Promise<ActionResult<AiMessageResponse>> {

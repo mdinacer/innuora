@@ -94,8 +94,9 @@ export async function GET(_request: NextRequest) {
     ]);
 
     // Calculate derived metrics
-    const averageCreditsPerUser = totalUsers > 0 ? Math.round((revenueData._sum.amount || 0) / totalUsers) : 0;
-    const totalRevenue = (revenueData._sum.amount || 0) * 0.01; // Convert credits to USD
+    const averageCreditsPerUser =
+      totalUsers > 0 ? Math.round((revenueData._sum.amount?.toNumber() || 0) / totalUsers) : 0;
+    const totalRevenue = (revenueData._sum.amount?.toNumber() || 0) * 0.01; // Convert credits to USD
     const conversionRate = totalUsers > 0 ? Math.round((revenueData._count / totalUsers) * 100 * 10) / 10 : 0;
 
     // Get most popular package (simplified - would need more complex query for real data)

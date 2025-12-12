@@ -7,10 +7,11 @@ import SessionDetailsHeader from "@/components/sessions/session-details/session-
 import SessionDetailsQuickActions from "@/components/sessions/session-details/session-details.quick-actions";
 import SessionDetailsSyncStatus from "@/components/sessions/session-details/session-details.sync-status";
 import { Session } from "@/domains/open-chat/open-chat.types";
+import { ConversationSession } from "@/domains/session-state/session-state.types";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  session: Session;
+  session: ConversationSession;
   className?: string;
 }
 

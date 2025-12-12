@@ -5,8 +5,8 @@ import { findCurrentUser } from "@/app/actions/auth-actions";
 import { getUserWithRelationsById } from "@/app/actions/user-actions";
 import { DynamicPages } from "@/components/dynamic-loaders";
 import Header from "@/components/header";
+import UserMenu from "@/components/user-menu";
 import { APP_CONFIG } from "@/config/app";
-import UserMenu from "@/user-menu";
 
 // =========================
 // Metadata

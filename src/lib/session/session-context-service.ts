@@ -1,3 +1,5 @@
+"use server";
+
 /**
  * Session Context Service
  *
@@ -13,12 +15,13 @@
  * Session context is fetched infrequently (only during AI operations),
  * so caching provides minimal benefit while risking stale data.
  */
+import { Prisma } from "@prisma/client";
 
-import type { RelationalTrace } from "@/domains/conversation-engine/types/reflection.types";
-import { ReflectionDirective } from "@/domains/guidance-flow/directive/types";
-import { FactualMemory } from "@/domains/guidance-flow/memory/types";
-import { SessionPhaseEvaluation } from "@/domains/guidance-flow/phase/types";
-import { SessionContext, SessionDataUpdate } from "@/domains/guidance-flow/types/session-server";
+import { FactualMemory } from "@/domains/memory-analysis";
+import { SessionPhaseEvaluation } from "@/domains/phase-evaluation";
+import { RelationalTrace } from "@/domains/reflection";
+import { ReflectionDirective } from "@/domains/reflection-directive";
+import { SessionContext, SessionDataUpdate } from "@/domains/session-persistence/session-persistence.types";
 import { decryptServerData, encryptServerData } from "@/lib/crypto/server-crypto";
 import { EncryptedBlob } from "@/lib/crypto/webcrypto-crypto.types";
 import { AppError } from "@/lib/errors/app-error";
@@ -161,26 +164,6 @@ export async function updateSessionContext(sessionId: string, updates: SessionDa
       ...(updates.sessionWellness ? { sessionWellness: updates.sessionWellness as any } : {}),
     };
 
-    // Encrypt updated data
-
-    // Upsert to SessionContext table (create if doesn't exist, update if exists)
-    // await prisma.sessionContext.upsert({
-    //   where: { sessionId },
-    //   create: {
-    //     sessionId,
-    //     ...updatedData,
-    //   },
-    //   update: updatedData,
-    // });
-
-    // // Also update session timestamp
-    // await prisma.session.update({
-    //   where: { id: sessionId },
-    //   data: {
-    //     updatedAt: new Date(),
-    //   },
-    // });
-
     await prisma.$transaction([
       prisma.sessionContext.upsert({
         where: { sessionId },
@@ -208,6 +191,24 @@ export async function updateSessionContext(sessionId: string, updates: SessionDa
     });
     throw err;
   }
+}
+
+export async function resetSessionContext(sessionId: string): Promise<void> {
+  await prisma.$transaction([
+    prisma.sessionContext.update({
+      where: { sessionId },
+      data: {
+        factualMemory: Prisma.JsonNull,
+        directives: { deleteMany: {} },
+        relationalTrace: {},
+        sessionWellness: {},
+      },
+    }),
+    prisma.session.update({
+      where: { id: sessionId },
+      data: { updatedAt: new Date() },
+    }),
+  ]);
 }
 
 // /**

@@ -1,7 +1,5 @@
 import OpenAI from "openai";
 
-import { getRequiredEnvVar } from "@/lib/env-validation";
-
 const openai = new OpenAI();
 
 // const openai = new OpenAI({

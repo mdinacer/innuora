@@ -16,7 +16,7 @@ import {
 } from "@/lib/billing/stripe-client";
 import { findPurchaseTransactionByPaymentIntent } from "@/lib/billing/transaction-queries";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { logger } from "@/lib/logging/unified-logger";
+import { logger } from "@/lib/logging/logger.server";
 import { prisma } from "@/lib/prisma";
 import { PurchaseMetadataSchema, RefundMetadataSchema, validateMetadata } from "@/lib/zod/metadata.schema";
 import type { ActionResult } from "@/types/action-result";
@@ -232,7 +232,7 @@ export async function processSuccessfulPayment(paymentIntentId: string): Promise
           // Payment already processed, return existing result
           return {
             success: true,
-            creditsAdded: existingTransaction.amount,
+            creditsAdded: existingTransaction.amount.toNumber(),
             newBalance: 0, // We don't have access to balance here, webhook response doesn't need it
             transactionId: existingTransaction.id,
           };
@@ -401,7 +401,7 @@ export async function processRefund(
 
         const deductResult = await deductCreditsFromUser(
           user!.authId,
-          originalTransaction.amount,
+          originalTransaction.amount.toNumber(),
           TRANSACTION_CONFIG.reasons.REFUND,
           undefined,
           refundMetadata!
@@ -426,7 +426,7 @@ export async function processRefund(
         return {
           success: true,
           refundId: refund.id,
-          creditsDeducted: originalTransaction.amount,
+          creditsDeducted: originalTransaction.amount.toNumber(),
         };
       } catch (error) {
         if (isStripeError(error)) {

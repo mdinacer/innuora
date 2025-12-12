@@ -20,7 +20,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
   return (
     <div
       className={cn(
-        "rounded-2xl   bg-card p-6 shadow-[0_4px_20px] shadow-lg  hover:shadow-[0_8px_30px] hover:shadow-xl relative",
+        "rounded-2xl   bg-card p-6 shadow-lg hover:shadow-xl relative",
         product.popular ? "border-2 border-primary" : "border border-border",
         "hover:-translate-y-1 transition-all duration-300 ease-in-out",
         className
@@ -30,7 +30,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
         <div
           className={cn(
             "popular-badge",
-            "absolute -top-3 right-5 bg-accent text-white rounded-2xl text-xs py-1 px-3 font-semibold shadow-[0_4px_12px] shadow-2xl"
+            "absolute -top-3 right-5 bg-accent text-white rounded-2xl text-xs py-1 px-3 font-semibold shadow-2xl"
           )}
         >
           POPULAR
@@ -52,7 +52,7 @@ const PackageCard: React.FC<PackageCardProps> = ({ className, product, onPurchas
       <button
         type="button"
         onClick={onPurchase}
-        className="w-full rounded-2xl bg-primary px-6 py-3 font-semibold text-white hover:translate-y-[-2px] transition shadow-[0_8px_30px] shadow-xl"
+        className="w-full rounded-2xl bg-primary px-6 py-3 font-semibold text-white hover:translate-y-[-2px] transition shadow-xl"
       >
         Purchase
       </button>

@@ -19,13 +19,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { APP_CONFIG } from "@/config/app";
-import { useSessionStore } from "@/domains/encrypted-session/encrypted-session.store";
-import { Session } from "@/domains/open-chat/open-chat.types";
+import { useSessionStore } from "@/domains/session-persistence";
+import { ConversationSession } from "@/domains/session-state/session-state.types";
 import { AppLocales } from "@/lib/i18n";
 
 interface Props {
   className?: string;
-  session: Session;
+  session: ConversationSession;
   onSubmitted?: (data: { title: string; subtitle: string }) => void;
 }
 

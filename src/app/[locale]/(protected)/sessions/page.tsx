@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import Header from "@/components/header";
 import LoadingComponent from "@/components/loading-component";
 import SessionsPage from "@/components/sessions/sessions-page";
-import UserMenu from "@/user-menu";
+import UserMenu from "@/components/user-menu";
 
 export default async function SessionsRoute({}: Readonly<{
   params: Promise<{ locale: string }>;

@@ -1,5 +1,5 @@
 import { AIModelCategory, calculateModelCostUsd, ModelCostBreakdown } from "@/domains/ai-conversation/ai-models";
-import { ModelTokenUsage } from "@/types/ai-model.types";
+import { ModelTokenUsage } from "@/domains/shared-types";
 
 // ────────────────────────────────────────────
 // Credit Calculation Configuration

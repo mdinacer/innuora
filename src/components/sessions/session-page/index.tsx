@@ -8,10 +8,13 @@ import { Container, Menu } from "@/components/chat-ui";
 import { ChatErrorMessage } from "@/components/chat-ui/chat-error-message";
 import FlowChatHeroCard, { FlowChatHeroProps } from "@/components/chat-ui/flow-chat/flow-chat.hero";
 import { MessageBubble } from "@/components/chat-ui/open-chat";
+import CodeView from "@/components/code-view";
+import { Button } from "@/components/ui/button";
 import { APP_CONFIG } from "@/config/app";
-import useChatController from "@/domains/guidance-flow/hooks/use-chat-controller";
-import { useActiveSessionStore } from "@/domains/guidance-flow/stores/active-session-store";
-import { ConversationMessage } from "@/domains/guidance-flow/types/chat-message";
+import { TEST_MESSAGE_AR_EN } from "@/data/test-messages";
+import useChatController from "@/domains/conversation/conversation.hook";
+import { useActiveSessionStore } from "@/domains/session-state";
+import { ConversationMessage } from "@/domains/shared-types";
 import { exportSessionAsJSON, exportSessionAsMarkdown, prepareSessionExport } from "@/lib/session/session-export";
 
 interface Props {
@@ -62,11 +65,11 @@ const SessionPage: React.FC<Props> = () => {
   }, [handleSessionStart, session?.messages?.length, t]);
 
   const handleActions = useCallback(
-    (action: "reset" | "end" | "export") => {
+    async (action: "reset" | "end" | "export") => {
       const { messages } = session;
       switch (action) {
         case "reset":
-          handleResetSession();
+          await handleResetSession(session.id);
 
           break;
         case "end":
@@ -112,47 +115,59 @@ const SessionPage: React.FC<Props> = () => {
     setLastFailedMessage(null);
   }, [setLastFailedMessage]);
 
+  const handleBatchMessages = async () => {
+    const messagesToTest = TEST_MESSAGE_AR_EN.map((message) => message.en);
+    for (const message of messagesToTest) {
+      await handleUserInput(message);
+    }
+  };
+
   return (
-    <Container
-      title={session?.title ?? title}
-      subtitle={session?.subtitle ?? subtitle}
-      messages={session.messages}
-      isLoading={isProcessing}
-      renderItem={(message, index) => <MessageBubble key={index} message={message} />}
-      onUserInput={handleUserInput}
-      welcomeMessage={welcomeMessage}
-      errorMessage={
-        processingError ? (
-          <ChatErrorMessage
-            errorMessage={processingError}
-            onRetry={lastFailedMessage ? handleRetry : undefined}
-            onDismiss={handleDismissError}
-          />
-        ) : null
-      }
-      headerActions={<Menu disabled={!session.messages?.length} onAction={handleActions} />}
-    />
+    <>
+      <div className="p-§ absolute top-6 left-6">
+        <CodeView data={session.messages} />
+      </div>
+      <div className="p-§ absolute top-6 right-6">
+        <Button onClick={handleBatchMessages}>Test</Button>
+      </div>
+      <Container
+        title={session?.title ?? title}
+        subtitle={session?.subtitle ?? subtitle}
+        messages={session.messages}
+        isLoading={isProcessing}
+        renderItem={(message, index) => <MessageBubble key={index} message={message} />}
+        onUserInput={handleUserInput}
+        welcomeMessage={welcomeMessage}
+        errorMessage={
+          processingError ? (
+            <ChatErrorMessage
+              errorMessage={processingError}
+              onRetry={lastFailedMessage ? handleRetry : undefined}
+              onDismiss={handleDismissError}
+            />
+          ) : null
+        }
+        headerActions={<Menu disabled={false} onAction={handleActions} />}
+      />
+    </>
   );
 };
 
 export default SessionPage;
 
-// const testMessages = [
-//   // OVERWHELMED
-//   "I can't breathe. Everything is falling apart and I don't know what to do anymore.",
-
-//   // REFLECTIVE - People-pleasing
-//   "I'm constantly editing myself so I don't make anyone uncomfortable.",
-
-//   // NUMB
-//   "I'm functioning but it all feels muted. Like I'm watching my life from the outside.",
-
-//   // RESISTANT
-//   "I'm fine, really. Other people have it way worse. I shouldn't complain.",
-
-//   // REFLECTIVE - Rest anxiety
-//   "Even when I try to rest, my body stays tense. I can be lying down but inside I'm still bracing for something to go wrong.",
-// ];
+const TEST_MESSAGES = [
+  "I don’t know where to start… I just feel really overwhelmed lately.",
+  "It’s like I’m holding everything together for everyone, and I’m running out of space to hold myself.",
+  "Nothing is technically ‘wrong,’ but I feel this constant pressure in my chest, like I’m bracing for something.",
+  "And the stupid part is… I can’t even talk about this without feeling guilty. Other people have it worse.",
+  "My partner keeps saying I should just ‘take a break,’ but even resting feels like I’m failing at something.",
+  "I used to handle so much with ease, and now even small things drain me. I hate this version of me.",
+  "What’s confusing is that on the outside, I’m functioning. Nobody would guess anything is off.",
+  "But inside, I feel exhausted in a way that doesn’t go away no matter how much I sleep.",
+  "Sometimes I catch myself getting irritated at tiny things, and then I feel terrible for reacting like that.",
+  "I don’t know… maybe I’m just tired of being the responsible one all the time.",
+  "I just want to feel like myself again. Like I’m not dragging my body through my own life.",
+];
 
 // const tests = [
 //   "I'm tired in a way that sleep doesn't fix. I keep doing everything right, and somehow it still feels off.",
