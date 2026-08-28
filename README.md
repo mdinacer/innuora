@@ -1,8 +1,8 @@
-# Mirael - Internal Development
+# Innuora - Internal Development
 
 **AI-Powered Therapeutic Chat Platform**
 
-Internal development repository for Mirael - a Next.js 15 application providing personalized therapeutic conversations using Cognitive Behavioral Therapy (CBT) methodologies.
+Internal development repository for Innuora - a Next.js 15 application providing personalized therapeutic conversations using Cognitive Behavioral Therapy (CBT) methodologies.
 
 ## 📋 Project Info
 
@@ -49,7 +49,7 @@ Internal development repository for Mirael - a Next.js 15 application providing 
 
 ## 📁 Project Structure
 
-```
+```text
 src/
 ├── app/          # Next.js routes
 ├── components/   # UI components
@@ -89,7 +89,7 @@ npm run db:studio    # Open Prisma Studio
 
 ### Important Files
 
-- `src/lib/ai/mirael-core/v2/` - Core AI/CBT engine
+- `src/lib/ai/innuora-core/v2/` - Core AI/CBT engine
 - `src/lib/crypto/` - Client-side encryption
 - `src/app/actions/` - Server actions
 - `prisma/schema.prisma` - Database schema
